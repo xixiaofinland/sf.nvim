@@ -1,4 +1,4 @@
-local O = require "sforg"
+local O = require "sf.org"
 local U = {}
 local fn = vim.fn
 
