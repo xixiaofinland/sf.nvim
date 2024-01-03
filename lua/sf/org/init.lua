@@ -1,4 +1,4 @@
-local O = require "sforg.org"
+local O = require "sf.org.org"
 local M = {}
 
 function M.get()
