@@ -1,4 +1,4 @@
-local U = require('sfterm.util')
+local U = require('sf.term.util')
 
 local A = vim.api
 local fn = vim.fn
