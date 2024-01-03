@@ -1,6 +1,6 @@
 local Term = require "sf.term.terminal"
 local t = Term:new()
-local U = require "sfterm.util"
+local U = require "sf.term.util"
 
 local M = {}
 
