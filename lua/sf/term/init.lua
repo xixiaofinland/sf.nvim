@@ -1,4 +1,4 @@
-local Term = require "sfterm.terminal"
+local Term = require "sf.term.terminal"
 local t = Term:new()
 local U = require "sfterm.util"
 
