@@ -21,7 +21,7 @@ O.set = function()
             function(_, code)
               if code == 0 then
                 O.target_org = choice
-                print('target_org set')
+                -- vim.notify('target_org set', vim.log.levels.INFO)
               else
                 A.nvim_err_writeln(choice .. ' - set target_org failed! Not in a sfdx project folder?')
               end
