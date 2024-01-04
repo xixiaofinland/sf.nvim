@@ -24,14 +24,16 @@ local t = function(node)
   p(ts.get_node_text(node, 0))
 end
 
-local get_test_method_names = function()
+local get_names_in_curr_file = function()
+  local names = {}
   for _, matches, _ in query:iter_matches(root, 0) do
     local match = matches[2]
-    t(match)
+    table.insert(names, match)
   end
+  return names
 end
 
-local get_test_method_name_under_cursor = function()
+local get_curr_name= function()
   local curr_node = ts.get_node()
   while curr_node ~= nil do
     if curr_node:type() == 'method_declaration' then
