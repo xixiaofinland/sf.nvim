@@ -66,7 +66,7 @@ local storeOrgs = function(data)
   for _, v in pairs(orgData) do
     if v.isDefaultUsername == true then
       O.target_org = v.alias
-      vim.notify('target_org set', vim.log.levels.INFO)
+      -- vim.notify('target_org set', vim.log.levels.INFO)
     end
     table.insert(O.orgs, v.alias)
   end
