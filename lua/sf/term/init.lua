@@ -26,7 +26,7 @@ function M.runCurrentTest()
     return vim.notify('Not in a test class', vim.log.levels.ERROR)
   end
 
-  local test_name = TS.get_curr_method_name()
+  local test_name = TS.get_current_test_method_name()
   if test_name == nil then
     return vim.notify('Not in a test method', vim.log.levels.ERROR)
   end

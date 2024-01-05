@@ -60,7 +60,19 @@ M.get_test_method_names_in_curr_file = function()
   return H.get_matched_node_names(apex_test_meth_query, 2, root)
 end
 
-M.get_curr_method_name = function()
+M.get_current_test_method_name = function()
+  local parser = parsers.get_parser()
+  local lang = parser:lang()
+  local test_annotation = [[
+    (method_declaration
+      (modifiers
+        (annotation
+          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
+      name: (identifier) @meth_name
+    )
+  ]]
+  local apex_test_meth_query = ts.query.parse(lang, test_annotation)
+
   local curr_node = ts.get_node()
   while curr_node ~= nil do
     if curr_node:type() == 'method_declaration' then
