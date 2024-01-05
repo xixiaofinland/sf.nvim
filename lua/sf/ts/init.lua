@@ -1,41 +1,20 @@
 local ts = vim.treesitter
 local parsers = require('nvim-treesitter.parsers')
-local parser = parsers.get_parser()
-local lang = parser:lang()
-local test_annotation = [[
-    (method_declaration
-      (modifiers
-        (annotation
-          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
-      name: (identifier) @meth_name
-    )
-  ]]
-local apex_test_meth_query = ts.query.parse(lang, test_annotation)
-
-local class_name = [[
-    (class_declaration
-      name: (identifier) @class_name
-    )
-  ]]
-local class_name_query = ts.query.parse(lang, class_name)
-
-local test_class_name = [[
-    (class_declaration
-      (modifiers
-        (annotation
-          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
-      name: (identifier) @class_name
-    )
-  ]]
-local test_class_name_query = ts.query.parse(lang, test_class_name)
-
-local tree = parser:parse()[1]
-local root = tree:root()
 
 local M = {}
 local H = {}
 
 M.get_class_name = function()
+  local parser = parsers.get_parser()
+  local lang = parser:lang()
+  local class_name = [[
+    (class_declaration
+      name: (identifier) @class_name
+    )
+  ]]
+  local class_name_query = ts.query.parse(lang, class_name)
+  local root = parser:parse()[1]:root()
+
   local result = H.get_matched_node_names(class_name_query, 1, root)
   if not next(result) then
     return nil
@@ -44,6 +23,19 @@ M.get_class_name = function()
 end
 
 M.get_test_class_name = function()
+  local parser = parsers.get_parser()
+  local lang = parser:lang()
+  local test_class_name = [[
+    (class_declaration
+      (modifiers
+        (annotation
+          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
+      name: (identifier) @class_name
+    )
+  ]]
+  local test_class_name_query = ts.query.parse(lang, test_class_name)
+  local root = parser:parse()[1]:root()
+
   local result = H.get_matched_node_names(test_class_name_query, 2, root)
   if not next(result) then
     return nil
@@ -52,6 +44,19 @@ M.get_test_class_name = function()
 end
 
 M.get_test_method_names_in_curr_file = function()
+  local parser = parsers.get_parser()
+  local lang = parser:lang()
+  local test_annotation = [[
+    (method_declaration
+      (modifiers
+        (annotation
+          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
+      name: (identifier) @meth_name
+    )
+  ]]
+  local apex_test_meth_query = ts.query.parse(lang, test_annotation)
+  local root = parser:parse()[1]:root()
+
   return H.get_matched_node_names(apex_test_meth_query, 2, root)
 end
 
