@@ -5,15 +5,13 @@ local M = {}
 local H = {}
 
 M.get_class_name = function()
-  local parser = parsers.get_parser()
-  local lang = parser:lang()
   local class_name = [[
     (class_declaration
       name: (identifier) @class_name
     )
   ]]
-  local class_name_query = ts.query.parse(lang, class_name)
-  local root = parser:parse()[1]:root()
+  local class_name_query = H.build_query(class_name)
+  local root = parsers.get_parser():parse()[1]:root()
 
   local result = H.get_matched_node_names(class_name_query, 1, root)
   if not next(result) then
@@ -23,8 +21,6 @@ M.get_class_name = function()
 end
 
 M.get_test_class_name = function()
-  local parser = parsers.get_parser()
-  local lang = parser:lang()
   local test_class_name = [[
     (class_declaration
       (modifiers
@@ -33,8 +29,8 @@ M.get_test_class_name = function()
       name: (identifier) @class_name
     )
   ]]
-  local test_class_name_query = ts.query.parse(lang, test_class_name)
-  local root = parser:parse()[1]:root()
+  local test_class_name_query = H.build_query(test_class_name)
+  local root = parsers.get_parser():parse()[1]:root()
 
   local result = H.get_matched_node_names(test_class_name_query, 2, root)
   if not next(result) then
@@ -44,8 +40,6 @@ M.get_test_class_name = function()
 end
 
 M.get_test_method_names_in_curr_file = function()
-  local parser = parsers.get_parser()
-  local lang = parser:lang()
   local test_annotation = [[
     (method_declaration
       (modifiers
@@ -54,15 +48,13 @@ M.get_test_method_names_in_curr_file = function()
       name: (identifier) @meth_name
     )
   ]]
-  local apex_test_meth_query = ts.query.parse(lang, test_annotation)
-  local root = parser:parse()[1]:root()
+  local apex_test_meth_query = H.build_query(test_annotation)
+  local root = parsers.get_parser():parse()[1]:root()
 
   return H.get_matched_node_names(apex_test_meth_query, 2, root)
 end
 
 M.get_current_test_method_name = function()
-  local parser = parsers.get_parser()
-  local lang = parser:lang()
   local test_annotation = [[
     (method_declaration
       (modifiers
@@ -71,7 +63,7 @@ M.get_current_test_method_name = function()
       name: (identifier) @meth_name
     )
   ]]
-  local apex_test_meth_query = ts.query.parse(lang, test_annotation)
+  local apex_test_meth_query = H.build_query(test_annotation)
 
   local curr_node = ts.get_node()
   while curr_node ~= nil do
@@ -87,6 +79,11 @@ M.get_current_test_method_name = function()
 end
 
 --- ================== Help ========================
+H.build_query = function(query_str)
+  local parser = parsers.get_parser()
+  local lang = parser:lang()
+  return ts.query.parse(lang, query_str)
+end
 
 H.get_matched_node_names = function(query, anno_index, node)
   local names = {}
