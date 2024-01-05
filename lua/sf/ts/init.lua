@@ -15,24 +15,18 @@ local apex_test_meth_query = ts.query.parse(lang, qs)
 local tree = parser:parse()[1]
 local root = tree:root()
 
-local get_matched_node_names = function(query, node)
-  local names = {}
-  for _, matches, _ in query:iter_matches(node, 0) do
-    local name = ts.get_node_text(matches[2], 0)
-    table.insert(names, name)
-  end
-  return names
+local M = {}
+local H = {}
+
+M.get_test_method_names_in_curr_file = function()
+  return H.get_matched_node_names(apex_test_meth_query, root)
 end
 
-local get_test_method_names_in_curr_file = function()
-  return get_matched_node_names(apex_test_meth_query, root)
-end
-
-local get_curr_method_name = function()
+M.get_curr_method_name = function()
   local curr_node = ts.get_node()
   while curr_node ~= nil do
     if curr_node:type() == 'method_declaration' then
-      local names = get_matched_node_names(apex_test_meth_query, curr_node)
+      local names = H.get_matched_node_names(apex_test_meth_query, curr_node)
       if names ~= nil then
         return names[1]
       end
@@ -42,4 +36,15 @@ local get_curr_method_name = function()
   return nil
 end
 
-P(get_curr_method_name())
+--- ================== Help ========================
+
+H.get_matched_node_names = function(query, node)
+  local names = {}
+  for _, matches, _ in query:iter_matches(node, 0) do
+    local name = ts.get_node_text(matches[2], 0)
+    table.insert(names, name)
+  end
+  return names
+end
+
+return M
