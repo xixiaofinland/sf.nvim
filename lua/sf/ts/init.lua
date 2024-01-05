@@ -10,42 +10,36 @@ local qs = [[
       name: (identifier) @meth_name
     )
   ]]
-local query = ts.query.parse(lang, qs)
+local apex_test_meth_query = ts.query.parse(lang, qs)
 
 local tree = parser:parse()[1]
 local root = tree:root()
 
-
-local p = function(v)
-  print(vim.inspect(v))
-end
-
-local t = function(node)
-  p(ts.get_node_text(node, 0))
-end
-
-local get_names_in_curr_file = function()
+local get_matched_node_names = function(query, node)
   local names = {}
-  for _, matches, _ in query:iter_matches(root, 0) do
-    local match = matches[2]
-    table.insert(names, match)
+  for _, matches, _ in query:iter_matches(node, 0) do
+    local name = ts.get_node_text(matches[2], 0)
+    table.insert(names, name)
   end
   return names
 end
 
-local get_curr_name= function()
+local get_test_method_names_in_curr_file = function()
+  return get_matched_node_names(apex_test_meth_query, root)
+end
+
+local get_curr_method_name = function()
   local curr_node = ts.get_node()
   while curr_node ~= nil do
     if curr_node:type() == 'method_declaration' then
-      print('found!')
-      -- TODO: not goining into the loop. Switch to use node:type() to match??
-      for _, matches, _ in query:iter_matches(curr_node, 0) do
-        local match = matches[2]
-        t(match)
+      local names = get_matched_node_names(apex_test_meth_query, curr_node)
+      if names ~= nil then
+        return names[1]
       end
     end
     curr_node = curr_node:parent()
   end
+  return nil
 end
 
-get_test_method_name_under_cursor()
+P(get_curr_method_name())
