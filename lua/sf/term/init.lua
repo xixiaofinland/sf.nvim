@@ -31,7 +31,7 @@ function M.runCurrentTest()
     return vim.notify('Not in a test method', vim.log.levels.ERROR)
   end
 
-  local cmd = "sf apex run test --tests " .. test_class_name .. "." .. test_name .. " --result-format human " .. U.get_target_org()
+  local cmd = "sf apex run test --tests " .. test_class_name .. "." .. test_name .. " --result-format human -y " .. U.get_target_org()
   t:run(cmd)
 end
 
@@ -41,7 +41,7 @@ function M.runAllTestsInCurrentFile()
     return vim.notify('Not in a test class', vim.log.levels.ERROR)
   end
 
-  local cmd = "sf apex run test --class-names " .. test_class_name .. " --result-format human " .. U.get_target_org()
+  local cmd = "sf apex run test --class-names " .. test_class_name .. " --result-format human -y " .. U.get_target_org()
   t:run(cmd)
 end
 
