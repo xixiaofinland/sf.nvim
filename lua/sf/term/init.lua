@@ -45,6 +45,10 @@ function M.runAllTestsInCurrentFile()
   t:run(cmd)
 end
 
+function M.cancel()
+  t:run(vim.keycode('<C-C>'))
+end
+
 function M.run(c)
   local cmd = U.expand_cmd(c)
   t:run(cmd)
