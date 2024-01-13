@@ -46,7 +46,7 @@ function M.runAllTestsInCurrentFile()
 end
 
 function M.cancel()
-  t:run(vim.keycode('<C-C>'))
+  t:run('\3')
 end
 
 function M.run(c)
