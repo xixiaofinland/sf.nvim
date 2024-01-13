@@ -11,6 +11,13 @@ Offer basic functionalities for Apex to interact with Salesforce org
 ## Hotkeys example
 
 ```
+local nmap = function(keys, func, desc)
+  if desc then
+    desc = '[Sf] ' .. desc
+  end
+  vim.keymap.set('n', keys, func, { desc = desc })
+end
+
 nmap('<leader>ss', require("sf.org").set, "[s]et target_org current workspace")
 nmap('<leader>sS', require("sf.org").setGlobal, "[S]et target_org globally")
 nmap('<leader>sf', require("sf.org").fetch, "[F]etch orgs info")
