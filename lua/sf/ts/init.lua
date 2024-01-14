@@ -14,7 +14,7 @@
 ---     - |SfTs.get_current_test_method_name()|.
 
 local T = require('sf.ts.ts')
-local B = require('sf.ts.buf')
+local B = require('sf.ts.test_buf')
 local M = {}
 
 -- M.get_class_name = function()
