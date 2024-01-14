@@ -8,26 +8,21 @@ Offer basic functionalities for Apex to interact with Salesforce org
 - `sf.term` establish an integrated terminal
 - `sf.ts` run test
 
-## Hotkeys example
+## Usage
+
+At the moment maybe the best way is to take a peek at [my latest
+keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/after/ftplugin/apex.lua)
+
+If the current buff is a Test Apex file, `require("sf.ts").open_test_buf` opens a temp buffer which lists all tests.
+In this temp buffer, 
+- use `t` to toggle select/unselect tests
+- use `cc` to run the select tests in the integrated terminal
+
+`require("sf.term").repeatLastTests` runs the last selected tests
 
 ```
-local nmap = function(keys, func, desc)
-  if desc then
-    desc = '[Sf] ' .. desc
-  end
-  vim.keymap.set('n', keys, func, { desc = desc })
-end
-
-nmap('<leader>ss', require("sf.org").set, "[s]et target_org current workspace")
-nmap('<leader>sS', require("sf.org").setGlobal, "[S]et target_org globally")
-nmap('<leader>sf', require("sf.org").fetch, "[F]etch orgs info")
-
-nmap('<leader>t', require("sf.term").toggle, "[T]erminal toggle")
-nmap('<leader>sp', require("sf.term").saveAndPush, "[P]ush current file")
-nmap('<leader>sr', require("sf.term").retrieve, "[R]etrieve current file")
-nmap('<leader>sc', require("sf.term").cancel, "[C]ancel current running command")
-nmap('<leader>sta', require("sf.term").runAllTestsInCurrentFile, "[T]est [A]ll")
-nmap('<leader>stt', require("sf.term").runCurrentTest, "[T]est [T]his under cursor")
+nmap('<leader>sto', require("sf.ts").open_test_buf, "[T]est [O]pen Buf Select")
+nmap('<leader>str', require("sf.term").repeatLastTests, "[T]est [R]epeat")
 ```
 
 ## Video demostration
