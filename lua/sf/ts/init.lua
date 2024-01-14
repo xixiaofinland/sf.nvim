@@ -33,7 +33,11 @@ M.get_current_test_method_name = function()
   return T.get_current_test_method_name()
 end
 
-M.open = function()
+M.build_selected_tests_cmd = function()
+  return B.build_selected_tests_cmd()
+end
+
+M.open_test_buf = function()
   return B.open()
 end
 

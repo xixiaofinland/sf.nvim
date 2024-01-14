@@ -53,6 +53,11 @@ function M.scrollToEnd()
   t:run(vim.cmd('$'))
 end
 
+function M.runSelectedTests()
+  local cmd = TS.build_selected_tests_cmd() .. U.get_target_org()
+  t:run(cmd)
+end
+
 function M.run(c)
   local cmd = U.expand_cmd(c)
   t:run(cmd)
