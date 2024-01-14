@@ -23,11 +23,12 @@ M.open = function()
     buf_id = api.nvim_win_get_buf(0)
     win_id = api.nvim_tabpage_get_win(0)
 
+    tests_to_run = {}
     M.set_test_names(test_names)
+    api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("sf.ts.test_buf").toggle()<CR>', { noremap = true })
 
-    api.nvim_buf_set_keymap(0, 'n', 'a', ':lua require("sf.ts.buf").update_first_char()<CR>', { noremap = true })
+    vim.bo[0].modifiable = false
 
-    -- vim.bo[0].modifiable = false
     -- else if H.is_open_already(buf_id)
   elseif win_id ~= nil and H.is_open_already(win_id) then
     api.nvim_set_current_win(win_id)
@@ -35,18 +36,25 @@ M.open = function()
 end
 
 M.set_test_names = function(test_names)
-  api.nvim_buf_set_lines(0, 0, 100, false, test_names)
-  -- for key, val in pairs(test_names) do
-  --   print(key, val)
-  --   api.nvim_buf_set_text(0, key + 1, 0, key + 1, 1, { val })
-  -- end
+  local display_names = {}
+  for _, val in pairs(test_names) do
+    table.insert(display_names, '[ ] ' .. val)
+  end
+  api.nvim_buf_set_lines(0, 0, 100, false, display_names)
 end
 
-M.update_first_char = function()
+M.toggle = function()
   vim.bo[0].modifiable = true
   local r, _ = unpack(vim.api.nvim_win_get_cursor(0))
-  local row = r - 1
-  api.nvim_buf_set_text(0, row, 0, row, 1, { 'x' })
+  local row_index = r - 1
+
+  local cur_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
+
+  if cur_value[1] == 'x' then
+    api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { ' ' })
+  else
+    api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
+  end
 
   vim.bo[0].modifiable = false
 end
