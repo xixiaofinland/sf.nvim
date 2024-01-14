@@ -7,6 +7,7 @@ local buf_id = nil
 local win_id = nil
 local test_class_name = nil
 local tests = {}
+local last_selected_tests = nil
 
 M.open = function()
   test_class_name = TS.get_test_class_name()
@@ -92,9 +93,18 @@ M.build_selected_tests_cmd = function()
   for _, test in pairs(selected_test) do
     t = t .. '-t ' .. test_class_name .. '.' .. test .. ' '
   end
+  last_selected_tests = selected_test
 
   local cmd = 'sf apex run test ' .. t .. "--result-format human -y "
+  last_selected_tests = cmd
   return cmd
+end
+
+M.get_last_selected_tests = function()
+  if last_selected_tests == nil then
+    return vim.notify('no last selected test', vim.log.levels.ERROR)
+  end
+  return last_selected_tests
 end
 
 ------------- helper -----------------------

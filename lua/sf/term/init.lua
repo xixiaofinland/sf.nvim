@@ -58,6 +58,11 @@ function M.runSelectedTests()
   t:run(cmd)
 end
 
+function M.repeatLastTests()
+  local cmd = TS.get_last_selected_tests() .. U.get_target_org()
+  t:run(cmd)
+end
+
 function M.run(c)
   local cmd = U.expand_cmd(c)
   t:run(cmd)

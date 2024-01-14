@@ -37,6 +37,10 @@ M.build_selected_tests_cmd = function()
   return B.build_selected_tests_cmd()
 end
 
+M.get_last_selected_tests = function()
+  return B.get_last_selected_tests()
+end
+
 M.open_test_buf = function()
   return B.open()
 end
