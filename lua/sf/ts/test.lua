@@ -20,3 +20,4 @@ vim.bo[0].modifiable = false
 -- nvim_buf_delete(0)
 ss = api.nvim_buf_get_text(0, 0, 0, 0, 1, {})
 winb = vim.fn.win_findbuf(my_buf_handle) -- empty table: if next(myTable) == nil then
+-- nvim_buf_call/nvim_win_call
