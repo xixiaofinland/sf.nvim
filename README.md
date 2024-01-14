@@ -14,6 +14,7 @@ At the moment maybe the best way is to take a peek at [my latest
 keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/after/ftplugin/apex.lua)
 
 If the current buff is a Test Apex file, `require("sf.ts").open_test_buf` opens a temp buffer which lists all tests.
+
 In this temp buffer, 
 - use `t` to toggle select/unselect tests
 - use `cc` to run the select tests in the integrated terminal
