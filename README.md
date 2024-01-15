@@ -10,17 +10,21 @@ Due to its rapid design change and code refactory, breaking change is expected.
 Please fix the pulled commit version in your plugin manager if you expect it
 working stable for you.
 
+## Demostration
+
+https://github.com/xixiaofinland/storage/blob/0d8166e301db2ea11e725838419b5ebea6c8debe/sf_nvim.mp4
+
+## Usage
+
+Maybe the best way is to take a peek at [my latest
+keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/after/ftplugin/apex.lua)
+
 ## Modules
 
 - `sf.org` target org
 - `sf.term` integrated terminal
 - `sf.ts` treesitter
 - `sf.test` Apex test
-
-## Usage
-
-Maybe the best way is to take a peek at [my latest
-keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/after/ftplugin/apex.lua)
 
 ## relative new features
 
@@ -35,7 +39,7 @@ In this temp buffer,
 `require("sf.term").repeatLastTests` runs the last selected tests
 
 
-## Video demostration
+## Other video (out-dated)
 
 Made on 13-01-2024
 
