@@ -1,5 +1,3 @@
-local U = require('sf.term.util')
-
 local api = vim.api
 local cmd = api.nvim_command
 
@@ -12,6 +10,7 @@ local cmd = api.nvim_command
 ---@field terminal? number Terminal's job id
 ---@field config Config
 local Term = {}
+local H = {}
 
 ---Term:new creates a new terminal instance
 function Term:new()
@@ -19,7 +18,7 @@ function Term:new()
     win = nil,
     buf = nil,
     terminal = nil,
-    config = U.defaults,
+    config = H.defaults,
   }, { __index = self })
 end
 
@@ -65,7 +64,7 @@ function Term:restore_cursor()
       cmd(('silent! %s wincmd w'):format(self.prev_win))
     end
 
-    if U.is_win_valid(self.last_win) then
+    if H.is_win_valid(self.last_win) then
       api.nvim_set_current_win(self.last_win)
       api.nvim_win_set_cursor(self.last_win, self.last_pos)
     end
@@ -84,7 +83,7 @@ function Term:use_existing_or_create_buf()
   -- If previous buffer exists then return it
   local prev = self.buf
 
-  if U.is_buf_valid(prev) then
+  if H.is_buf_valid(prev) then
     return prev
   end
 
@@ -101,7 +100,7 @@ end
 function Term:create_and_open_win(buf)
   local cfg = self.config
 
-  local dim = U.get_dimension(cfg.dimensions)
+  local dim = H.get_dimension(cfg.dimensions)
 
   local win = api.nvim_open_win(buf, true, {
     border = cfg.border,
@@ -146,7 +145,7 @@ end
 ---@return Term
 function Term:create_term()
   -- NOTE: `termopen` will fails if the current buffer is modified
-  self.terminal = vim.fn.termopen(U.is_cmd(self.config.cmd), {
+  self.terminal = vim.fn.termopen(H.is_cmd(self.config.cmd), {
     clear_env = self.config.clear_env,
     env = self.config.env,
     on_stdout = self.config.on_stdout,
@@ -166,7 +165,7 @@ end
 ---@return Term
 function Term:open()
   -- Move to existing window if the window already exists
-  if U.is_win_valid(self.win) then
+  if H.is_win_valid(self.win) then
     return
   end
 
@@ -187,7 +186,7 @@ end
 ---@param force? boolean If true, kill the terminal otherwise hide it
 ---@return Term
 function Term:close(force)
-  if not U.is_win_valid(self.win) then
+  if not H.is_win_valid(self.win) then
     return self
   end
 
@@ -196,7 +195,7 @@ function Term:close(force)
   self.win = nil
 
   if force then
-    if U.is_buf_valid(self.buf) then
+    if H.is_buf_valid(self.buf) then
       api.nvim_buf_delete(self.buf, { force = true })
     end
 
@@ -215,7 +214,7 @@ end
 ---@return Term
 function Term:toggle()
   -- If window is stored and valid then it is already opened, then close it
-  if U.is_win_valid(self.win) then
+  if H.is_win_valid(self.win) then
     self:close()
   else
     self:open()
@@ -236,6 +235,97 @@ function Term:run(command)
   )
 
   return self
+end
+
+---------------- help -------------------
+
+---@alias Command string|string[]
+
+---@class Dimensions - Every field inside the dimensions should be b/w `0` to `1`
+---@field height number: Height of the floating window (default: `0.8`)
+---@field width number: Width of the floating window (default: `0.8`)
+---@field x number: X-Axis of the floating window (default: `0.5`)
+---@field y number: Y-Axis of the floating window (default: `0.5`)
+
+---@class Config
+---@field ft string: Filetype of the terminal buffer (default: `SFTerm`)
+---@field cmd Command: Command to run inside the terminal (default: `os.getenv('SHELL'`))
+---@field border string: Border type for the floating window. See `:h nvim_open_win` (default: `single`)
+---@field auto_close boolean: Close the terminal as soon as command exits (default: `true`)
+---@field hl string: Highlight group for the terminal buffer (default: `true`)
+---@field blend number: Transparency of the floating window (default: `true`)
+---@field clear_env boolean: Replace instead of extend the current environment with `env` (default: `false`)
+---@field env table: Map of environment variables extending the current environment (default: `nil`)
+---@field on_exit function: Callback invoked when the terminal exits (default: `nil`)
+---@field on_stdout function: Callback invoked when the terminal emits stdout data (default: `nil`)
+---@field on_stderr function: Callback invoked when the terminal emits stderr data (default: `nil`)
+---@field dimensions Dimensions: Dimensions of the floating window
+
+---@type Config
+H.defaults = {
+  ft = 'SFTerm',
+  cmd = function()
+    return assert(
+      os.getenv('SHELL'),
+      '[SFTerm] $SHELL is not present! Please provide a shell (`config.cmd`) to use.'
+    )
+  end,
+  border = 'single',
+  auto_close = true,
+  hl = 'Normal',
+  blend = 0,
+  clear_env = false,
+  dimensions = {
+    height = 0.4,
+    width = 0.8,
+    x = 0.5,
+    y = 0.9,
+  },
+}
+
+---Create terminal dimension relative to the viewport
+---@param opts Dimensions
+---@return table
+function H.get_dimension(opts)
+  -- get lines and columns
+  local cl = vim.o.columns
+  local ln = vim.o.lines
+
+  -- calculate our floating window size
+  local width = math.ceil(cl * opts.width)
+  local height = math.ceil(ln * opts.height - 4)
+
+  -- and its starting position
+  local col = math.ceil((cl - width) * opts.x)
+  local row = math.ceil((ln - height) * opts.y - 1)
+
+  return {
+    width = width,
+    height = height,
+    col = col,
+    row = row,
+  }
+end
+
+---Check whether the window is valid
+---@param win number Window ID
+---@return boolean
+function H.is_win_valid(win)
+  return win and vim.api.nvim_win_is_valid(win)
+end
+
+---Check whether the buffer is valid
+---@param buf number Buffer ID
+---@return boolean
+function H.is_buf_valid(buf)
+  return buf and vim.api.nvim_buf_is_loaded(buf)
+end
+
+---Creates a valid command from user's input
+---@param cmd Command
+---@return Command
+function H.is_cmd(cmd)
+  return type(cmd) == 'function' and cmd() or cmd
 end
 
 return Term

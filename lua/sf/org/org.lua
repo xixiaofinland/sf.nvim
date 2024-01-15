@@ -1,6 +1,6 @@
 local O = {}
 O.orgs = {}
-O.target_org = nil
+O.target_org = ''
 local A = vim.api
 
 local cleanCache = function()

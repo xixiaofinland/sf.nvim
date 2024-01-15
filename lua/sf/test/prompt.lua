@@ -41,7 +41,7 @@ function Prompt:open()
   local win = self:use_existing_or_create_win()
   api.nvim_win_set_buf(win, buf)
 
-  api.nvim_buf_set_keymap(buf, 'n', 't', ':lua require("sf.test").toggle()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 'x', ':lua require("sf.test").toggle()<CR>', { noremap = true })
   api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.test").run_selected()<CR>', { noremap = true })
 
   self.buf = buf

@@ -16,6 +16,7 @@ M.run_selected = function()
   local cmd = p:build_selected_tests_cmd() .. Org.get()
   p:close()
   Term.run(cmd)
+  Term.lastTests = cmd
 end
 
 return M
