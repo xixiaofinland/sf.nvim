@@ -12,9 +12,10 @@ working stable for you.
 
 ## Modules
 
-- `sf.org` configure target org
-- `sf.term` establish an integrated terminal
-- `sf.ts` run test
+- `sf.org` target org
+- `sf.term` integrated terminal
+- `sf.ts` treesitter
+- `sf.test` Apex test
 
 ## Usage
 
@@ -23,13 +24,8 @@ keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/af
 
 ## relative new features
 
-```
-nmap('<leader>sto', require("sf.ts").open, "[T]est [O]pen Buf Select")
-nmap('<leader>str', require("sf.term").repeatLastTests, "[T]est [R]epeat")
-```
-
 ### Multi-select tests to run
-If the current buffer is a Test Apex file, `require("sf.ts").open` opens a temporary buffer which lists all tests.
+If the current buffer is a Test Apex file, `require("sf.test").open` opens a temporary buffer which lists all tests.
 
 In this temp buffer, 
 - use `t` to toggle select/unselect tests
