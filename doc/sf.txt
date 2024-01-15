@@ -1,5 +1,10 @@
 ==============================================================================
 ------------------------------------------------------------------------------
+help --------------------
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                                           *Term*
                                      `Term`
 Class ~
@@ -114,8 +119,9 @@ Parameters ~
 Return ~
 Term
 
+------------------------------------------------------------------------------
+help -------------------
 
-==============================================================================
 ------------------------------------------------------------------------------
 Class ~
 {Dimensions} - Every field inside the dimensions should be b/w `0` to `1`
@@ -143,14 +149,14 @@ Fields ~
 {dimensions} Dimensions: Dimensions of the floating window
 
 ------------------------------------------------------------------------------
-                                                                    *U.defaults*
-                                  `U.defaults`
+                                                                    *H.defaults*
+                                  `H.defaults`
 Type ~
 Config
 
 ------------------------------------------------------------------------------
-                                                             *U.get_dimension()*
-                           `U.get_dimension`({opts})
+                                                             *H.get_dimension()*
+                           `H.get_dimension`({opts})
 terminal dimension relative to the viewport
 Parameters ~
 {opts} Dimensions
@@ -158,8 +164,8 @@ Return ~
 `(table)`
 
 ------------------------------------------------------------------------------
-                                                              *U.is_win_valid()*
-                            `U.is_win_valid`({win})
+                                                              *H.is_win_valid()*
+                            `H.is_win_valid`({win})
 whether the window is valid
 Parameters ~
 {win} `(number)` Window ID
@@ -167,8 +173,8 @@ Return ~
 `(boolean)`
 
 ------------------------------------------------------------------------------
-                                                              *U.is_buf_valid()*
-                            `U.is_buf_valid`({buf})
+                                                              *H.is_buf_valid()*
+                            `H.is_buf_valid`({buf})
 whether the buffer is valid
 Parameters ~
 {buf} `(number)` Buffer ID
@@ -176,13 +182,26 @@ Return ~
 `(boolean)`
 
 ------------------------------------------------------------------------------
-                                                                    *U.is_cmd()*
-                               `U.is_cmd`({cmd})
+                                                                    *H.is_cmd()*
+                               `H.is_cmd`({cmd})
 a valid command from user's input
 Parameters ~
 {cmd} `(string|string[])`
 Return ~
 `(string|string[])`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Prompt*
+                                    `Prompt`
+Class ~
+{Prompt}
+Fields ~
+{win} `(number)`
+{buf} `(number)`
+{class} `(string)`
+{tests} `(table)`
 
 
 ==============================================================================
@@ -196,15 +215,8 @@ MIT License Copyright (c) 2024 Xi Xiao
 Features:
 - Provide useful APIs from Treesitter parsed Apex file.
 
-- Functions:
-    - |SfTs.get_class_name()|.
-    - |SfTs.get_test_class_name()|.
-    - |SfTs.get_test_method_names_in_curr_file()|.
-    - |SfTs.get_current_test_method_name()|.
 
 ------------------------------------------------------------------------------
-                                                               *H.build_query()*
-                          `H.build_query`({query_str})
 ================== Help ========================
 
 
