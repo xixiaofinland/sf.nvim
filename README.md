@@ -32,7 +32,7 @@ keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/af
 If the current buffer is a Test Apex file, `require("sf.test").open` opens a temporary buffer which lists all tests.
 
 In this temp buffer, 
-- use `t` to toggle select/unselect tests
+- use `x` to toggle select/unselect tests
 - use `cc` to run the select tests in the integrated terminal
 
 ### Re-run the previous selection in the temporary buffer
