@@ -8,7 +8,7 @@
 --- - Provide useful APIs from Treesitter parsed Apex file.
 ---
 
--- local T = require('sf.ts.ts')
+local T = require('sf.ts.ts')
 local Prompt = require('sf.ts.prompt')
 local p = Prompt:new()
 local M = {}
@@ -21,28 +21,20 @@ M.toggle = function()
   p:toggle()
 end
 
--- M.get_test_class_name = function()
---   return T.get_test_class_name()
--- end
+M.get_test_class_name = function()
+  return T.get_test_class_name()
+end
 
--- M.get_test_method_names_in_curr_file = function()
---   T.get_test_method_names_in_curr_file()
--- end
+M.get_test_method_names_in_curr_file = function()
+  T.get_test_method_names_in_curr_file()
+end
 
--- M.get_current_test_method_name = function()
---   return T.get_current_test_method_name()
--- end
+M.get_current_test_method_name = function()
+  return T.get_current_test_method_name()
+end
 
 M.build_selected_tests_cmd = function()
   return p:build_selected_tests_cmd()
 end
---
--- M.get_last_selected_tests = function()
---   return B.get_last_selected_tests()
--- end
---
--- M.open_test_buf = function()
---   return B.open()
--- end
 
 return M
