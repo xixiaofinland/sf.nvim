@@ -1,20 +1,24 @@
-local O = require "sf.org.org"
+local org = require "sf.org.org"
 local M = {}
 
 function M.get()
-  return O.target_org
+  if org.target_org == nil then
+    return ''
+  end
+
+  return org.target_org
 end
 
 function M.fetch()
-  O.fetch()
+  org.fetch()
 end
 
 function M.set()
-  O.set()
+  org.set()
 end
 
 function M.setGlobal()
-  O.setGlobal()
+  org.setGlobal()
 end
 
 return M

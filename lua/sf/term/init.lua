@@ -1,7 +1,8 @@
 local Term = require "sf.term.terminal"
 local t = Term:new()
-local U = require "sf.term.util"
+local Org = require "sf.org"
 local TS = require('sf.ts')
+local Test = require('sf.test')
 
 local M = {}
 
@@ -13,12 +14,12 @@ end
 
 function M.saveAndPush()
   vim.api.nvim_command('write')
-  local cmd = U.expand_cmd('sf project deploy start  -d %:p ') .. U.get_target_org()
+  local cmd = vim.fn.expandcmd('sf project deploy start  -d %:p ') .. Org.get()
   t:run(cmd)
 end
 
 function M.retrieve()
-  local cmd = U.expand_cmd('sf project retrieve start  -d %:p ') .. U.get_target_org()
+  local cmd = vim.fn.expandcmd('sf project retrieve start  -d %:p ') .. Org.get()
   t:run(cmd)
 end
 
@@ -33,7 +34,7 @@ function M.runCurrentTest()
     return vim.notify('Not in a test method', vim.log.levels.ERROR)
   end
 
-  local cmd = "sf apex run test --tests " .. test_class_name .. "." .. test_name .. " --result-format human -y " .. U.get_target_org()
+  local cmd = "sf apex run test --tests " .. test_class_name .. "." .. test_name .. " --result-format human -y " .. Org.get()
   t:run(cmd)
 end
 
@@ -43,7 +44,7 @@ function M.runAllTestsInCurrentFile()
     return vim.notify('Not in a test class', vim.log.levels.ERROR)
   end
 
-  local cmd = "sf apex run test --class-names " .. test_class_name .. " --result-format human -y " .. U.get_target_org()
+  local cmd = "sf apex run test --class-names " .. test_class_name .. " --result-format human -y " .. Org.get()
   t:run(cmd)
 end
 
@@ -56,7 +57,9 @@ function M.scrollToEnd()
 end
 
 function M.runSelectedTests()
-  local cmd = TS.build_selected_tests_cmd() .. U.get_target_org()
+
+  print(Test.build_selected_tests_cmd()) 
+  local cmd = Test.build_selected_tests_cmd() .. Org.get()
   M.lastTests = cmd
   t:run(cmd)
 end
@@ -70,7 +73,7 @@ function M.repeatLastTests()
 end
 
 function M.run(c)
-  local cmd = U.expand_cmd(c)
+  local cmd = vim.fn.expandcmd(c)
   t:run(cmd)
 end
 

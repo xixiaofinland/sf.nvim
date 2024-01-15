@@ -1,18 +1,4 @@
-local O = require "sf.org"
 local U = {}
-local fn = vim.fn
-
-function U.get_target_org()
-  if O == nil or O.get() == nil then
-    return ''
-  end
-
-  return '-o ' .. O.get()
-end
-
-function U.expand_cmd(cmd)
-  return fn.expandcmd(cmd)
-end
 
 ---@alias Command string|string[]
 

@@ -1,4 +1,4 @@
-local TS = require('sf.ts.ts')
+local TS = require('sf.ts')
 local api = vim.api
 local buftype = 'nowrite'
 local filetype = 'sf_test_prompt'
@@ -41,7 +41,7 @@ function Prompt:open()
   local win = self:use_existing_or_create_win()
   api.nvim_win_set_buf(win, buf)
 
-  api.nvim_buf_set_keymap(buf, 'n', 't', ':lua require("sf.ts").toggle()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 't', ':lua require("sf.test").toggle()<CR>', { noremap = true })
   api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.term").runSelectedTests()<CR>', { noremap = true })
 
   self.buf = buf

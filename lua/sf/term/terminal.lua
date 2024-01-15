@@ -1,8 +1,7 @@
 local U = require('sf.term.util')
 
-local A = vim.api
-local fn = vim.fn
-local cmd = A.nvim_command
+local api = vim.api
+local cmd = api.nvim_command
 
 ---@alias WinId number Floating Window's ID
 ---@alias BufId number Terminal Buffer's ID
@@ -51,9 +50,9 @@ end
 ---Term:remember_cursor stores the last cursor position and window
 ---@return Term
 function Term:remember_cursor()
-  self.last_win = A.nvim_get_current_win()
-  self.prev_win = fn.winnr('#')
-  self.last_pos = A.nvim_win_get_cursor(self.last_win)
+  self.last_win = api.nvim_get_current_win()
+  self.prev_win = vim.fn.winnr('#')
+  self.last_pos = api.nvim_win_get_cursor(self.last_win)
 
   return self
 end
@@ -67,8 +66,8 @@ function Term:restore_cursor()
     end
 
     if U.is_win_valid(self.last_win) then
-      A.nvim_set_current_win(self.last_win)
-      A.nvim_win_set_cursor(self.last_win, self.last_pos)
+      api.nvim_set_current_win(self.last_win)
+      api.nvim_win_set_cursor(self.last_win, self.last_pos)
     end
 
     self.last_win = nil
@@ -89,10 +88,10 @@ function Term:use_existing_or_create_buf()
     return prev
   end
 
-  local buf = A.nvim_create_buf(false, true)
+  local buf = api.nvim_create_buf(false, true)
 
   -- this ensures filetype is set to SFterm on first run
-  A.nvim_buf_set_option(buf, 'filetype', self.config.ft)
+  api.nvim_buf_set_option(buf, 'filetype', self.config.ft)
 
   return buf
 end
@@ -104,7 +103,7 @@ function Term:create_and_open_win(buf)
 
   local dim = U.get_dimension(cfg.dimensions)
 
-  local win = A.nvim_open_win(buf, true, {
+  local win = api.nvim_open_win(buf, true, {
     border = cfg.border,
     relative = 'editor',
     style = 'minimal',
@@ -114,8 +113,8 @@ function Term:create_and_open_win(buf)
     row = dim.row,
   })
 
-  A.nvim_win_set_option(win, 'winhl', ('Normal:%s'):format(cfg.hl))
-  A.nvim_win_set_option(win, 'winblend', cfg.blend)
+  api.nvim_win_set_option(win, 'winhl', ('Normal:%s'):format(cfg.hl))
+  api.nvim_win_set_option(win, 'winblend', cfg.blend)
 
   return win
 end
@@ -147,7 +146,7 @@ end
 ---@return Term
 function Term:create_term()
   -- NOTE: `termopen` will fails if the current buffer is modified
-  self.terminal = fn.termopen(U.is_cmd(self.config.cmd), {
+  self.terminal = vim.fn.termopen(U.is_cmd(self.config.cmd), {
     clear_env = self.config.clear_env,
     env = self.config.env,
     on_stdout = self.config.on_stdout,
@@ -158,7 +157,7 @@ function Term:create_term()
   })
 
   -- This prevents the filetype being changed to `term` instead of `FTerm` when closing the floating window
-  A.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
+  api.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
 
   return self
 end
@@ -192,16 +191,16 @@ function Term:close(force)
     return self
   end
 
-  A.nvim_win_close(self.win, {})
+  api.nvim_win_close(self.win, {})
 
   self.win = nil
 
   if force then
     if U.is_buf_valid(self.buf) then
-      A.nvim_buf_delete(self.buf, { force = true })
+      api.nvim_buf_delete(self.buf, { force = true })
     end
 
-    fn.jobstop(self.terminal)
+    vim.fn.jobstop(self.terminal)
 
     self.buf = nil
     self.terminal = nil
@@ -231,7 +230,7 @@ end
 function Term:run(command)
   self:open()
 
-  A.nvim_chan_send(
+  api.nvim_chan_send(
     self.terminal,
     command .. '\r'
   )

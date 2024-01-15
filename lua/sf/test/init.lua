@@ -10,4 +10,8 @@ M.toggle = function()
   p:toggle()
 end
 
+M.build_selected_tests_cmd = function()
+  p:build_selected_tests_cmd()
+end
+
 return M
