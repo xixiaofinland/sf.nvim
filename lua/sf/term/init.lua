@@ -1,8 +1,7 @@
 local Term = require "sf.term.terminal"
 local t = Term:new()
 local Org = require "sf.org"
-local TS = require('sf.ts')
-local Test = require('sf.test')
+local Ts = require('sf.ts')
 
 local M = {}
 
@@ -24,12 +23,12 @@ function M.retrieve()
 end
 
 function M.runCurrentTest()
-  local test_class_name = TS.get_test_class_name()
+  local test_class_name = Ts.get_test_class_name()
   if test_class_name == nil then
     return vim.notify('Not in a test class', vim.log.levels.ERROR)
   end
 
-  local test_name = TS.get_current_test_method_name()
+  local test_name = Ts.get_current_test_method_name()
   if test_name == nil then
     return vim.notify('Not in a test method', vim.log.levels.ERROR)
   end
@@ -39,7 +38,7 @@ function M.runCurrentTest()
 end
 
 function M.runAllTestsInCurrentFile()
-  local test_class_name = TS.get_test_class_name()
+  local test_class_name = Ts.get_test_class_name()
   if test_class_name == nil then
     return vim.notify('Not in a test class', vim.log.levels.ERROR)
   end
@@ -54,14 +53,6 @@ end
 
 function M.scrollToEnd()
   t:run(vim.cmd('$'))
-end
-
-function M.runSelectedTests()
-
-  print(Test.build_selected_tests_cmd()) 
-  local cmd = Test.build_selected_tests_cmd() .. Org.get()
-  M.lastTests = cmd
-  t:run(cmd)
 end
 
 function M.repeatLastTests()

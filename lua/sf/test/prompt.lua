@@ -42,7 +42,7 @@ function Prompt:open()
   api.nvim_win_set_buf(win, buf)
 
   api.nvim_buf_set_keymap(buf, 'n', 't', ':lua require("sf.test").toggle()<CR>', { noremap = true })
-  api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.term").runSelectedTests()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.test").run_selected()<CR>', { noremap = true })
 
   self.buf = buf
   self.win = win
@@ -130,10 +130,14 @@ function Prompt:build_selected_tests_cmd()
     t = t .. '-t ' .. self.class .. '.' .. test .. ' '
   end
 
-  api.nvim_win_close(self.win, false)
-
   local cmd = 'sf apex run test ' .. t .. "--result-format human -y "
   return cmd
+end
+
+function Prompt:close()
+  if self.win and api.nvim_win_is_valid(self.win) then
+    api.nvim_win_close(self.win, false)
+  end
 end
 
 return Prompt
