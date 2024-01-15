@@ -2,6 +2,8 @@ local TS = require('sf.ts.ts')
 local M = {}
 local H = {}
 local api = vim.api
+local buftype = 'nowrite'
+local filetype = 'sf_test_prompt'
 -- local last_selected_tests = nil
 
 ---@class Prompt
@@ -9,6 +11,7 @@ local api = vim.api
 ---@field buf number
 ---@field class string
 ---@field tests table
+---@field type string
 local Prompt = {}
 
 function Prompt:new()
@@ -42,7 +45,7 @@ function Prompt:open()
   local win = self:use_existing_or_create_win()
   api.nvim_win_set_buf(win, buf)
 
-  api.nvim_buf_set_keymap(buf, 'n', 't', ':lua require("sf.ts.test_buf").toggle()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 't', ':lua require("sf.ts").toggle()<CR>', { noremap = true })
   api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.term").runSelectedTests()<CR>', { noremap = true })
 
   self.buf = buf
@@ -70,7 +73,8 @@ function Prompt:use_existing_or_create_buf()
   end
 
   local buf = api.nvim_create_buf(false, false)
-  api.nvim_buf_set_option(buf, 'buftype', 'nowrite')
+  vim.bo[buf].buftype = buftype
+  vim.bo[buf].filetype = filetype
 
   return buf
 end
@@ -85,56 +89,24 @@ function Prompt:use_existing_or_create_win()
   return api.nvim_get_current_win()
 end
 
------------------------------
-
-M.open = function()
-  if buf_id == nil then
-    api.nvim_command('split ' .. buf_name)
-    buf_id = api.nvim_win_get_buf(0)
-    win_id = api.nvim_tabpage_get_win(0)
-
-    M.init_tests_table(test_names)
-    M.set_test_names_in_buf(test_names)
-    api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("sf.ts.test_buf").toggle()<CR>', { noremap = true })
-    api.nvim_buf_set_keymap(0, 'n', 'cc', ':lua require("sf.term").runSelectedTests()<CR>', { noremap = true })
-
-    vim.bo[0].modifiable = false
-
-    -- else if H.is_open_already(buf_id)
-  elseif win_id ~= nil and H.is_open_already(win_id) then
-    api.nvim_set_current_win(win_id)
+function Prompt:toggle()
+  if vim.bo[0].filetype ~= type then
+    return vim.notify('not supposed to be used in this filetype', vim.log.levels.ERROR)
   end
-end
 
-M.init_tests_table = function(test_names)
-  tests = {}
-  for _, val in pairs(test_names) do
-    table.insert(tests, { val, false })
-  end
-end
-
-M.set_test_names_in_buf = function(test_names)
-  local display_names = {}
-  for _, val in pairs(test_names) do
-    table.insert(display_names, '[ ] ' .. val)
-  end
-  api.nvim_buf_set_lines(0, 0, 100, false, display_names)
-end
-
-M.toggle = function()
   vim.bo[0].modifiable = true
 
   local r, _ = unpack(vim.api.nvim_win_get_cursor(0))
   local row_index = r - 1
 
-  local curr_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
+  local curr_toggle_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
 
-  local name = tests[r][1]
-  if curr_value[1] == 'x' then
-    tests[r] = { name, false }
+  local name = self.tests[r][1]
+  if curr_toggle_value[1] == 'x' then
+    self.tests[r] = { name, false }
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { ' ' })
   else
-    tests[r] = { name, true }
+    self.tests[r] = { name, true }
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
   end
 
