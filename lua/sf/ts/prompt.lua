@@ -1,17 +1,15 @@
 local TS = require('sf.ts.ts')
 local M = {}
-local H = {}
+
 local api = vim.api
 local buftype = 'nowrite'
 local filetype = 'sf_test_prompt'
--- local last_selected_tests = nil
 
 ---@class Prompt
 ---@field win number
 ---@field buf number
 ---@field class string
 ---@field tests table
----@field type string
 local Prompt = {}
 
 function Prompt:new()
@@ -90,7 +88,7 @@ function Prompt:use_existing_or_create_win()
 end
 
 function Prompt:toggle()
-  if vim.bo[0].filetype ~= type then
+  if vim.bo[0].filetype ~= filetype then
     return vim.notify('not supposed to be used in this filetype', vim.log.levels.ERROR)
   end
 
@@ -113,53 +111,31 @@ function Prompt:toggle()
   vim.bo[0].modifiable = false
 end
 
-M.get_selected_tests = function()
-  local r = {}
-  for _, v in pairs(tests) do
+function Prompt:get_selected_tests()
+  local selected = {}
+  for _, v in pairs(self.tests) do
     if v[2] then
-      table.insert(r, v[1])
+      table.insert(selected, v[1])
     end
   end
-  return r
+  return selected
 end
 
-M.build_selected_tests_cmd = function()
-  if test_class_name == nil or next(tests) == nil then
+function Prompt:build_selected_tests_cmd()
+  if self.class == nil or next(self.tests) == nil then
     return vim.notify('no test class name or tests', vim.log.levels.ERROR)
   end
 
   local t = ''
-  local selected_test = M.get_selected_tests()
-  for _, test in pairs(selected_test) do
-    t = t .. '-t ' .. test_class_name .. '.' .. test .. ' '
+  local selected = self:get_selected_tests()
+  for _, test in pairs(selected) do
+    t = t .. '-t ' .. self.class .. '.' .. test .. ' '
   end
-  last_selected_tests = selected_test
+
+  api.nvim_win_close(self.win, false)
 
   local cmd = 'sf apex run test ' .. t .. "--result-format human -y "
-  last_selected_tests = cmd
   return cmd
-end
-
-M.get_last_selected_tests = function()
-  if last_selected_tests == nil then
-    return vim.notify('no last selected test', vim.log.levels.ERROR)
-  end
-  return last_selected_tests
-end
-
-------------- helper -----------------------
--- H.removekey = function(table, key)
---    local element = table[key]
---    table[key] = nil
---    return element
--- end
-
-H.is_open_already = function(id)
-  local win_num = vim.fn.win_findbuf(id)
-  if win_num == nil then
-    return false
-  end
-  return true
 end
 
 return Prompt

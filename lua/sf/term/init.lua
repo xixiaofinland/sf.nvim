@@ -5,6 +5,8 @@ local TS = require('sf.ts')
 
 local M = {}
 
+M.lastTests = nil
+
 function M.toggle()
   t:toggle()
 end
@@ -55,12 +57,16 @@ end
 
 function M.runSelectedTests()
   local cmd = TS.build_selected_tests_cmd() .. U.get_target_org()
+  M.lastTests = cmd
   t:run(cmd)
 end
 
 function M.repeatLastTests()
-  local cmd = TS.get_last_selected_tests() .. U.get_target_org()
-  t:run(cmd)
+  if M.lastTests == nil then
+    return vim.notify('no last selected tests?', vim.log.levels.ERROR)
+  end
+
+  t:run(M.lastTests)
 end
 
 function M.run(c)

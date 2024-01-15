@@ -93,6 +93,13 @@ M.get_current_test_method_name = function()
   return nil
 end
 
+M.init_tests_table = function(test_names)
+  tests = {}
+  for _, val in pairs(test_names) do
+    table.insert(tests, { val, false })
+  end
+end
+
 --- ================== Help ========================
 H.build_query = function(query_str)
   local parser = parsers.get_parser()
