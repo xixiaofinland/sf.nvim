@@ -12,7 +12,7 @@ working stable for you.
 
 ## Demostration
 
-https://github.com/xixiaofinland/storage/blob/0d8166e301db2ea11e725838419b5ebea6c8debe/sf_nvim.mp4
+https://github.com/xixiaofinland/sf.nvim/assets/13655323/8f2f0350-acd4-4f30-abec-904b6a3dfd9f
 
 ## Usage
 
