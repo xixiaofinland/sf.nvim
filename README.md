@@ -13,7 +13,7 @@ Offer basic functionalities for Apex to interact with Salesforce org
 At the moment maybe the best way is to take a peek at [my latest
 keybindings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/after/ftplugin/apex.lua)
 
-If the current buff is a Test Apex file, `require("sf.ts").open_test_buf` opens a temp buffer which lists all tests.
+If the current buff is a Test Apex file, `require("sf.ts").open` opens a temp buffer which lists all tests.
 
 In this temp buffer, 
 - use `t` to toggle select/unselect tests
@@ -22,7 +22,7 @@ In this temp buffer,
 `require("sf.term").repeatLastTests` runs the last selected tests
 
 ```
-nmap('<leader>sto', require("sf.ts").open_test_buf, "[T]est [O]pen Buf Select")
+nmap('<leader>sto', require("sf.ts").open, "[T]est [O]pen Buf Select")
 nmap('<leader>str', require("sf.term").repeatLastTests, "[T]est [R]epeat")
 ```
 
