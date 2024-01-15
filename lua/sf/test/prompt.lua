@@ -1,6 +1,4 @@
 local TS = require('sf.ts.ts')
-local M = {}
-
 local api = vim.api
 local buftype = 'nowrite'
 local filetype = 'sf_test_prompt'
