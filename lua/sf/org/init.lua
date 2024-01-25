@@ -201,7 +201,7 @@ end
         local file, type = vim.loop.fs_scandir_next(scanner)
         while file do
             if type == "directory" then
-                local found = M.find_file(path .. "/" .. file, target)
+                local found = H.find_file(path .. "/" .. file, target)
                 if found then
                     return found
                 end
