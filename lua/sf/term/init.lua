@@ -13,12 +13,12 @@ end
 
 function M.saveAndPush()
   vim.api.nvim_command('write')
-  local cmd = vim.fn.expandcmd('sf project deploy start  -d %:p ') .. Org.get()
+  local cmd = vim.fn.expandcmd('sf project deploy start -d %:p ') .. Org.get()
   t:run(cmd)
 end
 
 function M.retrieve()
-  local cmd = vim.fn.expandcmd('sf project retrieve start  -d %:p ') .. Org.get()
+  local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p ') .. Org.get()
   t:run(cmd)
 end
 

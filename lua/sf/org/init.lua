@@ -21,8 +21,12 @@ function M.set()
   H.set()
 end
 
-function M.setGlobal()
-  H.setGlobal()
+function M.set_global()
+  H.set_global()
+end
+
+function M.diff_this()
+  H.diff_this()
 end
 
 ----------------- help --------------------
@@ -59,7 +63,7 @@ H.set = function()
   end)
 end
 
-H.setGlobal = function()
+H.set_global = function()
   if next(H.orgs) == nil then
     api.nvim_err_writeln('No org available.')
   end
@@ -118,6 +122,96 @@ H.fetch = function()
 
   cleanCache()
   fetchAndStoreOrgs()
+end
+
+H.diff_this = function()
+  if H.target_org == '' then
+    return vim.notify('no target org set!', vim.log.levels.ERROR)
+  end
+
+  local file_name = vim.fn.expand("%:t")
+
+  local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
+  local file_name_no_ext = H.get_file_name_without_extension(file_name)
+  local temp_path = vim.fn.tempname()
+
+  local cmd = string.format(
+    "sf project retrieve start -m %s:%s -r %s -o %s --json",
+    metadataType,
+    file_name_no_ext,
+    temp_path,
+    H.target_org
+  )
+
+  vim.notify(cmd, vim.log.levels.INFO)
+
+  vim.fn.jobstart(cmd, {
+    on_exit =
+        function(_, code)
+          if code == 0 then
+            local temp_file = H.find_file(temp_path, file_name)
+            vim.notify('Retrieved! ', vim.log.levels.INFO)
+            vim.cmd("vert diffsplit " .. temp_file)
+          else
+            vim.notify('Retrive failed', vim.log.levels.ERROR)
+          end
+        end,
+  })
+end
+
+H.get_file_name_without_extension = function(fileName)
+  -- (.-) makes the match non-greedy
+  -- see https://www.lua.org/manual/5.3/manual.html#6.4.1
+  return fileName:match("(.-)%.%w+%-meta%.xml$") or fileName:match("(.-)%.[^%.]+$")
+end
+
+H.get_metadata_type = function(filePath)
+  local metadata_type_map = {
+    ["lwc"] = "LightningComponentBundle",
+    ["aura"] = "AuraDefinitionBundle",
+    ["classes"] = "ApexClass",
+    ["triggers"] = "ApexTrigger",
+    ["pages"] = "ApexPage",
+    ["components"] = "ApexComponent",
+    ["flows"] = "Flow",
+    ["objects"] = "CustomObject",
+    ["layouts"] = "Layout",
+    ["permissionsets"] = "PermissionSet",
+    ["profiles"] = "Profile",
+    ["labels"] = "CustomLabels",
+    ["staticresources"] = "StaticResource",
+    ["sites"] = "CustomSite",
+    ["applications"] = "CustomApplication",
+    ["roles"] = "UserRole",
+    ["groups"] = "Group",
+    ["queues"] = "Queue",
+  }
+  for key, metadataType in pairs(metadata_type_map) do
+    if filePath:find(key) then
+      return metadataType
+    end
+  end
+  return nil
+end
+
+ H.find_file = function(path, target)
+    local scanner = vim.loop.fs_scandir(path)
+    -- if scanner is nil, then path is not a valid dir
+    if scanner then
+        local file, type = vim.loop.fs_scandir_next(scanner)
+        while file do
+            if type == "directory" then
+                local found = M.find_file(path .. "/" .. file, target)
+                if found then
+                    return found
+                end
+            elseif file == target then
+                return path .. "/" .. file
+            end
+            -- get the next file and type
+            file, type = vim.loop.fs_scandir_next(scanner)
+        end
+    end
 end
 
 return M
