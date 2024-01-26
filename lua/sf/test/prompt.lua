@@ -17,6 +17,7 @@ function Prompt:new()
     win = nil,
     class = nil,
     tests = nil,
+    test_num = nil,
   }
   return setmetatable(newObj, self)
 end
@@ -33,21 +34,24 @@ function Prompt:open()
   end
 
   local tests = {}
+  local test_num = 0
   for _, name in pairs(test_names) do
     table.insert(tests, { name, false })
+    test_num = test_num + 1
   end
+
+  self.test_num = test_num
+  self.class = class
+  self.tests = tests
 
   local buf = self:use_existing_or_create_buf()
   local win = self:use_existing_or_create_win()
-  api.nvim_win_set_buf(win, buf)
-
-  api.nvim_buf_set_keymap(buf, 'n', 'x', ':lua require("sf.test").toggle()<CR>', { noremap = true })
-  api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.test").run_selected()<CR>', { noremap = true })
-
   self.buf = buf
   self.win = win
-  self.class = class
-  self.tests = tests
+
+  api.nvim_win_set_buf(win, buf)
+  api.nvim_buf_set_keymap(buf, 'n', 'x', ':lua require("sf.test").toggle()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.test").run_selected()<CR>', { noremap = true })
 
   vim.bo[buf].modifiable = true
   self:display_test_names()
@@ -81,7 +85,9 @@ function Prompt:use_existing_or_create_win()
     return self.win
   end
 
-  api.nvim_command('split')
+  local split_win_rows = self.test_num + 2
+  api.nvim_command(split_win_rows .. 'split')
+
   return api.nvim_get_current_win()
 end
 
