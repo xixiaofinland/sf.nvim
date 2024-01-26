@@ -61,6 +61,8 @@ end
 function Prompt:display_test_names()
   api.nvim_set_current_win(self.win)
   local names = {}
+  table.insert(names, '** Hit "x" -> toggle tests; "cc" -> execute in terminal')
+
   for _, val in pairs(self.tests) do
     table.insert(names, '[ ] ' .. val[1])
   end
@@ -85,7 +87,7 @@ function Prompt:use_existing_or_create_win()
     return self.win
   end
 
-  local split_win_rows = self.test_num + 1
+  local split_win_rows = self.test_num + 2
   api.nvim_command(split_win_rows .. 'split')
 
   return api.nvim_get_current_win()
@@ -99,17 +101,24 @@ function Prompt:toggle()
   vim.bo[0].modifiable = true
 
   local r, _ = unpack(vim.api.nvim_win_get_cursor(0))
+  -- 1st row is title
+  if r == 1 then
+    return
+  end
+
   local row_index = r - 1
 
   local curr_toggle_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
 
-  local name = self.tests[r][1]
+  local name = self.tests[row_index][1]
   if curr_toggle_value[1] == 'x' then
-    self.tests[r] = { name, false }
+    self.tests[row_index] = { name, false }
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { ' ' })
   else
-    self.tests[r] = { name, true }
-    api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
+    if curr_toggle_value[1] == ' ' then
+      self.tests[row_index] = { name, true }
+      api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
+    end
   end
 
   vim.bo[0].modifiable = false
