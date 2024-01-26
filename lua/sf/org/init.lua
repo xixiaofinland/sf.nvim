@@ -25,8 +25,12 @@ function M.set_global()
   H.set_global()
 end
 
-function M.diff_this()
-  H.diff_this()
+function M.diff_in_target_org()
+  H.diff_in_target_org()
+end
+
+function M.diff_in()
+  H.diff_in()
 end
 
 ----------------- help --------------------
@@ -124,11 +128,28 @@ H.fetch = function()
   fetchAndStoreOrgs()
 end
 
-H.diff_this = function()
+H.diff_in_target_org = function()
   if H.target_org == '' then
     return vim.notify('no target org set!', vim.log.levels.ERROR)
   end
+  H.diff(H.target_org)
+end
 
+H.diff_in = function()
+  if next(H.orgs) == nil then
+    api.nvim_err_writeln('No org available.')
+  end
+
+  vim.ui.select(H.orgs, {
+    prompt = 'Select org to diff with:'
+  }, function(choice)
+    if choice ~= nil then
+      H.diff(choice)
+    end
+  end)
+end
+
+H.diff = function(org)
   local file_name = vim.fn.expand("%:t")
 
   local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
@@ -140,20 +161,20 @@ H.diff_this = function()
     metadataType,
     file_name_no_ext,
     temp_path,
-    H.target_org
+    org
   )
 
-  vim.notify(cmd, vim.log.levels.INFO)
+  -- vim.notify(cmd, vim.log.levels.INFO)
 
   vim.fn.jobstart(cmd, {
     on_exit =
         function(_, code)
           if code == 0 then
             local temp_file = H.find_file(temp_path, file_name)
-            vim.notify('Retrieved! ', vim.log.levels.INFO)
+            vim.notify('Retrive success: ' .. org, vim.log.levels.INFO)
             vim.cmd("vert diffsplit " .. temp_file)
           else
-            vim.notify('Retrive failed', vim.log.levels.ERROR)
+            vim.notify('Retrive failed: ' .. org, vim.log.levels.ERROR)
           end
         end,
   })
