@@ -85,7 +85,7 @@ function Prompt:use_existing_or_create_win()
     return self.win
   end
 
-  local split_win_rows = self.test_num + 2
+  local split_win_rows = self.test_num + 1
   api.nvim_command(split_win_rows .. 'split')
 
   return api.nvim_get_current_win()
