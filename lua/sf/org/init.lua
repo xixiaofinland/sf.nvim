@@ -165,28 +165,29 @@ H.get_file_name_without_extension = function(fileName)
   return fileName:match("(.-)%.%w+%-meta%.xml$") or fileName:match("(.-)%.[^%.]+$")
 end
 
+H.metadata_types = {
+  ["lwc"] = "LightningComponentBundle",
+  ["aura"] = "AuraDefinitionBundle",
+  ["classes"] = "ApexClass",
+  ["triggers"] = "ApexTrigger",
+  ["pages"] = "ApexPage",
+  ["components"] = "ApexComponent",
+  ["flows"] = "Flow",
+  ["objects"] = "CustomObject",
+  ["layouts"] = "Layout",
+  ["permissionsets"] = "PermissionSet",
+  ["profiles"] = "Profile",
+  ["labels"] = "CustomLabels",
+  ["staticresources"] = "StaticResource",
+  ["sites"] = "CustomSite",
+  ["applications"] = "CustomApplication",
+  ["roles"] = "UserRole",
+  ["groups"] = "Group",
+  ["queues"] = "Queue",
+}
+
 H.get_metadata_type = function(filePath)
-  local metadata_type_map = {
-    ["lwc"] = "LightningComponentBundle",
-    ["aura"] = "AuraDefinitionBundle",
-    ["classes"] = "ApexClass",
-    ["triggers"] = "ApexTrigger",
-    ["pages"] = "ApexPage",
-    ["components"] = "ApexComponent",
-    ["flows"] = "Flow",
-    ["objects"] = "CustomObject",
-    ["layouts"] = "Layout",
-    ["permissionsets"] = "PermissionSet",
-    ["profiles"] = "Profile",
-    ["labels"] = "CustomLabels",
-    ["staticresources"] = "StaticResource",
-    ["sites"] = "CustomSite",
-    ["applications"] = "CustomApplication",
-    ["roles"] = "UserRole",
-    ["groups"] = "Group",
-    ["queues"] = "Queue",
-  }
-  for key, metadataType in pairs(metadata_type_map) do
+  for key, metadataType in pairs(H.metadata_types) do
     if filePath:find(key) then
       return metadataType
     end
@@ -194,24 +195,24 @@ H.get_metadata_type = function(filePath)
   return nil
 end
 
- H.find_file = function(path, target)
-    local scanner = vim.loop.fs_scandir(path)
-    -- if scanner is nil, then path is not a valid dir
-    if scanner then
-        local file, type = vim.loop.fs_scandir_next(scanner)
-        while file do
-            if type == "directory" then
-                local found = H.find_file(path .. "/" .. file, target)
-                if found then
-                    return found
-                end
-            elseif file == target then
-                return path .. "/" .. file
-            end
-            -- get the next file and type
-            file, type = vim.loop.fs_scandir_next(scanner)
+H.find_file = function(path, target)
+  local scanner = vim.loop.fs_scandir(path)
+  -- if scanner is nil, then path is not a valid dir
+  if scanner then
+    local file, type = vim.loop.fs_scandir_next(scanner)
+    while file do
+      if type == "directory" then
+        local found = H.find_file(path .. "/" .. file, target)
+        if found then
+          return found
         end
+      elseif file == target then
+        return path .. "/" .. file
+      end
+      -- get the next file and type
+      file, type = vim.loop.fs_scandir_next(scanner)
     end
+  end
 end
 
 return M
