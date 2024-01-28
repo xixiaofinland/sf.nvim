@@ -149,7 +149,7 @@ function Term:create_term()
     clear_env = self.config.clear_env,
     env = self.config.env,
     on_stdout = self.config.on_stdout,
-    on_stderr = self.config.on_stderr,
+    -- on_stderr = self.config.on_stderr,
     on_exit = function(...)
       self:handle_exit(...)
     end,
