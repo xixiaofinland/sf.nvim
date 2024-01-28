@@ -11,6 +11,10 @@ function M.toggle()
   t:toggle()
 end
 
+function M.open()
+  t:open()
+end
+
 function M.saveAndPush()
   vim.api.nvim_command('write')
   local cmd = vim.fn.expandcmd('sf project deploy start -d %:p ') .. Org.get()

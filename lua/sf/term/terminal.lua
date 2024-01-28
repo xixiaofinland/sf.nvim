@@ -281,6 +281,12 @@ H.defaults = {
     x = 0.5,
     y = 0.9,
   },
+  on_stdout = function()
+    require("sf.term").open()
+  end,
+  -- on_stderr = function()
+  --   vim.notify('hello stderr', vim.log.levels.ERROR)
+  -- end,
 }
 
 ---Create terminal dimension relative to the viewport
