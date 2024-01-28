@@ -88,9 +88,7 @@ function Term:use_existing_or_create_buf()
   end
 
   local buf = api.nvim_create_buf(false, true)
-
-  -- this ensures filetype is set to SFterm on first run
-  api.nvim_buf_set_option(buf, 'filetype', self.config.ft)
+  vim.bo[buf].filetype = self.config.ft
 
   return buf
 end
@@ -106,6 +104,8 @@ function Term:create_and_open_win(buf)
     border = cfg.border,
     relative = 'editor',
     style = 'minimal',
+    title = 'SFTerm',
+    title_pos = 'center',
     width = dim.width,
     height = dim.height,
     col = dim.col,
@@ -273,7 +273,7 @@ H.defaults = {
   border = 'single',
   auto_close = true,
   hl = 'Normal',
-  blend = 0,
+  blend = 10,
   clear_env = false,
   dimensions = {
     height = 0.4,
