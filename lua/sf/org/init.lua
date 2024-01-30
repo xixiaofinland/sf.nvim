@@ -288,6 +288,7 @@ H.get_md_from_target_org = function()
 
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
+    -- TODO: handle error case
     on_stdout =
         function(_, data)
           vim.notify('md retrieved!', vim.log.levels.INFO)
