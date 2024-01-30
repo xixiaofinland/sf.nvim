@@ -1,3 +1,5 @@
+local U = require('sf.util');
+local T = require('sf.org.tele');
 local H = {}
 local M = {}
 
@@ -31,6 +33,14 @@ end
 
 function M.diff_in()
   H.diff_in()
+end
+
+function M.apex_in_target_org()
+  H.apex_in_target_org()
+end
+
+function M.get_md_from_target_org()
+  H.get_md_from_target_org()
 end
 
 ----------------- help --------------------
@@ -234,6 +244,55 @@ H.find_file = function(path, target)
       file, type = vim.loop.fs_scandir_next(scanner)
     end
   end
+end
+
+H.apex_in_target_org = function()
+  if H.target_org == '' then
+    return vim.notify('no target org set!', vim.log.levels.ERROR)
+  end
+
+  if U.get_sf_root() == nil then
+    return vim.notify('file not in a sf project folder!', vim.log.levels.ERROR)
+  end
+
+  local md_path = U.get_sf_root() .. '/.metadata_' .. H.target_org
+
+  if vim.fn.filereadable(md_path) == 0 then
+    return vim.notify('metadata file not exist in ".md" folder. Pull first?', vim.log.levels.ERROR)
+  end
+
+  local metadata = vim.fn.readfile(md_path)
+  local metadata_tbl = vim.json.decode(table.concat(metadata), {})
+
+  local unmanaged = {}
+  for _, v in ipairs(metadata_tbl) do
+    if v["manageableState"] == 'unmanaged' then
+      table.insert(unmanaged, v)
+    end
+  end
+
+  T.pick_metadata(unmanaged, {})
+end
+
+H.get_md_from_target_org = function()
+  if H.target_org == '' then
+    return vim.notify('no target org set!', vim.log.levels.ERROR)
+  end
+
+  if U.get_sf_root() == nil then
+    return vim.notify('file not in a sf project folder!', vim.log.levels.ERROR)
+  end
+
+  local md_path = U.get_sf_root() .. '/.metadata_' .. H.target_org
+  local cmd = string.format("sf org list metadata -m ApexClass -o %s -f %s", H.target_org, md_path)
+
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout =
+        function(_, data)
+          vim.notify('md retrieved!', vim.log.levels.INFO)
+        end
+  })
 end
 
 return M
