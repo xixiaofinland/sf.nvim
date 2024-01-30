@@ -10,9 +10,19 @@ local U = require('sf.util');
 function t()
   local tbl = vim.split('aa:b::c:d:::e:f:g::', ':' )
   for i, value in ipairs(tbl) do
-    print(value)
+    -- print(value)
   end
+  local s = table.concat(tbl)
+  print(s)
 end
+
+function a()
+  local tbl = vim.fn.readfile(U.get_sf_root()..'/.a', '')
+  local s = table.concat(tbl)
+  local tt = vim.json.decode(s, {})[1]
+  P(tt)
+end
+
 
 -- our picker function: colors
 local colors = function(opts)
@@ -50,4 +60,4 @@ local colors = function(opts)
 end
 -- to execute the function
 -- colors(require("telescope.themes").get_dropdown {})
-t()
+a()
