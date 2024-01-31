@@ -2,6 +2,7 @@ local Term = require "sf.term.terminal"
 local t = Term:new()
 local Org = require "sf.org"
 local Ts = require('sf.ts')
+local U = require('sf.util')
 
 local M = {}
 
@@ -53,6 +54,11 @@ end
 
 function M.cancel()
   t:run('\3')
+end
+
+function M.go_to_sf_root()
+  local root = U.get_sf_root()
+  t:run('cd ' .. root)
 end
 
 function M.scrollToEnd()
