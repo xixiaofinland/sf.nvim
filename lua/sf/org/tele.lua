@@ -4,28 +4,7 @@ local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
--- local U = require('sf.util');
 local M = {};
-
-
--- function t()
---   local tbl = vim.split('aa:b::c:d:::e:f:g::', ':' )
---   for i, value in ipairs(tbl) do
---     -- print(value)
---   end
---   local s = table.concat(tbl)
---   print(s)
--- end
---
--- function a()
---   local tbl = vim.fn.readfile('./.a', '')
---   -- local tbl = vim.fn.readfile(U.get_sf_root()..'/.a', '')
---   local s = table.concat(tbl)
---   local tt = vim.json.decode(s, {})[1]
---   P(tt["manageableState"])
--- end
--- a()
-
 
 M.pick_metadata = function(source, opts)
   opts = opts or {}
