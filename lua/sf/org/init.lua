@@ -118,6 +118,8 @@ H.store_orgs = function(data)
     end
     table.insert(H.orgs, v.alias)
   end
+
+  U.is_table_empty(H.orgs)
 end
 
 H.fetch_and_store_orgs = function()
