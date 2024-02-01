@@ -34,6 +34,7 @@ function M.run_current_test()
   U.is_empty(test_name)
 
   local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name, Org.get())
+  Term.lastTests = cmd
   t:run(cmd)
 end
 

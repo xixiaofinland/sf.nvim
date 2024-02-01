@@ -1,7 +1,6 @@
-local Prompt = require('sf.test.prompt')
 local Org = require('sf.org')
 local Term = require('sf.term')
-local p = Prompt:new()
+local p = require('sf.test.prompt'):new()
 local M = {}
 
 M.open = function()
