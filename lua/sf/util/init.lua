@@ -10,7 +10,7 @@ M.get_sf_root = function()
   })[1])
 
   if root == nil then
-    error('File not in a sf project folder!')
+    error('*File not in a sf project folder*')
   end
 
   return root
@@ -18,19 +18,19 @@ end
 
 M.is_sf_cmd_installed = function()
   if vim.fn.executable('sf') ~= 1 then
-    error('sf cli is not installed!')
+    error('*SF cli not found*')
   end
 end
 
 M.is_table_empty = function(tbl)
   if next(tbl) == nil then
-    error('table is empty')
+    error('*Empty table*')
   end
 end
 
 M.is_empty = function(t)
   if t == '' or t == nil then
-    error('Empty value')
+    error('*Empty value*')
   end
 end
 
