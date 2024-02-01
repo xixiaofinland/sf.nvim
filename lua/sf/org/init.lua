@@ -1,5 +1,5 @@
 local U = require('sf.util');
-local T = require('sf.org.tele');
+-- local T = require('sf.term');
 local H = {}
 local M = {}
 
@@ -15,51 +15,59 @@ function M.get_target_org()
   return H.target_org
 end
 
-function M.fetch()
-  H.fetch()
+function M.fetch_org_list()
+  H.fetch_org_list()
 end
 
-function M.set()
-  H.set()
+function M.set_target_org()
+  H.set_target_org()
 end
 
-function M.set_global()
-  H.set_global()
+function M.set_global_target_org()
+  H.set_global_target_org()
 end
 
 function M.diff_in_target_org()
   H.diff_in_target_org()
 end
 
-function M.diff_in()
-  H.diff_in()
+function M.select_org_to_diff_in()
+  H.select_org_to_diff_in()
 end
 
-function M.apex_in_target_org()
-  H.apex_in_target_org()
+function M.select_apex_to_retrieve()
+  H.select_apex_to_retrieve()
 end
 
-function M.get_md_from_target_org()
-  H.get_md_from_target_org()
+function M.retrieve_metadata_list()
+  H.retrieve_metadata_list()
 end
 
------------------ help --------------------
+function M.retrieve_apex_under_cursor()
+  H.retrieve_apex_under_cursor()
+end
+
+----------------- Helper --------------------
+
+local pickers = require "telescope.pickers"
+local finders = require "telescope.finders"
+local conf = require("telescope.config").values
+local actions = require "telescope.actions"
+local action_state = require "telescope.actions.state"
 
 H.orgs = {}
 H.target_org = ''
 local api = vim.api
 
-local cleanCache = function()
+H.clean_org_cache = function()
   H.orgs = {}
 end
 
-H.set = function()
-  if next(H.orgs) == nil then
-    api.nvim_err_writeln('No org available.')
-  end
+H.set_target_org = function()
+  U.is_table_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
-    prompt = 'Select for local:'
+    prompt = 'Select for local target_org:'
   }, function(choice)
     if choice ~= nil then
       vim.fn.jobstart('sf config set target-org ' .. choice, {
@@ -67,7 +75,6 @@ H.set = function()
             function(_, code)
               if code == 0 then
                 H.target_org = choice
-                -- vim.notify('target_org set', vim.log.levels.INFO)
               else
                 api.nvim_err_writeln(choice .. ' - set target_org failed! Not in a sfdx project folder?')
               end
@@ -77,13 +84,11 @@ H.set = function()
   end)
 end
 
-H.set_global = function()
-  if next(H.orgs) == nil then
-    api.nvim_err_writeln('No org available.')
-  end
+H.set_global_target_org = function()
+  U.is_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
-    prompt = 'Select for Global:'
+    prompt = 'Select for Global target_org:'
   }, function(choice)
     if choice ~= nil then
       vim.fn.jobstart('sf config set target-org --global ' .. choice, {
@@ -93,7 +98,7 @@ H.set_global = function()
                 H.target_org = choice
                 print('Global target_org set')
               else
-                api.nvim_err_writeln(' Global set target_org [' .. choice .. '] failed!')
+                api.nvim_err_writeln('Global set target_org [' .. choice .. '] failed!')
               end
             end,
       })
@@ -101,65 +106,58 @@ H.set_global = function()
   end)
 end
 
-local storeOrgs = function(data)
+H.store_orgs = function(data)
   local s = ""
   for _, v in ipairs(data) do
     s = s .. v;
   end
 
-  local orgData = vim.json.decode(s, {}).result.nonScratchOrgs
+  local org_data = vim.json.decode(s, {}).result.nonScratchOrgs
 
-  for _, v in pairs(orgData) do
+  for _, v in pairs(org_data) do
     if v.isDefaultUsername == true then
       H.target_org = v.alias
-      -- vim.notify('target_org set', vim.log.levels.INFO)
     end
     table.insert(H.orgs, v.alias)
   end
 end
 
-local fetchAndStoreOrgs = function()
+H.fetch_and_store_orgs = function()
   vim.fn.jobstart('sf org list --json', {
     stdout_buffered = true,
     on_stdout =
         function(_, data)
-          storeOrgs(data)
+          H.store_orgs(data)
         end
   })
 end
 
-H.fetch = function()
-  if vim.fn.executable('sf') ~= 1 then
-    api.nvim_err_writeln('sf cli command is not installed!')
-    return
-  end
+H.fetch_org_list = function()
+  U.is_sf_cmd_installed()
 
-  cleanCache()
-  fetchAndStoreOrgs()
+  H.clean_org_cache()
+  H.fetch_and_store_orgs()
 end
 
 H.diff_in_target_org = function()
-  if H.target_org == '' then
-    return vim.notify('no target org set!', vim.log.levels.ERROR)
-  end
-  H.diff(H.target_org)
+  U.is_empty(H.target_org)
+
+  H.diff_in(H.target_org)
 end
 
-H.diff_in = function()
-  if next(H.orgs) == nil then
-    api.nvim_err_writeln('No org available.')
-  end
+H.select_org_to_diff_in = function()
+  U.is_table_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
-    prompt = 'Select org to diff with:'
+    prompt = 'Select org to diff in:'
   }, function(choice)
     if choice ~= nil then
-      H.diff(choice)
+      H.diff_in(choice)
     end
   end)
 end
 
-H.diff = function(org)
+H.diff_in = function(org)
   local file_name = vim.fn.expand("%:t")
 
   local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
@@ -173,8 +171,6 @@ H.diff = function(org)
     temp_path,
     org
   )
-
-  -- vim.notify(cmd, vim.log.levels.INFO)
 
   vim.fn.jobstart(cmd, {
     on_exit =
@@ -246,7 +242,7 @@ H.find_file = function(path, target)
   end
 end
 
-H.apex_in_target_org = function()
+H.select_apex_to_retrieve = function()
   if H.target_org == '' then
     return vim.notify('no target org set!', vim.log.levels.ERROR)
   end
@@ -271,29 +267,67 @@ H.apex_in_target_org = function()
     end
   end
 
-  T.pick_metadata(unmanaged, {})
+  H.pick_metadata(unmanaged, {})
 end
 
-H.get_md_from_target_org = function()
-  if H.target_org == '' then
-    return vim.notify('no target org set!', vim.log.levels.ERROR)
-  end
+H.pick_metadata = function(source, opts)
+  opts = opts or {}
+  pickers.new({}, {
+    prompt_title = "metadata",
 
-  if U.get_sf_root() == nil then
-    return vim.notify('file not in a sf project folder!', vim.log.levels.ERROR)
-  end
+    finder = finders.new_table {
+      results = source,
+      entry_maker = function(entry)
+        return {
+          value = entry,
+          display = entry["fullName"],
+          ordinal = entry["fullName"],
+        }
+      end
+    },
 
-  local md_path = U.get_sf_root() .. '/.metadata_' .. H.target_org
-  local cmd = string.format("sf org list metadata -m ApexClass -o %s -f %s", H.target_org, md_path)
+    sorter = conf.generic_sorter(opts),
+
+    attach_mappings = function(prompt_bufnr, map)
+      actions.select_default:replace(function()
+        actions.close(prompt_bufnr)
+        local md_name = action_state.get_selected_entry().display
+
+        vim.cmd('require("sf.org").get_apex_from_target_org("' .. md_name .. '")')
+      end)
+      return true
+    end,
+  }):find()
+end
+
+H.retrieve_metadata_list = function()
+  U.is_empty(H.target_org)
+  local root = U.get_sf_root()
+
+  local md_file_path = root .. '/.metadata_' .. H.target_org
+  local cmd = string.format("sf org list metadata -m ApexClass -o %s -f %s", H.target_org, md_file_path)
 
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
     -- TODO: handle error case
     on_stdout =
         function(_, data)
-          vim.notify('md retrieved!', vim.log.levels.INFO)
+          vim.notify('metadata retrieved => ' .. md_file_path, vim.log.levels.INFO)
         end
   })
 end
+
+-- H.retrieve_apex = function(apex_name)
+--   if H.target_org == '' then
+--     return vim.notify('no target org set!', vim.log.levels.ERROR)
+--   end
+--
+--   if U.get_sf_root() == nil then
+--     return vim.notify('file not in a sf project folder!', vim.log.levels.ERROR)
+--   end
+--
+--   local cmd = string.format("sf project retrieve start -m ApexClass:%s -o %s", apex_name, H.target_org)
+--   T.run(cmd)
+-- end
 
 return M
