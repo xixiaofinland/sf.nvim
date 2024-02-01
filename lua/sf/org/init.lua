@@ -65,7 +65,7 @@ H.set_target_org = function()
   U.is_table_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
-    prompt = 'Select for local target_org:'
+    prompt = 'Local target_org:'
   }, function(choice)
     if choice ~= nil then
       vim.fn.jobstart('sf config set target-org ' .. choice, {
@@ -86,7 +86,7 @@ H.set_global_target_org = function()
   U.is_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
-    prompt = 'Select for Global target_org:'
+    prompt = 'Global target_org:'
   }, function(choice)
     if choice ~= nil then
       vim.fn.jobstart('sf config set target-org --global ' .. choice, {
@@ -94,9 +94,9 @@ H.set_global_target_org = function()
             function(_, code)
               if code == 0 then
                 H.target_org = choice
-                print('Global target_org set')
+                vim.notify('Global target_org set', vim.log.levels.INFO)
               else
-                api.nvim_err_writeln('Global set target_org [' .. choice .. '] failed!')
+                vim.notify('Global set target_org [' .. choice .. '] failed!', vim.log.levels.ERROR)
               end
             end,
       })
@@ -177,8 +177,8 @@ H.diff_in = function(org)
         function(_, code)
           if code == 0 then
             local temp_file = H.find_file(temp_path, file_name)
-            vim.notify('Retrive success: ' .. org, vim.log.levels.INFO)
             vim.cmd("vert diffsplit " .. temp_file)
+            vim.notify('Retrive success: ' .. org, vim.log.levels.INFO)
           else
             vim.notify('Retrive failed: ' .. org, vim.log.levels.ERROR)
           end
@@ -287,6 +287,7 @@ H.pick_metadata = function(source, opts)
         actions.close(prompt_bufnr)
         local md_name = action_state.get_selected_entry().display
 
+        -- retrieve apex from target_org
         vim.cmd('require("sf.org").get_apex_from_target_org("' .. md_name .. '")')
       end)
       return true
@@ -294,34 +295,28 @@ H.pick_metadata = function(source, opts)
   }):find()
 end
 
+H.retrieve_apex = function(apex_name)
+  U.is_empty(H.target_org)
+  U.get_sf_root()
+
+  local cmd = string.format('sf project retrieve start -m ApexClass:%s -o %s', apex_name, H.target_org)
+  local msg = 'metadata retrieved => ' .. apex_name;
+  local err_msg = 'metadata retrieve failed => ' .. apex_name;
+
+  U.job_call(cmd, msg, err_msg);
+end
+
 H.retrieve_metadata_list = function()
   U.is_empty(H.target_org)
   local root = U.get_sf_root()
 
   local md_file_path = root .. '/.metadata_' .. H.target_org
-  local cmd = string.format("sf org list metadata -m ApexClass -o %s -f %s", H.target_org, md_file_path)
 
-  vim.fn.jobstart(cmd, {
-    stdout_buffered = true,
-    -- TODO: handle error case
-    on_stdout =
-        function(_, data)
-          vim.notify('metadata retrieved => ' .. md_file_path, vim.log.levels.INFO)
-        end
-  })
+  local cmd = string.format('sf org list metadata -m ApexClass -o %s -f %s', H.target_org, md_file_path)
+  local msg = 'metadata_file retrieved => ' .. md_file_path;
+  local err_msg = 'metadata_list retrieve failed => ' .. md_file_path;
+
+  U.job_call(cmd, msg, err_msg);
 end
-
--- H.retrieve_apex = function(apex_name)
---   if H.target_org == '' then
---     return vim.notify('no target org set!', vim.log.levels.ERROR)
---   end
---
---   if U.get_sf_root() == nil then
---     return vim.notify('file not in a sf project folder!', vim.log.levels.ERROR)
---   end
---
---   local cmd = string.format("sf project retrieve start -m ApexClass:%s -o %s", apex_name, H.target_org)
---   T.run(cmd)
--- end
 
 return M

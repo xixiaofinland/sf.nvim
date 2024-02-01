@@ -34,4 +34,18 @@ M.is_empty = function(t)
   end
 end
 
+M.job_call = function(cmd, msg, err_msg)
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_exit =
+        function(_, code)
+          if code == 0 and msg ~= nil then
+            vim.notify(msg, vim.log.levels.INFO)
+          elseif code ~= 0 and err_msg ~= nil then
+            vim.notify(err_msg, vim.log.levels.ERROR)
+          end
+        end,
+  })
+end
+
 return M
