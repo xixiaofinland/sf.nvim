@@ -241,21 +241,15 @@ H.find_file = function(path, target)
 end
 
 H.select_apex_to_retrieve = function()
-  if H.target_org == '' then
-    return vim.notify('no target org set!', vim.log.levels.ERROR)
+  U.is_empty(H.target_org)
+  local root = U.get_sf_root()
+
+  local metadata_file = root .. '/.metadata_' .. H.target_org
+  if vim.fn.filereadable(metadata_file) == 0 then
+    return vim.notify('metadata file not exist: ' .. metadata_file, vim.log.levels.ERROR)
   end
 
-  if U.get_sf_root() == nil then
-    return vim.notify('file not in a sf project folder!', vim.log.levels.ERROR)
-  end
-
-  local md_path = U.get_sf_root() .. '/.metadata_' .. H.target_org
-
-  if vim.fn.filereadable(md_path) == 0 then
-    return vim.notify('metadata file not exist in ".md" folder. Pull first?', vim.log.levels.ERROR)
-  end
-
-  local metadata = vim.fn.readfile(md_path)
+  local metadata = vim.fn.readfile(metadata_file)
   local metadata_tbl = vim.json.decode(table.concat(metadata), {})
 
   local unmanaged = {}
