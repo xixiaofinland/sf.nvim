@@ -1,5 +1,7 @@
 local U = require('sf.util');
 local S = require('sf');
+local T = require('sf.term')
+
 local H = {}
 local M = {}
 
@@ -295,10 +297,7 @@ H.retrieve_apex = function(apex_name)
   U.get_sf_root()
 
   local cmd = string.format('sf project retrieve start -m ApexClass:%s -o %s', apex_name, S.target_org)
-  local msg = 'metadata retrieved => ' .. apex_name;
-  local err_msg = 'metadata retrieve failed => ' .. apex_name;
-
-  U.job_call(cmd, msg, err_msg);
+  T.run(cmd)
 end
 
 H.retrieve_metadata_list = function()
