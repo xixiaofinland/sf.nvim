@@ -1,17 +1,7 @@
 local U = require('sf.util');
--- local T = require('sf.term');
+local S = require('sf');
 local H = {}
 local M = {}
-
-function M.get()
-  U.is_empty(H.target_org)
-
-  return H.target_org
-end
-
-function M.get_target_org()
-  return H.target_org
-end
 
 function M.fetch_org_list()
   H.fetch_org_list()
@@ -54,7 +44,6 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
 H.orgs = {}
-H.target_org = ''
 local api = vim.api
 
 H.clean_org_cache = function()
@@ -72,7 +61,7 @@ H.set_target_org = function()
         on_exit =
             function(_, code)
               if code == 0 then
-                H.target_org = choice
+                S.target_org = choice
               else
                 api.nvim_err_writeln(choice .. ' - set target_org failed! Not in a sfdx project folder?')
               end
@@ -93,7 +82,7 @@ H.set_global_target_org = function()
         on_exit =
             function(_, code)
               if code == 0 then
-                H.target_org = choice
+                S.target_org = choice
                 vim.notify('Global target_org set', vim.log.levels.INFO)
               else
                 vim.notify('Global set target_org [' .. choice .. '] failed!', vim.log.levels.ERROR)
@@ -114,7 +103,7 @@ H.store_orgs = function(data)
 
   for _, v in pairs(org_data) do
     if v.isDefaultUsername == true then
-      H.target_org = v.alias
+      S.target_org = v.alias
     end
     table.insert(H.orgs, v.alias)
   end
@@ -140,9 +129,9 @@ H.fetch_org_list = function()
 end
 
 H.diff_in_target_org = function()
-  U.is_empty(H.target_org)
+  U.is_empty(S.target_org)
 
-  H.diff_in(H.target_org)
+  H.diff_in(S.target_org)
 end
 
 H.select_org_to_diff_in = function()
@@ -243,10 +232,10 @@ H.find_file = function(path, target)
 end
 
 H.select_apex_to_retrieve = function()
-  U.is_empty(H.target_org)
+  U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  local metadata_file = root .. '/.metadata_' .. H.target_org
+  local metadata_file = root .. '/.metadata_' .. S.target_org
   if vim.fn.filereadable(metadata_file) == 0 then
     return vim.notify('metadata file not exist: ' .. metadata_file, vim.log.levels.ERROR)
   end
@@ -267,7 +256,7 @@ end
 H.pick_metadata = function(source, opts)
   opts = opts or {}
   pickers.new({}, {
-    prompt_title = "metadata",
+    prompt_title = 'Org: ' .. S.target_org,
 
     finder = finders.new_table {
       results = source,
@@ -284,22 +273,28 @@ H.pick_metadata = function(source, opts)
 
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(function()
+
         actions.close(prompt_bufnr)
         local md_name = action_state.get_selected_entry().display
 
-        -- retrieve apex from target_org
-        vim.cmd('require("sf.org").get_apex_from_target_org("' .. md_name .. '")')
+        H.retrieve_apex(md_name)
       end)
       return true
     end,
   }):find()
 end
 
+H.retrieve_apex_under_cursor = function()
+  local current_word = vim.fn.expand('<cword>')
+  print(current_word)
+  H.retrieve_apex(current_word)
+end
+
 H.retrieve_apex = function(apex_name)
-  U.is_empty(H.target_org)
+  U.is_empty(S.target_org)
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m ApexClass:%s -o %s', apex_name, H.target_org)
+  local cmd = string.format('sf project retrieve start -m ApexClass:%s -o %s', apex_name, S.target_org)
   local msg = 'metadata retrieved => ' .. apex_name;
   local err_msg = 'metadata retrieve failed => ' .. apex_name;
 
@@ -307,12 +302,12 @@ H.retrieve_apex = function(apex_name)
 end
 
 H.retrieve_metadata_list = function()
-  U.is_empty(H.target_org)
+  U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  local md_file_path = root .. '/.metadata_' .. H.target_org
+  local md_file_path = root .. '/.metadata_' .. S.target_org
 
-  local cmd = string.format('sf org list metadata -m ApexClass -o %s -f %s', H.target_org, md_file_path)
+  local cmd = string.format('sf org list metadata -m ApexClass -o %s -f %s', S.target_org, md_file_path)
   local msg = 'metadata_file retrieved => ' .. md_file_path;
   local err_msg = 'metadata_list retrieve failed => ' .. md_file_path;
 

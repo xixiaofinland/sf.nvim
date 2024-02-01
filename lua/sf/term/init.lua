@@ -1,11 +1,9 @@
-local Term = require "sf.term.terminal"
-local Org = require "sf.org"
+local S = require('sf')
 local TS = require('sf.ts')
 local U = require('sf.util')
-local M = {}
-local t = Term:new()
+local t = require('sf.term.terminal'):new()
 
-M.lastTests = nil
+local M = {}
 
 function M.toggle()
   t:toggle()
@@ -17,12 +15,12 @@ end
 
 function M.save_and_push()
   vim.api.nvim_command('write')
-  local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. Org.get()
+  local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. S.get()
   t:run(cmd)
 end
 
 function M.retrieve()
-  local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. Org.get()
+  local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. S.get()
   t:run(cmd)
 end
 
@@ -33,8 +31,8 @@ function M.run_current_test()
   local test_name = TS.get_current_test_method_name()
   U.is_empty(test_name)
 
-  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name, Org.get())
-  Term.lastTests = cmd
+  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name, S.get())
+  S.last_tests = cmd
   t:run(cmd)
 end
 
@@ -42,7 +40,7 @@ function M.run_all_tests_in_this_file()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
 
-  local cmd = string.format("sf apex run test --class-names %s --result-format human -y %s -o %s", test_class_name, Org.get())
+  local cmd = string.format("sf apex run test --class-names %s --result-format human -y %s -o %s", test_class_name, S.get())
   t:run(cmd)
 end
 
@@ -56,9 +54,9 @@ function M.go_to_sf_root()
 end
 
 function M.repeat_last_tests()
-  U.is_empty(M.lastTests)
+  U.is_empty(S.last_tests)
 
-  t:run(M.lastTests)
+  t:run(S.last_tests)
 end
 
 function M.run(c)

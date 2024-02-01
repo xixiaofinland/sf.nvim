@@ -35,6 +35,8 @@ M.is_empty = function(t)
 end
 
 M.job_call = function(cmd, msg, err_msg)
+  vim.notify(cmd, vim.log.levels.INFO)
+
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
     on_exit =
