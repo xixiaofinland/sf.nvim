@@ -13,7 +13,7 @@ M.toggle = function()
 end
 
 M.run_selected = function()
-  local cmd = p:build_selected_tests_cmd() .. Org.get()
+  local cmd = p:build_selected_tests_cmd() .. ' -o ' .. Org.get()
   p:close()
   Term.run(cmd)
   Term.lastTests = cmd

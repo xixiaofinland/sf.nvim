@@ -1,10 +1,9 @@
 local Term = require "sf.term.terminal"
-local t = Term:new()
 local Org = require "sf.org"
-local Ts = require('sf.ts')
+local TS = require('sf.ts')
 local U = require('sf.util')
-
 local M = {}
+local t = Term:new()
 
 M.lastTests = nil
 
@@ -16,39 +15,33 @@ function M.open()
   t:open()
 end
 
-function M.saveAndPush()
+function M.save_and_push()
   vim.api.nvim_command('write')
-  local cmd = vim.fn.expandcmd('sf project deploy start -d %:p ') .. Org.get()
+  local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. Org.get()
   t:run(cmd)
 end
 
 function M.retrieve()
-  local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p ') .. Org.get()
+  local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. Org.get()
   t:run(cmd)
 end
 
-function M.runCurrentTest()
-  local test_class_name = Ts.get_test_class_name()
-  if test_class_name == nil then
-    return vim.notify('Not in a test class', vim.log.levels.ERROR)
-  end
+function M.run_current_test()
+  local test_class_name = TS.get_test_class_name()
+  U.is_empty(test_class_name)
 
-  local test_name = Ts.get_current_test_method_name()
-  if test_name == nil then
-    return vim.notify('Not in a test method', vim.log.levels.ERROR)
-  end
+  local test_name = TS.get_current_test_method_name()
+  U.is_empty(test_name)
 
-  local cmd = "sf apex run test --tests " .. test_class_name .. "." .. test_name .. " --result-format human -y " .. Org.get()
+  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name, Org.get())
   t:run(cmd)
 end
 
-function M.runAllTestsInCurrentFile()
-  local test_class_name = Ts.get_test_class_name()
-  if test_class_name == nil then
-    return vim.notify('Not in a test class', vim.log.levels.ERROR)
-  end
+function M.run_all_tests_in_this_file()
+  local test_class_name = TS.get_test_class_name()
+  U.is_empty(test_class_name)
 
-  local cmd = "sf apex run test --class-names " .. test_class_name .. " --result-format human -y " .. Org.get()
+  local cmd = string.format("sf apex run test --class-names %s --result-format human -y %s -o %s", test_class_name, Org.get())
   t:run(cmd)
 end
 
@@ -61,14 +54,8 @@ function M.go_to_sf_root()
   t:run('cd ' .. root)
 end
 
-function M.scrollToEnd()
-  t:run(vim.cmd('$'))
-end
-
-function M.repeatLastTests()
-  if M.lastTests == nil then
-    return vim.notify('no last selected tests?', vim.log.levels.ERROR)
-  end
+function M.repeat_last_tests()
+  U.is_empty(M.lastTests)
 
   t:run(M.lastTests)
 end
@@ -77,5 +64,9 @@ function M.run(c)
   local cmd = vim.fn.expandcmd(c)
   t:run(cmd)
 end
+
+-- function M.scrollToEnd()
+--   t:run(vim.cmd('$'))
+-- end
 
 return M

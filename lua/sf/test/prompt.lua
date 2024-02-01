@@ -145,7 +145,7 @@ function Prompt:build_selected_tests_cmd()
     t = t .. '-t ' .. self.class .. '.' .. test .. ' '
   end
 
-  local cmd = 'sf apex run test ' .. t .. "--result-format human -y "
+  local cmd = 'sf apex run test ' .. t .. "--result-format human -y"
   return cmd
 end
 

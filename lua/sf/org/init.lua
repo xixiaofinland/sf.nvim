@@ -4,11 +4,9 @@ local H = {}
 local M = {}
 
 function M.get()
-  if H.target_org == '' then
-    return ''
-  end
+  U.is_empty(H.target_org)
 
-  return '-o ' .. H.target_org
+  return H.target_org
 end
 
 function M.get_target_org()
