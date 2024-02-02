@@ -1,5 +1,4 @@
 local S = require('sf')
-local Org = require('sf.org')
 local Term = require('sf.term')
 local p = require('sf.test.prompt'):new()
 local M = {}
@@ -13,7 +12,7 @@ M.toggle = function()
 end
 
 M.run_selected = function()
-  local cmd = p:build_selected_tests_cmd() .. ' -o ' .. Org.get()
+  local cmd = p:build_selected_tests_cmd() .. ' -o ' .. S.get()
   p:close()
   Term.run(cmd)
   S.last_tests = cmd
