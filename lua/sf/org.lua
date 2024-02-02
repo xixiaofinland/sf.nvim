@@ -3,6 +3,13 @@ local S = require('sf');
 local T = require('sf.term')
 
 local H = {}
+H.types_to_retrieve = {
+  "ApexClass",
+  "ApexTrigger",
+  "StaticResource",
+  "LightningComponentBundle"
+}
+
 local M = {}
 
 function M.fetch_org_list()
@@ -29,8 +36,8 @@ function M.select_apex_to_retrieve()
   H.select_apex_to_retrieve()
 end
 
-function M.retrieve_metadata_list()
-  H.retrieve_metadata_list()
+function M.retrieve_metadata_lists()
+  H.retrieve_metadata_lists()
 end
 
 function M.retrieve_apex_under_cursor()
@@ -275,7 +282,6 @@ H.pick_metadata = function(source, opts)
 
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(function()
-
         actions.close(prompt_bufnr)
         local md_name = action_state.get_selected_entry().display
 
@@ -300,17 +306,27 @@ H.retrieve_apex = function(apex_name)
   T.run(cmd)
 end
 
-H.retrieve_metadata_list = function()
+H.retrieve_metadata_lists = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  local md_file_path = root .. '/.metadata_' .. S.target_org
+  local md_folder = root .. '/.md'
+  if vim.fn.isdirectory(md_folder) == 0 then
+    local result = vim.fn.mkdir(md_folder)
+    if result == 0 then
+      return vim.notify('md folder creation failed!', vim.log.levels.ERROR)
+    end
+  end
 
-  local cmd = string.format('sf org list metadata -m ApexClass -o %s -f %s', S.target_org, md_file_path)
-  local msg = 'metadata_file retrieved => ' .. md_file_path;
-  local err_msg = 'metadata_list retrieve failed => ' .. md_file_path;
+  for _, type in pairs(H.types_to_retrieve) do
+    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
 
-  U.job_call(cmd, msg, err_msg);
+    local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, S.target_org, md_file)
+    local msg = string.format('%s retrieved', type)
+    local err_msg = string.format('%s retrieve failed: %s', type, md_file)
+
+    U.job_call(cmd, msg, err_msg);
+  end
 end
 
 return M
