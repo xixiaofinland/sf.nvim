@@ -44,7 +44,7 @@ function M.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
 
------------------ Helper --------------------
+-- Helper --------------------
 
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"

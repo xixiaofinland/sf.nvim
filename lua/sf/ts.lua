@@ -1,13 +1,3 @@
---- *sf.ts* Sf Treesitter
----
---- MIT License Copyright (c) 2024 Xi Xiao
----
---- ==============================================================================
----
---- Features:
---- - Provide useful APIs from Treesitter parsed Apex file.
----
-
 local ts = vim.treesitter
 local parsers = require('nvim-treesitter.parsers')
 
@@ -88,7 +78,7 @@ M.get_current_test_method_name = function()
   return nil
 end
 
---- ================== Help ========================
+-- Helper ------------------------------
 
 H.build_query = function(query_str)
   local parser = parsers.get_parser()

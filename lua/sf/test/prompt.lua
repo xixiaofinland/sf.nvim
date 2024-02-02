@@ -3,11 +3,6 @@ local api = vim.api
 local buftype = 'nowrite'
 local filetype = 'sf_test_prompt'
 
----@class Prompt
----@field win number
----@field buf number
----@field class string
----@field tests table
 local Prompt = {}
 
 function Prompt:new()
