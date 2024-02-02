@@ -32,8 +32,8 @@ function M.select_org_to_diff_in()
   H.select_org_to_diff_in()
 end
 
-function M.select_apex_to_retrieve()
-  H.select_apex_to_retrieve()
+function M.select_md_to_retrieve()
+  H.select_md_to_retrieve_content()
 end
 
 function M.retrieve_metadata_lists()
@@ -240,29 +240,34 @@ H.find_file = function(path, target)
   end
 end
 
-H.select_apex_to_retrieve = function()
+H.select_md_to_retrieve_content = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  local metadata_file = root .. '/.metadata_' .. S.target_org
-  if vim.fn.filereadable(metadata_file) == 0 then
-    return vim.notify('metadata file not exist: ' .. metadata_file, vim.log.levels.ERROR)
-  end
+  local md_folder = root .. '/.md'
+  local md_to_display = {}
 
-  local metadata = vim.fn.readfile(metadata_file)
-  local metadata_tbl = vim.json.decode(table.concat(metadata), {})
+  for _, type in pairs(H.types_to_retrieve) do
+    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
 
-  local unmanaged = {}
-  for _, v in ipairs(metadata_tbl) do
-    if v["manageableState"] == 'unmanaged' then
-      table.insert(unmanaged, v)
+    if vim.fn.filereadable(md_file) == 0 then
+      vim.notify('%s not exist! Failed to pull?' .. md_file, vim.log.levels.WARN)
+    else
+      local metadata = vim.fn.readfile(md_file)
+      local md_tbl = vim.json.decode(table.concat(metadata), {})
+
+      for _, v in ipairs(md_tbl) do
+        if v["manageableState"] == 'unmanaged' then
+          table.insert(md_to_display, v)
+        end
+      end
     end
   end
 
-  H.pick_metadata(unmanaged, {})
+  H.tele_metadata(md_to_display, {})
 end
 
-H.pick_metadata = function(source, opts)
+H.tele_metadata = function(source, opts)
   opts = opts or {}
   pickers.new({}, {
     prompt_title = 'Org: ' .. S.target_org,
@@ -272,8 +277,8 @@ H.pick_metadata = function(source, opts)
       entry_maker = function(entry)
         return {
           value = entry,
-          display = entry["fullName"],
-          ordinal = entry["fullName"],
+          display = entry["fullName"] .. ' | ' .. entry["type"],
+          ordinal = entry["fullName"] .. ' | ' .. entry["type"],
         }
       end
     },
@@ -283,9 +288,9 @@ H.pick_metadata = function(source, opts)
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(function()
         actions.close(prompt_bufnr)
-        local md_name = action_state.get_selected_entry().display
+        local md = action_state.get_selected_entry().value
 
-        H.retrieve_apex(md_name)
+        H.retrieve_md(md["type"], md["fullName"])
       end)
       return true
     end,
@@ -295,14 +300,14 @@ end
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
   print(current_word)
-  H.retrieve_apex(current_word)
+  H.retrieve_md('ApexClass', current_word)
 end
 
-H.retrieve_apex = function(apex_name)
+H.retrieve_md = function(type, name)
   U.is_empty(S.target_org)
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m ApexClass:%s -o %s', apex_name, S.target_org)
+  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, S.target_org)
   T.run(cmd)
 end
 
