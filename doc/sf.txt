@@ -1,6 +1,6 @@
 ==============================================================================
 ------------------------------------------------------------------------------
-*sf* A plugin for Salesforce development
+*sf* Global features for sf.nvim
 *Sf*
 
 =====================================================
@@ -8,21 +8,21 @@
 Features:
 
 - global fields shared among all sf modules.
-- global functions shared among all sf modules and external tools
+- global functions shared among all sf modules.
 
 ------------------------------------------------------------------------------
-                                                                  *M.last_tests*
-                                 `M.last_tests`
+                                                                 *Sf.last_tests*
+                                `Sf.last_tests`
 It stores the last executed Apex test command so we can re-run by `require('sf.term').repeat_last_tests()`.
 
 ------------------------------------------------------------------------------
-                                                                  *M.target_org*
-                                 `M.target_org`
+                                                                 *Sf.target_org*
+                                `Sf.target_org`
 It's meant to be used by statusline (like lualine) to display target_org information.
 
 ------------------------------------------------------------------------------
-                                                                       *M.get()*
-                                   `M.get`()
+                                                                      *Sf.get()*
+                                   `Sf.get`()
 Return `target_org` field value or throw error when it's empty
 
 Return ~

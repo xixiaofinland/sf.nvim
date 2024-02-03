@@ -1,5 +1,5 @@
-M.get()	sf.txt	/*M.get()*
-M.last_tests	sf.txt	/*M.last_tests*
-M.target_org	sf.txt	/*M.target_org*
 Sf	sf.txt	/*Sf*
+Sf.get()	sf.txt	/*Sf.get()*
+Sf.last_tests	sf.txt	/*Sf.last_tests*
+Sf.target_org	sf.txt	/*Sf.target_org*
 sf	sf.txt	/*sf*
