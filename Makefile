@@ -1,12 +1,26 @@
 # Run all test files
-test: deps/mini.nvim
+test: deps
 	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run()"
 
 # Run test from file at `$FILE` environment variable
-test_file: deps/mini.nvim
+test_file: deps
 	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run_file('$(FILE)')"
 
-# Download 'mini.nvim' to use its 'mini.test' testing module
+deps: deps/mini.nvim deps/plenary.nvim deps/telescope.nvim deps/nvim-treesitter
+	@echo pulling...
+
 deps/mini.nvim:
 	@mkdir -p deps
 	git clone --filter=blob:none https://github.com/echasnovski/mini.nvim $@
+
+deps/plenary.nvim:
+	@mkdir -p deps
+	git clone --filter=blob:none https://github.com/nvim-lua/plenary.nvim.git $@
+
+deps/telescope.nvim:
+	@mkdir -p deps
+	git clone --filter=blob:none https://github.com/nvim-telescope/telescope.nvim.git $@
+
+deps/nvim-treesitter:
+	@mkdir -p deps
+	git clone --filter=blob:none https://github.com/nvim-treesitter/nvim-treesitter.git $@
