@@ -13,8 +13,7 @@ local T = new_set({
 })
 
 T['error'] = function()
-  expect.error(child.lua([[M.get()]]))
-  -- eq(child.lua([[return M.compute({'a', 'b'})]]), { 'Hello a', 'Hello b' })
+  expect.error(function() child.lua([[M.get()]]) end)
 end
 
 return T
