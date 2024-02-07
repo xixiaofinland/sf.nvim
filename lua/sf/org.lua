@@ -244,7 +244,7 @@ H.select_md_to_retrieve_content = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  local md_folder = root .. '/.md'
+  local md_folder = root .. '/md'
   local md_to_display = {}
 
   for _, type in pairs(H.types_to_retrieve) do
@@ -315,7 +315,7 @@ H.retrieve_metadata_lists = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  local md_folder = root .. '/.md'
+  local md_folder = root .. '/md'
   if vim.fn.isdirectory(md_folder) == 0 then
     local result = vim.fn.mkdir(md_folder)
     if result == 0 then

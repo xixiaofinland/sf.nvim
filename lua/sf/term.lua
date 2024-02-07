@@ -40,7 +40,7 @@ function M.run_all_tests_in_this_file()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
 
-  local cmd = string.format("sf apex run test --class-names %s --result-format human -y %s -o %s", test_class_name, S.get())
+  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, S.get())
   t:run(cmd)
 end
 
