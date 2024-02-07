@@ -11,6 +11,14 @@ vim.filetype.add({
 
 local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  group = sf_group,
+  pattern = 'apex',
+  callback = function()
+    vim.bo.commentstring = '//%s'
+  end
+})
+
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   group = sf_group,
   desc = "Run sf org cmd and store org info in the plugin",
