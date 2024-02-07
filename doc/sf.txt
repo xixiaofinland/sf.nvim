@@ -13,12 +13,13 @@ Features:
 ------------------------------------------------------------------------------
                                                                  *Sf.last_tests*
                                 `Sf.last_tests`
-It stores the last executed Apex test command so we can re-run by `require('sf.term').repeat_last_tests()`.
+It stores the command executed by run_all_tests_in_this_file() and run_current_test()
+repeat_last_tests() uses it to re-run tests
 
 ------------------------------------------------------------------------------
                                                                  *Sf.target_org*
                                 `Sf.target_org`
-It's meant to be used by statusline (like lualine) to display target_org information.
+Almost all commands executes against `target_org`. It's a good practice to display it in the statusline.
 
 ------------------------------------------------------------------------------
                                                                       *Sf.get()*
@@ -27,6 +28,39 @@ Return `target_org` field value or throw error when it's empty
 
 Return ~
 `(string)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                               *M.get_sf_root()*
+                               `M.get_sf_root`()
+Return sf project root path if the file in current buffer is located in or throw the error if can't find one
+
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                       *M.is_sf_cmd_installed()*
+                           `M.is_sf_cmd_installed`()
+throw an error if sf command is not installed locally
+
+------------------------------------------------------------------------------
+                                                            *M.is_table_empty()*
+                           `M.is_table_empty`({tbl})
+throw an error if table parameter is empty
+
+------------------------------------------------------------------------------
+                                                                  *M.is_empty()*
+                               `M.is_empty`({t})
+throw an error if parameter(string) is empty or nil
+
+------------------------------------------------------------------------------
+                                                                  *M.job_call()*
+                     `M.job_call`({cmd}, {msg}, {err_msg})
+async run a command in background and display messages according to the result
+@param cmd string console command to run
+@param msg string message to notify when command execution succeeds
+@param err_msg string error message to notify when command execution fails
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

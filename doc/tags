@@ -1,3 +1,8 @@
+M.get_sf_root()	sf.txt	/*M.get_sf_root()*
+M.is_empty()	sf.txt	/*M.is_empty()*
+M.is_sf_cmd_installed()	sf.txt	/*M.is_sf_cmd_installed()*
+M.is_table_empty()	sf.txt	/*M.is_table_empty()*
+M.job_call()	sf.txt	/*M.job_call()*
 Sf	sf.txt	/*Sf*
 Sf.get()	sf.txt	/*Sf.get()*
 Sf.last_tests	sf.txt	/*Sf.last_tests*

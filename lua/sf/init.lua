@@ -11,10 +11,11 @@
 local U = require('sf.util');
 local Sf = {}
 
---- It stores the last executed Apex test command so we can re-run by `require('sf.term').repeat_last_tests()`.
+--- It stores the command executed by run_all_tests_in_this_file() and run_current_test()
+--- repeat_last_tests() uses it to re-run tests
 Sf.last_tests = ''
 
---- It's meant to be used by statusline (like lualine) to display target_org information.
+--- Almost all commands executes against `target_org`. It's a good practice to display it in the statusline.
 Sf.target_org = ''
 
 -- Module functionality =======================================================
