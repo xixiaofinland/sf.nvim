@@ -176,6 +176,7 @@ H.diff_in = function(org)
           if code == 0 then
             local temp_file = H.find_file(temp_path, file_name)
             vim.cmd("vert diffsplit " .. temp_file)
+            vim.bo[0].buflisted = false
             vim.notify('Retrive success: ' .. org, vim.log.levels.INFO)
           else
             vim.notify('Retrive failed: ' .. org, vim.log.levels.ERROR)
