@@ -55,7 +55,10 @@ end
 function Term:run_after_setup(cmd)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
-  local cmd = string.format('echo %s;%s', cmd, cmd)
+  local RED = '\033[0;31m'
+  local NC = '\033[0m'
+  -- local cmd = 'echo -e "plain \\e[0;31mRED MESSAGE \\e[0m reset"'
+  local cmd = string.format('echo -e "\\e[0;35m %s reset";%s', cmd, cmd)
 
   vim.fn.termopen(cmd, {
     clear_env = self.config.clear_env,
