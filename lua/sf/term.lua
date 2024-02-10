@@ -14,6 +14,7 @@ function M.open()
 end
 
 function M.save_and_push()
+  vim.api.nvim_command('e') -- reload file or write might invoke y/n pop-up in Ex
   vim.api.nvim_command('write')
   local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. S.get()
   t:run(cmd)
