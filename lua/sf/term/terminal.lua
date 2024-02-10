@@ -64,8 +64,6 @@ function Term:run_after_setup(cmd)
       self.is_running = false
       self:open()
     end,
-    -- on_stdout = self.config.on_stdout,
-    -- on_stderr = self.config.on_stderr,
   })
 
   self.is_running = true
@@ -93,11 +91,14 @@ function Term:open()
   end
 
   if not H.is_buf_valid(self.buf) then
-    return vim.notify('No running task.', vim.log.levels.WARN)
+    return vim.notify('No running task to display.', vim.log.levels.WARN)
   end
 
-  self:remember_cursor()
+  -- self:remember_cursor()
   local win = self:create_and_open_win(self.buf)
+  self:remember_cursor()
+
+  api.nvim_set_current_win(win)
   self:scroll_to_end():restore_cursor()
 
   self:store(win, self.buf)
@@ -120,7 +121,7 @@ function Term:create_and_open_win(buf)
 
   local dim = H.get_dimension(cfg.dimensions)
 
-  local win = api.nvim_open_win(buf, true, {
+  local win = api.nvim_open_win(buf, false, {
     border = cfg.border,
     relative = 'editor',
     style = 'minimal',
