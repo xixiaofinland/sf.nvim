@@ -4,25 +4,24 @@ local U = require('sf.util')
 local t = require('sf.term.terminal'):new()
 
 local M = {}
-M.t = t
 
 function M.toggle()
-  t:toggle1()
+  t:toggle()
 end
 
 function M.open()
-  t:open1()
+  t:open()
 end
 
 function M.save_and_push()
   vim.api.nvim_command('write')
   local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. S.get()
-  t:run1(cmd)
+  t:run(cmd)
 end
 
 function M.retrieve()
   local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. S.get()
-  t:run1(cmd)
+  t:run(cmd)
 end
 
 function M.run_current_test()
@@ -46,6 +45,7 @@ function M.run_all_tests_in_this_file()
 end
 
 function M.cancel()
+  t.is_running = false -- set the flag to stop the running task
   t:run('\3')
 end
 
@@ -64,9 +64,5 @@ function M.run(c)
   local cmd = vim.fn.expandcmd(c)
   t:run(cmd)
 end
-
--- function M.scrollToEnd()
---   t:run(vim.cmd('$'))
--- end
 
 return M
