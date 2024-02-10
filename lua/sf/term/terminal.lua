@@ -57,6 +57,100 @@ function Term:restore_cursor()
   return self
 end
 
+-- run(cmd) => create new buffer; using existing win or new win, activate the win/buffer; termopen(cmd) [work on the current buffer]
+-- toggle() => is_open? do nothing; open_last()
+
+-- open_last() => valid and existing win? oepn it; else throw error
+-- close() => hide win
+
+-- nvim_win_set_buf()
+
+function Term:run1(cmd)
+  local running_buf = api.nvim_create_buf(false, true)
+  vim.bo[running_buf].filetype = self.config.ft
+
+  local running_win
+
+  if H.is_win_valid(self.win) then
+    api.nvim_win_set_buf(self.win, running_buf)
+    -- api.nvim_set_current_win(self.win)
+    running_win = self.win
+  else
+    running_win = self:create_and_open_win(running_buf)
+  end
+
+  self:store(running_win, running_buf):run_in_term(cmd)
+  -- self:remember_cursor()
+  --
+  -- local win = self:create_and_open_win(self.buf)
+  --
+  -- return self:store(win, self.buf):scroll_to_end():restore_cursor()
+
+  return self
+end
+
+function Term:run_in_term(cmd)
+  self:remember_cursor()
+  api.nvim_set_current_win(self.win)
+
+  cmd = cmd or self.config.cmd
+  self.terminal = vim.fn.termopen(cmd, {
+    clear_env = self.config.clear_env,
+    env = self.config.env,
+    on_stdout = self.config.on_stdout,
+    -- on_stderr = self.config.on_stderr,
+    on_exit = function(...)
+      self:handle_exit(...)
+    end,
+  })
+
+  -- This prevents the filetype being changed to `term`
+  api.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
+  self:restore_cursor()
+
+  return self
+end
+
+function Term:toggle1()
+  if H.is_win_valid(self.win) then
+    self:close1()
+  else
+    self:open1()
+  end
+
+  return self
+end
+
+function Term:open1()
+  if H.is_win_valid(self.win) then
+    return
+  end
+
+  if not H.is_buf_valid(self.buf) then
+    return vim.notify('No valid terminal buffer. Try send a command?', vim.log.levels.ERROR)
+  end
+
+  self:remember_cursor()
+
+  local win = self:create_and_open_win(self.buf)
+
+  return self:store(win, self.buf):scroll_to_end():restore_cursor()
+end
+
+function Term:close1()
+  if not H.is_win_valid(self.win) then
+    return self
+  end
+
+  api.nvim_win_close(self.win, false)
+
+  -- self:restore_cursor()
+
+  return self
+end
+
+----------------------------- line --------------------------------
+
 function Term:use_existing_or_create_buf()
   local prev = self.buf
 
@@ -75,7 +169,7 @@ function Term:create_and_open_win(buf)
 
   local dim = H.get_dimension(cfg.dimensions)
 
-  local win = api.nvim_open_win(buf, true, {
+  local win = api.nvim_open_win(buf, false, {
     border = cfg.border,
     relative = 'editor',
     style = 'minimal',
@@ -112,9 +206,10 @@ function Term:scroll_to_end()
   return self
 end
 
-function Term:create_term()
-  -- NOTE: `termopen` will fails if the current buffer is modified
-  self.terminal = vim.fn.termopen(H.is_cmd(self.config.cmd), {
+function Term:create_term(cmd)
+  cmd = cmd or self.config.cmd
+
+  self.terminal = vim.fn.termopen(cmd, {
     clear_env = self.config.clear_env,
     env = self.config.env,
     on_stdout = self.config.on_stdout,
@@ -131,7 +226,6 @@ function Term:create_term()
 end
 
 function Term:open()
-  -- Move to existing window if the window already exists
   if H.is_win_valid(self.win) then
     return
   end
@@ -141,7 +235,6 @@ function Term:open()
   local buf = self:use_existing_or_create_buf()
   local win = self:create_and_open_win(buf)
 
-  -- existing buffer already has a terminal opened inside
   if self.buf == buf then
     return self:store(win, buf):scroll_to_end():restore_cursor()
   end
@@ -155,8 +248,6 @@ function Term:close(force)
   end
 
   api.nvim_win_close(self.win, {})
-
-  self.win = nil
 
   if force then
     if H.is_buf_valid(self.buf) then
@@ -175,7 +266,6 @@ function Term:close(force)
 end
 
 function Term:toggle()
-  -- If window is stored and valid then it is already opened, then close it
   if H.is_win_valid(self.win) then
     self:close()
   else
@@ -200,14 +290,9 @@ end
 
 H.defaults = {
   ft = 'SFTerm',
-  cmd = function()
-    return assert(
-      os.getenv('SHELL'),
-      '[SFTerm] $SHELL is not present! Please provide a shell (`config.cmd`) to use.'
-    )
-  end,
+  cmd = 'sf org list',
   border = 'single',
-  auto_close = true,
+  auto_close = false,
   hl = 'Normal',
   blend = 10,
   clear_env = false,
@@ -218,7 +303,7 @@ H.defaults = {
     y = 0.9,
   },
   on_stdout = function()
-    require("sf.term").open()
+    -- require("sf.term").open()
   end,
   -- on_stderr = function()
   --   vim.notify('hello stderr', vim.log.levels.ERROR)
@@ -252,10 +337,6 @@ end
 
 function H.is_buf_valid(buf)
   return buf and vim.api.nvim_buf_is_loaded(buf)
-end
-
-function H.is_cmd(cmd)
-  return type(cmd) == 'function' and cmd() or cmd
 end
 
 return Term

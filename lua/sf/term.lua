@@ -4,24 +4,25 @@ local U = require('sf.util')
 local t = require('sf.term.terminal'):new()
 
 local M = {}
+M.t = t
 
 function M.toggle()
-  t:toggle()
+  t:toggle1()
 end
 
 function M.open()
-  t:open()
+  t:open1()
 end
 
 function M.save_and_push()
   vim.api.nvim_command('write')
   local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. S.get()
-  t:run(cmd)
+  t:run1(cmd)
 end
 
 function M.retrieve()
   local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. S.get()
-  t:run(cmd)
+  t:run1(cmd)
 end
 
 function M.run_current_test()
