@@ -96,7 +96,9 @@ function Term:open()
     return vim.notify('No running task.', vim.log.levels.WARN)
   end
 
+  self:remember_cursor()
   local win = self:create_and_open_win(self.buf)
+  self:scroll_to_end():restore_cursor()
 
   self:store(win, self.buf)
 
@@ -118,7 +120,7 @@ function Term:create_and_open_win(buf)
 
   local dim = H.get_dimension(cfg.dimensions)
 
-  local win = api.nvim_open_win(buf, false, {
+  local win = api.nvim_open_win(buf, true, {
     border = cfg.border,
     relative = 'editor',
     style = 'minimal',
