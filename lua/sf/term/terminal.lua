@@ -62,6 +62,7 @@ function Term:run_after_setup(cmd)
     env = self.config.env,
     on_exit = function()
       self.is_running = false
+      self:close() -- hack way to scroll to end
       self:open()
     end,
   })
@@ -94,7 +95,6 @@ function Term:open()
     return vim.notify('No running task to display.', vim.log.levels.WARN)
   end
 
-  -- self:remember_cursor()
   local win = self:create_and_open_win(self.buf)
   self:remember_cursor()
 
