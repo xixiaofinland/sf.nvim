@@ -58,7 +58,7 @@ local function set_hotkeys()
 
   nmap('<leader>mr', require("sf.org").retrieve_metadata_lists, "[m]etadata [l]ist retrieve")
   nmap('<leader>ml', require("sf.org").select_md_to_retrieve, "[m]etadata [r]etrieve")
-  nmap('<leader>mt', require("sf.org").retrieve_apex_under_cursor, "[m]etadata [T]his retrieve")
+  nmap('<leader>mk', require("sf.org").retrieve_apex_under_cursor, "Apex under cursor retrieve")
 
   nmap('<leader><leader>', require("sf.term").toggle, "[T]erminal toggle")
 
