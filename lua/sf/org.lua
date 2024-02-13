@@ -62,9 +62,6 @@ local action_state = require "telescope.actions.state"
 local api = vim.api
 
 H.orgs = {}
-H.md_folder = U.get_sf_root() .. '/md'
-H.metadata_types_file = string.format('%s/%s.json', H.md_folder, 'metadata-types')
-
 
 H.clean_org_cache = function()
   H.orgs = {}
@@ -257,9 +254,10 @@ H.select_md_to_retrieve_content = function()
   local root = U.get_sf_root()
 
   local md_to_display = {}
+  local md_folder = U.get_sf_root() .. '/md'
 
   for _, type in pairs(H.types_to_retrieve) do
-    local md_file = string.format('%s/%s_%s.json', H.md_folder, type, S.target_org)
+    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
       vim.notify('%s not exist! Failed to pull?' .. md_file, vim.log.levels.WARN)
@@ -326,15 +324,17 @@ H.retrieve_metadata_lists = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
-  if vim.fn.isdirectory(H.md_folder) == 0 then
-    local result = vim.fn.mkdir(H.md_folder)
+  local md_folder = U.get_sf_root() .. '/md'
+
+  if vim.fn.isdirectory(md_folder) == 0 then
+    local result = vim.fn.mkdir(md_folder)
     if result == 0 then
       return vim.notify('md folder creation failed!', vim.log.levels.ERROR)
     end
   end
 
   for _, type in pairs(H.types_to_retrieve) do
-    local md_file = string.format('%s/%s_%s.json', H.md_folder, type, S.target_org)
+    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
 
     local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, S.target_org, md_file)
     local msg = string.format('%s retrieved', type)
@@ -347,16 +347,19 @@ end
 H.retrieve_metadata_type_list = function()
   U.is_empty(S.target_org)
 
-  if vim.fn.isdirectory(H.md_folder) == 0 then
-    local result = vim.fn.mkdir(H.md_folder)
+  local md_folder = U.get_sf_root() .. '/md'
+  local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
+
+  if vim.fn.isdirectory(md_folder) == 0 then
+    local result = vim.fn.mkdir(md_folder)
     if result == 0 then
       return vim.notify('md folder creation failed!', vim.log.levels.ERROR)
     end
   end
 
-  local cmd = string.format('sf org list metadata-types -o %s -f %s', S.target_org, H.metadata_types_file)
+  local cmd = string.format('sf org list metadata-types -o %s -f %s', S.target_org, metadata_types_file)
   local msg = 'Metadata-type file retrieved'
-  local err_msg = string.format('Metadata-type retrieve failed: %s', H.metadata_types_file)
+  local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
   U.job_call(cmd, msg, err_msg);
 end
@@ -364,11 +367,14 @@ end
 H.select_md_type_to_retrieve_all = function()
   U.is_empty(S.target_org)
 
-  if vim.fn.filereadable(H.metadata_types_file) == 0 then
+  local md_folder = U.get_sf_root() .. '/md'
+  local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
+
+  if vim.fn.filereadable(metadata_types_file) == 0 then
     return vim.notify('Metadata-type file not exist! Failed to pull?', vim.log.levels.WARN)
   end
 
-  local file_content = vim.fn.readfile(H.metadata_types_file)
+  local file_content = vim.fn.readfile(metadata_types_file)
   local tbl = vim.json.decode(table.concat(file_content), {})
   local md_types = tbl["metadataObjects"]
 
