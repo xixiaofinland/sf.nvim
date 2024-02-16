@@ -30,7 +30,7 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
 })
 
 local function set_hotkeys()
-  if not vim.tbl_contains({ "apex", "sosl", "soql", "javascript" }, vim.bo.filetype) then
+  if not vim.tbl_contains({ "apex", "sosl", "soql", "javascript", "mallard" }, vim.bo.filetype) then
     return
   end
 
