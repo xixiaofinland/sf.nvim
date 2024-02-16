@@ -14,7 +14,7 @@ Take a peek at all user commands and default hotkeys [here](https://github.com/x
 - `SFTerm` The module to run commands in an integrated floating terminal
 - `SFTest` The module to facilitate test running
 
-Note. use `:h` (e.g. `:h SFOrg`) to read more information.
+Note. use `:h` (e.g. `:h SFOrg`) to read the functions each module supplies and their usage.
 
 ## Install
 
