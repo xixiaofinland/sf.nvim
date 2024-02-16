@@ -4,16 +4,17 @@ Offer common functionalities for Salesforce development
 
 ## Usage
 
-Take a peek at its [default keybindings](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua),
-or check the modules below.
+Often used commands are saved as user commands: Ex `:Sf` then hit tab to list all defined user commands.
+
+Take a peek at all user commands and default hotkeys [here](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua).
 
 ## Modules
 
-- `:h SFOrg`  The module to interact with Salesforce org
-- `:h SFTerm` The module to build an integrated terminal
-- `:h SFTest` The module to facilitate test running
+- `SFOrg`  The module to interact with Salesforce org
+- `SFTerm` The module to build an integrated terminal
+- `SFTest` The module to facilitate test running
 
-Note. use `:h` to read more information.
+Note. use `:h` (e.g. `:h SFOrg`) to read more information.
 
 ## Install
 

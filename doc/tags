@@ -11,6 +11,9 @@ Org.set_target_org()	sf.txt	/*Org.set_target_org()*
 SFOrg	sf.txt	/*SFOrg*
 SFTerm	sf.txt	/*SFTerm*
 SFTest	sf.txt	/*SFTest*
+SfOrg	sf.txt	/*SfOrg*
+SfTerm	sf.txt	/*SfTerm*
+SfTest	sf.txt	/*SfTest*
 Term.cancel()	sf.txt	/*Term.cancel()*
 Term.go_to_sf_root()	sf.txt	/*Term.go_to_sf_root()*
 Term.open()	sf.txt	/*Term.open()*

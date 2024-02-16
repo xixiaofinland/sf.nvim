@@ -1,5 +1,5 @@
 --- *SFTerm* The module to build an integrated terminal
---- *Sf term*
+--- *Sf term* *SfTerm*
 ---
 --- =====================================================
 ---

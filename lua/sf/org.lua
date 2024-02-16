@@ -1,5 +1,5 @@
 --- *SFOrg* The module to interact with Salesforce org
---- *Sf org*
+--- *Sf org* *SfOrg*
 ---
 --- =====================================================
 ---
