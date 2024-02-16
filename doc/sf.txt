@@ -1,66 +1,163 @@
 ==============================================================================
 ------------------------------------------------------------------------------
-*sf* Global features for sf.nvim
-*Sf*
+*SFOrg* The module to interact with Salesforce org
+*Sf org* *SfOrg*
 
 =====================================================
 
 Features:
 
-- global fields shared among all sf modules.
-- global functions shared among all sf modules.
+- Org list and target_org related commands.
+- Diff metadata files: local version v.s. org version
+- Download and list Metadata-type and Metadata files to pull from target_org
 
 ------------------------------------------------------------------------------
-                                                                 *Sf.last_tests*
-                                `Sf.last_tests`
-It stores the command executed by run_all_tests_in_this_file() and run_current_test()
-repeat_last_tests() uses it to re-run tests
+                                                          *Org.fetch_org_list()*
+                             `Org.fetch_org_list`()
+It runs "sf org list" command under the hood and stores the org list.
+If a target_org is found, the value is saved into "target_org" variable.
 
 ------------------------------------------------------------------------------
-                                                                 *Sf.target_org*
-                                `Sf.target_org`
-Almost all commands executes against `target_org`. It's a good practice to display it in the statusline.
+                                                          *Org.set_target_org()*
+                             `Org.set_target_org`()
+It displays the list of orgs, and allows you to define the target_org.
+It runs "sf config set target-org" command under the hood to set the target_org.
 
 ------------------------------------------------------------------------------
-                                                                      *Sf.get()*
-                                   `Sf.get`()
-Return `target_org` field value or throw error when it's empty
+                                                   *Org.set_global_target_org()*
+                         `Org.set_global_target_org`()
+sf command allows to define a global target_org.
+It runs "sf config set target-org --global " command under the hood.
 
-Return ~
-`(string)`
+------------------------------------------------------------------------------
+                                                      *Org.diff_in_target_org()*
+                           `Org.diff_in_target_org`()
+It fetches the file in the current buffer from target_org and display in the Nvim diff mode.
+The left window displays the target_org verison, the right window displays the local verison.
+
+------------------------------------------------------------------------------
+                                                             *Org.diff_in_org()*
+                              `Org.diff_in_org`()
+Similar to |diff_in_target_org|, you can choose which org to diff with.
+The left window displays the org verison, the right window displays the local verison.
+
+------------------------------------------------------------------------------
+                                                   *Org.select_md_to_retrieve()*
+                         `Org.select_md_to_retrieve`()
+Choose a specific metadata file to retrieve.
+Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
+
+------------------------------------------------------------------------------
+                                                     *Org.pull_metadata_lists()*
+                          `Org.pull_metadata_lists`()
+Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. into local Json files.
+
+------------------------------------------------------------------------------
+                                              *Org.retrieve_apex_under_cursor()*
+                       `Org.retrieve_apex_under_cursor`()
+Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
+
+------------------------------------------------------------------------------
+                                                 *Org.pull_metadata_type_list()*
+                        `Org.pull_metadata_type_list`()
+Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. into a local Json file.
+
+------------------------------------------------------------------------------
+                                              *Org.select_md_type_to_retrieve()*
+                       `Org.select_md_type_to_retrieve`()
+Select a specific metadata-type to download all files. For example, download all ApexClass files.
+Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                               *M.get_sf_root()*
-                               `M.get_sf_root`()
-Return sf project root path if the file in current buffer is located in or throw the error if can't find one
+*SFTerm* The module to build an integrated terminal
+*Sf term* *SfTerm*
 
-Return ~
-`(string)`
+=====================================================
 
-------------------------------------------------------------------------------
-                                                       *M.is_sf_cmd_installed()*
-                           `M.is_sf_cmd_installed`()
-throw an error if sf command is not installed locally
+Features:
+
+- Execute sf commands to interact with Salesforce orgs.
+- Auto pop-up (configurable) when command execution finishes.
 
 ------------------------------------------------------------------------------
-                                                            *M.is_table_empty()*
-                           `M.is_table_empty`({tbl})
-throw an error if table parameter is empty
+                                                                 *Term.toggle()*
+                                `Term.toggle`()
+Toggle the SFTerm float window.
 
 ------------------------------------------------------------------------------
-                                                                  *M.is_empty()*
-                               `M.is_empty`({t})
-throw an error if parameter(string) is empty or nil
+                                                                   *Term.open()*
+                                 `Term.open`()
+Open the SFTerm float window.
 
 ------------------------------------------------------------------------------
-                                                                  *M.job_call()*
-                     `M.job_call`({cmd}, {msg}, {err_msg})
-async run a command in background and display messages according to the result
-@param cmd string console command to run
-@param msg string message to notify when command execution succeeds
-@param err_msg string error message to notify when command execution fails
+                                                          *Term.save_and_push()*
+                             `Term.save_and_push`()
+Save the file in the current buffer and push to target_org. The command is sent to SFTerm.
+
+------------------------------------------------------------------------------
+                                                               *Term.retrieve()*
+                               `Term.retrieve`()
+Retrieve the file in the current buffer from target_org. The command is sent to SFTerm.
+
+------------------------------------------------------------------------------
+                                                       *Term.run_current_test()*
+                           `Term.run_current_test`()
+Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
+
+------------------------------------------------------------------------------
+                                             *Term.run_all_tests_in_this_file()*
+                      `Term.run_all_tests_in_this_file`()
+Run all Apex tests in the current Apex file in target_org. The command is sent to SFTerm.
+
+------------------------------------------------------------------------------
+                                                                 *Term.cancel()*
+                                `Term.cancel`()
+Terminate the running command in SFTerm.
+
+------------------------------------------------------------------------------
+                                                          *Term.go_to_sf_root()*
+                             `Term.go_to_sf_root`()
+Enter the sf project root path in SFTerm.
+
+------------------------------------------------------------------------------
+                                                      *Term.repeat_last_tests()*
+                           `Term.repeat_last_tests`()
+Repeat the last executed Apex test command. The command is sent to SFTerm.
+
+------------------------------------------------------------------------------
+                                                                    *Term.run()*
+                                `Term.run`({c})
+Allows to pass the user defined command into SFTerm.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+*SFTest* Test module
+*Sf test* *SfTest*
+
+=====================================================
+
+Features:
+
+- create a Apex test list to choose to execute
+
+------------------------------------------------------------------------------
+                                                                   *Test.open()*
+                                 `Test.open`()
+open a top window that displays the list of Apex tests in the current file.
+Allows to select/deselect tests and execute.
+
+------------------------------------------------------------------------------
+                                                                *Test._toggle()*
+                                `Test._toggle`()
+local method. Do not call it directly.
+
+------------------------------------------------------------------------------
+                                                          *Test._run_selected()*
+                             `Test._run_selected`()
+local method. Do not call it directly.
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

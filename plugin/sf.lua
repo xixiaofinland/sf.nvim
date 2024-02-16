@@ -9,6 +9,51 @@ vim.filetype.add({
   }
 })
 
+-- user commands
+local org = require('sf.org')
+local term = require('sf.term')
+
+vim.api.nvim_create_user_command("SfFetchOrgList", function()
+    org.fetch_org_list()
+end, {})
+
+vim.api.nvim_create_user_command("SfSetTargetOrg", function()
+    org.set_target_org()
+end, {})
+
+vim.api.nvim_create_user_command("SfDiff", function()
+    org.diff_in_target_org()
+end, {})
+
+vim.api.nvim_create_user_command("SfDiffInOrg", function()
+    org.diff_in_org()
+end, {})
+
+vim.api.nvim_create_user_command("SfToggle", function()
+    term.toggle()
+end, {})
+
+vim.api.nvim_create_user_command("SfSaveAndPush", function()
+    term.save_and_push()
+end, {})
+
+vim.api.nvim_create_user_command("SfRetrieve", function()
+    term.retrieve()
+end, {})
+
+vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
+    term.run_all_tests_in_this_file()
+end, {})
+
+vim.api.nvim_create_user_command("SfRepeatTest", function()
+    term.repeat_last_tests()
+end, {})
+
+vim.api.nvim_create_user_command("SfCancelCommand", function()
+    term.cancel()
+end, {})
+
+-- autocmds
 local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
 vim.api.nvim_create_autocmd({ 'FileType' }, {
@@ -30,13 +75,13 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
 })
 
 local function set_hotkeys()
-  if not vim.tbl_contains({ "apex", "sosl", "soql", "js" }, vim.bo.filetype) then
+  if not vim.tbl_contains({ "apex", "sosl", "soql", "javascript", "mallard" }, vim.bo.filetype) then
     return
   end
 
-  -- not inside a sf project folder
   if not pcall(require('sf.util').get_sf_root) then
-    return
+    return vim.notify_once('File not in sf project folder, sf.nvim hotkeys not loaded.',
+      vim.log.levels.WARN)
   end
 
   -- Set hotkeys
@@ -54,11 +99,15 @@ local function set_hotkeys()
   nmap('<leader>sf', require("sf.org").fetch_org_list, "[F]etch orgs info")
 
   nmap('<leader>sd', require("sf.org").diff_in_target_org, "[d]iff in target_org")
-  nmap('<leader>sD', require("sf.org").select_org_to_diff_in, "[D]iff in org...")
+  nmap('<leader>sD', require("sf.org").diff_in_org, "[D]iff in org...")
 
-  nmap('<leader>mr', require("sf.org").retrieve_metadata_lists, "[m]etadata [l]ist retrieve")
-  nmap('<leader>ml', require("sf.org").select_md_to_retrieve, "[m]etadata [r]etrieve")
-  nmap('<leader>mt', require("sf.org").retrieve_apex_under_cursor, "[m]etadata [T]his retrieve")
+  nmap('<leader>mr', require("sf.org").pull_metadata_lists, "[M]etadata json [R]etrieve")
+  nmap('<leader>ml', require("sf.org").select_md_to_retrieve, "[M]etadata [L]isting")
+
+  nmap('<leader>mtr', require("sf.org").pull_metadata_type_list, "[M]etadata-[T]ype json [R]etrieve")
+  nmap('<leader>mtl', require("sf.org").select_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
+
+  nmap('<leader>ma', require("sf.org").retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 
   nmap('<leader><leader>', require("sf.term").toggle, "[T]erminal toggle")
 

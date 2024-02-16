@@ -1,30 +1,46 @@
+--- *SFTerm* The module to build an integrated terminal
+--- *Sf term* *SfTerm*
+---
+--- =====================================================
+---
+--- Features:
+---
+--- - Execute sf commands to interact with Salesforce orgs.
+--- - Auto pop-up (configurable) when command execution finishes.
+
 local S = require('sf')
 local TS = require('sf.ts')
 local U = require('sf.util')
 local t = require('sf.term.terminal'):new()
 
-local M = {}
+local Term = {}
 
-function M.toggle()
+--- Toggle the SFTerm float window.
+function Term.toggle()
   t:toggle()
 end
 
-function M.open()
+--- Open the SFTerm float window.
+function Term.open()
   t:open()
 end
 
-function M.save_and_push()
+--- Save the file in the current buffer and push to target_org. The command is sent to SFTerm.
+function Term.save_and_push()
+  vim.api.nvim_command('e') -- reload file or write might invoke y/n pop-up in Ex
   vim.api.nvim_command('write')
   local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. S.get()
   t:run(cmd)
 end
 
-function M.retrieve()
+--- Retrieve the file in the current buffer from target_org. The command is sent to SFTerm.
+function Term.retrieve()
   local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. S.get()
   t:run(cmd)
 end
 
-function M.run_current_test()
+--- Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
+function Term.run_current_test()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
 
@@ -36,7 +52,8 @@ function M.run_current_test()
   t:run(cmd)
 end
 
-function M.run_all_tests_in_this_file()
+--- Run all Apex tests in the current Apex file in target_org. The command is sent to SFTerm.
+function Term.run_all_tests_in_this_file()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
 
@@ -44,28 +61,29 @@ function M.run_all_tests_in_this_file()
   t:run(cmd)
 end
 
-function M.cancel()
+--- Terminate the running command in SFTerm.
+function Term.cancel()
+  t.is_running = false -- set the flag to stop the running task
   t:run('\3')
 end
 
-function M.go_to_sf_root()
+--- Enter the sf project root path in SFTerm.
+function Term.go_to_sf_root()
   local root = U.get_sf_root()
   t:run('cd ' .. root)
 end
 
-function M.repeat_last_tests()
+--- Repeat the last executed Apex test command. The command is sent to SFTerm.
+function Term.repeat_last_tests()
   U.is_empty(S.last_tests)
 
   t:run(S.last_tests)
 end
 
-function M.run(c)
+--- Allows to pass the user defined command into SFTerm.
+function Term.run(c)
   local cmd = vim.fn.expandcmd(c)
   t:run(cmd)
 end
 
--- function M.scrollToEnd()
---   t:run(vim.cmd('$'))
--- end
-
-return M
+return Term
