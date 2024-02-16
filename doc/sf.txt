@@ -1,5 +1,17 @@
 ==============================================================================
 ------------------------------------------------------------------------------
+*SFOrg* The module to interact with Salesforce org
+*Sf org*
+
+=====================================================
+
+Features:
+
+- Org list and target_org related commands.
+- Diff metadata files: local version v.s. org version
+- Download and list Metadata-type and Metadata files to pull from target_org
+
+------------------------------------------------------------------------------
                                                           *Org.fetch_org_list()*
                              `Org.fetch_org_list`()
 It runs "sf org list" command under the hood and stores the org list.
@@ -59,14 +71,25 @@ Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 
 ==============================================================================
 ------------------------------------------------------------------------------
+*SFTerm* The module to build an integrated terminal
+*Sf term*
+
+=====================================================
+
+Features:
+
+- Execute sf commands to interact with Salesforce orgs.
+- Auto pop-up (configurable) when command execution finishes.
+
+------------------------------------------------------------------------------
                                                                  *Term.toggle()*
                                 `Term.toggle`()
-toggle the SFTerm float window.
+Toggle the SFTerm float window.
 
 ------------------------------------------------------------------------------
                                                                    *Term.open()*
                                  `Term.open`()
-open the SFTerm float window.
+Open the SFTerm float window.
 
 ------------------------------------------------------------------------------
                                                           *Term.save_and_push()*
@@ -110,6 +133,16 @@ Allows to pass the user defined command into SFTerm.
 
 
 ==============================================================================
+------------------------------------------------------------------------------
+*SFTest* Test module
+*Sf test*
+
+=====================================================
+
+Features:
+
+- create a Apex test list to choose to execute
+
 ------------------------------------------------------------------------------
                                                                    *Test.open()*
                                  `Test.open`()

@@ -1,3 +1,12 @@
+--- *SFTest* Test module
+--- *Sf test*
+---
+--- =====================================================
+---
+--- Features:
+---
+--- - create a Apex test list to choose to execute
+
 local S = require('sf')
 local Term = require('sf.term')
 local p = require('sf.test.prompt'):new()

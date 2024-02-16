@@ -1,3 +1,14 @@
+--- *SFOrg* The module to interact with Salesforce org
+--- *Sf org*
+---
+--- =====================================================
+---
+--- Features:
+---
+--- - Org list and target_org related commands.
+--- - Diff metadata files: local version v.s. org version
+--- - Download and list Metadata-type and Metadata files to pull from target_org
+
 local U = require('sf.util');
 local S = require('sf');
 local T = require('sf.term')

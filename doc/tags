@@ -8,6 +8,9 @@ Org.select_md_to_retrieve()	sf.txt	/*Org.select_md_to_retrieve()*
 Org.select_md_type_to_retrieve()	sf.txt	/*Org.select_md_type_to_retrieve()*
 Org.set_global_target_org()	sf.txt	/*Org.set_global_target_org()*
 Org.set_target_org()	sf.txt	/*Org.set_target_org()*
+SFOrg	sf.txt	/*SFOrg*
+SFTerm	sf.txt	/*SFTerm*
+SFTest	sf.txt	/*SFTest*
 Term.cancel()	sf.txt	/*Term.cancel()*
 Term.go_to_sf_root()	sf.txt	/*Term.go_to_sf_root()*
 Term.open()	sf.txt	/*Term.open()*
