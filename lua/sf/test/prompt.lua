@@ -45,8 +45,8 @@ function Prompt:open()
   self.win = win
 
   api.nvim_win_set_buf(win, buf)
-  api.nvim_buf_set_keymap(buf, 'n', 'x', ':lua require("sf.test").toggle()<CR>', { noremap = true })
-  api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.test").run_selected()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 'x', ':lua require("sf.test")._toggle()<CR>', { noremap = true })
+  api.nvim_buf_set_keymap(buf, 'n', 'cc', ':lua require("sf.test")._run_selected()<CR>', { noremap = true })
 
   vim.bo[buf].modifiable = true
   self:display_test_names()

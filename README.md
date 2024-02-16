@@ -1,10 +1,6 @@
 # Sf.nvim
 
-Offer basic functionalities for Apex to interact with Salesforce org
-
-## Demostration
-
-https://github.com/xixiaofinland/sf.nvim/assets/13655323/2811b1ac-d2e7-49c2-a9ce-0a84f451e3f8
+Offer common functionalities for Salesforce development
 
 ## Usage
 

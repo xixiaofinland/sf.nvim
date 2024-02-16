@@ -54,13 +54,13 @@ local function set_hotkeys()
   nmap('<leader>sf', require("sf.org").fetch_org_list, "[F]etch orgs info")
 
   nmap('<leader>sd', require("sf.org").diff_in_target_org, "[d]iff in target_org")
-  nmap('<leader>sD', require("sf.org").select_org_to_diff_in, "[D]iff in org...")
+  nmap('<leader>sD', require("sf.org").diff_in_org, "[D]iff in org...")
 
-  nmap('<leader>mr', require("sf.org").retrieve_metadata_lists, "[M]etadata json [R]etrieve")
+  nmap('<leader>mr', require("sf.org").pull_metadata_lists, "[M]etadata json [R]etrieve")
   nmap('<leader>ml', require("sf.org").select_md_to_retrieve, "[M]etadata [L]isting")
 
-  nmap('<leader>mtr', require("sf.org").retrieve_metadata_type_list, "[M]etadata-[T]ype json [R]etrieve")
-  nmap('<leader>mtl', require("sf.org").select_md_type_to_retrieve_all, "[M]etadata-[T]ype [L]isting")
+  nmap('<leader>mtr', require("sf.org").pull_metadata_type_list, "[M]etadata-[T]ype json [R]etrieve")
+  nmap('<leader>mtl', require("sf.org").select_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
 
   nmap('<leader>ma', require("sf.org").retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 

@@ -10,46 +10,63 @@ H.types_to_retrieve = {
   "LightningComponentBundle"
 }
 
-local M = {}
+local Org = {}
 
-function M.fetch_org_list()
+--- It runs "sf org list" command under the hood and stores the org list.
+--- If a target_org is found, the value is saved into "target_org" variable.
+function Org.fetch_org_list()
   H.fetch_org_list()
 end
 
-function M.set_target_org()
+--- It displays the list of orgs, and allows you to define the target_org.
+--- It runs "sf config set target-org" command under the hood to set the target_org.
+function Org.set_target_org()
   H.set_target_org()
 end
 
-function M.set_global_target_org()
+--- sf command allows to define a global target_org.
+--- It runs "sf config set target-org --global " command under the hood.
+function Org.set_global_target_org()
   H.set_global_target_org()
 end
 
-function M.diff_in_target_org()
+--- It fetches the file in the current buffer from target_org and display in the Nvim diff mode.
+--- The left window displays the target_org verison, the right window displays the local verison.
+function Org.diff_in_target_org()
   H.diff_in_target_org()
 end
 
-function M.select_org_to_diff_in()
-  H.select_org_to_diff_in()
+--- Similar to |diff_in_target_org|, you can choose which org to diff with.
+--- The left window displays the org verison, the right window displays the local verison.
+function Org.diff_in_org()
+  H.diff_in_org()
 end
 
-function M.select_md_to_retrieve()
+--- Choose a specific metadata file to retrieve.
+--- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
+function Org.select_md_to_retrieve()
   H.select_md_to_retrieve_content()
 end
 
-function M.retrieve_metadata_lists()
-  H.retrieve_metadata_lists()
+--- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. into local Json files.
+function Org.pull_metadata_lists()
+  H.pull_metadata_lists()
 end
 
-function M.retrieve_apex_under_cursor()
+--- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
+function Org.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
 
-function M.retrieve_metadata_type_list()
-  H.retrieve_metadata_type_list()
+--- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. into a local Json file.
+function Org.pull_metadata_type_list()
+  H.pull_metadata_type_list()
 end
 
-function M.select_md_type_to_retrieve_all()
-  H.select_md_type_to_retrieve_all()
+--- Select a specific metadata-type to download all files. For example, download all ApexClass files.
+--- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
+function Org.select_md_type_to_retrieve()
+  H.select_md_type_to_retrieve()
 end
 
 -- Helper --------------------
@@ -151,7 +168,7 @@ H.diff_in_target_org = function()
   H.diff_in(S.target_org)
 end
 
-H.select_org_to_diff_in = function()
+H.diff_in_org = function()
   U.is_table_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
@@ -320,7 +337,7 @@ H.retrieve_md = function(type, name)
   T.run(cmd)
 end
 
-H.retrieve_metadata_lists = function()
+H.pull_metadata_lists = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
@@ -344,7 +361,7 @@ H.retrieve_metadata_lists = function()
   end
 end
 
-H.retrieve_metadata_type_list = function()
+H.pull_metadata_type_list = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. '/md'
@@ -364,7 +381,7 @@ H.retrieve_metadata_type_list = function()
   U.job_call(cmd, msg, err_msg);
 end
 
-H.select_md_type_to_retrieve_all = function()
+H.select_md_type_to_retrieve = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. '/md'
@@ -419,4 +436,4 @@ H.retrieve_md_type = function(type)
   T.run(cmd)
 end
 
-return M
+return Org
