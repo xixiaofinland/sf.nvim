@@ -4,7 +4,8 @@ Offer common functionalities for Salesforce development
 
 ## Usage
 
-Maybe the best way is to first take a peek at its [default keybindings](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua)
+Take a peek at its [default keybindings](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua),
+or check the modules below.
 
 ## Modules
 
