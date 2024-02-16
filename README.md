@@ -11,7 +11,7 @@ Take a peek at all user commands and default hotkeys [here](https://github.com/x
 ## Modules
 
 - `SFOrg`  The module to interact with Salesforce org
-- `SFTerm` The module to build an integrated terminal
+- `SFTerm` The module to run commands in an integrated floating terminal
 - `SFTest` The module to facilitate test running
 
 Note. use `:h` (e.g. `:h SFOrg`) to read more information.
