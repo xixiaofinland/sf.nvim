@@ -15,3 +15,20 @@ or check the modules below.
 
 Note. use `:h` to read more information.
 
+## Install
+
+Lazy.nvim
+
+```
+return {
+  'xixiaofinland/sf.nvim',
+  branch = 'dev', -- use dev branch for nightly features
+
+  dependencies = {
+    "nvim-treesitter/nvim-treesitter",
+    "nvim-telescope/telescope.nvim",
+  },
+}
+
+```
+
