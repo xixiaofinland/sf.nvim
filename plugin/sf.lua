@@ -9,6 +9,51 @@ vim.filetype.add({
   }
 })
 
+-- user commands
+local org = require('sf.org')
+local term = require('sf.term')
+
+vim.api.nvim_create_user_command("SfFetchOrgList", function()
+    org.fetch_org_list()
+end, {})
+
+vim.api.nvim_create_user_command("SfSetTargetOrg", function()
+    org.set_target_org()
+end, {})
+
+vim.api.nvim_create_user_command("SfDiff", function()
+    org.diff_in_target_org()
+end, {})
+
+vim.api.nvim_create_user_command("SfDiffInOrg", function()
+    org.diff_in_org()
+end, {})
+
+vim.api.nvim_create_user_command("SfToggle", function()
+    term.toggle()
+end, {})
+
+vim.api.nvim_create_user_command("SfSaveAndPush", function()
+    term.save_and_push()
+end, {})
+
+vim.api.nvim_create_user_command("SfRetrieve", function()
+    term.retrieve()
+end, {})
+
+vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
+    term.run_all_tests_in_this_file()
+end, {})
+
+vim.api.nvim_create_user_command("SfRepeatTest", function()
+    term.repeat_last_tests()
+end, {})
+
+vim.api.nvim_create_user_command("SfCancelCommand", function()
+    term.cancel()
+end, {})
+
+-- autocmds
 local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
 vim.api.nvim_create_autocmd({ 'FileType' }, {
