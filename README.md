@@ -64,7 +64,7 @@ For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as be
 Often used commands are also saved as user commands: Ex `:Sf` then hit the tab to list all defined user commands.
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
-For example:
+Some User Commands Short description
 
 - `SfSetTargetOrg` set a target_org by choosing from authenticated org names
 
