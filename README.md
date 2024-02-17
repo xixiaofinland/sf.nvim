@@ -29,7 +29,7 @@ About the dependencies:
 - `SFTerm` The module to run commands in an integrated floating terminal.
 - `SFTest` The module to facilitate test running.
 
-Tip: use `:h SFOrg`, `:h SFTerm`, `:h SFTest` to see more details.
+Tip: You can read help.txt [here](https://github.com/xixiaofinland/sf.nvim/blob/main/doc/sf.txt), or use `:h SFOrg`, `:h SFTerm`, `:h SFTest` in Nvim to see more details.
 
 # Usage
 
