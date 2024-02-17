@@ -1,10 +1,10 @@
 local api = vim.api
 local cmd = api.nvim_command
 
-local Term = {}
+local T = {}
 local H = {}
 
-function Term:new()
+function T:new()
   return setmetatable({
     win = nil,
     buf = nil,
@@ -13,7 +13,7 @@ function Term:new()
   }, { __index = self })
 end
 
-function Term:setup(cfg)
+function T:setup(cfg)
   if not cfg then
     return vim.notify('SFTerm: setup() is optional. Please remove it!', vim.log.levels.WARN)
   end
@@ -23,14 +23,14 @@ function Term:setup(cfg)
   return self
 end
 
-function Term:store(win, buf)
+function T:store(win, buf)
   self.win = win
   self.buf = buf
 
   return self
 end
 
-function Term:run(cmd)
+function T:run(cmd)
   if self.is_running then
     return vim.notify('Wait the current task to finish.', vim.log.levels.WARN)
   end
@@ -52,7 +52,7 @@ function Term:run(cmd)
   return self
 end
 
-function Term:run_after_setup(cmd)
+function T:run_after_setup(cmd)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
 
@@ -76,7 +76,7 @@ function Term:run_after_setup(cmd)
   return self
 end
 
-function Term:toggle()
+function T:toggle()
   if H.is_win_valid(self.win) then
     self:close()
   else
@@ -86,7 +86,7 @@ function Term:toggle()
   return self
 end
 
-function Term:open()
+function T:open()
   if H.is_win_valid(self.win) then
     return
   end
@@ -106,7 +106,7 @@ function Term:open()
   return self
 end
 
-function Term:close()
+function T:close()
   if not H.is_win_valid(self.win) then
     return self
   end
@@ -116,7 +116,7 @@ function Term:close()
   return self
 end
 
-function Term:create_and_open_win(buf)
+function T:create_and_open_win(buf)
   local cfg = self.config
 
   local dim = H.get_dimension(cfg.dimensions)
@@ -139,7 +139,7 @@ function Term:create_and_open_win(buf)
   return win
 end
 
-function Term:remember_cursor()
+function T:remember_cursor()
   self.last_win = api.nvim_get_current_win()
   self.prev_win = vim.fn.winnr('#')
   self.last_pos = api.nvim_win_get_cursor(self.last_win)
@@ -147,7 +147,7 @@ function Term:remember_cursor()
   return self
 end
 
-function Term:restore_cursor()
+function T:restore_cursor()
   if self.last_win and self.last_pos ~= nil then
     if self.prev_win > 0 then
       cmd(('silent! %s wincmd w'):format(self.prev_win))
@@ -166,7 +166,7 @@ function Term:restore_cursor()
   return self
 end
 
-function Term:scroll_to_end()
+function T:scroll_to_end()
   cmd('$')
   return self
 end
@@ -217,4 +217,4 @@ function H.get_dimension(opts)
   }
 end
 
-return Term
+return T

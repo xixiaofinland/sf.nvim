@@ -12,6 +12,7 @@ vim.filetype.add({
 -- user commands
 local org = require('sf.org')
 local term = require('sf.term')
+local test = require('sf.test')
 
 vim.api.nvim_create_user_command("SfFetchOrgList", function()
     org.fetch_org_list()
@@ -41,16 +42,20 @@ vim.api.nvim_create_user_command("SfRetrieve", function()
     term.retrieve()
 end, {})
 
+vim.api.nvim_create_user_command("SfCancelCommand", function()
+    term.cancel()
+end, {})
+
 vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
-    term.run_all_tests_in_this_file()
+    test.run_all_tests_in_this_file()
+end, {})
+
+vim.api.nvim_create_user_command("SfRunCurrentTest", function()
+    test.run_current_test()
 end, {})
 
 vim.api.nvim_create_user_command("SfRepeatTest", function()
-    term.repeat_last_tests()
-end, {})
-
-vim.api.nvim_create_user_command("SfCancelCommand", function()
-    term.cancel()
+    test.repeat_last_tests()
 end, {})
 
 -- autocmds
@@ -117,11 +122,11 @@ local function set_hotkeys()
   nmap('<leader>sp', require("sf.term").save_and_push, "[P]ush current file")
   nmap('<leader>sr', require("sf.term").retrieve, "[R]etrieve current file")
 
-  nmap('<leader>ta', require("sf.term").run_all_tests_in_this_file, "[T]est [A]ll")
-  nmap('<leader>tt', require("sf.term").run_current_test, "[T]est [T]his under cursor")
+  nmap('<leader>ta', require("sf.test").run_all_tests_in_this_file, "[T]est [A]ll")
+  nmap('<leader>tt', require("sf.test").run_current_test, "[T]est [T]his under cursor")
 
   nmap('<leader>to', require("sf.test").open, "[T]est [O]pen Buf Select")
-  nmap('<leader>tr', require("sf.term").repeat_last_tests, "[T]est [R]epeat")
+  nmap('<leader>tr', require("sf.test").repeat_last_tests, "[T]est [R]epeat")
 end
 
 vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType' }, {
