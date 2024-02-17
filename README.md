@@ -42,6 +42,7 @@ These hotkeys are enabled ONLY when the current file is:
 - in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
 
 When both conditions are met, type `<leader>s` should see hotkeys as in the screenshot.
+![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
 ## Display target_org
 
