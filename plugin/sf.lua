@@ -59,6 +59,23 @@ vim.api.nvim_create_user_command("SfRepeatTest", function()
     test.repeat_last_tests()
 end, {})
 
+vim.api.nvim_create_user_command("SfPullMetadataTypeList", function()
+    org.pull_metadata_type_list()
+end, {})
+
+vim.api.nvim_create_user_command("SfRetrieveMetadataType", function()
+    org.select_md_type_to_retrieve()
+end, {})
+
+vim.api.nvim_create_user_command("SfPullMetadataList", function()
+    org.pull_metadata_lists()
+end, {})
+
+vim.api.nvim_create_user_command("SfRetrieveMetadata", function()
+    org.select_md_to_retrieve()
+end, {})
+
+
 -- autocmds
 local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
