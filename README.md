@@ -55,7 +55,7 @@ For example:
 
 Lazy.nvim
 
-```
+```lua
 return {
   'xixiaofinland/sf.nvim',
   branch = 'main', -- use dev branch for cutting-edge features
