@@ -47,7 +47,7 @@ When both conditions are met, type `<leader>s` should see hotkeys as in the scre
 ## Display target_org
 
 When Nvim starts, sf.nvim auto-runs `SfFetchOrgList` to fetch the authenticated org names and save the target_org in `require'sf'.target_org`.
-As majority of commands in sf.nvim executes against a target_org, it's wise to display target_org in your statusline.
+As a majority of commands execute against a target_org, it's wise to display target_org in your statusline.
 
 For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as below.
 
@@ -61,7 +61,7 @@ For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as be
 
 ## Often used commands
 
-Often used commands are also saved as user commands: Ex `:Sf` then hit tab to list all defined user commands.
+Often used commands are also saved as user commands: Ex `:Sf` then hit the tab to list all defined user commands.
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
 For example:
