@@ -4,10 +4,11 @@ Offer common functionalities for Salesforce development
 
 ## Modules
 
-- `SFOrg`  The module to interact with Salesforce org. `:h SFOrg` to see its method description.
-- `SFTerm` The module to run commands in an integrated floating terminal. `:h SFTerm` to see its method description.
-- `SFTest` The module to facilitate test running. `:h SFTest` to see its method description.
+- `SFOrg`  The module to interact with Salesforce org.
+- `SFTerm` The module to run commands in an integrated floating terminal.
+- `SFTest` The module to facilitate test running.
 
+Tip: use `:h SFOrg`, `:h SFTerm`, `:h SFTest` to see more details.
 
 ## Usage
 
