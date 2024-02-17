@@ -59,7 +59,7 @@ function Org.select_md_to_retrieve()
   H.select_md_to_retrieve_content()
 end
 
---- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. into local Json files.
+--- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
 function Org.pull_metadata_lists()
   H.pull_metadata_lists()
 end
@@ -69,8 +69,7 @@ function Org.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
 
---- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. into a local Json file.
-function Org.pull_metadata_type_list()
+--- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
   H.pull_metadata_type_list()
 end
 
