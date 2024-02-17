@@ -21,9 +21,7 @@ return {
 
 About the dependencies:
  - `nvim-treesitter` includes Apex parser and syntax highlight. There is no reason you don't install it at the first place. It's also used in sf.nvim to identify Apex test class/menthod.
- - `telescope.nvim` is used to pick up metadata files
-
-
+ - `telescope.nvim` is only used in `SfRetrieveMetadata` and `SfRetrieveMetadataType` to fuzzy search metadata.
 
 # Modules
 
