@@ -37,14 +37,14 @@ Tip: You can read help.txt [here](https://github.com/xixiaofinland/sf.nvim/blob/
 
 Hotkeys and user commands are defined [here](https://github.com/xixiaofinland/sf.nvim/blob/556f0f5b671098c12916730fe68d4a7f5de3ffd2/plugin/sf.lua#L119).
 
-Both of them are enabled ONLY when the current file is:
-- `apex`, `javascript`, or `html` filetype and
-- in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
+They are enabled ONLY when the file in the current buffer is:
+- `apex`, `javascript`, or `html` filetype
+- and in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
 
 When both conditions are met, type `<leader>s` should see hotkeys as in the screenshot.
 ![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
-Type `:Sf` in Ex will list all user commands.
+Type `:Sf` in Ex will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
 ## Display target_org
