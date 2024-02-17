@@ -13,7 +13,14 @@ local T = new_set({
   },
 })
 
-T['error'] = function()
+T['get()'] = MiniTest.new_set()
+
+T['get()']['target_org not empty then success'] = function()
+  child.lua([[M.target_org = 'sandbox1']])
+  eq(child.lua([[return M.get()]]), 'sandbox1')
+end
+
+T['get()']['target_org empty then err'] = function()
   expect.error(function() child.lua([[M.get()]]) end)
 end
 
