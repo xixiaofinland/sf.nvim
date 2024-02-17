@@ -17,7 +17,7 @@ Tip: use `:h SFOrg`, `:h SFTerm`, `:h SFTest` to see more details.
 Default hotkeys are defined as part of the package [here](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua).
 
 These hotkeys are enabled ONLY when the current file is:
-- `apex`, `javascript`, or `html` type
+- `apex`, `javascript`, or `html` type and
 - in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
 
 ### Display target_org
