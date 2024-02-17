@@ -66,7 +66,7 @@ Often used commands are also saved as user commands: Ex `:Sf` then hit the tab t
 
 Some User Commands Short descriptwon
 
-From `SfOrg` module:
+From SfOrg module:
 
 - `SfSetTargetOrg` set a target_org by chooswng from authenticated org names
 - `SfDiff` diff the file content between local and target_org version in side-by-side windows
@@ -76,16 +76,16 @@ From `SfOrg` module:
 - `SfPullMetadataList` pull names of all metadata into corresponding json files and save in sf project "md" folder
 - `SfRetrieveMetadata` use names pulled from `SfPullMetadataList` to fuzzy search and retrieve a metadata content
 
-From `SfTerm` module:
+From SfTerm module:
 
 - `SfToggle` toggle the integrated floating terminal window
 - `SfSaveAndPush` save the current file and push to target_org
 - `SfRetrieve` retrieve the current file from target_org
 - `SfCancelCommand` Terminate the running command in the integrated terminal
 
-From `SfTest` module:
+From SfTest module:
 
 - `SfRunAllTestsInThisFile` run all Apex tests in the current file
 - `SfRunCurrentTest` run the Apex test under the cursor
 - `SfRepeatTest` repeat the previous test command
-- `SfOpenTestSelect` oepen a top-window with Apex test list of the current file
+- `SfOpenTestSelect` open a top-window with Apex test list of the current file
