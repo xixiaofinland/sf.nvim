@@ -41,6 +41,8 @@ These hotkeys are enabled ONLY when the current file is:
 - `apex`, `javascript`, or `html` type and
 - in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
 
+When both conditions are met, type `<leader>s` should see hotkeys as in the screenshot.
+
 ## Display target_org
 
 When Nvim starts, sf.nvim auto-runs `SfFetchOrgList` to fetch the authenticated org names and save the target_org in `require'sf'.target_org`.
