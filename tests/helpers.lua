@@ -6,7 +6,6 @@ Helpers.new_child_neovim = function()
   child.setup = function()
     child.restart({'-u', 'scripts/minimal_init.lua'})
     child.bo.readonly = false
-    child.lua([[M = require('sf')]])
   end
 
   return child

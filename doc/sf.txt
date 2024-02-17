@@ -125,7 +125,7 @@ Features:
 ------------------------------------------------------------------------------
                                                                    *Test.open()*
                                  `Test.open`()
-open a top window that displays the list of Apex tests in the current file.
+Open a top window that displays the list of Apex tests in the current file.
 Allows to select/deselect tests and execute.
 
 ------------------------------------------------------------------------------

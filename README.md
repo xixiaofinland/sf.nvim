@@ -29,7 +29,7 @@ About the dependencies:
 - `SFTerm` The module to run commands in an integrated floating terminal.
 - `SFTest` The module to facilitate test running.
 
-Tip: use `:h SFOrg`, `:h SFTerm`, `:h SFTest` to see more details.
+Tip: You can read help.txt [here](https://github.com/xixiaofinland/sf.nvim/blob/main/doc/sf.txt), or use `:h SFOrg`, `:h SFTerm`, `:h SFTest` in Nvim to see more details.
 
 # Usage
 
@@ -63,8 +63,6 @@ For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as be
 
 Often used commands are also saved as user commands: Ex `:Sf` then hit the tab to list all defined user commands.
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
-
-Some User Commands Short descriptwon
 
 From SfOrg module:
 

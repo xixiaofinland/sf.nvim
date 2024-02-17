@@ -12,7 +12,7 @@ local U = require('sf.util')
 local p = require('sf.test.prompt'):new()
 local Test = {}
 
---- open a top window that displays the list of Apex tests in the current file.
+--- Open a top window that displays the list of Apex tests in the current file.
 --- Allows to select/deselect tests and execute.
 Test.open = function()
   p:open()
