@@ -1,13 +1,11 @@
 --- *SFOrg* The module to interact with Salesforce org
---- *Sf org* *SfOrg*
----
---- =====================================================
+--- *Sf org*
 ---
 --- Features:
 ---
---- - Org list and target_org related commands.
---- - Diff metadata files: local version v.s. org version
---- - Download and list Metadata-type and Metadata files to pull from target_org
+--- - Retrieve org list and define target_org.
+--- - Compare file content between local version and org version.
+--- - Retrieve metadata info from org
 
 local U = require('sf.util');
 local S = require('sf');
@@ -59,7 +57,7 @@ function Org.select_md_to_retrieve()
   H.select_md_to_retrieve_content()
 end
 
---- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. into local Json files.
+--- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
 function Org.pull_metadata_lists()
   H.pull_metadata_lists()
 end
@@ -69,7 +67,7 @@ function Org.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
 
---- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. into a local Json file.
+--- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
 function Org.pull_metadata_type_list()
   H.pull_metadata_type_list()
 end

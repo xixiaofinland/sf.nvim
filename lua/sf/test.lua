@@ -1,14 +1,14 @@
 --- *SFTest* Test module
---- *Sf test* *SfTest*
----
---- =====================================================
+--- *Sf test*
 ---
 --- Features:
 ---
---- - create a Apex test list to choose to execute
+--- - Apex test related features
 
 local S = require('sf')
-local Term = require('sf.term')
+local T = require('sf.term')
+local TS = require('sf.ts')
+local U = require('sf.util')
 local p = require('sf.test.prompt'):new()
 local Test = {}
 
@@ -18,16 +18,45 @@ Test.open = function()
   p:open()
 end
 
---- local method. Do not call it directly.
+--- Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
+Test.run_current_test = function()
+  local test_class_name = TS.get_test_class_name()
+  U.is_empty(test_class_name)
+
+  local test_name = TS.get_current_test_method_name()
+  U.is_empty(test_name)
+
+  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name, S.get())
+  S.last_tests = cmd
+  T.run(cmd)
+end
+
+--- Run all Apex tests in the current Apex file in target_org. The command is sent to SFTerm.
+Test.run_all_tests_in_this_file = function()
+  local test_class_name = TS.get_test_class_name()
+  U.is_empty(test_class_name)
+
+  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, S.get())
+  T.run(cmd)
+end
+
+--- Repeat the last executed Apex test command. The command is sent to SFTerm.
+Test.repeat_last_tests = function()
+  U.is_empty(S.last_tests)
+
+  T:run(S.last_tests)
+end
+
+-- local methods
+
 Test._toggle = function()
   p:toggle()
 end
 
---- local method. Do not call it directly.
 Test._run_selected = function()
   local cmd = p:build_selected_tests_cmd() .. ' -o ' .. S.get()
   p:close()
-  Term.run(cmd)
+  T.run(cmd)
   S.last_tests = cmd
 end
 
