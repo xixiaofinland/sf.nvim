@@ -16,14 +16,14 @@ Tip: use `:h SFOrg`, `:h SFTerm`, `:h SFTest` to see more details.
 
 Default hotkeys are defined as part of the package [here](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua).
 
-These hotkeys are enabled ONLY when the file in the current buffer meets both conditions:
-- with filetype `apex`, `javascript`, or `html` and
-- in a salesforce project folder (i.e. has `.forceignore` or `sfdx-project.json`)
+These hotkeys are enabled ONLY when the current file is:
+- `apex`, `javascript`, or `html` type
+- in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
 
 ### Display target_org
 
-When Nvim starts, sf.nvim runs `SfFetchOrgList` to automatically fetch the authenticated org names and save the target_org in `require'sf'.target_org`.
-As majority of commands in sf.nvim executes against a target_org, it's wise to display target_org name in your statusline.
+When Nvim starts, sf.nvim auto-runs `SfFetchOrgList` to fetch the authenticated org names and save the target_org in `require'sf'.target_org`.
+As majority of commands in sf.nvim executes against a target_org, it's wise to display target_org in your statusline.
 
 For example, I use lualine.nvim, and configure/show it as below.
 
@@ -40,8 +40,9 @@ Often used commands are also saved as user commands: Ex `:Sf` then hit tab to li
 
 For example:
 
-- `SfSetTargetOrg` choose target_org
-- `SfDiff` diff the file content between local and org version in side-by-side windows
+- `SfSetTargetOrg` set a target_org by choosing from authenticated org names
+- `SfDiff` diff the file content between local and target_org version in side-by-side windows
+- `SfDiffInOrg` diff the file content between local and chosen org version in side-by-side windows
 - `SfToggle` toggle the integrated floating terminal window
 - `SfSaveAndPush` save the current file and push to target_org
 - `SfRetrieve` retrieve the current file from target_org
