@@ -15,6 +15,8 @@ local org = require('sf.org')
 local term = require('sf.term')
 local test = require('sf.test')
 
+-- From SFOrg
+
 vim.api.nvim_create_user_command("SfFetchOrgList", function()
     org.fetch_org_list()
 end, {})
@@ -29,34 +31,6 @@ end, {})
 
 vim.api.nvim_create_user_command("SfDiffInOrg", function()
     org.diff_in_org()
-end, {})
-
-vim.api.nvim_create_user_command("SfToggle", function()
-    term.toggle()
-end, {})
-
-vim.api.nvim_create_user_command("SfSaveAndPush", function()
-    term.save_and_push()
-end, {})
-
-vim.api.nvim_create_user_command("SfRetrieve", function()
-    term.retrieve()
-end, {})
-
-vim.api.nvim_create_user_command("SfCancelCommand", function()
-    term.cancel()
-end, {})
-
-vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
-    test.run_all_tests_in_this_file()
-end, {})
-
-vim.api.nvim_create_user_command("SfRunCurrentTest", function()
-    test.run_current_test()
-end, {})
-
-vim.api.nvim_create_user_command("SfRepeatTest", function()
-    test.repeat_last_tests()
 end, {})
 
 vim.api.nvim_create_user_command("SfPullMetadataTypeList", function()
@@ -75,6 +49,41 @@ vim.api.nvim_create_user_command("SfRetrieveMetadata", function()
     org.select_md_to_retrieve()
 end, {})
 
+-- From SFTerm
+
+vim.api.nvim_create_user_command("SfToggle", function()
+    term.toggle()
+end, {})
+
+vim.api.nvim_create_user_command("SfSaveAndPush", function()
+    term.save_and_push()
+end, {})
+
+vim.api.nvim_create_user_command("SfRetrieve", function()
+    term.retrieve()
+end, {})
+
+vim.api.nvim_create_user_command("SfCancelCommand", function()
+    term.cancel()
+end, {})
+
+-- From SFTest
+
+vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
+    test.run_all_tests_in_this_file()
+end, {})
+
+vim.api.nvim_create_user_command("SfRunCurrentTest", function()
+    test.run_current_test()
+end, {})
+
+vim.api.nvim_create_user_command("SfRepeatTest", function()
+    test.repeat_last_tests()
+end, {})
+
+vim.api.nvim_create_user_command("SfOpenTestSelect", function()
+    test.open()
+end, {})
 
 -- autocmds
 local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })

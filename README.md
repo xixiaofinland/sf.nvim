@@ -64,23 +64,28 @@ For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as be
 Often used commands are also saved as user commands: Ex `:Sf` then hit the tab to list all defined user commands.
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
-Some User Commands Short description
+Some User Commands Short descriptwon
 
-- `SfSetTargetOrg` set a target_org by choosing from authenticated org names
+From `SfOrg` module:
 
+- `SfSetTargetOrg` set a target_org by chooswng from authenticated org names
 - `SfDiff` diff the file content between local and target_org version in side-by-side windows
 - `SfDiffInOrg` diff the file content between local and chosen org version in side-by-side windows
+- `SfPullMetadataTypeList` pull names of MetadataType into a json file and save in sf project "md" folder
+- `SfRetrieveMetadataType` use names pulled from `SfPullMetadataTypeList` to fuzzy search and retrieve all content
+- `SfPullMetadataList` pull names of all metadata into corresponding json files and save in sf project "md" folder
+- `SfRetrieveMetadata` use names pulled from `SfPullMetadataList` to fuzzy search and retrieve a metadata content
+
+From `SfTerm` module:
 
 - `SfToggle` toggle the integrated floating terminal window
 - `SfSaveAndPush` save the current file and push to target_org
 - `SfRetrieve` retrieve the current file from target_org
 - `SfCancelCommand` Terminate the running command in the integrated terminal
 
-- `SfPullMetadataTypeList` pull names of MetadataType into a json file and save in sf project "md" folder
-- `SfRetrieveMetadataType` use names pulled from `SfPullMetadataTypeList` to fuzzy search and retrieve all content
-- `SfPullMetadataList` pull names of all metadata into corresponding json files and save in sf project "md" folder
-- `SfRetrieveMetadata` use names pulled from `SfPullMetadataList` to fuzzy search and retrieve a metadata content
+From `SfTest` module:
 
 - `SfRunAllTestsInThisFile` run all Apex tests in the current file
 - `SfRunCurrentTest` run the Apex test under the cursor
 - `SfRepeatTest` repeat the previous test command
+- `SfOpenTestSelect` oepen a top-window with Apex test list of the current file
