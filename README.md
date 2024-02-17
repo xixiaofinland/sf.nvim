@@ -25,7 +25,7 @@ These hotkeys are enabled ONLY when the current file is:
 When Nvim starts, sf.nvim auto-runs `SfFetchOrgList` to fetch the authenticated org names and save the target_org in `require'sf'.target_org`.
 As majority of commands in sf.nvim executes against a target_org, it's wise to display target_org in your statusline.
 
-For example, I use lualine.nvim, and configure/show it as below.
+For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as below.
 
 ```lua
     sections = {
@@ -33,10 +33,12 @@ For example, I use lualine.nvim, and configure/show it as below.
         "require'sf'.target_org",
       } },
 ```
+![Image 006](https://github.com/xixiaofinland/sf.nvim/assets/13655323/75670011-68da-48d6-896e-de7ce637ee17)
 
 ### Often used commands
 
 Often used commands are also saved as user commands: Ex `:Sf` then hit tab to list all defined user commands.
+![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
 For example:
 
