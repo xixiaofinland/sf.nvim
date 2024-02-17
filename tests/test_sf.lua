@@ -1,11 +1,12 @@
-local new_set = MiniTest.new_set
+local helpers = dofile('tests/helpers.lua')
+local child = helpers.new_child_neovim()
 local expect, eq = MiniTest.expect, MiniTest.expect.equality
-local child = MiniTest.new_child_neovim()
+local new_set = MiniTest.new_set
 
 local T = new_set({
   hooks = {
     pre_case = function()
-      child.restart({ '-u', 'scripts/minimal_init.lua' })
+      child.setup()
       child.lua([[M = require('sf')]])
     end,
     post_once = child.stop,
