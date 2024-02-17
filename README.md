@@ -27,7 +27,7 @@ As majority of commands in sf.nvim executes against a target_org, it's wise to d
 
 For example, I use lualine.nvim, and configure/show it as below.
 
-```
+```lua
     sections = {
       lualine_c = { 'filename', {
         "require'sf'.target_org",
