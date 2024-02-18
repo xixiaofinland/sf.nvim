@@ -22,21 +22,15 @@ H.types_to_retrieve = {
 
 local Md = {}
 
+--- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+function Md.pull_md_json()
+  H.pull_md_json()
+end
+
 --- Choose a specific metadata file to retrieve.
 --- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
-end
-
---- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
---- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
-function Md.list_md_type_to_retrieve()
-  H.list_md_type_to_retrieve()
-end
-
---- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
-function Md.pull_md_json()
-  H.pull_md_json()
 end
 
 --- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
@@ -47,6 +41,12 @@ end
 --- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 function Md.pull_and_list_md_type()
   H.pull_md_type_json(H.list_md_type_to_retrieve)
+end
+
+--- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
+--- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
+function Md.list_md_type_to_retrieve()
+  H.list_md_type_to_retrieve()
 end
 
 --- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
