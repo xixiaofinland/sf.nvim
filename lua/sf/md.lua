@@ -12,6 +12,7 @@ local T = require('sf.term')
 local U = require('sf.util');
 
 local H = {}
+H.md_folder_name = '/md'
 H.types_to_retrieve = {
   "ApexClass",
   "ApexTrigger",
@@ -38,14 +39,14 @@ function Md.pull_metadata_lists()
   H.pull_metadata_lists()
 end
 
---- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
-function Md.retrieve_apex_under_cursor()
-  H.retrieve_apex_under_cursor()
-end
-
 --- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
 function Md.pull_metadata_type_list()
   H.pull_metadata_type_list()
+end
+
+--- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
+function Md.retrieve_apex_under_cursor()
+  H.retrieve_apex_under_cursor()
 end
 
 -- Helper --------------------
@@ -60,7 +61,7 @@ H.retrieve_metadata = function()
   U.is_empty(S.target_org)
 
   local md_to_display = {}
-  local md_folder = U.get_sf_root() .. '/md'
+  local md_folder = U.get_sf_root() .. H.md_folder_name
 
   for _, type in pairs(H.types_to_retrieve) do
     local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
@@ -138,7 +139,7 @@ end
 H.pull_metadata = function(type)
   U.is_empty(S.target_org)
 
-  local md_folder = U.get_sf_root() .. '/md'
+  local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
     local result = vim.fn.mkdir(md_folder)
     if result == 0 then
@@ -158,7 +159,7 @@ end
 H.pull_metadata_type_list = function()
   U.is_empty(S.target_org)
 
-  local md_folder = U.get_sf_root() .. '/md'
+  local md_folder = U.get_sf_root() .. H.md_folder_name
   local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
 
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -178,7 +179,7 @@ end
 H.retrieve_metadata_type = function()
   U.is_empty(S.target_org)
 
-  local md_folder = U.get_sf_root() .. '/md'
+  local md_folder = U.get_sf_root() .. H.md_folder_name
   local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
 
   if vim.fn.filereadable(metadata_types_file) == 0 then
