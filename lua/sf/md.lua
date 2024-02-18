@@ -160,8 +160,6 @@ H.pull_metadata_type_list = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
-  local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
-
   if vim.fn.isdirectory(md_folder) == 0 then
     local result = vim.fn.mkdir(md_folder)
     if result == 0 then
@@ -169,6 +167,7 @@ H.pull_metadata_type_list = function()
     end
   end
 
+  local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
   local cmd = string.format('sf org list metadata-types -o %s -f %s', S.target_org, metadata_types_file)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
@@ -180,13 +179,13 @@ H.retrieve_metadata_type = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
-  local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
+  local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
 
-  if vim.fn.filereadable(metadata_types_file) == 0 then
-    return vim.notify('Metadata-type file not exist! Failed to pull?', vim.log.levels.WARN)
+  if vim.fn.filereadable(md_type_json) == 0 then
+    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels.ERROR)
   end
 
-  local file_content = vim.fn.readfile(metadata_types_file)
+  local file_content = vim.fn.readfile(md_type_json)
   local tbl = vim.json.decode(table.concat(file_content), {})
   local md_types = tbl["metadataObjects"]
 
