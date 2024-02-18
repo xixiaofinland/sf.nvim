@@ -9,7 +9,7 @@
 local S = require('sf')
 local TS = require('sf.ts')
 local U = require('sf.util')
-local t = require('sf.term.terminal'):new()
+local t = require('sf.term.raw_term'):new()
 
 local Term = {}
 
