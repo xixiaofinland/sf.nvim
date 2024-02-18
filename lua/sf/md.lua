@@ -156,7 +156,7 @@ H.pull_metadata = function(type)
   U.job_call(cmd, msg, err_msg);
 end
 
-H.pull_metadata_type_list = function()
+H.pull_metadata_type_list = function(cb)
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
@@ -172,7 +172,7 @@ H.pull_metadata_type_list = function()
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
-  U.job_call(cmd, msg, err_msg);
+  U.job_call(cmd, msg, err_msg, cb);
 end
 
 H.retrieve_metadata_type = function()
