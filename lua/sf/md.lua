@@ -49,6 +49,12 @@ end
 
 -- Helper --------------------
 
+local pickers = require "telescope.pickers"
+local finders = require "telescope.finders"
+local conf = require("telescope.config").values
+local actions = require "telescope.actions"
+local action_state = require "telescope.actions.state"
+
 H.select_md_to_retrieve = function()
   U.is_empty(S.target_org)
 
