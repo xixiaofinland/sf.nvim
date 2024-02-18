@@ -54,7 +54,7 @@ end
 --- Choose a specific metadata file to retrieve.
 --- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 function Org.select_md_to_retrieve()
-  H.select_md_to_retrieve_content()
+  H.select_md_to_retrieve()
 end
 
 --- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
@@ -275,7 +275,7 @@ H.find_file = function(path, target)
   end
 end
 
-H.select_md_to_retrieve_content = function()
+H.select_md_to_retrieve = function()
   U.is_empty(S.target_org)
   local root = U.get_sf_root()
 
@@ -286,7 +286,8 @@ H.select_md_to_retrieve_content = function()
     local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      vim.notify('%s not exist! Failed to pull?' .. md_file, vim.log.levels.WARN)
+      vim.notify('%s not exist! Pulling now...' .. md_file, vim.log.levels.WARN)
+      H.pull_metadata(type)
     else
       local metadata = vim.fn.readfile(md_file)
       local md_tbl = vim.json.decode(table.concat(metadata), {})
@@ -298,6 +299,8 @@ H.select_md_to_retrieve_content = function()
       end
     end
   end
+
+  U.is_table_empty(md_to_display)
 
   H.tele_metadata(md_to_display, {})
 end
@@ -347,11 +350,15 @@ H.retrieve_md = function(type, name)
 end
 
 H.pull_metadata_lists = function()
+  for _, type in pairs(H.types_to_retrieve) do
+    H.pull_metadata(type)
+  end
+end
+
+H.pull_metadata = function(type)
   U.is_empty(S.target_org)
-  local root = U.get_sf_root()
 
   local md_folder = U.get_sf_root() .. '/md'
-
   if vim.fn.isdirectory(md_folder) == 0 then
     local result = vim.fn.mkdir(md_folder)
     if result == 0 then
@@ -359,15 +366,13 @@ H.pull_metadata_lists = function()
     end
   end
 
-  for _, type in pairs(H.types_to_retrieve) do
-    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
+  local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
 
-    local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, S.target_org, md_file)
-    local msg = string.format('%s retrieved', type)
-    local err_msg = string.format('%s retrieve failed: %s', type, md_file)
+  local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, S.target_org, md_file)
+  local msg = string.format('%s retrieved', type)
+  local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
-    U.job_call(cmd, msg, err_msg);
-  end
+  U.job_call(cmd, msg, err_msg);
 end
 
 H.pull_metadata_type_list = function()
