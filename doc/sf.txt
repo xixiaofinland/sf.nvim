@@ -10,31 +10,36 @@ Features:
 - Store metadata and metadata-type names into local json files
 
 ------------------------------------------------------------------------------
-                                                    *Md.select_md_to_retrieve()*
-                          `Md.select_md_to_retrieve`()
+                                                             *Md.pull_md_json()*
+                              `Md.pull_md_json`()
+Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+
+------------------------------------------------------------------------------
+                                                      *Md.list_md_to_retrieve()*
+                           `Md.list_md_to_retrieve`()
 Choose a specific metadata file to retrieve.
 Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 
 ------------------------------------------------------------------------------
-                                                      *Md.pull_metadata_lists()*
-                           `Md.pull_metadata_lists`()
-Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+                                                        *Md.pull_md_type_json()*
+                            `Md.pull_md_type_json`()
+Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
+
+------------------------------------------------------------------------------
+                                                 *Md.list_md_type_to_retrieve()*
+                        `Md.list_md_type_to_retrieve`()
+Select a specific metadata-type to download all its files. For example, download all ApexClass files.
+Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
+
+------------------------------------------------------------------------------
+                                                    *Md.pull_and_list_md_type()*
+                          `Md.pull_and_list_md_type`()
+`pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 
 ------------------------------------------------------------------------------
                                                *Md.retrieve_apex_under_cursor()*
                        `Md.retrieve_apex_under_cursor`()
 Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
-
-------------------------------------------------------------------------------
-                                                  *Md.pull_metadata_type_list()*
-                         `Md.pull_metadata_type_list`()
-Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
-
-------------------------------------------------------------------------------
-                                               *Md.select_md_type_to_retrieve()*
-                       `Md.select_md_type_to_retrieve`()
-Select a specific metadata-type to download all files. For example, download all ApexClass files.
-Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 
 
 ==============================================================================
