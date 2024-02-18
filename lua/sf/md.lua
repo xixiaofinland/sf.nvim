@@ -5,6 +5,7 @@
 ---
 --- - Retrieve metadata from target_org
 --- - Retrieve metadata-type from target_org
+--- - Store metadata and metadata-type names into local json files
 
 local S = require('sf');
 local T = require('sf.term')
