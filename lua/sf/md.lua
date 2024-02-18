@@ -24,24 +24,24 @@ local Md = {}
 
 --- Choose a specific metadata file to retrieve.
 --- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
-function Md.retrieve_metadata()
-  H.retrieve_metadata()
+function Md.list_md_to_retrieve()
+  H.list_md_to_retrieve()
 end
 
 --- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
 --- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
-function Md.retrieve_metadata_type()
-  H.retrieve_metadata_type()
+function Md.list_md_type_to_retrieve()
+  H.list_md_type_to_retrieve()
 end
 
---- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
-function Md.pull_metadata_lists()
-  H.pull_metadata_lists()
+--- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+function Md.pull_md_json()
+  H.pull_md_json()
 end
 
 --- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
-function Md.pull_metadata_type_list()
-  H.pull_metadata_type_list()
+function Md.pull_md_type_json()
+  H.pull_md_type_json()
 end
 
 --- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
@@ -57,7 +57,7 @@ local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
-H.retrieve_metadata = function()
+H.list_md_to_retrieve = function()
   U.is_empty(S.target_org)
 
   local md_to_display = {}
@@ -130,7 +130,7 @@ H.retrieve_md = function(type, name)
   T.run(cmd)
 end
 
-H.pull_metadata_lists = function()
+H.pull_md_json = function()
   for _, type in pairs(H.types_to_retrieve) do
     H.pull_metadata(type)
   end
@@ -156,7 +156,7 @@ H.pull_metadata = function(type)
   U.job_call(cmd, msg, err_msg);
 end
 
-H.pull_metadata_type_list = function(cb)
+H.pull_md_type_json = function(cb)
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
@@ -175,7 +175,7 @@ H.pull_metadata_type_list = function(cb)
   U.job_call(cmd, msg, err_msg, cb);
 end
 
-H.retrieve_metadata_type = function()
+H.list_md_type_to_retrieve = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
