@@ -92,7 +92,7 @@ function T:open()
   end
 
   if not H.is_buf_valid(self.buf) then
-    return vim.notify('No previous task. Run a Sf command to initiate.', vim.log.levels.WARN)
+    return vim.notify('No previous task. Run a Sf command to initiate the terminal.', vim.log.levels.WARN)
   end
 
   local win = self:create_and_open_win(self.buf)
