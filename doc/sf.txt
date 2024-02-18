@@ -1,13 +1,51 @@
 ==============================================================================
 ------------------------------------------------------------------------------
+*SFMd* The module dealing with metadata
+*Sf md*
+
+Features:
+
+- Retrieve metadata from target_org
+- Retrieve metadata-type from target_org
+- Store metadata and metadata-type names into local json files
+
+------------------------------------------------------------------------------
+                                                    *Md.select_md_to_retrieve()*
+                          `Md.select_md_to_retrieve`()
+Choose a specific metadata file to retrieve.
+Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
+
+------------------------------------------------------------------------------
+                                                      *Md.pull_metadata_lists()*
+                           `Md.pull_metadata_lists`()
+Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+
+------------------------------------------------------------------------------
+                                               *Md.retrieve_apex_under_cursor()*
+                       `Md.retrieve_apex_under_cursor`()
+Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
+
+------------------------------------------------------------------------------
+                                                  *Md.pull_metadata_type_list()*
+                         `Md.pull_metadata_type_list`()
+Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
+
+------------------------------------------------------------------------------
+                                               *Md.select_md_type_to_retrieve()*
+                       `Md.select_md_type_to_retrieve`()
+Select a specific metadata-type to download all files. For example, download all ApexClass files.
+Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
+
+
+==============================================================================
+------------------------------------------------------------------------------
 *SFOrg* The module to interact with Salesforce org
 *Sf org*
 
 Features:
 
 - Retrieve org list and define target_org.
-- Compare file content between local version and org version.
-- Retrieve metadata info from org
+- Diff a file between local and org version.
 
 ------------------------------------------------------------------------------
                                                           *Org.fetch_org_list()*
@@ -38,33 +76,6 @@ The left window displays the target_org verison, the right window displays the l
                               `Org.diff_in_org`()
 Similar to |diff_in_target_org|, you can choose which org to diff with.
 The left window displays the org verison, the right window displays the local verison.
-
-------------------------------------------------------------------------------
-                                                   *Org.select_md_to_retrieve()*
-                         `Org.select_md_to_retrieve`()
-Choose a specific metadata file to retrieve.
-Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
-
-------------------------------------------------------------------------------
-                                                     *Org.pull_metadata_lists()*
-                          `Org.pull_metadata_lists`()
-Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
-
-------------------------------------------------------------------------------
-                                              *Org.retrieve_apex_under_cursor()*
-                       `Org.retrieve_apex_under_cursor`()
-Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
-
-------------------------------------------------------------------------------
-                                                 *Org.pull_metadata_type_list()*
-                        `Org.pull_metadata_type_list`()
-Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
-
-------------------------------------------------------------------------------
-                                              *Org.select_md_type_to_retrieve()*
-                       `Org.select_md_type_to_retrieve`()
-Select a specific metadata-type to download all files. For example, download all ApexClass files.
-Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 
 
 ==============================================================================

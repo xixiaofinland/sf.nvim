@@ -58,13 +58,13 @@ local function set_keys()
     nmap('<leader>sd', require("sf.org").diff_in_target_org, "[d]iff in target_org")
     nmap('<leader>sD', require("sf.org").diff_in_org, "[D]iff in org...")
 
-    nmap('<leader>mr', require("sf.org").pull_metadata_lists, "[M]etadata json [R]etrieve")
-    nmap('<leader>ml', require("sf.org").select_md_to_retrieve, "[M]etadata [L]isting")
+    nmap('<leader>mr', require("sf.md").pull_metadata_lists, "[M]etadata json [R]etrieve")
+    nmap('<leader>ml', require("sf.md").retrieve_metadata, "[M]etadata [L]isting")
 
-    nmap('<leader>mtr', require("sf.org").pull_metadata_type_list, "[M]etadata-[T]ype json [R]etrieve")
-    nmap('<leader>mtl', require("sf.org").select_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
+    nmap('<leader>mtr', require("sf.md").pull_metadata_type_list, "[M]etadata-[T]ype json [R]etrieve")
+    nmap('<leader>mtl', require("sf.md").retrieve_metadata_type, "[M]etadata-[T]ype [L]isting")
 
-    nmap('<leader>ma', require("sf.org").retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
+    nmap('<leader>ma', require("sf.md").retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 
     nmap('<leader><leader>', require("sf.term").toggle, "[T]erminal toggle")
 
@@ -83,6 +83,7 @@ local function set_keys()
     -- user commands
     local org = require('sf.org')
     local term = require('sf.term')
+    local md = require('sf.md')
     local test = require('sf.test')
 
     -- From SFOrg
@@ -103,20 +104,22 @@ local function set_keys()
         org.diff_in_org()
     end, {})
 
+    -- From SFMd
+
     vim.api.nvim_create_user_command("SfPullMetadataTypeList", function()
-        org.pull_metadata_type_list()
+        md.pull_metadata_type_list()
     end, {})
 
     vim.api.nvim_create_user_command("SfRetrieveMetadataType", function()
-        org.select_md_type_to_retrieve()
+        md.retrieve_metadata_type()
     end, {})
 
     vim.api.nvim_create_user_command("SfPullMetadataList", function()
-        org.pull_metadata_lists()
+        md.pull_metadata_lists()
     end, {})
 
     vim.api.nvim_create_user_command("SfRetrieveMetadata", function()
-        org.select_md_to_retrieve()
+        md.retrieve_metadata()
     end, {})
 
     -- From SFTerm
