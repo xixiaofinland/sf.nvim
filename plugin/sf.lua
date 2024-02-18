@@ -115,6 +115,10 @@ local function set_keys()
         md.list_md_type_to_retrieve()
     end, {})
 
+    vim.api.nvim_create_user_command("SfPullAndListMdType", function()
+        md.pull_and_list_md_type()
+    end, {})
+
     vim.api.nvim_create_user_command("SfPullMdJson", function()
         md.pull_md_json()
     end, {})

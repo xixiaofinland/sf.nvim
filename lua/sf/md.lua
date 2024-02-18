@@ -38,15 +38,15 @@ function Md.pull_md_type_json()
   H.pull_md_type_json()
 end
 
---- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
-function Md.pull_and_list_md_type()
-  H.pull_md_type_json(H.list_md_type_to_retrieve)
-end
-
 --- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
 --- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 function Md.list_md_type_to_retrieve()
   H.list_md_type_to_retrieve()
+end
+
+--- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
+function Md.pull_and_list_md_type()
+  H.pull_md_type_json(H.list_md_type_to_retrieve)
 end
 
 --- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
