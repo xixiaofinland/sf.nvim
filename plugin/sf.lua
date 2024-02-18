@@ -63,6 +63,7 @@ local function set_keys()
 
     nmap('<leader>mtr', require("sf.md").pull_md_type_json, "[M]etadata-[T]ype json [R]etrieve")
     nmap('<leader>mtl', require("sf.md").list_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
+    nmap('<leader>mtL', require("sf.md").pull_and_list_md_type, "Force pull and list md types")
 
     nmap('<leader>ma', require("sf.md").retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 
@@ -111,7 +112,7 @@ local function set_keys()
     end, {})
 
     vim.api.nvim_create_user_command("SfListMdTypeToRetrieve", function()
-        md.lsit_md_type_to_retrieve()
+        md.list_md_type_to_retrieve()
     end, {})
 
     vim.api.nvim_create_user_command("SfPullMdJson", function()

@@ -44,6 +44,11 @@ function Md.pull_md_type_json()
   H.pull_md_type_json()
 end
 
+--- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
+function Md.pull_and_list_md_type()
+  H.pull_md_type_json(H.list_md_type_to_retrieve)
+end
+
 --- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
 function Md.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
@@ -182,7 +187,8 @@ H.list_md_type_to_retrieve = function()
   local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
 
   if vim.fn.filereadable(md_type_json) == 0 then
-    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels.ERROR)
+    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels
+    .ERROR)
   end
 
   local file_content = vim.fn.readfile(md_type_json)
