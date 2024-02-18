@@ -23,8 +23,14 @@ local Md = {}
 
 --- Choose a specific metadata file to retrieve.
 --- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
-function Md.select_md_to_retrieve()
-  H.select_md_to_retrieve()
+function Md.retrieve_metadata()
+  H.retrieve_metadata()
+end
+
+--- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
+--- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
+function Md.retrieve_metadata_type()
+  H.retrieve_metadata_type()
 end
 
 --- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
@@ -42,12 +48,6 @@ function Md.pull_metadata_type_list()
   H.pull_metadata_type_list()
 end
 
---- Select a specific metadata-type to download all files. For example, download all ApexClass files.
---- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
-function Md.select_md_type_to_retrieve()
-  H.select_md_type_to_retrieve()
-end
-
 -- Helper --------------------
 
 local pickers = require "telescope.pickers"
@@ -56,7 +56,7 @@ local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
-H.select_md_to_retrieve = function()
+H.retrieve_metadata = function()
   U.is_empty(S.target_org)
 
   local md_to_display = {}
@@ -175,7 +175,7 @@ H.pull_metadata_type_list = function()
   U.job_call(cmd, msg, err_msg);
 end
 
-H.select_md_type_to_retrieve = function()
+H.retrieve_metadata_type = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. '/md'
