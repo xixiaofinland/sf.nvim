@@ -33,7 +33,8 @@ function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
 end
 
---- `pull_md_type()` then `list_md_type()` in one go.
+--- Pulls defined md files to local json file and list them in telescope for retrieving
+--- it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
 function Md.pull_and_list_md()
   H.pull_and_list_md()
 end
@@ -49,6 +50,7 @@ function Md.list_md_type_to_retrieve()
   H.list_md_type_to_retrieve()
 end
 
+--- Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
 --- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 function Md.pull_and_list_md_type()
   H.pull_md_type_json(H.list_md_type_to_retrieve)
