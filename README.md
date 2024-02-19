@@ -30,7 +30,7 @@ About the dependencies:
 - `SFMd`   The module to deal with metadata and metadata-type.
 - `SFTest` The module to facilitate test running.
 
-Tip: You can read help.txt [here](https://github.com/xixiaofinland/sf.nvim/blob/main/doc/sf.txt), or use `:h SFOrg`, `:h SFTerm`, `:h SFTest` in Nvim to see more details.
+Tip: You can read help.txt [here](https://github.com/xixiaofinland/sf.nvim/blob/main/doc/sf.txt), or use `:h SFOrg`, `:h SFTerm`, `:h SFMd`, and `:h SFTest` in Nvim to see more details.
 
 # Usage
 

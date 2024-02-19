@@ -22,26 +22,38 @@ H.types_to_retrieve = {
 
 local Md = {}
 
+--- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+function Md.pull_md_json()
+  H.pull_md_json()
+end
+
 --- Choose a specific metadata file to retrieve.
 --- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
-function Md.retrieve_metadata()
-  H.retrieve_metadata()
+function Md.list_md_to_retrieve()
+  H.list_md_to_retrieve()
+end
+
+--- Pulls defined md files to local json file and list them in telescope for retrieving
+--- it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
+function Md.pull_and_list_md()
+  H.pull_and_list_md()
+end
+
+--- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
+function Md.pull_md_type_json()
+  H.pull_md_type_json()
 end
 
 --- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
 --- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
-function Md.retrieve_metadata_type()
-  H.retrieve_metadata_type()
+function Md.list_md_type_to_retrieve()
+  H.list_md_type_to_retrieve()
 end
 
---- Download metadata name list(without file content), e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
-function Md.pull_metadata_lists()
-  H.pull_metadata_lists()
-end
-
---- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
-function Md.pull_metadata_type_list()
-  H.pull_metadata_type_list()
+--- Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
+--- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
+function Md.pull_and_list_md_type()
+  H.pull_md_type_json(H.list_md_type_to_retrieve)
 end
 
 --- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
@@ -57,7 +69,21 @@ local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
-H.retrieve_metadata = function()
+H.retrieve_apex_under_cursor = function()
+  local current_word = vim.fn.expand('<cword>')
+  print(current_word)
+  H.retrieve_md('ApexClass', current_word)
+end
+
+H.retrieve_md = function(type, name)
+  U.is_empty(S.target_org)
+  U.get_sf_root()
+
+  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, S.target_org)
+  T.run(cmd)
+end
+
+H.list_md_to_retrieve = function()
   U.is_empty(S.target_org)
 
   local md_to_display = {}
@@ -116,27 +142,35 @@ H.tele_metadata = function(source, opts)
   }):find()
 end
 
-H.retrieve_apex_under_cursor = function()
-  local current_word = vim.fn.expand('<cword>')
-  print(current_word)
-  H.retrieve_md('ApexClass', current_word)
+-- jobstart() tracking
+H.counter = 0;
+H.all_spawned = false;
+
+H.md_pull_cb = function()
+  H.counter = H.counter - 1
+  if H.all_spawned and H.counter == 0 then
+    H.list_md_to_retrieve()
+  end
 end
 
-H.retrieve_md = function(type, name)
-  U.is_empty(S.target_org)
-  U.get_sf_root()
-
-  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, S.target_org)
-  T.run(cmd)
-end
-
-H.pull_metadata_lists = function()
+H.pull_md_json = function()
   for _, type in pairs(H.types_to_retrieve) do
     H.pull_metadata(type)
   end
 end
 
-H.pull_metadata = function(type)
+H.pull_and_list_md = function()
+  H.counter = 0;
+  H.all_spawned = false;
+
+  for _, type in pairs(H.types_to_retrieve) do
+    H.counter = H.counter + 1
+    H.pull_metadata(type, H.md_pull_cb)
+  end
+  H.all_spawned = true
+end
+
+H.pull_metadata = function(type, cb)
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
@@ -153,10 +187,10 @@ H.pull_metadata = function(type)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
-  U.job_call(cmd, msg, err_msg);
+  U.job_call(cmd, msg, err_msg, cb);
 end
 
-H.pull_metadata_type_list = function()
+H.pull_md_type_json = function(cb)
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
@@ -172,17 +206,18 @@ H.pull_metadata_type_list = function()
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
-  U.job_call(cmd, msg, err_msg);
+  U.job_call(cmd, msg, err_msg, cb);
 end
 
-H.retrieve_metadata_type = function()
+H.list_md_type_to_retrieve = function()
   U.is_empty(S.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
 
   if vim.fn.filereadable(md_type_json) == 0 then
-    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels.ERROR)
+    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels
+      .ERROR)
   end
 
   local file_content = vim.fn.readfile(md_type_json)

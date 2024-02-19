@@ -58,11 +58,13 @@ local function set_keys()
     nmap('<leader>sd', require("sf.org").diff_in_target_org, "[d]iff in target_org")
     nmap('<leader>sD', require("sf.org").diff_in_org, "[D]iff in org...")
 
-    nmap('<leader>mr', require("sf.md").pull_metadata_lists, "[M]etadata json [R]etrieve")
-    nmap('<leader>ml', require("sf.md").retrieve_metadata, "[M]etadata [L]isting")
+    -- nmap('<leader>mr', require("sf.md").pull_md_json, "[M]etadata json [R]etrieve")
+    nmap('<leader>ml', require("sf.md").list_md_to_retrieve, "[M]etadata [L]isting")
+    nmap('<leader>mL', require("sf.md").pull_and_list_md, "Force pull and list metadata")
 
-    nmap('<leader>mtr', require("sf.md").pull_metadata_type_list, "[M]etadata-[T]ype json [R]etrieve")
-    nmap('<leader>mtl', require("sf.md").retrieve_metadata_type, "[M]etadata-[T]ype [L]isting")
+    -- nmap('<leader>mtr', require("sf.md").pull_md_type_json, "[M]etadata-[T]ype json [R]etrieve")
+    nmap('<leader>mtl', require("sf.md").list_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
+    nmap('<leader>mtL', require("sf.md").pull_and_list_md_type, "Force pull and list metadata types")
 
     nmap('<leader>ma', require("sf.md").retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 
@@ -106,20 +108,28 @@ local function set_keys()
 
     -- From SFMd
 
-    vim.api.nvim_create_user_command("SfPullMetadataTypeList", function()
-        md.pull_metadata_type_list()
+    -- vim.api.nvim_create_user_command("SfPullMdJson", function()
+    --     md.pull_md_json()
+    -- end, {})
+
+    vim.api.nvim_create_user_command("SfListMdToRetrieve", function()
+        md.list_md_to_retrieve()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRetrieveMetadataType", function()
-        md.retrieve_metadata_type()
+    vim.api.nvim_create_user_command("SfPullAndListMd", function()
+        md.pull_and_list_md()
     end, {})
 
-    vim.api.nvim_create_user_command("SfPullMetadataList", function()
-        md.pull_metadata_lists()
+    -- vim.api.nvim_create_user_command("SfPullMdTypeJson", function()
+    --     md.pull_md_type_json()
+    -- end, {})
+
+    vim.api.nvim_create_user_command("SfListMdTypeToRetrieve", function()
+        md.list_md_type_to_retrieve()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRetrieveMetadata", function()
-        md.retrieve_metadata()
+    vim.api.nvim_create_user_command("SfPullAndListMdType", function()
+        md.pull_and_list_md_type()
     end, {})
 
     -- From SFTerm

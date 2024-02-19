@@ -1,8 +1,10 @@
-Md.pull_metadata_lists()	sf.txt	/*Md.pull_metadata_lists()*
-Md.pull_metadata_type_list()	sf.txt	/*Md.pull_metadata_type_list()*
+Md.list_md_to_retrieve()	sf.txt	/*Md.list_md_to_retrieve()*
+Md.list_md_type_to_retrieve()	sf.txt	/*Md.list_md_type_to_retrieve()*
+Md.pull_and_list_md()	sf.txt	/*Md.pull_and_list_md()*
+Md.pull_and_list_md_type()	sf.txt	/*Md.pull_and_list_md_type()*
+Md.pull_md_json()	sf.txt	/*Md.pull_md_json()*
+Md.pull_md_type_json()	sf.txt	/*Md.pull_md_type_json()*
 Md.retrieve_apex_under_cursor()	sf.txt	/*Md.retrieve_apex_under_cursor()*
-Md.select_md_to_retrieve()	sf.txt	/*Md.select_md_to_retrieve()*
-Md.select_md_type_to_retrieve()	sf.txt	/*Md.select_md_type_to_retrieve()*
 Org.diff_in_org()	sf.txt	/*Org.diff_in_org()*
 Org.diff_in_target_org()	sf.txt	/*Org.diff_in_target_org()*
 Org.fetch_org_list()	sf.txt	/*Org.fetch_org_list()*
