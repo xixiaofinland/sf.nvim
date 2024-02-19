@@ -36,7 +36,7 @@ Tip: You can read help.txt [here](https://github.com/xixiaofinland/sf.nvim/blob/
 
 ## Hotkeys and User commands
 
-Hotkeys and user commands are defined [here](https://github.com/xixiaofinland/sf.nvim/blob/96297035a7c859bb4b8d76ae0cdeebd07394ed35/plugin/sf.lua#L53).
+Hotkeys and user commands are defined [here](https://github.com/xixiaofinland/sf.nvim/blob/365ae4cedd5ea6cd78f4206153d8cc4f148cfb77/plugin/sf.lua#L53).
 
 They are enabled ONLY when the file in the current buffer is:
 - `apex`, `javascript`, or `html` filetype
