@@ -1,5 +1,6 @@
 Md.list_md_to_retrieve()	sf.txt	/*Md.list_md_to_retrieve()*
 Md.list_md_type_to_retrieve()	sf.txt	/*Md.list_md_type_to_retrieve()*
+Md.pull_and_list_md()	sf.txt	/*Md.pull_and_list_md()*
 Md.pull_and_list_md_type()	sf.txt	/*Md.pull_and_list_md_type()*
 Md.pull_md_json()	sf.txt	/*Md.pull_md_json()*
 Md.pull_md_type_json()	sf.txt	/*Md.pull_md_type_json()*

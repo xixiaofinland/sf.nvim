@@ -21,6 +21,12 @@ Choose a specific metadata file to retrieve.
 Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 
 ------------------------------------------------------------------------------
+                                                         *Md.pull_and_list_md()*
+                            `Md.pull_and_list_md`()
+Pulls defined md files to local json file and list them in telescope for retrieving
+it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
+
+------------------------------------------------------------------------------
                                                         *Md.pull_md_type_json()*
                             `Md.pull_md_type_json`()
 Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
@@ -34,6 +40,7 @@ Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 ------------------------------------------------------------------------------
                                                     *Md.pull_and_list_md_type()*
                           `Md.pull_and_list_md_type`()
+Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
 `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 
 ------------------------------------------------------------------------------
