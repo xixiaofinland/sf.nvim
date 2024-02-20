@@ -53,7 +53,7 @@ end
 --- Allows to add tests to execute.
 Test.open_tests_in_selected = function()
   local opts = {
-    attach_mappings = tele_pick_test_file
+    attach_mappings = H.tele_pick_test_file
   }
   require('telescope.builtin').find_files(opts)
 end
@@ -86,7 +86,7 @@ local function open_selected(abs_file_name)
   end)
 end
 
-local function tele_pick_test_file(prompt_bufnr, map)
+H.tele_pick_test_file = function(prompt_bufnr, map)
   actions.select_default:replace(function()
     actions.close(prompt_bufnr)
     local selected_file_path = action_state.get_selected_entry().path
