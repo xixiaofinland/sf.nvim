@@ -53,18 +53,19 @@ end
 --- Allows to add tests to execute.
 Test.open_tests_in_selected = function()
   local opts = {
-    attach_mappings = H.tele_pick_test_file
+    attach_mappings = H.tele_pick_test_file,
+    prompt_title = 'Select Test File'
   }
-  require('telescope.builtin').find_files(opts)
+  require('telescope.builtin').find_files(require('telescope.themes').get_dropdown(opts))
 end
 
 -- local methods
 
-local pickers = require "telescope.pickers"
-local finders = require "telescope.finders"
-local conf = require("telescope.config").values
-local actions = require "telescope.actions"
-local action_state = require "telescope.actions.state"
+local pickers = require 'telescope.pickers'
+local finders = require 'telescope.finders'
+local conf = require('telescope.config').values
+local actions = require 'telescope.actions'
+local action_state = require 'telescope.actions.state'
 
 Test._toggle = function()
   p:toggle()
@@ -75,7 +76,6 @@ Test._run_selected = function()
   p:close()
   T.run(cmd)
   S.last_tests = cmd
-
 end
 
 local function open_selected(abs_file_name)
