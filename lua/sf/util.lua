@@ -23,7 +23,7 @@ M.is_sf_cmd_installed = function()
 end
 
 M.is_table_empty = function(tbl)
-  if next(tbl) == nil then
+  if vim.tbl_isempty(tbl) then
     error('*Empty table*')
   end
 end
