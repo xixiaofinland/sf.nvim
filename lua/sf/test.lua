@@ -20,8 +20,10 @@ end
 
 Test.open_selected = function(abs_file_name)
   local bufnr = vim.api.nvim_create_buf(false, false)
-  vim.api.nvim_buf_call(bufnr, function() vim.cmd('edit ' .. abs_file_name) end)
-  p:open()
+  vim.api.nvim_buf_call(bufnr, function()
+    vim.cmd('edit ' .. abs_file_name)
+    p:open()
+  end)
 end
 
 --- Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
@@ -32,7 +34,8 @@ Test.run_current_test = function()
   local test_name = TS.get_current_test_method_name()
   U.is_empty(test_name)
 
-  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name, S.get())
+  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name,
+    S.get())
   S.last_tests = cmd
   T.run(cmd)
 end
