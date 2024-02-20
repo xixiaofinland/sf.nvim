@@ -54,9 +54,10 @@ end
 Test.open_tests_in_selected = function()
   local opts = {
     attach_mappings = H.tele_pick_test_file,
-    prompt_title = 'Select Test File'
+    prompt_title = 'Select Test File',
+    search_file = '*.cls', -- TODO:
   }
-  require('telescope.builtin').find_files(require('telescope.themes').get_dropdown(opts))
+  require('telescope.builtin').find_files(opts)
 end
 
 -- local methods
