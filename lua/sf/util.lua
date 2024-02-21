@@ -34,6 +34,12 @@ M.is_empty = function(t)
   end
 end
 
+M.removeKey = function(table, key)
+    local element = table[key]
+    table[key] = nil
+    return element
+end
+
 M.job_call = function(cmd, msg, err_msg, cb)
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
