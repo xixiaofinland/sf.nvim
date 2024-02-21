@@ -68,17 +68,6 @@ local conf = require('telescope.config').values
 local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
 
-Test._toggle = function()
-  p:toggle()
-end
-
-Test._run_selected = function()
-  local cmd = p:build_selected_tests_cmd() .. ' -o ' .. S.get()
-  p:close()
-  T.run(cmd)
-  S.last_tests = cmd
-end
-
 local function open_selected(abs_file_name)
   local bufnr = vim.api.nvim_create_buf(false, false)
   vim.api.nvim_buf_call(bufnr, function()
