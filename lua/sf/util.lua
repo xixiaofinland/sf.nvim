@@ -34,10 +34,18 @@ M.is_empty = function(t)
   end
 end
 
+M.list_find = function(tbl, value)
+  for i, v in pairs(tbl) do
+    if v == value then
+      return i
+    end
+  end
+end
+
 M.removeKey = function(table, key)
-    local element = table[key]
-    table[key] = nil
-    return element
+  local element = table[key]
+  table[key] = nil
+  return element
 end
 
 M.job_call = function(cmd, msg, err_msg, cb)
