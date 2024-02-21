@@ -15,6 +15,7 @@ function Prompt:new()
     class = nil,
     tests = nil,
     test_num = nil,
+    selected_tests = {},
   }
   return setmetatable(newObj, self)
 end
@@ -33,13 +34,13 @@ function Prompt:open()
   local tests = {}
   local test_num = 0
   for _, name in pairs(test_names) do
-    table.insert(tests, { name, false })
+    table.insert(tests, { name, false }) -- TODO
     test_num = test_num + 1
   end
 
-  self.test_num = test_num
   self.class = class
   self.tests = tests
+  self.test_num = test_num
 
   local buf = self:use_existing_or_create_buf()
   local win = self:use_existing_or_create_win()
@@ -70,7 +71,7 @@ function Prompt:display()
   table.insert(names, '** Hit "x" -> toggle tests; "cc" -> execute in terminal')
 
   for _, val in pairs(self.tests) do
-    table.insert(names, '[ ] ' .. val[1])
+    table.insert(names, '[ ] ' .. val[1]) -- TODO
   end
   api.nvim_buf_set_lines(self.buf, 0, 100, false, names)
 end
@@ -101,28 +102,34 @@ end
 
 function Prompt:toggle()
   if vim.bo[0].filetype ~= filetype then
-    return vim.notify('not supposed to be used in this filetype', vim.log.levels.ERROR)
+    return vim.notify('file-type must be: ' .. filetype, vim.log.levels.ERROR)
   end
 
   vim.bo[0].modifiable = true
 
   local r, _ = unpack(vim.api.nvim_win_get_cursor(0))
-  -- 1st row is title
-  if r == 1 then
+  if r == 1 then -- 1st row is title
     return
   end
 
   local row_index = r - 1
 
-  local curr_toggle_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
+  local curr_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
 
   local name = self.tests[row_index][1]
-  if curr_toggle_value[1] == 'x' then
-    self.tests[row_index] = { name, false }
+  local class_test = self.class .. name
+
+  if curr_value[1] == 'x' then
+    -- self.tests[row_index] = { name, false }
+    local index = U.list_find(self.selected_tests, class_test)
+    if index ~= nil then
+      table.remove(self.selected_tests, index)
+    end
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { ' ' })
   else
-    if curr_toggle_value[1] == ' ' then
-      self.tests[row_index] = { name, true }
+    if curr_value[1] == ' ' then
+      -- self.tests[row_index] = { name, true }
+      table.insert(self.selected_tests, class_test)
       api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
     end
   end
