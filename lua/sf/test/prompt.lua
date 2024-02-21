@@ -60,11 +60,11 @@ function Prompt:open()
   end, { buffer = true, noremap = true })
 
   vim.bo[buf].modifiable = true
-  self:display_test_names()
+  self:display()
   vim.bo[buf].modifiable = false
 end
 
-function Prompt:display_test_names()
+function Prompt:display()
   api.nvim_set_current_win(self.win)
   local names = {}
   table.insert(names, '** Hit "x" -> toggle tests; "cc" -> execute in terminal')
