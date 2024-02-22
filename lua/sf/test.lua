@@ -46,7 +46,7 @@ end
 Test.repeat_last_tests = function()
   U.is_empty(S.last_tests)
 
-  T:run(S.last_tests)
+  T.run(S.last_tests)
 end
 
 --- Open a top window that displays the list of Apex tests in the selected file.
