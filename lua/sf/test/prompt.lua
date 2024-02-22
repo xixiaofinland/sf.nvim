@@ -34,7 +34,7 @@ function Prompt:open()
 
   local tests = {}
   local test_num = 0
-  for _, name in pairs(test_names) do
+  for _, name in ipairs(test_names) do
     table.insert(tests, name) -- TODO
     test_num = test_num + 1
   end
@@ -71,8 +71,13 @@ function Prompt:display()
   local names = {}
   table.insert(names, '** Hit "x" -> toggle tests; "cc" -> execute in terminal')
 
-  for _, val in ipairs(self.tests) do
-    table.insert(names, '[ ] ' .. val)
+  for _, test in ipairs(self.tests) do
+    local class_test = string.format('%s.%s', self.class, test)
+    if vim.tbl_contains(self.selected_tests, class_test) then
+      table.insert(names, '[x] ' .. test)
+    else
+      table.insert(names, '[ ] ' .. test)
+    end
   end
   api.nvim_buf_set_lines(self.buf, 0, 100, false, names)
 end
@@ -126,13 +131,11 @@ function Prompt:toggle()
       table.remove(self.selected_tests, index)
     end
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { ' ' })
-  else
-    if curr_value[1] == ' ' then
+  elseif curr_value[1] == ' ' then
       if index == nil then
         table.insert(self.selected_tests, class_test)
       end
       api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
-    end
   end
 
   print(vim.inspect(self.selected_tests))
