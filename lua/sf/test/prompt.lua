@@ -154,7 +154,7 @@ function Prompt:build_selected_tests_cmd()
     t = string.format('%s -t %s', t, test)
   end
 
-  local cmd = string.format('sf apex run test %s --result-format human -y', t)
+  local cmd = string.format('sf apex run test%s %s', t, U.cmd_human_params)
   return cmd
 end
 
