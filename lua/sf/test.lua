@@ -70,12 +70,12 @@ P.selected_tests = {}
 P.open = function()
   local class = TS.get_test_class_name()
   if class == nil then
-    return vim.notify('Not an Apex test file', vim.log.levels.INFO)
+    vim.notify('Not an Apex test file', vim.log.levels.INFO)
   end
 
   local test_names = TS.get_test_method_names_in_curr_file()
-  if next(test_names) == nil then
-    return vim.notify('no Apex test found', vim.log.levels.INFO)
+  if next(test_names) == nil then -- TODO: can util.lua check empty table
+    vim.notify('no Apex test found', vim.log.levels.INFO)
   end
 
   local tests = {}
@@ -88,6 +88,7 @@ P.open = function()
   P.class = class
   P.tests = tests
   P.test_num = test_num
+  print(P.test_num)
 
   local buf = P.use_existing_or_create_buf()
   local win = P.use_existing_or_create_win()
@@ -159,13 +160,15 @@ P.use_existing_or_create_buf = function()
 end
 
 P.use_existing_or_create_win = function()
+  local win_hight = P.test_num + 2
+
   if P.win and api.nvim_win_is_valid(P.win) then
     api.nvim_set_current_win(P.win)
+    api.nvim_win_set_height(P.win, win_hight)
     return P.win
   end
 
-  local split_win_rows = P.test_num + 2
-  api.nvim_command(split_win_rows .. 'split')
+  api.nvim_command(win_hight .. 'split')
 
   return api.nvim_get_current_win()
 end
