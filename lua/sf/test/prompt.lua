@@ -59,6 +59,7 @@ function Prompt:open()
     self:close()
     T.run(cmd)
     S.last_tests = cmd
+    self.selected_tests = {}
   end, { buffer = true, noremap = true })
 
   vim.bo[buf].modifiable = true
