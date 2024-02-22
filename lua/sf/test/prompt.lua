@@ -1,4 +1,5 @@
 local S = require('sf')
+local U = require('sf.util')
 local T = require('sf.term')
 local TS = require('sf.ts')
 local api = vim.api
@@ -34,7 +35,7 @@ function Prompt:open()
   local tests = {}
   local test_num = 0
   for _, name in pairs(test_names) do
-    table.insert(tests, { name, false }) -- TODO
+    table.insert(tests, name) -- TODO
     test_num = test_num + 1
   end
 
@@ -70,8 +71,8 @@ function Prompt:display()
   local names = {}
   table.insert(names, '** Hit "x" -> toggle tests; "cc" -> execute in terminal')
 
-  for _, val in pairs(self.tests) do
-    table.insert(names, '[ ] ' .. val[1]) -- TODO
+  for _, val in ipairs(self.tests) do
+    table.insert(names, '[ ] ' .. val)
   end
   api.nvim_buf_set_lines(self.buf, 0, 100, false, names)
 end
@@ -116,36 +117,38 @@ function Prompt:toggle()
 
   local curr_value = api.nvim_buf_get_text(0, row_index, 1, row_index, 2, {})
 
-  local name = self.tests[row_index][1]
-  local class_test = self.class .. name
+  local name = self.tests[row_index]
+  local class_test = string.format('%s.%s', self.class, name)
+  local index = U.list_find(self.selected_tests, class_test)
 
   if curr_value[1] == 'x' then
-    -- self.tests[row_index] = { name, false }
-    local index = U.list_find(self.selected_tests, class_test)
     if index ~= nil then
       table.remove(self.selected_tests, index)
     end
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { ' ' })
   else
     if curr_value[1] == ' ' then
-      -- self.tests[row_index] = { name, true }
-      table.insert(self.selected_tests, class_test)
+      if index == nil then
+        table.insert(self.selected_tests, class_test)
+      end
       api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
     end
   end
 
+  print(vim.inspect(self.selected_tests))
+
   vim.bo[0].modifiable = false
 end
 
-function Prompt:get_selected_tests()
-  local selected = {}
-  for _, v in pairs(self.tests) do
-    if v[2] then
-      table.insert(selected, v[1])
-    end
-  end
-  return selected
-end
+-- function Prompt:get_selected_tests()
+--   local selected = {}
+--   for _, v in pairs(self.tests) do
+--     if v[2] then
+--       table.insert(selected, v[1])
+--     end
+--   end
+--   return selected
+-- end
 
 function Prompt:build_selected_tests_cmd()
   if self.class == nil or next(self.tests) == nil then
@@ -153,12 +156,11 @@ function Prompt:build_selected_tests_cmd()
   end
 
   local t = ''
-  local selected = self:get_selected_tests()
-  for _, test in pairs(selected) do
-    t = t .. '-t ' .. self.class .. '.' .. test .. ' '
+  for _, test in ipairs(self.selected_tests) do
+    t = t .. '-t ' .. test
   end
 
-  local cmd = 'sf apex run test ' .. t .. "--result-format human -y"
+  local cmd = string.format('sf apex run test %s --result-format human -y', t)
   return cmd
 end
 
