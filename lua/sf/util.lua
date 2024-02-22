@@ -1,7 +1,7 @@
 local M = {}
 
-M.cmd_human_params = '-r human -w 5'
-M.cmd_json_params = '-r human -w 5'
+M.cmd_params = '-w 5 -r human'
+M.cmd_coverage_params = '-w 5 -r human -c'
 
 M.get_sf_root = function()
   local root_patterns = { ".forceignore", "sfdx-project.json" }

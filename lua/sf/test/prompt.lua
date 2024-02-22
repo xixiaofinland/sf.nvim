@@ -50,27 +50,40 @@ function Prompt:open()
 
   api.nvim_win_set_buf(win, buf)
 
-  vim.keymap.set('n', 'x', function()
-    self:toggle()
-  end, { buffer = true, noremap = true })
-
-  vim.keymap.set('n', 'cc', function()
-    local cmd = self:build_selected_tests_cmd() .. ' -o ' .. S.get()
-    self:close()
-    T.run(cmd)
-    S.last_tests = cmd
-    self.selected_tests = {}
-  end, { buffer = true, noremap = true })
+  self:set_keys()
 
   vim.bo[buf].modifiable = true
   self:display()
   vim.bo[buf].modifiable = false
 end
 
+function Prompt:set_keys()
+  vim.keymap.set('n', 'x', function()
+    self:toggle()
+  end, { buffer = true, noremap = true })
+
+  vim.keymap.set('n', 'cc', function()
+    local cmd = self:build_tests_cmd(U.cmd_params) .. ' -o ' .. S.get()
+    self:close()
+    T.run(cmd)
+    S.last_tests = cmd
+    self.selected_tests = {}
+  end, { buffer = true, noremap = true })
+
+  vim.keymap.set('n', 'cC', function()
+    local cmd = self:build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. S.get()
+    self:close()
+    T.run(cmd)
+    S.last_tests = cmd
+    self.selected_tests = {}
+  end, { buffer = true, noremap = true })
+
+end
+
 function Prompt:display()
   api.nvim_set_current_win(self.win)
   local names = {}
-  table.insert(names, '** Hit "x" -> toggle tests; "cc" -> run selected tests')
+  table.insert(names, '** "x": toggle tests; "cc": run tests; "cC": run tests with code coverage.')
 
   for _, test in ipairs(self.tests) do
     local class_test = string.format('%s.%s', self.class, test)
@@ -144,7 +157,7 @@ function Prompt:toggle()
   vim.bo[0].modifiable = false
 end
 
-function Prompt:build_selected_tests_cmd()
+function Prompt:build_tests_cmd(param_str)
   if next(self.selected_tests) == nil then
     return vim.notify('no selected test.', vim.log.levels.ERROR)
   end
@@ -154,7 +167,7 @@ function Prompt:build_selected_tests_cmd()
     t = string.format('%s -t %s', t, test)
   end
 
-  local cmd = string.format('sf apex run test%s %s', t, U.cmd_human_params)
+  local cmd = string.format('sf apex run test%s %s', t, param_str)
   return cmd
 end
 
