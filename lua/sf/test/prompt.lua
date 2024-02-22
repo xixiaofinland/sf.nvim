@@ -35,7 +35,7 @@ function Prompt:open()
   local tests = {}
   local test_num = 0
   for _, name in ipairs(test_names) do
-    table.insert(tests, name) -- TODO
+    table.insert(tests, name)
     test_num = test_num + 1
   end
 
@@ -69,7 +69,7 @@ end
 function Prompt:display()
   api.nvim_set_current_win(self.win)
   local names = {}
-  table.insert(names, '** Hit "x" -> toggle tests; "cc" -> execute in terminal')
+  table.insert(names, '** Hit "x" -> toggle tests; "cc" -> run selected tests')
 
   for _, test in ipairs(self.tests) do
     local class_test = string.format('%s.%s', self.class, test)
@@ -143,24 +143,14 @@ function Prompt:toggle()
   vim.bo[0].modifiable = false
 end
 
--- function Prompt:get_selected_tests()
---   local selected = {}
---   for _, v in pairs(self.tests) do
---     if v[2] then
---       table.insert(selected, v[1])
---     end
---   end
---   return selected
--- end
-
 function Prompt:build_selected_tests_cmd()
-  if self.class == nil or next(self.tests) == nil then
-    return vim.notify('no test class name or tests', vim.log.levels.ERROR)
+  if next(self.selected_tests) == nil then
+    return vim.notify('no selected test.', vim.log.levels.ERROR)
   end
 
   local t = ''
   for _, test in ipairs(self.selected_tests) do
-    t = t .. '-t ' .. test
+    t = string.format('%s -t %s', t, test)
   end
 
   local cmd = string.format('sf apex run test %s --result-format human -y', t)
