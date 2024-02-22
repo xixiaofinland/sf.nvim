@@ -52,7 +52,7 @@ end
 --- Allows to pass the user defined command into SFTerm.
 function Term.run(c)
   local cmd = vim.fn.expandcmd(c)
-  t:run(cmd)
+  t:run(c)
 end
 
 return Term
