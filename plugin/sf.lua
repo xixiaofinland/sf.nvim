@@ -82,6 +82,8 @@ local function set_keys()
     nmap('<leader>to', require("sf.test").open, "[T]est [O]pen Buf Select")
     nmap('<leader>tr', require("sf.test").repeat_last_tests, "[T]est [R]epeat")
 
+    vim.keymap.set('n', '<leader>cc', require("sf").copy_apex_name, { desc = '[c]opy apex name' })
+
     -- user commands
     local org = require('sf.org')
     local term = require('sf.term')
