@@ -9,14 +9,13 @@ local S = require('sf')
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
-local p = require('sf.test.prompt'):new()
-local H = {}
+local P = require('sf.test.prompt')
 local Test = {}
 
 --- Open a top window that displays the list of Apex tests in the current file.
 --- Allows to select/deselect tests and execute.
 Test.open = function()
-  p:open()
+  P.open()
 end
 
 --- Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
@@ -47,42 +46,6 @@ Test.repeat_last_tests = function()
   U.is_empty(S.last_tests)
 
   T.run(S.last_tests)
-end
-
---- Open a top window that displays the list of Apex tests in the selected file.
---- Allows to add tests to execute.
-Test.open_tests_in_selected = function()
-  local opts = {
-    attach_mappings = H.tele_pick_test_file,
-    prompt_title = 'Select Test File',
-    search_file = '*.cls', -- TODO:
-  }
-  require('telescope.builtin').find_files(opts)
-end
-
--- local methods
-
-local pickers = require 'telescope.pickers'
-local finders = require 'telescope.finders'
-local conf = require('telescope.config').values
-local actions = require 'telescope.actions'
-local action_state = require 'telescope.actions.state'
-
-local function open_selected(abs_file_name)
-  local bufnr = vim.api.nvim_create_buf(false, false)
-  vim.api.nvim_buf_call(bufnr, function()
-    vim.cmd('edit ' .. abs_file_name)
-    p:open()
-  end)
-end
-
-H.tele_pick_test_file = function(prompt_bufnr, map)
-  actions.select_default:replace(function()
-    actions.close(prompt_bufnr)
-    local selected_file_path = action_state.get_selected_entry().path
-    open_selected(selected_file_path)
-  end)
-  return true
 end
 
 return Test
