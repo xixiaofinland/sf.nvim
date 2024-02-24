@@ -117,13 +117,14 @@ H.tele_metadata = function(source, opts)
   opts = opts or {}
 
   local p = previewers.new_buffer_previewer({
-    title = "Check now!",
-    get_buffer_by_name = function(_, entry)
-      return entry.value
-    end,
+    title = "Metadata details",
 
     define_preview = function(self, entry)
-      print(vim.inspect(entry))
+      local data = ''
+      for key, value in pairs(entry.value) do
+        data = string.format('%s\n\n%s: %s', data, key, value)
+      end
+      vim.api.nvim_buf_set_lines(self.state.bufnr, 1, -1, true, vim.split(data, '\n'))
     end,
   })
 
