@@ -65,6 +65,7 @@ end
 
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"
+local previewers = require 'telescope.previewers'
 local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
@@ -114,6 +115,18 @@ end
 
 H.tele_metadata = function(source, opts)
   opts = opts or {}
+
+  local p = previewers.new_buffer_previewer({
+    title = "Check now!",
+    get_buffer_by_name = function(_, entry)
+      return entry.value
+    end,
+
+    define_preview = function(self, entry)
+      print(vim.inspect(entry))
+    end,
+  })
+
   pickers.new({}, {
     prompt_title = 'Org: ' .. S.target_org,
 
@@ -129,6 +142,8 @@ H.tele_metadata = function(source, opts)
     },
 
     sorter = conf.generic_sorter(opts),
+
+    previewer = p,
 
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(function()
