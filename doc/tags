@@ -4,11 +4,9 @@ Sf.diff_in_target_org	sf.txt	/*Sf.diff_in_target_org*
 Sf.fetch_org_list	sf.txt	/*Sf.fetch_org_list*
 Sf.get_target_org	sf.txt	/*Sf.get_target_org*
 Sf.go_to_sf_root	sf.txt	/*Sf.go_to_sf_root*
-Sf.last_tests	sf.txt	/*Sf.last_tests*
 Sf.list_md_to_retrieve	sf.txt	/*Sf.list_md_to_retrieve*
 Sf.list_md_type_to_retrieve	sf.txt	/*Sf.list_md_type_to_retrieve*
-Sf.open	sf.txt	/*Sf.open*
-Sf.open	sf.txt	/*Sf.open*
+Sf.open_test_select	sf.txt	/*Sf.open_test_select*
 Sf.pull_and_list_md	sf.txt	/*Sf.pull_and_list_md*
 Sf.pull_and_list_md_type	sf.txt	/*Sf.pull_and_list_md_type*
 Sf.pull_md_json	sf.txt	/*Sf.pull_md_json*
