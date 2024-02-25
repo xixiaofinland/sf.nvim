@@ -9,7 +9,7 @@ Sf.last_tests = Util.last_tests
 
 Sf.target_org = Util.target_org
 
-Sf.get = Util.get
+Sf.get_target_org = Util.get
 
 -- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
 Sf.copy_apex_name = Util.copy_apex_name
@@ -26,7 +26,7 @@ Sf.open = Term.open
 Sf.save_and_push = Term.save_and_push
 
 --- Retrieve the file in the current buffer from target_org. The command is sent to SFTerm.
-Sf.retreive = Term.retreive
+Sf.retrieve = Term.retrieve
 
 --- Terminate the running command in SFTerm.
 Sf.cancel = Term.cancel
