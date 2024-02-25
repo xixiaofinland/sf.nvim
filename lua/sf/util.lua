@@ -3,6 +3,9 @@ local M = {}
 M.cmd_params = '-w 5 -r human'
 M.cmd_coverage_params = '-w 5 -r human -c'
 
+M.last_tests = ''
+M.target_org = ''
+
 M.get_sf_root = function()
   local root_patterns = { ".forceignore", "sfdx-project.json" }
 
@@ -67,6 +70,13 @@ M.job_call = function(cmd, msg, err_msg, cb)
           end
         end,
   })
+end
+
+-- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
+M.copy_apex_name = function()
+  local file_name = vim.split(vim.fn.expand("%:t"), ".", { trimempty = true, plain = true })[1]
+  vim.fn.setreg('*', file_name)
+  vim.notify(string.format('"%s" copied.', file_name), vim.log.levels.INFO)
 end
 
 return M
