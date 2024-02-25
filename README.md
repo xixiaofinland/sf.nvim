@@ -55,8 +55,7 @@ For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as be
         "require'sf'.get_target_org()",
       } },
 ```
-![Image 006](https://github.com/xixiaofinland/sf.nvim/assets/13655323/75670011-68da-48d6-896e-de7ce637ee17)
-
+![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
 ### Commands
 Hotkeys and user commands are defined in the middle of this file [here](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua).
