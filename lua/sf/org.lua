@@ -33,21 +33,17 @@ end
 
 H.set_target_org = function()
   U.is_table_empty(H.orgs)
-
   vim.ui.select(H.orgs, {
     prompt = 'Local target_org:'
   }, function(choice)
     if choice ~= nil then
-      vim.fn.jobstart('sf config set target-org ' .. choice, {
-        on_exit =
-            function(_, code)
-              if code == 0 then
-                U.target_org = choice
-              else
-                api.nvim_err_writeln(choice .. ' - set target_org failed! Not in a sfdx project folder?')
-              end
-            end,
-      })
+      local cmd = 'sf config set target-org ' .. choice
+      local err_msg = choice .. ' - set target_org failed! Not in a sfdx project folder?'
+      local cb = function()
+        U.target_org = choice
+      end
+
+      U.job_call(cmd, nil, err_msg, cb)
     end
   end)
 end
@@ -59,17 +55,13 @@ H.set_global_target_org = function()
     prompt = 'Global target_org:'
   }, function(choice)
     if choice ~= nil then
-      vim.fn.jobstart('sf config set target-org --global ' .. choice, {
-        on_exit =
-            function(_, code)
-              if code == 0 then
-                U.target_org = choice
-                vim.notify('Global target_org set', vim.log.levels.INFO)
-              else
-                vim.notify('Global set target_org [' .. choice .. '] failed!', vim.log.levels.ERROR)
-              end
-            end,
-      })
+      local cmd = 'sf config set target-org --global ' .. choice
+      local msg = 'Global target_org set: ' .. choice
+      local err_msg = string.format('Global set target_org [%s] failed!', choice)
+      local cb = function()
+        U.target_org = choice
+      end
+      U.job_call(cmd, msg, err_msg, cb)
     end
   end)
 end
@@ -129,7 +121,6 @@ end
 
 H.diff_in = function(org)
   local file_name = vim.fn.expand("%:t")
-
   local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
   local file_name_no_ext = H.get_file_name_without_extension(file_name)
   local temp_path = vim.fn.tempname()
@@ -142,19 +133,15 @@ H.diff_in = function(org)
     org
   )
 
-  vim.fn.jobstart(cmd, {
-    on_exit =
-        function(_, code)
-          if code == 0 then
-            local temp_file = H.find_file(temp_path, file_name)
-            vim.cmd("vert diffsplit " .. temp_file)
-            vim.bo[0].buflisted = false
-            vim.notify('Retrive success: ' .. org, vim.log.levels.INFO)
-          else
-            vim.notify('Retrive failed: ' .. org, vim.log.levels.ERROR)
-          end
-        end,
-  })
+  local msg = 'Retrive success: ' .. org
+  local err_msg = 'Retrive failed: ' .. org
+  local cb = function()
+    local temp_file = H.find_file(temp_path, file_name)
+    vim.cmd("vert diffsplit " .. temp_file)
+    vim.bo[0].buflisted = false
+  end
+
+  U.job_call(cmd, msg, err_msg, cb)
 end
 
 H.get_file_name_without_extension = function(fileName)

@@ -61,6 +61,7 @@ M.removeKey = function(table, key)
 end
 
 M.job_call = function(cmd, msg, err_msg, cb)
+  vim.notify('Async job starts...', vim.log.levels.INFO);
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
     on_exit =

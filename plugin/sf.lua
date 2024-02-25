@@ -40,8 +40,7 @@ local function set_keys()
     end
 
     if not pcall(require('sf.util').get_sf_root) then
-        return vim.notify_once('File not in sf project folder, sf.nvim hotkeys not loaded.',
-            vim.log.levels.WARN)
+        return
     end
 
     -- Set hotkeys
