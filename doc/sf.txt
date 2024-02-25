@@ -1,5 +1,12 @@
 ==============================================================================
 ------------------------------------------------------------------------------
+*sf.nvim* Salesforce development plugin
+*SfNvim*
+
+MIT License Copyright (c) 2024 Xi Xiao
+
+
+------------------------------------------------------------------------------
                                                              *Sf.get_target_org*
                               `Sf.get_target_org`
 Toggle the SFTerm float window.

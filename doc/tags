@@ -21,3 +21,5 @@ Sf.save_and_push	sf.txt	/*Sf.save_and_push*
 Sf.set_global_target_org	sf.txt	/*Sf.set_global_target_org*
 Sf.set_target_org	sf.txt	/*Sf.set_target_org*
 Sf.toggle_term	sf.txt	/*Sf.toggle_term*
+SfNvim	sf.txt	/*SfNvim*
+sf.nvim	sf.txt	/*sf.nvim*

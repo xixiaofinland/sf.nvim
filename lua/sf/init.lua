@@ -1,3 +1,9 @@
+--- *sf.nvim* Salesforce development plugin
+--- *SfNvim*
+---
+--- MIT License Copyright (c) 2024 Xi Xiao
+---
+
 local Util = require('sf.util');
 local Term = require('sf.term');
 local Org = require('sf.org');
