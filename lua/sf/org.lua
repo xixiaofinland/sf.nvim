@@ -102,7 +102,9 @@ H.fetch_org_list = function()
 end
 
 H.diff_in_target_org = function()
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   H.diff_in(U.target_org)
 end

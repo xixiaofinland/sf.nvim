@@ -19,7 +19,9 @@ M.show_warn = function(msg)
 end
 
 M.get = function()
-  M.is_empty(M.target_org)
+  if M.isempty(M.target_org) then
+    error('::Target_org empty!')
+  end
 
   return M.target_org
 end

@@ -55,7 +55,9 @@ H.retrieve_apex_under_cursor = function()
 end
 
 H.retrieve_md = function(type, name)
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   U.get_sf_root()
 
   local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, U.target_org)
@@ -63,7 +65,9 @@ H.retrieve_md = function(type, name)
 end
 
 H.list_md_to_retrieve = function()
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_to_display = {}
   local md_folder = U.get_sf_root() .. H.md_folder_name
@@ -165,7 +169,9 @@ H.pull_and_list_md = function()
 end
 
 H.pull_metadata = function(type, cb)
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -185,7 +191,9 @@ H.pull_metadata = function(type, cb)
 end
 
 H.pull_md_type_json = function(cb)
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -204,7 +212,9 @@ H.pull_md_type_json = function(cb)
 end
 
 H.list_md_type_to_retrieve = function()
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
@@ -252,7 +262,10 @@ H.tele_metadata_type = function(source, opts)
 end
 
 H.retrieve_md_type = function(type)
-  U.is_empty(U.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
+
   U.get_sf_root()
 
   local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
