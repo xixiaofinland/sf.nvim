@@ -26,7 +26,7 @@ Test.run_current_test = function()
   U.is_empty(test_name)
 
   local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name,
-    S.get())
+    U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
@@ -36,7 +36,7 @@ Test.run_all_tests_in_this_file = function()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
 
-  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, S.get())
+  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, U.get())
   T.run(cmd)
 end
 
@@ -67,7 +67,7 @@ P.test_num = nil
 P.selected_tests = {}
 
 P.open = function()
-  local class = TS.get_test_class_name()
+  local class = TU.get_test_class_name()
   if class == nil then
     vim.notify('Not an Apex test file', vim.log.levels.INFO)
   end
@@ -113,7 +113,7 @@ P.set_keys = function()
   end, { buffer = true, noremap = true })
 
   vim.keymap.set('n', 'cc', function()
-    local cmd = P.build_tests_cmd(U.cmd_params) .. ' -o ' .. S.get()
+    local cmd = P.build_tests_cmd(U.cmd_params) .. ' -o ' .. U.get()
     P.close()
     T.run(cmd)
     U.last_tests = cmd
@@ -121,7 +121,7 @@ P.set_keys = function()
   end, { buffer = true, noremap = true })
 
   vim.keymap.set('n', 'cC', function()
-    local cmd = P.build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. S.get()
+    local cmd = P.build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. U.get()
     P.close()
     T.run(cmd)
     U.last_tests = cmd

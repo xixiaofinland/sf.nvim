@@ -7,7 +7,6 @@
 --- - Retrieve metadata-type from target_org
 --- - Store metadata and metadata-type names into local json files
 
-local S = require('sf');
 local T = require('sf.term')
 local U = require('sf.util');
 
@@ -77,21 +76,21 @@ H.retrieve_apex_under_cursor = function()
 end
 
 H.retrieve_md = function(type, name)
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, S.target_org)
+  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, U.target_org)
   T.run(cmd)
 end
 
 H.list_md_to_retrieve = function()
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
 
   local md_to_display = {}
   local md_folder = U.get_sf_root() .. H.md_folder_name
 
   for _, type in pairs(H.types_to_retrieve) do
-    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
+    local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
       vim.notify('%s not exist! Pulling now...' .. md_file, vim.log.levels.WARN)
@@ -129,7 +128,7 @@ H.tele_metadata = function(source, opts)
   })
 
   pickers.new({}, {
-    prompt_title = 'Org: ' .. S.target_org,
+    prompt_title = 'Org: ' .. U.target_org,
 
     finder = finders.new_table {
       results = source,
@@ -187,7 +186,7 @@ H.pull_and_list_md = function()
 end
 
 H.pull_metadata = function(type, cb)
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -197,9 +196,9 @@ H.pull_metadata = function(type, cb)
     end
   end
 
-  local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
+  local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
-  local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, S.target_org, md_file)
+  local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
@@ -207,7 +206,7 @@ H.pull_metadata = function(type, cb)
 end
 
 H.pull_md_type_json = function(cb)
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -218,7 +217,7 @@ H.pull_md_type_json = function(cb)
   end
 
   local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
-  local cmd = string.format('sf org list metadata-types -o %s -f %s', S.target_org, metadata_types_file)
+  local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
@@ -226,7 +225,7 @@ H.pull_md_type_json = function(cb)
 end
 
 H.list_md_type_to_retrieve = function()
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
@@ -246,7 +245,7 @@ end
 H.tele_metadata_type = function(source, opts)
   opts = opts or {}
   pickers.new({}, {
-    prompt_title = 'metadata-type: ' .. S.target_org,
+    prompt_title = 'metadata-type: ' .. U.target_org,
 
     finder = finders.new_table {
       results = source,
@@ -274,10 +273,10 @@ H.tele_metadata_type = function(source, opts)
 end
 
 H.retrieve_md_type = function(type)
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, S.target_org)
+  local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
   T.run(cmd)
 end
 
