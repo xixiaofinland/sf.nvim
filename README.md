@@ -47,7 +47,7 @@ All public facing functions can be checked by `:h sf.nvim` or in [help.txt](http
 When Nvim starts, Sf.nvim runs `SfFetchOrgList`(i.e. `sf org list`) to fetch the authenticated org names and save the target_org name in the plugin if it exists.
 As a majority of commands execute against a target_org, it's recommended to set (use `SfSetTargetOrg`) and display target_org in your statusline.
 
-For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as below.
+For example, I use lualine.nvim, and configure/show target_org(`xixiao100`) as below.
 
 ```lua
     sections = {
