@@ -5,7 +5,6 @@
 ---
 --- - Apex test related features
 
-local S = require('sf')
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
@@ -28,7 +27,7 @@ Test.run_current_test = function()
 
   local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name,
     S.get())
-  S.last_tests = cmd
+  U.last_tests = cmd
   T.run(cmd)
 end
 
@@ -43,9 +42,9 @@ end
 
 --- Repeat the last executed Apex test command. The command is sent to SFTerm.
 Test.repeat_last_tests = function()
-  U.is_empty(S.last_tests)
+  U.is_empty(U.last_tests)
 
-  T.run(S.last_tests)
+  T.run(U.last_tests)
 end
 
 -- prompt below
@@ -117,7 +116,7 @@ P.set_keys = function()
     local cmd = P.build_tests_cmd(U.cmd_params) .. ' -o ' .. S.get()
     P.close()
     T.run(cmd)
-    S.last_tests = cmd
+    U.last_tests = cmd
     P.selected_tests = {}
   end, { buffer = true, noremap = true })
 
@@ -125,7 +124,7 @@ P.set_keys = function()
     local cmd = P.build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. S.get()
     P.close()
     T.run(cmd)
-    S.last_tests = cmd
+    U.last_tests = cmd
     P.selected_tests = {}
   end, { buffer = true, noremap = true })
 end

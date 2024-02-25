@@ -6,6 +6,12 @@ M.cmd_coverage_params = '-w 5 -r human -c'
 M.last_tests = ''
 M.target_org = ''
 
+M.get = function()
+  U.is_empty(Sf.target_org)
+
+  return Sf.target_org
+end
+
 M.get_sf_root = function()
   local root_patterns = { ".forceignore", "sfdx-project.json" }
 
