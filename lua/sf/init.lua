@@ -5,10 +5,11 @@ local Metadata = require('sf.md');
 local Test = require('sf.test');
 local Sf = {}
 
+--- |Sf.repeat_last_tests| uses it to conveniently execute the last executed command.
+--- Test run commands like |Sf.run_all_tests_in_this_file| will save value into this variable.
 Sf.last_tests = Util.last_tests
 
-Sf.target_org = Util.target_org
-
+--- Toggle the SFTerm float window.
 Sf.get_target_org = Util.get
 
 -- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
@@ -17,10 +18,7 @@ Sf.copy_apex_name = Util.copy_apex_name
 -- From Term module ==========================================================
 
 --- Toggle the SFTerm float window.
-Sf.toggle = Term.toggle
-
---- Open the SFTerm float window.
-Sf.open = Term.open
+Sf.toggle_term = Term.toggle
 
 --- Save the file in the current buffer and push to target_org. The command is sent to SFTerm.
 Sf.save_and_push = Term.save_and_push
@@ -86,11 +84,11 @@ Sf.pull_and_list_md_type = Metadata.pull_and_list_md_type
 --- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
 Sf.retrieve_apex_under_cursor = Metadata.retrieve_apex_under_cursor
 
--- From Metadata module ==========================================================
+-- From Test module ==========================================================
 
 --- Open a top window that displays the list of Apex tests in the current file.
 --- Allows to select/deselect tests and execute.
-Sf.open = Test.open
+Sf.open_test_select = Test.open
 
 --- Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
 Sf.run_current_test = Test.run_current_test

@@ -1,169 +1,138 @@
 ==============================================================================
 ------------------------------------------------------------------------------
-*SFMd* The module dealing with metadata
-*Sf md*
-
-Features:
-
-- Retrieve metadata from target_org
-- Retrieve metadata-type from target_org
-- Store metadata and metadata-type names into local json files
+                                                                 *Sf.last_tests*
+                                `Sf.last_tests`
+|Sf.repeat_last_tests| uses it to conveniently execute the last executed command.
+Test run commands like |Sf.run_all_tests_in_this_file| will save value into this variable.
 
 ------------------------------------------------------------------------------
-                                                             *Md.pull_md_json()*
-                              `Md.pull_md_json`()
-Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
+                                                             *Sf.get_target_org*
+                              `Sf.get_target_org`
+Toggle the SFTerm float window.
 
 ------------------------------------------------------------------------------
-                                                      *Md.list_md_to_retrieve()*
-                           `Md.list_md_to_retrieve`()
-Choose a specific metadata file to retrieve.
-Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
+                                                                *Sf.toggle_term*
+                                `Sf.toggle_term`
+Toggle the SFTerm float window.
 
 ------------------------------------------------------------------------------
-                                                         *Md.pull_and_list_md()*
-                            `Md.pull_and_list_md`()
-Pulls defined md files to local json file and list them in telescope for retrieving
-it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
+                                                                       *Sf.open*
+                                   `Sf.open`
+Open the SFTerm float window.
 
 ------------------------------------------------------------------------------
-                                                        *Md.pull_md_type_json()*
-                            `Md.pull_md_type_json`()
-Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
+                                                              *Sf.save_and_push*
+                               `Sf.save_and_push`
+Save the file in the current buffer and push to target_org. The command is sent to SFTerm.
 
 ------------------------------------------------------------------------------
-                                                 *Md.list_md_type_to_retrieve()*
-                        `Md.list_md_type_to_retrieve`()
-Select a specific metadata-type to download all its files. For example, download all ApexClass files.
-Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
+                                                                   *Sf.retrieve*
+                                 `Sf.retrieve`
+Retrieve the file in the current buffer from target_org. The command is sent to SFTerm.
 
 ------------------------------------------------------------------------------
-                                                    *Md.pull_and_list_md_type()*
-                          `Md.pull_and_list_md_type`()
-Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
-`pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
+                                                                     *Sf.cancel*
+                                  `Sf.cancel`
+Terminate the running command in SFTerm.
 
 ------------------------------------------------------------------------------
-                                               *Md.retrieve_apex_under_cursor()*
-                       `Md.retrieve_apex_under_cursor`()
-Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
-
-
-==============================================================================
-------------------------------------------------------------------------------
-*SFOrg* The module to interact with Salesforce org
-*Sf org*
-
-Features:
-
-- Retrieve org list and define target_org.
-- Diff a file between local and org version.
+                                                              *Sf.go_to_sf_root*
+                               `Sf.go_to_sf_root`
+Enter the sf project root path in SFTerm.
 
 ------------------------------------------------------------------------------
-                                                          *Org.fetch_org_list()*
-                             `Org.fetch_org_list`()
+                                                                        *Sf.run*
+                                    `Sf.run`
+Allows to pass the user defined command into SFTerm.
+
+------------------------------------------------------------------------------
+                                                             *Sf.fetch_org_list*
+                              `Sf.fetch_org_list`
 It runs "sf org list" command under the hood and stores the org list.
 If a target_org is found, the value is saved into "target_org" variable.
 
 ------------------------------------------------------------------------------
-                                                          *Org.set_target_org()*
-                             `Org.set_target_org`()
+                                                             *Sf.set_target_org*
+                              `Sf.set_target_org`
 It displays the list of orgs, and allows you to define the target_org.
 It runs "sf config set target-org" command under the hood to set the target_org.
 
 ------------------------------------------------------------------------------
-                                                   *Org.set_global_target_org()*
-                         `Org.set_global_target_org`()
+                                                      *Sf.set_global_target_org*
+                           `Sf.set_global_target_org`
 sf command allows to define a global target_org.
 It runs "sf config set target-org --global " command under the hood.
 
 ------------------------------------------------------------------------------
-                                                      *Org.diff_in_target_org()*
-                           `Org.diff_in_target_org`()
+                                                         *Sf.diff_in_target_org*
+                            `Sf.diff_in_target_org`
 It fetches the file in the current buffer from target_org and display in the Nvim diff mode.
 The left window displays the target_org verison, the right window displays the local verison.
 
 ------------------------------------------------------------------------------
-                                                             *Org.diff_in_org()*
-                              `Org.diff_in_org`()
+                                                                *Sf.diff_in_org*
+                                `Sf.diff_in_org`
 Similar to |diff_in_target_org|, you can choose which org to diff with.
 The left window displays the org verison, the right window displays the local verison.
 
-
-==============================================================================
 ------------------------------------------------------------------------------
-*SFTerm* The module to build an integrated terminal
-*Sf term*
-
-Features:
-
-- Execute sf commands to interact with Salesforce orgs.
-- Auto pop-up (configurable) when command execution finishes.
+                                                               *Sf.pull_md_json*
+                               `Sf.pull_md_json`
+Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
 
 ------------------------------------------------------------------------------
-                                                                 *Term.toggle()*
-                                `Term.toggle`()
-Toggle the SFTerm float window.
+                                                        *Sf.list_md_to_retrieve*
+                            `Sf.list_md_to_retrieve`
+Choose a specific metadata file to retrieve.
+Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 
 ------------------------------------------------------------------------------
-                                                                   *Term.open()*
-                                 `Term.open`()
-Open the SFTerm float window.
+                                                           *Sf.pull_and_list_md*
+                             `Sf.pull_and_list_md`
+Pulls defined md files to local json file and list them in telescope for retrieving
+it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
 
 ------------------------------------------------------------------------------
-                                                          *Term.save_and_push()*
-                             `Term.save_and_push`()
-Save the file in the current buffer and push to target_org. The command is sent to SFTerm.
+                                                          *Sf.pull_md_type_json*
+                             `Sf.pull_md_type_json`
+Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
 
 ------------------------------------------------------------------------------
-                                                               *Term.retrieve()*
-                               `Term.retrieve`()
-Retrieve the file in the current buffer from target_org. The command is sent to SFTerm.
+                                                   *Sf.list_md_type_to_retrieve*
+                         `Sf.list_md_type_to_retrieve`
+Select a specific metadata-type to download all its files. For example, download all ApexClass files.
+Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 
 ------------------------------------------------------------------------------
-                                                                 *Term.cancel()*
-                                `Term.cancel`()
-Terminate the running command in SFTerm.
+                                                      *Sf.pull_and_list_md_type*
+                           `Sf.pull_and_list_md_type`
+Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
+`pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 
 ------------------------------------------------------------------------------
-                                                          *Term.go_to_sf_root()*
-                             `Term.go_to_sf_root`()
-Enter the sf project root path in SFTerm.
+                                                 *Sf.retrieve_apex_under_cursor*
+                        `Sf.retrieve_apex_under_cursor`
+Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
 
 ------------------------------------------------------------------------------
-                                                                    *Term.run()*
-                                `Term.run`({c})
-Allows to pass the user defined command into SFTerm.
-
-
-==============================================================================
-------------------------------------------------------------------------------
-*SFTest* Test module
-*Sf test*
-
-Features:
-
-- Apex test related features
-
-------------------------------------------------------------------------------
-                                                                   *Test.open()*
-                                 `Test.open`()
+                                                                       *Sf.open*
+                                   `Sf.open`
 Open a top window that displays the list of Apex tests in the current file.
 Allows to select/deselect tests and execute.
 
 ------------------------------------------------------------------------------
-                                                       *Test.run_current_test()*
-                           `Test.run_current_test`()
+                                                           *Sf.run_current_test*
+                             `Sf.run_current_test`
 Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
 
 ------------------------------------------------------------------------------
-                                             *Test.run_all_tests_in_this_file()*
-                      `Test.run_all_tests_in_this_file`()
+                                                 *Sf.run_all_tests_in_this_file*
+                        `Sf.run_all_tests_in_this_file`
 Run all Apex tests in the current Apex file in target_org. The command is sent to SFTerm.
 
 ------------------------------------------------------------------------------
-                                                      *Test.repeat_last_tests()*
-                           `Test.repeat_last_tests`()
+                                                          *Sf.repeat_last_tests*
+                             `Sf.repeat_last_tests`
 Repeat the last executed Apex test command. The command is sent to SFTerm.
 
 

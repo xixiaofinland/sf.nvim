@@ -71,7 +71,7 @@ local function set_keys()
 
     nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 
-    nmap('<leader><leader>', Sf.toggle, "[T]erminal toggle")
+    nmap('<leader><leader>', Sf.toggle_term, "[T]erminal toggle")
 
     nmap('<leader>s-', Sf.go_to_sf_root, "CD into [R]oot")
     nmap('<C-c>', Sf.cancel, "[C]ancel current running command")
@@ -82,7 +82,7 @@ local function set_keys()
     nmap('<leader>ta', Sf.run_all_tests_in_this_file, "[T]est [A]ll")
     nmap('<leader>tt', Sf.run_current_test, "[T]est [T]his under cursor")
 
-    nmap('<leader>to', Sf.open, "[T]est [O]pen Buf Select")
+    nmap('<leader>to', Sf.open_test_select, "[T]est [O]pen Buf Select")
     nmap('<leader>tr', Sf.repeat_last_tests, "[T]est [R]epeat")
 
     nmap('<leader>cc', Sf.copy_apex_name, "[c]opy apex name")
@@ -122,7 +122,7 @@ local function set_keys()
     end, {})
 
     vim.api.nvim_create_user_command("SfToggle", function()
-        Sf.toggle()
+        Sf.toggle_term()
     end, {})
 
     vim.api.nvim_create_user_command("SfSaveAndPush", function()
@@ -150,7 +150,7 @@ local function set_keys()
     end, {})
 
     vim.api.nvim_create_user_command("SfOpenTestSelect", function()
-        Sf.open()
+        Sf.open_test_select()
     end, {})
 end
 
