@@ -33,7 +33,7 @@ M.get_test_class_name = function()
   local root = parsers.get_parser():parse()[1]:root()
 
   local result = H.get_matched_node_names(test_class_name_query, 2, root)
-  if not next(result) then
+  if vim.tbl_isempty(result) then
     return nil
   end
   return result[1]

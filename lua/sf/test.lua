@@ -10,10 +10,13 @@ end
 
 Test.run_current_test = function()
   local test_class_name = TS.get_test_class_name()
-  U.is_empty(test_class_name)
-
+  if U.isempty(test_class_name) then
+    return U.show_warn('Not in a test class.')
+  end
   local test_name = TS.get_current_test_method_name()
-  U.is_empty(test_name)
+  if U.isempty(test_name) then
+    return U.show_warn('Cursor not in a test method.')
+  end
 
   local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name,
     U.get())
@@ -23,23 +26,24 @@ end
 
 Test.run_all_tests_in_this_file = function()
   local test_class_name = TS.get_test_class_name()
-  U.is_empty(test_class_name)
+  if U.isempty(test_class_name) then
+    return U.show_warn('Not in a test class.')
+  end
 
   local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, U.get())
   T.run(cmd)
 end
 
 Test.repeat_last_tests = function()
-  U.is_empty(U.last_tests)
+  if U.isempty(U.last_tests) then
+    return U.show_warn('Last test command is empty.')
+  end
 
   T.run(U.last_tests)
 end
 
 -- prompt below
 
--- local pickers = require 'telescope.pickers'
--- local finders = require 'telescope.finders'
--- local conf = require('telescope.config').values
 local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
 
@@ -56,13 +60,13 @@ P.selected_tests = {}
 
 P.open = function()
   local class = TS.get_test_class_name()
-  if class == nil then
-    vim.notify('Not an Apex test file', vim.log.levels.INFO)
+  if U.isempty(class) then
+    U.show('Not an Apex test class.')
   end
 
   local test_names = TS.get_test_method_names_in_curr_file()
-  if next(test_names) == nil then -- TODO: can util.lua check empty table
-    vim.notify('no Apex test found', vim.log.levels.INFO)
+  if vim.tbl_isempty(test_names) then
+    U.show('no Apex test found.')
   end
 
   local tests = {}
@@ -75,7 +79,6 @@ P.open = function()
   P.class = class
   P.tests = tests
   P.test_num = test_num
-  print(P.test_num)
 
   local buf = P.use_existing_or_create_buf()
   local win = P.use_existing_or_create_win()
@@ -162,7 +165,7 @@ end
 
 P.toggle = function()
   if vim.bo[0].filetype ~= filetype then
-    return vim.notify('file-type must be: ' .. filetype, vim.log.levels.ERROR)
+    return U.show_err('file-type must be: ' .. filetype)
   end
 
   vim.bo[0].modifiable = true
@@ -192,14 +195,14 @@ P.toggle = function()
     api.nvim_buf_set_text(0, row_index, 1, row_index, 2, { 'x' })
   end
 
-  print(vim.inspect(P.selected_tests))
+  U.show('Selected: ' .. vim.tbl_count(P.selected_tests))
 
   vim.bo[0].modifiable = false
 end
 
 P.build_tests_cmd = function(param_str)
-  if next(P.selected_tests) == nil then
-    return vim.notify('no selected test.', vim.log.levels.ERROR)
+  if vim.tbl_isempty(P.selected_tests) then
+    return U.show_err('No test is selected.')
   end
 
   local t = ''

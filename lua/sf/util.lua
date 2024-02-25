@@ -6,6 +6,18 @@ M.cmd_coverage_params = '-w 5 -r human -c'
 M.last_tests = ''
 M.target_org = ''
 
+M.show = function(msg)
+  vim.notify(msg, vim.log.levels.INFO)
+end
+
+M.show_err = function(msg)
+  vim.notify(msg, vim.log.levels.ERROR)
+end
+
+M.show_warn = function(msg)
+  vim.notify(msg, vim.log.levels.WARN)
+end
+
 M.get = function()
   M.is_empty(M.target_org)
 
@@ -38,6 +50,10 @@ M.is_table_empty = function(tbl)
   if vim.tbl_isempty(tbl) then
     error('*Empty table*')
   end
+end
+
+M.isempty = function(s)
+  return s == nil or s == ''
 end
 
 M.is_empty = function(t)
