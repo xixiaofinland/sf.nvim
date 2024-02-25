@@ -67,7 +67,7 @@ P.test_num = nil
 P.selected_tests = {}
 
 P.open = function()
-  local class = TU.get_test_class_name()
+  local class = TS.get_test_class_name()
   if class == nil then
     vim.notify('Not an Apex test file', vim.log.levels.INFO)
   end
