@@ -1,23 +1,13 @@
---- *SFTest* Test module
---- *Sf test*
----
---- Features:
----
---- - Apex test related features
-
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
 local P = {}
 local Test = {}
 
---- Open a top window that displays the list of Apex tests in the current file.
---- Allows to select/deselect tests and execute.
 Test.open = function()
   P.open()
 end
 
---- Run the Apex test under the cursor in target_org. The command is sent to SFTerm.
 Test.run_current_test = function()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
@@ -31,7 +21,6 @@ Test.run_current_test = function()
   T.run(cmd)
 end
 
---- Run all Apex tests in the current Apex file in target_org. The command is sent to SFTerm.
 Test.run_all_tests_in_this_file = function()
   local test_class_name = TS.get_test_class_name()
   U.is_empty(test_class_name)
@@ -40,7 +29,6 @@ Test.run_all_tests_in_this_file = function()
   T.run(cmd)
 end
 
---- Repeat the last executed Apex test command. The command is sent to SFTerm.
 Test.repeat_last_tests = function()
   U.is_empty(U.last_tests)
 

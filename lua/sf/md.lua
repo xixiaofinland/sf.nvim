@@ -1,12 +1,3 @@
---- *SFMd* The module dealing with metadata
---- *Sf md*
----
---- Features:
----
---- - Retrieve metadata from target_org
---- - Retrieve metadata-type from target_org
---- - Store metadata and metadata-type names into local json files
-
 local T = require('sf.term')
 local U = require('sf.util');
 
@@ -21,46 +12,34 @@ H.types_to_retrieve = {
 
 local Md = {}
 
---- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
 function Md.pull_md_json()
   H.pull_md_json()
 end
 
---- Choose a specific metadata file to retrieve.
---- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
 end
 
---- Pulls defined md files to local json file and list them in telescope for retrieving
---- it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
 function Md.pull_and_list_md()
   H.pull_and_list_md()
 end
 
---- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
 function Md.pull_md_type_json()
   H.pull_md_type_json()
 end
 
---- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
---- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 function Md.list_md_type_to_retrieve()
   H.list_md_type_to_retrieve()
 end
 
---- Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
---- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 function Md.pull_and_list_md_type()
   H.pull_md_type_json(H.list_md_type_to_retrieve)
 end
 
---- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
 function Md.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
 
--- Helper --------------------
 
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"

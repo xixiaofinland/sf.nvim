@@ -1,47 +1,28 @@
---- *SFOrg* The module to interact with Salesforce org
---- *Sf org*
----
---- Features:
----
---- - Retrieve org list and define target_org.
---- - Diff a file between local and org version.
-
 local U = require('sf.util');
 
 local H = {}
 local Org = {}
 
---- It runs "sf org list" command under the hood and stores the org list.
---- If a target_org is found, the value is saved into "target_org" variable.
 function Org.fetch_org_list()
   H.fetch_org_list()
 end
 
---- It displays the list of orgs, and allows you to define the target_org.
---- It runs "sf config set target-org" command under the hood to set the target_org.
 function Org.set_target_org()
   H.set_target_org()
 end
 
---- sf command allows to define a global target_org.
---- It runs "sf config set target-org --global " command under the hood.
 function Org.set_global_target_org()
   H.set_global_target_org()
 end
 
---- It fetches the file in the current buffer from target_org and display in the Nvim diff mode.
---- The left window displays the target_org verison, the right window displays the local verison.
 function Org.diff_in_target_org()
   H.diff_in_target_org()
 end
 
---- Similar to |diff_in_target_org|, you can choose which org to diff with.
---- The left window displays the org verison, the right window displays the local verison.
 function Org.diff_in_org()
   H.diff_in_org()
 end
 
--- Helper --------------------
 local api = vim.api
 
 H.orgs = {}
