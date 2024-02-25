@@ -1,3 +1,5 @@
+-- define Salesforce related filetypes
+
 vim.filetype = on
 vim.filetype.add({
     extension = {
@@ -10,7 +12,8 @@ vim.filetype.add({
     }
 })
 
--- autocmds
+-- Define hotkeys and user commands
+
 local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
 vim.api.nvim_create_autocmd({ 'FileType' }, {
@@ -82,7 +85,7 @@ local function set_keys()
     nmap('<leader>to', Sf.open, "[T]est [O]pen Buf Select")
     nmap('<leader>tr', Sf.repeat_last_tests, "[T]est [R]epeat")
 
-    vim.keymap.set('n', '<leader>cc', Sf.copy_apex_name, { desc = '[c]opy apex name' })
+    nmap('<leader>cc', Sf.copy_apex_name, "[c]opy apex name")
 
     -- user commands
 
@@ -102,8 +105,6 @@ local function set_keys()
         Sf.diff_in_org()
     end, {})
 
-    -- From SFMd
-
     vim.api.nvim_create_user_command("SfListMdToRetrieve", function()
         Sf.list_md_to_retrieve()
     end, {})
@@ -120,8 +121,6 @@ local function set_keys()
         Sf.pull_and_list_md_type()
     end, {})
 
-    -- From SFTerm
-
     vim.api.nvim_create_user_command("SfToggle", function()
         Sf.toggle()
     end, {})
@@ -137,8 +136,6 @@ local function set_keys()
     vim.api.nvim_create_user_command("SfCancelCommand", function()
         Sf.cancel()
     end, {})
-
-    -- From SFTest
 
     vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
         Sf.run_all_tests_in_this_file()
