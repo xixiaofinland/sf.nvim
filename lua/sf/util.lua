@@ -7,9 +7,9 @@ M.last_tests = ''
 M.target_org = ''
 
 M.get = function()
-  U.is_empty(Sf.target_org)
+  M.is_empty(M.target_org)
 
-  return Sf.target_org
+  return M.target_org
 end
 
 M.get_sf_root = function()

@@ -7,7 +7,6 @@
 --- - Diff a file between local and org version.
 
 local U = require('sf.util');
-local S = require('sf');
 
 local H = {}
 local Org = {}
@@ -62,7 +61,7 @@ H.set_target_org = function()
         on_exit =
             function(_, code)
               if code == 0 then
-                S.target_org = choice
+                U.target_org = choice
               else
                 api.nvim_err_writeln(choice .. ' - set target_org failed! Not in a sfdx project folder?')
               end
@@ -83,7 +82,7 @@ H.set_global_target_org = function()
         on_exit =
             function(_, code)
               if code == 0 then
-                S.target_org = choice
+                U.target_org = choice
                 vim.notify('Global target_org set', vim.log.levels.INFO)
               else
                 vim.notify('Global set target_org [' .. choice .. '] failed!', vim.log.levels.ERROR)
@@ -104,7 +103,7 @@ H.store_orgs = function(data)
 
   for _, v in pairs(org_data) do
     if v.isDefaultUsername == true then
-      S.target_org = v.alias
+      U.target_org = v.alias
     end
     table.insert(H.orgs, v.alias)
   end
@@ -130,9 +129,9 @@ H.fetch_org_list = function()
 end
 
 H.diff_in_target_org = function()
-  U.is_empty(S.target_org)
+  U.is_empty(U.target_org)
 
-  H.diff_in(S.target_org)
+  H.diff_in(U.target_org)
 end
 
 H.diff_in_org = function()
