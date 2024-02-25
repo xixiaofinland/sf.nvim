@@ -17,10 +17,10 @@
 - 🤩 Target org shows in status line
 - 👏 pre-downloaded metadata file list
 - 🤖 predefined hotkeys and user commands
-  
+
 
 ## Prerequirements
-- [Salesforce `sf` CLI](https://developer.salesforce.com/tools/salesforcecli)
+- [Salesforce sf CLI](https://developer.salesforce.com/tools/salesforcecli)
 
 ## Install
 Lazy.nvim
@@ -44,8 +44,8 @@ All public facing functions can be checked by `:h sf.nvim` or in [help.txt](http
 
 ### Display target_org
 
-When Nvim starts, sf.nvim auto-runs `SfFetchOrgList` to fetch the authenticated org names and save the target_org in `require'sf'.target_org`.
-As a majority of commands execute against a target_org, it's wise to display target_org in your statusline.
+When Nvim starts, Sf.nvim runs `SfFetchOrgList`(i.e. `sf org list`) to fetch the authenticated org names and save the target_org name in the plugin if it exists.
+As a majority of commands execute against a target_org, it's recommended to set (use `SfSetTargetOrg`) and display target_org in your statusline.
 
 For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as below.
 
@@ -59,9 +59,9 @@ For example, I use lualine.nvim, and configure/show target_org(`sandbox1`) as be
 
 
 ### Commands
-Hotkeys and user commands are defined [here](https://github.com/xixiaofinland/sf.nvim/blob/365ae4cedd5ea6cd78f4206153d8cc4f148cfb77/plugin/sf.lua#L53).
+Hotkeys and user commands are defined in the middle of this file [here](https://github.com/xixiaofinland/sf.nvim/blob/dev/plugin/sf.lua).
 
-They are enabled ONLY when the current buffer is:
+They are enabled ONLY when the current buffer is both:
 - `apex`, `javascript`, or `html` filetype
 - and in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
 
