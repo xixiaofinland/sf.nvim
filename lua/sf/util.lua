@@ -1,5 +1,31 @@
 local M = {}
 
+M.cmd_params = '-w 5 -r human'
+M.cmd_coverage_params = '-w 5 -r human -c'
+
+M.last_tests = ''
+M.target_org = ''
+
+M.show = function(msg)
+  vim.notify(msg, vim.log.levels.INFO)
+end
+
+M.show_err = function(msg)
+  vim.notify(msg, vim.log.levels.ERROR)
+end
+
+M.show_warn = function(msg)
+  vim.notify(msg, vim.log.levels.WARN)
+end
+
+M.get = function()
+  if M.isempty(M.target_org) then
+    error('::Target_org empty!')
+  end
+
+  return M.target_org
+end
+
 M.get_sf_root = function()
   local root_patterns = { ".forceignore", "sfdx-project.json" }
 
@@ -23,9 +49,13 @@ M.is_sf_cmd_installed = function()
 end
 
 M.is_table_empty = function(tbl)
-  if next(tbl) == nil then
+  if vim.tbl_isempty(tbl) then
     error('*Empty table*')
   end
+end
+
+M.isempty = function(s)
+  return s == nil or s == ''
 end
 
 M.is_empty = function(t)
@@ -34,7 +64,22 @@ M.is_empty = function(t)
   end
 end
 
+M.list_find = function(tbl, value)
+  for i, v in pairs(tbl) do
+    if v == value then
+      return i
+    end
+  end
+end
+
+M.removeKey = function(table, key)
+  local element = table[key]
+  table[key] = nil
+  return element
+end
+
 M.job_call = function(cmd, msg, err_msg, cb)
+  vim.notify('Async job starts...', vim.log.levels.INFO);
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
     on_exit =
@@ -50,6 +95,13 @@ M.job_call = function(cmd, msg, err_msg, cb)
           end
         end,
   })
+end
+
+-- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
+M.copy_apex_name = function()
+  local file_name = vim.split(vim.fn.expand("%:t"), ".", { trimempty = true, plain = true })[1]
+  vim.fn.setreg('*', file_name)
+  vim.notify(string.format('"%s" copied.', file_name), vim.log.levels.INFO)
 end
 
 return M

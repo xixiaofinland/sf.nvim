@@ -1,13 +1,3 @@
---- *SFMd* The module dealing with metadata
---- *Sf md*
----
---- Features:
----
---- - Retrieve metadata from target_org
---- - Retrieve metadata-type from target_org
---- - Store metadata and metadata-type names into local json files
-
-local S = require('sf');
 local T = require('sf.term')
 local U = require('sf.util');
 
@@ -22,49 +12,38 @@ H.types_to_retrieve = {
 
 local Md = {}
 
---- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
 function Md.pull_md_json()
   H.pull_md_json()
 end
 
---- Choose a specific metadata file to retrieve.
---- Its popup list depends on data retrieved by |retrieve_metadata_lists| in prior.
 function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
 end
 
---- Pulls defined md files to local json file and list them in telescope for retrieving
---- it is `pull_md_json()` then `list_md_to_retrieve()` in one go.
 function Md.pull_and_list_md()
   H.pull_and_list_md()
 end
 
---- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
 function Md.pull_md_type_json()
   H.pull_md_type_json()
 end
 
---- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
---- Its popup list depends on data retrieved by |pull_metadata_type_list| in prior.
 function Md.list_md_type_to_retrieve()
   H.list_md_type_to_retrieve()
 end
 
---- Pulls metadata-types to a local json file and list them in telescope for retrieving all corresponding type files
---- `pull_md_type_json()` then `list_md_type_to_retrieve()` in one go.
 function Md.pull_and_list_md_type()
   H.pull_md_type_json(H.list_md_type_to_retrieve)
 end
 
---- Use the word under the cursor and attempt to retrieve as a Apex name from target_org.
 function Md.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
 
--- Helper --------------------
 
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"
+local previewers = require 'telescope.previewers'
 local conf = require("telescope.config").values
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
@@ -76,21 +55,25 @@ H.retrieve_apex_under_cursor = function()
 end
 
 H.retrieve_md = function(type, name)
-  U.is_empty(S.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, S.target_org)
+  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, U.target_org)
   T.run(cmd)
 end
 
 H.list_md_to_retrieve = function()
-  U.is_empty(S.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_to_display = {}
   local md_folder = U.get_sf_root() .. H.md_folder_name
 
   for _, type in pairs(H.types_to_retrieve) do
-    local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
+    local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
       vim.notify('%s not exist! Pulling now...' .. md_file, vim.log.levels.WARN)
@@ -114,8 +97,21 @@ end
 
 H.tele_metadata = function(source, opts)
   opts = opts or {}
+
+  local p = previewers.new_buffer_previewer({
+    title = "Metadata details",
+
+    define_preview = function(self, entry)
+      local data = ''
+      for key, value in pairs(entry.value) do
+        data = string.format('%s\n\n%s: %s', data, key, value)
+      end
+      vim.api.nvim_buf_set_lines(self.state.bufnr, 1, -1, true, vim.split(data, '\n'))
+    end,
+  })
+
   pickers.new({}, {
-    prompt_title = 'Org: ' .. S.target_org,
+    prompt_title = 'Org: ' .. U.target_org,
 
     finder = finders.new_table {
       results = source,
@@ -129,6 +125,8 @@ H.tele_metadata = function(source, opts)
     },
 
     sorter = conf.generic_sorter(opts),
+
+    previewer = p,
 
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(function()
@@ -171,7 +169,9 @@ H.pull_and_list_md = function()
 end
 
 H.pull_metadata = function(type, cb)
-  U.is_empty(S.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -181,9 +181,9 @@ H.pull_metadata = function(type, cb)
     end
   end
 
-  local md_file = string.format('%s/%s_%s.json', md_folder, type, S.target_org)
+  local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
-  local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, S.target_org, md_file)
+  local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
@@ -191,7 +191,9 @@ H.pull_metadata = function(type, cb)
 end
 
 H.pull_md_type_json = function(cb)
-  U.is_empty(S.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
@@ -202,7 +204,7 @@ H.pull_md_type_json = function(cb)
   end
 
   local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
-  local cmd = string.format('sf org list metadata-types -o %s -f %s', S.target_org, metadata_types_file)
+  local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
@@ -210,7 +212,9 @@ H.pull_md_type_json = function(cb)
 end
 
 H.list_md_type_to_retrieve = function()
-  U.is_empty(S.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
   local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
@@ -230,7 +234,7 @@ end
 H.tele_metadata_type = function(source, opts)
   opts = opts or {}
   pickers.new({}, {
-    prompt_title = 'metadata-type: ' .. S.target_org,
+    prompt_title = 'metadata-type: ' .. U.target_org,
 
     finder = finders.new_table {
       results = source,
@@ -258,10 +262,13 @@ H.tele_metadata_type = function(source, opts)
 end
 
 H.retrieve_md_type = function(type)
-  U.is_empty(S.target_org)
+  if U.isempty(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
+
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, S.target_org)
+  local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
   T.run(cmd)
 end
 
