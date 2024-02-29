@@ -78,8 +78,7 @@ M.removeKey = function(table, key)
   return element
 end
 
-M.job_call = function(cmd, msg, err_msg, cb)
-  vim.notify('Async job starts...', vim.log.levels.INFO);
+M.silent_job_call = function(cmd, msg, err_msg, cb)
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
     on_exit =
@@ -95,6 +94,11 @@ M.job_call = function(cmd, msg, err_msg, cb)
           end
         end,
   })
+end
+
+M.job_call = function(cmd, msg, err_msg, cb)
+  vim.notify('Async job starts...', vim.log.levels.INFO);
+  M.silent_job_call(cmd, msg, err_msg, cb)
 end
 
 -- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
