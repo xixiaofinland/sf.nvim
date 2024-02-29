@@ -43,7 +43,7 @@ H.set_target_org = function()
         U.target_org = choice
       end
 
-      U.job_call(cmd, nil, err_msg, cb)
+      U.silent_job_call(cmd, nil, err_msg, cb)
     end
   end)
 end
@@ -61,7 +61,7 @@ H.set_global_target_org = function()
       local cb = function()
         U.target_org = choice
       end
-      U.job_call(cmd, msg, err_msg, cb)
+      U.silent_job_call(cmd, msg, err_msg, cb)
     end
   end)
 end
