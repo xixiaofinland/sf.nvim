@@ -16,7 +16,7 @@
 - 😎 Diff file between local and org
 - 🤩 Target org shows in status line
 - 👏 pre-downloaded metadata file list
-- 🤖 predefined hotkeys and user commands
+- 🤖 Quick Apex test runs
 
 
 ## Prerequirements
