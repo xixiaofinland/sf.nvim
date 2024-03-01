@@ -187,7 +187,7 @@ H.pull_metadata = function(type, cb)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
-  U.job_call(cmd, msg, err_msg, cb);
+  U.silent_job_call(cmd, msg, err_msg, cb);
 end
 
 H.pull_md_type_json = function(cb)
@@ -208,7 +208,7 @@ H.pull_md_type_json = function(cb)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
-  U.job_call(cmd, msg, err_msg, cb);
+  U.silent_job_call(cmd, msg, err_msg, cb);
 end
 
 H.list_md_type_to_retrieve = function()
