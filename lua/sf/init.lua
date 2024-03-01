@@ -11,7 +11,9 @@ local Metadata = require('sf.md');
 local Test = require('sf.test');
 local Sf = {}
 
---- Toggle the SFTerm float window.
+--- get the value of the plugin internal variable "target_org".
+--- "target_org" is automatically set by |Sf.fetch_org_list| when Nvim is intitiated
+--- or manually by |Sf.set_target_org|.
 Sf.get_target_org = Util.get
 
 -- A convenient way to quickly copy file name trimming dot-after, e.g. copy "Hello" from "Hello.cls"
