@@ -76,8 +76,8 @@ H.list_md_to_retrieve = function()
     local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      vim.notify('%s not exist! Pulling now...', vim.log.levels.WARN)
-      H.pull_metadata(type)
+      -- vim.notify('%s not exist! Pulling now...', vim.log.levels.WARN)
+      return H.pull_and_list_md()
     else
       local metadata = vim.fn.readfile(md_file)
       local md_tbl = vim.json.decode(table.concat(metadata), {})
