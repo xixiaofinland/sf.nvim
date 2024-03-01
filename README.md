@@ -18,9 +18,12 @@
 - 👏 pre-downloaded metadata file list
 - 🤖 Quick Apex test runs
 
-
 ## Prerequirements
 - [Salesforce sf CLI](https://developer.salesforce.com/tools/salesforcecli)
+
+## Video intro
+
+[![Feature intro (6min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
 ## Install
 Lazy.nvim
