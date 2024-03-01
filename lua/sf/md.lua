@@ -76,7 +76,7 @@ H.list_md_to_retrieve = function()
     local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      vim.notify('%s not exist! Pulling now...' .. md_file, vim.log.levels.WARN)
+      vim.notify('%s not exist! Pulling now...', vim.log.levels.WARN)
       H.pull_metadata(type)
     else
       local metadata = vim.fn.readfile(md_file)
@@ -89,8 +89,6 @@ H.list_md_to_retrieve = function()
       end
     end
   end
-
-  U.is_table_empty(md_to_display)
 
   H.tele_metadata(md_to_display, {})
 end
@@ -187,7 +185,7 @@ H.pull_metadata = function(type, cb)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
-  U.silent_job_call(cmd, msg, err_msg, cb);
+  U.job_call(cmd, msg, err_msg, cb);
 end
 
 H.pull_md_type_json = function(cb)
@@ -208,7 +206,7 @@ H.pull_md_type_json = function(cb)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
-  U.silent_job_call(cmd, msg, err_msg, cb);
+  U.job_call(cmd, msg, err_msg, cb);
 end
 
 H.list_md_type_to_retrieve = function()
