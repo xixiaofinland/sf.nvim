@@ -18,6 +18,9 @@
 - 👏 pre-downloaded metadata file list
 - 🤖 Quick Apex test runs
 
+## 🎦Video intro (6mins)
+
+[![Feature intro (6min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
 ## Prerequirements
 - [Salesforce sf CLI](https://developer.salesforce.com/tools/salesforcecli)
