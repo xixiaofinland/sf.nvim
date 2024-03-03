@@ -4,12 +4,31 @@
 --- MIT License Copyright (c) 2024 Xi Xiao
 ---
 
-local Util = require('sf.util');
-local Term = require('sf.term');
-local Org = require('sf.org');
-local Metadata = require('sf.md');
-local Test = require('sf.test');
+local Util = require('sf.util')
+local Term = require('sf.term')
+local Org = require('sf.org')
+local Metadata = require('sf.md')
+local Test = require('sf.test')
 local Sf = {}
+
+Sf.config = {
+  types_to_retrieve = {
+    "ApexClass",
+    "ApexTrigger",
+    "StaticResource",
+    "LightningComponentBundle"
+  }
+}
+
+local apply_config = function(config)
+  vim.tbl_deep_extend('force', Sf.config, config or {})
+  local cfg = Sf.config
+  Metadata.types_to_retrieve = cfg.types_to_retrieve
+end
+
+Sf.setup = function(config)
+  apply_config(config)
+end
 
 --- get the value of the plugin internal variable "target_org".
 --- "target_org" is automatically set by |Sf.fetch_org_list| when Nvim is intitiated

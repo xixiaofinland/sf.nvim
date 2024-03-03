@@ -1,14 +1,9 @@
 local T = require('sf.term')
-local U = require('sf.util');
+local U = require('sf.util')
 
 local H = {}
 H.md_folder_name = '/md'
-H.types_to_retrieve = {
-  "ApexClass",
-  "ApexTrigger",
-  "StaticResource",
-  "LightningComponentBundle"
-}
+H.types_to_retrieve = {}
 
 local Md = {}
 
@@ -39,7 +34,6 @@ end
 function Md.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
 end
-
 
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"

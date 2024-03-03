@@ -1,4 +1,4 @@
-local U = require('sf.util');
+local U = require('sf.util')
 
 local H = {}
 local Org = {}
