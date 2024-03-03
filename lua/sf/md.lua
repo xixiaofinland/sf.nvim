@@ -1,9 +1,9 @@
 local T = require('sf.term')
 local U = require('sf.util')
-
+local C = require('sf.config')
 local H = {}
+
 H.md_folder_name = '/md'
-H.types_to_retrieve = {}
 
 local Md = {}
 
@@ -66,7 +66,8 @@ H.list_md_to_retrieve = function()
   local md_to_display = {}
   local md_folder = U.get_sf_root() .. H.md_folder_name
 
-  for _, type in pairs(H.types_to_retrieve) do
+  local md_types = C.config.types_to_retrieve
+  for _, type in pairs(md_types) do
     local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
@@ -144,7 +145,8 @@ H.md_pull_cb = function()
 end
 
 H.pull_md_json = function()
-  for _, type in pairs(H.types_to_retrieve) do
+  local md_types = C.config.types_to_retrieve
+  for _, type in pairs(md_types) do
     H.pull_metadata(type)
   end
 end
@@ -153,7 +155,8 @@ H.pull_and_list_md = function()
   H.counter = 0;
   H.all_spawned = false;
 
-  for _, type in pairs(H.types_to_retrieve) do
+  local md_types = C.config.types_to_retrieve
+  for _, type in pairs(md_types) do
     H.counter = H.counter + 1
     H.pull_metadata(type, H.md_pull_cb)
   end
