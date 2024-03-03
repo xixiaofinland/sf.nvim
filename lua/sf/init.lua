@@ -12,6 +12,8 @@ local Test = require('sf.test')
 local Cfg = require('sf.config')
 local Sf = {}
 
+--- Before using this plugin, it's mandatory to invoke this function by "require'sf'.setup()".
+---@param config table|nil Optional config table to overwrite default settings.
 Sf.setup = Cfg.setup
 
 

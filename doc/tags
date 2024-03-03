@@ -20,6 +20,7 @@ Sf.run_current_test	sf.txt	/*Sf.run_current_test*
 Sf.save_and_push	sf.txt	/*Sf.save_and_push*
 Sf.set_global_target_org	sf.txt	/*Sf.set_global_target_org*
 Sf.set_target_org	sf.txt	/*Sf.set_target_org*
+Sf.setup	sf.txt	/*Sf.setup*
 Sf.toggle_term	sf.txt	/*Sf.toggle_term*
 SfNvim	sf.txt	/*SfNvim*
 sf.nvim	sf.txt	/*sf.nvim*

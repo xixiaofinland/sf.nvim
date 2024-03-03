@@ -7,6 +7,13 @@ MIT License Copyright (c) 2024 Xi Xiao
 
 
 ------------------------------------------------------------------------------
+                                                                      *Sf.setup*
+                                   `Sf.setup`
+Before using this plugin, it's mandatory to invoke this function by "require'sf'.setup()".
+Parameters ~
+{config} `(table|nil)` Optional config table to overwrite default settings.
+
+------------------------------------------------------------------------------
                                                              *Sf.get_target_org*
                               `Sf.get_target_org`
 get the value of the plugin internal variable "target_org".
