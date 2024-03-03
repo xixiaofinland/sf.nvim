@@ -1,55 +1,87 @@
--- define Salesforce related filetypes
+local Cfg = {}
 
-vim.filetype = on
-vim.filetype.add({
+local default_cfg = {
+  types_to_retrieve = {
+    "ApexClass",
+    "ApexTrigger",
+    "StaticResource",
+    "LightningComponentBundle"
+  }
+}
+
+local apply_config = function(opt)
+  Cfg.config = vim.tbl_deep_extend('force', default_cfg, opt)
+end
+
+local init = function()
+  -- define Salesforce related filetypes
+
+  vim.filetype = on
+  vim.filetype.add({
     extension = {
-        cls = 'apex',
-        apex = 'apex',
-        trigger = 'apex',
-        soql = 'soql',
-        sosl = 'sosl',
-        page = 'html',
+      cls = 'apex',
+      apex = 'apex',
+      trigger = 'apex',
+      soql = 'soql',
+      sosl = 'sosl',
+      page = 'html',
     }
-})
+  })
 
--- Define hotkeys and user commands
+  -- Define hotkeys and user commands
 
-local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
+  local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
-vim.api.nvim_create_autocmd({ 'FileType' }, {
+  vim.api.nvim_create_autocmd({ 'FileType' }, {
     group = sf_group,
     pattern = 'apex',
     callback = function()
-        vim.bo.commentstring = '//%s'
-        vim.bo.fixendofline = false -- Salesforce doesn't like end of line
+      vim.bo.commentstring = '//%s'
+      vim.bo.fixendofline = false -- Salesforce doesn't like end of line
     end
-})
+  })
 
-vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+  vim.api.nvim_create_autocmd({ 'FileType' }, {
     group = sf_group,
-    desc = "Run sf org cmd and store org info in the plugin",
+    pattern = 'SFTerm',
+    callback = function()
+      local nmap = function(keys, func, desc)
+        if desc then
+          desc = '[Sf] ' .. desc
+        end
+        vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
+      end
+
+      nmap('<leader><leader>', require('sf').toggle_term, '[T]erminal toggle')
+      nmap('<C-c>', require('sf').cancel, '[C]ancel current running command')
+    end
+  })
+
+  vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+    group = sf_group,
+    desc = 'Run sf org cmd and store org info in the plugin',
     once = true,
     callback = function()
-        require('sf.org').fetch_org_list()
+      require('sf').fetch_org_list()
     end,
-})
+  })
 
-local function set_keys()
+  local function set_keys()
     if not vim.tbl_contains({ "apex", "sosl", "soql", "javascript", "html" }, vim.bo.filetype) then
-        return
+      return
     end
 
     if not pcall(require('sf.util').get_sf_root) then
-        return
+      return
     end
 
     -- Set hotkeys
 
     local nmap = function(keys, func, desc)
-        if desc then
-            desc = '[Sf] ' .. desc
-        end
-        vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
+      if desc then
+        desc = '[Sf] ' .. desc
+      end
+      vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
     end
 
     local Sf = require('sf')
@@ -89,71 +121,82 @@ local function set_keys()
     -- user commands
 
     vim.api.nvim_create_user_command("SfFetchOrgList", function()
-        Sf.fetch_org_list()
+      Sf.fetch_org_list()
     end, {})
 
     vim.api.nvim_create_user_command("SfSetTargetOrg", function()
-        Sf.set_target_org()
+      Sf.set_target_org()
     end, {})
 
     vim.api.nvim_create_user_command("SfDiff", function()
-        Sf.diff_in_target_org()
+      Sf.diff_in_target_org()
     end, {})
 
     vim.api.nvim_create_user_command("SfDiffInOrg", function()
-        Sf.diff_in_org()
+      Sf.diff_in_org()
     end, {})
 
     vim.api.nvim_create_user_command("SfListMdToRetrieve", function()
-        Sf.list_md_to_retrieve()
+      Sf.list_md_to_retrieve()
     end, {})
 
     vim.api.nvim_create_user_command("SfPullAndListMd", function()
-        Sf.pull_and_list_md()
+      Sf.pull_and_list_md()
     end, {})
 
     vim.api.nvim_create_user_command("SfListMdTypeToRetrieve", function()
-        Sf.list_md_type_to_retrieve()
+      Sf.list_md_type_to_retrieve()
     end, {})
 
     vim.api.nvim_create_user_command("SfPullAndListMdType", function()
-        Sf.pull_and_list_md_type()
+      Sf.pull_and_list_md_type()
     end, {})
 
     vim.api.nvim_create_user_command("SfToggle", function()
-        Sf.toggle_term()
+      Sf.toggle_term()
     end, {})
 
     vim.api.nvim_create_user_command("SfSaveAndPush", function()
-        Sf.save_and_push()
+      Sf.save_and_push()
     end, {})
 
     vim.api.nvim_create_user_command("SfRetrieve", function()
-        Sf.retrieve()
+      Sf.retrieve()
     end, {})
 
     vim.api.nvim_create_user_command("SfCancelCommand", function()
-        Sf.cancel()
+      Sf.cancel()
     end, {})
 
     vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
-        Sf.run_all_tests_in_this_file()
+      Sf.run_all_tests_in_this_file()
     end, {})
 
     vim.api.nvim_create_user_command("SfRunCurrentTest", function()
-        Sf.run_current_test()
+      Sf.run_current_test()
     end, {})
 
     vim.api.nvim_create_user_command("SfRepeatTest", function()
-        Sf.repeat_last_tests()
+      Sf.repeat_last_tests()
     end, {})
 
     vim.api.nvim_create_user_command("SfOpenTestSelect", function()
-        Sf.open_test_select()
+      Sf.open_test_select()
     end, {})
-end
+  end
 
-vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType' }, {
+  vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType' }, {
     group = sf_group,
     callback = set_keys
-})
+  })
+end
+
+Cfg.setup = function(opt)
+  opt = opt or {}
+  vim.validate({ config = { opt, 'table', true } })
+  apply_config(opt)
+
+  init()
+end
+
+return Cfg

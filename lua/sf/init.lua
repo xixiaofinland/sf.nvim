@@ -4,12 +4,16 @@
 --- MIT License Copyright (c) 2024 Xi Xiao
 ---
 
-local Util = require('sf.util');
-local Term = require('sf.term');
-local Org = require('sf.org');
-local Metadata = require('sf.md');
-local Test = require('sf.test');
+local Util = require('sf.util')
+local Term = require('sf.term')
+local Org = require('sf.org')
+local Metadata = require('sf.md')
+local Test = require('sf.test')
+local Cfg = require('sf.config')
 local Sf = {}
+
+Sf.setup = Cfg.setup
+
 
 --- get the value of the plugin internal variable "target_org".
 --- "target_org" is automatically set by |Sf.fetch_org_list| when Nvim is intitiated
@@ -39,7 +43,7 @@ Sf.go_to_sf_root = Term.go_to_sf_root
 --- Allows to pass the user defined command into SFTerm.
 Sf.run = Term.run
 
--- From Term module ==========================================================
+-- From Org module ==========================================================
 
 --- Run "sf org list" command under the hood and stores the org list.
 --- If a target_org is found, the value is saved into "require('sf.util').target_org", an internal variable.
