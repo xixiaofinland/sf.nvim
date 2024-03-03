@@ -37,16 +37,32 @@ local init = function()
     pattern = 'apex',
     callback = function()
       vim.bo.commentstring = '//%s'
-      vim.bo.fixendofline = false   -- Salesforce doesn't like end of line
+      vim.bo.fixendofline = false -- Salesforce doesn't like end of line
+    end
+  })
+
+  vim.api.nvim_create_autocmd({ 'FileType' }, {
+    group = sf_group,
+    pattern = 'SFTerm',
+    callback = function()
+      local nmap = function(keys, func, desc)
+        if desc then
+          desc = '[Sf] ' .. desc
+        end
+        vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
+      end
+
+      nmap('<leader><leader>', require('sf').toggle_term, '[T]erminal toggle')
+      nmap('<C-c>', require('sf').cancel, '[C]ancel current running command')
     end
   })
 
   vim.api.nvim_create_autocmd({ 'VimEnter' }, {
     group = sf_group,
-    desc = "Run sf org cmd and store org info in the plugin",
+    desc = 'Run sf org cmd and store org info in the plugin',
     once = true,
     callback = function()
-      require('sf.org').fetch_org_list()
+      require('sf').fetch_org_list()
     end,
   })
 
