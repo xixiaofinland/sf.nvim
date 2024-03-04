@@ -34,10 +34,17 @@ local init = function()
 
   vim.api.nvim_create_autocmd({ 'FileType' }, {
     group = sf_group,
+    pattern = { 'javascript, apex' },
+    callback = function()
+      vim.bo.fixendofline = false -- Salesforce doesn't like end of line
+    end
+  })
+
+  vim.api.nvim_create_autocmd({ 'FileType' }, {
+    group = sf_group,
     pattern = 'apex',
     callback = function()
       vim.bo.commentstring = '//%s'
-      vim.bo.fixendofline = false -- Salesforce doesn't like end of line
     end
   })
 
