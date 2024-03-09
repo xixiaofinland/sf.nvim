@@ -28,13 +28,11 @@ local init = function()
     }
   })
 
-  -- Define hotkeys and user commands
-
   local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
   vim.api.nvim_create_autocmd({ 'FileType' }, {
     group = sf_group,
-    pattern = { 'javascript, apex' },
+    pattern = { 'javascript, apex, html' },
     callback = function()
       vim.bo.fixendofline = false -- Salesforce doesn't like end of line
     end
