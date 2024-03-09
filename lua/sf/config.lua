@@ -1,12 +1,25 @@
 local Cfg = {}
 
 local default_cfg = {
+
+  -- Hotkeys and user commands are enabled for these filetypes
+  hotkeys_in_filetypes = {
+    "apex", "sosl", "soql", "javascript", "html"
+  },
+
+  -- When set to `true`, hotkeys and user commands are only enabled when the file
+  -- resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
+  -- When set to `false`, filetypes defined in `hotkeys_in_filetypes` have
+  -- hotkeys and user commands enabled.
+  enable_hotkeys_only_in_sf_project_folder = false,
+
+  -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
   types_to_retrieve = {
     "ApexClass",
     "ApexTrigger",
     "StaticResource",
     "LightningComponentBundle"
-  }
+  },
 }
 
 local apply_config = function(opt)
@@ -14,8 +27,7 @@ local apply_config = function(opt)
 end
 
 local init = function()
-  -- define Salesforce related filetypes
-
+  -- Define Salesforce related filetypes
   vim.filetype = on
   vim.filetype.add({
     extension = {
@@ -30,11 +42,15 @@ local init = function()
 
   local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
 
+  -- Disable "end of line" for relevant filetypes in sf project folder,
+  -- Because metadata files retrieved from Salesforce don't have it
   vim.api.nvim_create_autocmd({ 'FileType' }, {
     group = sf_group,
     pattern = { 'javascript, apex, html' },
     callback = function()
-      vim.bo.fixendofline = false -- Salesforce doesn't like end of line
+      if pcall(require('sf.util').get_sf_root) then
+        vim.bo.fixendofline = false
+      end
     end
   })
 
@@ -46,6 +62,7 @@ local init = function()
     end
   })
 
+  -- Set hotkeys for the integrated terminal
   vim.api.nvim_create_autocmd({ 'FileType' }, {
     group = sf_group,
     pattern = 'SFTerm',
@@ -62,6 +79,7 @@ local init = function()
     end
   })
 
+  -- Fetch org info in Vim start
   vim.api.nvim_create_autocmd({ 'VimEnter' }, {
     group = sf_group,
     desc = 'Run sf org cmd and store org info in the plugin',
@@ -72,11 +90,12 @@ local init = function()
   })
 
   local function set_keys()
-    if not vim.tbl_contains({ "apex", "sosl", "soql", "javascript", "html" }, vim.bo.filetype) then
+    if not vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
       return
     end
 
-    if not pcall(require('sf.util').get_sf_root) then
+    if Cfg.config.enable_hotkeys_only_in_sf_project_folder and
+        not pcall(require('sf.util').get_sf_root) then
       return
     end
 
@@ -190,6 +209,7 @@ local init = function()
     end, {})
   end
 
+  -- Set hotkeys and user commands
   vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType' }, {
     group = sf_group,
     callback = set_keys
