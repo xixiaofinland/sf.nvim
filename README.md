@@ -42,9 +42,39 @@ return {
 }
 
 ```
+
+You can also pass a config table into `setup()`. It can be defined as:
+
+```lua
+-- These are the default settings, no need to set them if you are happy already.
+
+require('sf').setup({
+
+      -- Hotkeys and user commands are enabled for these filetypes
+      hotkeys_in_filetypes = {
+        "apex", "sosl", "soql", "javascript", "html"
+      },
+
+      -- When set to `true`, hotkeys and user commands are only enabled when the file
+      -- resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
+      -- When set to `false`, filetypes defined in `hotkeys_in_filetypes` have
+      -- hotkeys and user commands enabled.
+      enable_hotkeys_only_in_sf_project_folder = false,
+
+      -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
+      types_to_retrieve = {
+        "ApexClass",
+        "ApexTrigger",
+        "StaticResource",
+        "LightningComponentBundle"
+      },
+    })
+```
+
 ## Prerequisites
-- [Salesforce sf CLI](https://developer.salesforce.com/tools/salesforcecli)
-- Apex support in nvim-treesitter plugin: `ensure_installed = { "apex", "soql", "sosl"}`, e.g.: in [my setting](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
+- [sf cli](https://developer.salesforce.com/tools/salesforcecli)
+- Add apex parser in nvim-treesitter plugin: `ensure_installed = { "apex", "soql", "sosl"}`, e.g.: in [my setting](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
+- Telescope.nvim
 
 
 ## Usage
@@ -69,11 +99,9 @@ For example, I use lualine.nvim, and configure/show target_org(`xixiao100`) as b
 ### Commands
 Hotkeys and user commands are defined in the middle of this file [here](https://github.com/xixiaofinland/sf.nvim/blob/main/lua/sf/config.lua).
 
-They are enabled ONLY when the current buffer is both:
-- `apex`, `javascript`, or `html` filetype
-- and in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
+When they are enabled:
 
-When both conditions are met, type `<leader>s` should see hotkeys as in the screenshot.
+type `<leader>s` should see hotkeys as in the screenshot.
 ![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
 Type `:Sf` in Ex will list all user commands:
