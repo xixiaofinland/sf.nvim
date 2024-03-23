@@ -36,6 +36,26 @@ Save the file in the current buffer and push to target_org.
 Retrieve the file in the current buffer from target_org.
 
 ------------------------------------------------------------------------------
+                                                           *Sf.retrieve_package*
+                                 `Sf.retrieve_package`
+Retrieve the file in the current buffer as a manifest from target_org
+
+------------------------------------------------------------------------------
+                                                              *Sf.run_anonymous*
+                                 `Sf.run_anonymous`
+Run the file in the current buffer as anonymous apex in target_org
+
+------------------------------------------------------------------------------
+                                                                  *Sf.run_query*
+                                 `Sf.run_query`
+Run the query defined in current buffer in target_org
+
+------------------------------------------------------------------------------
+                                                          *Sf.run_tooling_query*
+                                 `Sf.run_query`
+Run the tooling API query defined in the current buffer in target_org
+
+------------------------------------------------------------------------------
                                                                      *Sf.cancel*
                                   `Sf.cancel`
 Terminate the running command in SFTerm.
