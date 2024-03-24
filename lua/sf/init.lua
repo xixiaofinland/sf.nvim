@@ -123,4 +123,7 @@ Sf.run_all_tests_in_this_file = Test.run_all_tests_in_this_file
 --- A convenient way to repeat the last executed Apex test command.
 Sf.repeat_last_tests = Test.repeat_last_tests
 
+--- Run all local tests in target_org
+Sf.run_local_tests = Test.run_local_tests
+
 return Sf

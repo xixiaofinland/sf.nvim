@@ -220,6 +220,10 @@ local init = function()
       Sf.repeat_last_tests()
     end, {})
 
+    vim.api.nvim_create_user_command("SfRunLocalTests", function()
+      Sf.run_local_tests()
+    end, {})
+
     vim.api.nvim_create_user_command("SfOpenTestSelect", function()
       Sf.open_test_select()
     end, {})
