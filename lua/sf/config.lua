@@ -188,6 +188,22 @@ local init = function()
       Sf.retrieve()
     end, {})
 
+    vim.api.nvim_create_user_command("SfRetrievePackage", function ()
+      Sf.retrieve_package()
+    end, {})
+
+    vim.api.nvim_create_user_command("SfRunAnonymousApex", function ()
+      Sf.run_anonymous()
+    end, {})
+
+    vim.api.nvim_create_user_command("SfRunQuery", function ()
+      Sf.run_query()
+    end, {})
+
+    vim.api.nvim_create_user_command("SfRunToolingQuery", function ()
+      Sf.run_tooling_query()
+    end, {})
+
     vim.api.nvim_create_user_command("SfCancelCommand", function()
       Sf.cancel()
     end, {})
@@ -202,6 +218,10 @@ local init = function()
 
     vim.api.nvim_create_user_command("SfRepeatTest", function()
       Sf.repeat_last_tests()
+    end, {})
+
+    vim.api.nvim_create_user_command("SfRunLocalTests", function()
+      Sf.run_local_tests()
     end, {})
 
     vim.api.nvim_create_user_command("SfOpenTestSelect", function()
