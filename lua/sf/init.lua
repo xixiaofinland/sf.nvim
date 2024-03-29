@@ -110,6 +110,9 @@ Sf.retrieve_apex_under_cursor = Metadata.retrieve_apex_under_cursor
 -- Creates a new Apex Class using an input name or prompting the user to enter one
 Sf.create_apex_class = Metadata.create_apex_class
 
+-- Creates a new Aura Bundle using an input name or prompting the user to enter one
+Sf.create_aura_bundle = Metadata.create_aura_bundle
+
 -- From Test module ==========================================================
 
 --- Open a top-split window to display the Apex tests in the current file.

@@ -180,6 +180,10 @@ local init = function()
       Sf.create_apex_class()
     end, {})
 
+    vim.api.nvim_create_user_command("SfCreateAuraBundle", function()
+      Sf.create_aura_bundle()
+    end, {})
+
     vim.api.nvim_create_user_command("SfToggle", function()
       Sf.toggle_term()
     end, {})
