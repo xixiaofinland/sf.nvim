@@ -44,6 +44,10 @@ function Md.create_aura_bundle()
   H.create_aura_bundle()
 end
 
+function Md.create_lwc_bundle()
+  H.create_lwc_bundle()
+end
+
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"
 local previewers = require 'telescope.previewers'
@@ -306,6 +310,22 @@ end
 
 H.create_aura_bundle = function(name)
     U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
+end
+
+H.generate_lwc = function(name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. H.default_dir .. "/lwc", name)
+  U.silent_job_call(
+    cmd,
+    nil,
+    "Something went wrong creating the LWC bundle",
+    function()
+      vim.notify("LWC bundle " .. name .. " created", vim.log.levels.INFO)
+    end
+  )
+end
+
+H.create_lwc_bundle = function(name)
+    U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
 end
 
 return Md
