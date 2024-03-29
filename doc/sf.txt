@@ -135,6 +135,11 @@ Pull the list of metadata-types into a local json file, and list them in a pop-u
 It's |Sf.pull_md_type_json| and |Sf.list_md_type_to_retrieve| in one go.
 
 ------------------------------------------------------------------------------
+                                                          *Sf.create_apex_class*
+                           `Sf.create_apex_class`
+Creates a new Apex Class using an input name or prompting the user to enter one.
+
+------------------------------------------------------------------------------
                                                  *Sf.retrieve_apex_under_cursor*
                         `Sf.retrieve_apex_under_cursor`
 Uses the word under the cursor as Apex name to attempt to retreive from the org.

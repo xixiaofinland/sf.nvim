@@ -4,6 +4,7 @@ local C = require('sf.config')
 local H = {}
 
 H.md_folder_name = '/md'
+H.default_dir = '/force-app/main/default'
 
 local Md = {}
 
@@ -33,6 +34,10 @@ end
 
 function Md.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
+end
+
+function Md.create_apex_class()
+  H.create_apex_class()
 end
 
 local pickers = require "telescope.pickers"
@@ -265,6 +270,22 @@ H.retrieve_md_type = function(type)
 
   local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
   T.run(cmd)
+end
+
+H.generate_class = function(name)
+  local cmd = string.format("sf apex generate class --output-dir %s --name %s", U.get_sf_root() .. H.default_dir .. "/classes", name)
+  U.silent_job_call(
+    cmd,
+    nil,
+    "Something went wrong creating the class",
+    function()
+      vim.notify("Class " .. name .. " created", vim.log.levels.INFO)
+    end
+  )
+end
+
+H.create_apex_class = function(name)
+    U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
 end
 
 return Md

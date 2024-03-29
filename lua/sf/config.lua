@@ -176,6 +176,10 @@ local init = function()
       Sf.pull_and_list_md_type()
     end, {})
 
+    vim.api.nvim_create_user_command("SfCreateApexClass", function()
+      Sf.create_apex_class()
+    end, {})
+
     vim.api.nvim_create_user_command("SfToggle", function()
       Sf.toggle_term()
     end, {})
