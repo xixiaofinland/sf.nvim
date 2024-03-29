@@ -40,6 +40,10 @@ function Md.create_apex_class()
   H.create_apex_class()
 end
 
+function Md.create_aura_bundle()
+  H.create_aura_bundle()
+end
+
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"
 local previewers = require 'telescope.previewers'
@@ -286,6 +290,22 @@ end
 
 H.create_apex_class = function(name)
     U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
+end
+
+H.generate_aura = function(name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_sf_root() .. H.default_dir .. "/aura", name)
+  U.silent_job_call(
+    cmd,
+    nil,
+    "Something went wrong creating the Aura bundle",
+    function()
+      vim.notify("Aura bundle " .. name .. " created", vim.log.levels.INFO)
+    end
+  )
+end
+
+H.create_aura_bundle = function(name)
+    U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
 end
 
 return Md
