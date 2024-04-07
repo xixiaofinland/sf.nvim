@@ -30,7 +30,7 @@ Test.run_all_tests_in_this_file = function()
     return U.show_warn('Not in a test class.')
   end
 
-  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, U.get())
+  local cmd = string.format("sf apex run test --class-names %s --result-format human --synchronous --code-coverage --target-org %s", test_class_name, U.get())
   T.run(cmd)
 end
 
@@ -43,7 +43,7 @@ Test.repeat_last_tests = function()
 end
 
 Test.run_local_tests = function ()
-  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 -o %s", U.get())
+  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 --target-org %s", U.get())
   T.run(cmd)
 end
 
