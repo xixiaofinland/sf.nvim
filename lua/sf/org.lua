@@ -143,7 +143,7 @@ H.diff_in = function(org)
     vim.bo[0].buflisted = false
   end
 
-  U.job_call(cmd, msg, err_msg, cb)
+  U.silent_job_call(cmd, msg, err_msg, cb)
 end
 
 H.get_file_name_without_extension = function(fileName)

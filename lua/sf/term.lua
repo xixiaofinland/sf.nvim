@@ -34,7 +34,7 @@ function Term.go_to_sf_root()
 end
 
 function Term.run(c)
-  local cmd = vim.fn.expandcmd(c)
+  local cmd = vim.fn.expandcmd(c) .. ' -o ' .. U.get()
   t:run(cmd)
 end
 
