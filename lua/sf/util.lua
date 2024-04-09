@@ -108,4 +108,21 @@ M.copy_apex_name = function()
   vim.notify(string.format('"%s" copied.', file_name), vim.log.levels.INFO)
 end
 
+M.run_cb_with_input = function(arg, prompt, cb)
+  if arg ~= nil then
+    cb(arg)
+  else
+    vim.ui.input(
+      { prompt = prompt },
+      function(input)
+        if input ~= nil then
+          cb(input)
+        else
+          return
+        end
+      end
+    )
+  end
+end
+
 return M

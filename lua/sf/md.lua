@@ -4,6 +4,7 @@ local C = require('sf.config')
 local H = {}
 
 H.md_folder_name = '/md'
+H.default_dir = '/force-app/main/default'
 
 local Md = {}
 
@@ -33,6 +34,18 @@ end
 
 function Md.retrieve_apex_under_cursor()
   H.retrieve_apex_under_cursor()
+end
+
+function Md.create_apex_class()
+  H.create_apex_class()
+end
+
+function Md.create_aura_bundle()
+  H.create_aura_bundle()
+end
+
+function Md.create_lwc_bundle()
+  H.create_lwc_bundle()
 end
 
 local pickers = require "telescope.pickers"
@@ -265,6 +278,54 @@ H.retrieve_md_type = function(type)
 
   local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
   T.run(cmd)
+end
+
+H.generate_class = function(name)
+  local cmd = string.format("sf apex generate class --output-dir %s --name %s", U.get_sf_root() .. H.default_dir .. "/classes", name)
+  U.silent_job_call(
+    cmd,
+    nil,
+    "Something went wrong creating the class",
+    function()
+      vim.notify("Class " .. name .. " created", vim.log.levels.INFO)
+    end
+  )
+end
+
+H.create_apex_class = function(name)
+    U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
+end
+
+H.generate_aura = function(name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_sf_root() .. H.default_dir .. "/aura", name)
+  U.silent_job_call(
+    cmd,
+    nil,
+    "Something went wrong creating the Aura bundle",
+    function()
+      vim.notify("Aura bundle " .. name .. " created", vim.log.levels.INFO)
+    end
+  )
+end
+
+H.create_aura_bundle = function(name)
+    U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
+end
+
+H.generate_lwc = function(name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. H.default_dir .. "/lwc", name)
+  U.silent_job_call(
+    cmd,
+    nil,
+    "Something went wrong creating the LWC bundle",
+    function()
+      vim.notify("LWC bundle " .. name .. " created", vim.log.levels.INFO)
+    end
+  )
+end
+
+H.create_lwc_bundle = function(name)
+    U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
 end
 
 return Md
