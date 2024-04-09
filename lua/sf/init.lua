@@ -36,6 +36,18 @@ Sf.save_and_push = Term.save_and_push
 --- Retrieve the file in the current buffer from target_org.
 Sf.retrieve = Term.retrieve
 
+--- Retrieve the file in the current buffer as a manifest from target_org
+Sf.retrieve_package = Term.retrieve_package
+
+--- Run the file in the current buffer as anonymous apex in target_org
+Sf.run_anonymous = Term.run_anonymous
+
+--- Run the query defined in current buffer in target_org
+Sf.run_query = Term.run_query
+
+--- Run the tooling API query defined in the current buffer in target_org
+Sf.run_tooling_query = Term.run_tooling_query
+
 --- Terminate the running command in SFTerm.
 Sf.cancel = Term.cancel
 
@@ -119,5 +131,8 @@ Sf.run_all_tests_in_this_file = Test.run_all_tests_in_this_file
 
 --- A convenient way to repeat the last executed Apex test command.
 Sf.repeat_last_tests = Test.repeat_last_tests
+
+--- Run all local tests in target_org
+Sf.run_local_tests = Test.run_local_tests
 
 return Sf

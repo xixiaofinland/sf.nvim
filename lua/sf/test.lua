@@ -42,6 +42,11 @@ Test.repeat_last_tests = function()
   T.run(U.last_tests)
 end
 
+Test.run_local_tests = function ()
+  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 -o %s", U.get())
+  T.run(cmd)
+end
+
 -- prompt below
 
 local actions = require 'telescope.actions'
