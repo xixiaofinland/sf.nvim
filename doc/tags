@@ -1,4 +1,7 @@
 Sf.cancel	sf.txt	/*Sf.cancel*
+Sf.create_apex_class	sf.txt	/*Sf.create_apex_class*
+Sf.create_aura_bundle	sf.txt	/*Sf.create_aura_bundle*
+Sf.create_lwc_bundle	sf.txt	/*Sf.create_lwc_bundle*
 Sf.diff_in_org	sf.txt	/*Sf.diff_in_org*
 Sf.diff_in_target_org	sf.txt	/*Sf.diff_in_target_org*
 Sf.fetch_org_list	sf.txt	/*Sf.fetch_org_list*
@@ -14,9 +17,14 @@ Sf.pull_md_type_json	sf.txt	/*Sf.pull_md_type_json*
 Sf.repeat_last_tests	sf.txt	/*Sf.repeat_last_tests*
 Sf.retrieve	sf.txt	/*Sf.retrieve*
 Sf.retrieve_apex_under_cursor	sf.txt	/*Sf.retrieve_apex_under_cursor*
+Sf.retrieve_package	sf.txt	/*Sf.retrieve_package*
 Sf.run	sf.txt	/*Sf.run*
 Sf.run_all_tests_in_this_file	sf.txt	/*Sf.run_all_tests_in_this_file*
+Sf.run_anonymous	sf.txt	/*Sf.run_anonymous*
 Sf.run_current_test	sf.txt	/*Sf.run_current_test*
+Sf.run_local_tests	sf.txt	/*Sf.run_local_tests*
+Sf.run_query	sf.txt	/*Sf.run_query*
+Sf.run_tooling_query	sf.txt	/*Sf.run_tooling_query*
 Sf.save_and_push	sf.txt	/*Sf.save_and_push*
 Sf.set_global_target_org	sf.txt	/*Sf.set_global_target_org*
 Sf.set_target_org	sf.txt	/*Sf.set_target_org*
