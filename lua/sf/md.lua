@@ -281,13 +281,15 @@ H.retrieve_md_type = function(type)
 end
 
 H.generate_class = function(name)
-  local cmd = string.format("sf apex generate class --output-dir %s --name %s", U.get_sf_root() .. H.default_dir .. "/classes", name)
-  U.silent_job_call(
+  local path = U.get_sf_root() .. H.default_dir .. "/classes"
+  local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
+  U.job_call(
     cmd,
     nil,
     "Something went wrong creating the class",
     function()
-      vim.notify("Class " .. name .. " created", vim.log.levels.INFO)
+      local open_new_file = string.format(":e %s/%s.cls", path, name)
+      vim.cmd(open_new_file)
     end
   )
 end
