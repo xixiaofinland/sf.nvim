@@ -31,6 +31,7 @@ Test.run_all_tests_in_this_file = function()
   end
 
   local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, U.get())
+  U.last_tests = cmd
   T.run(cmd)
 end
 
@@ -44,6 +45,7 @@ end
 
 Test.run_local_tests = function ()
   local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 -o %s", U.get())
+  U.last_tests = cmd
   T.run(cmd)
 end
 

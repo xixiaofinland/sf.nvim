@@ -97,7 +97,7 @@ M.silent_job_call = function(cmd, msg, err_msg, cb)
 end
 
 M.job_call = function(cmd, msg, err_msg, cb)
-  vim.notify('Async job starts...', vim.log.levels.INFO);
+  vim.notify('| Async job starts...', vim.log.levels.INFO);
   M.silent_job_call(cmd, msg, err_msg, cb)
 end
 

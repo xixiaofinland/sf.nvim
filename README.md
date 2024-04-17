@@ -11,7 +11,7 @@
 <p align="center">📸 Offer common functionalities for Salesforce development</p>
 
 ## ✨Features
-- 🔥 Push/retrieve metadata files
+- 🔥 Push/retrieve/create metadata files
 - 💻 Integrated scratch terminal
 - 😎 Diff file between local and org
 - 🤩 Target org shows in status line
@@ -106,6 +106,13 @@ type `<leader>s` should see hotkeys as in the screenshot.
 
 Type `:Sf` in Ex will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
+
+### Self defined commands
+Chances are you have more than the predefined command to run, such as `sf org
+list`.
+
+you can pass the command into `run()` method to execute it in the integrate
+terminal. For instance, `require('sf').run('sf org list')`.
 
 ## License
 MIT.

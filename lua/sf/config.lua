@@ -49,6 +49,7 @@ local init = function()
     pattern = { 'javascript, apex, html' },
     callback = function()
       if pcall(require('sf.util').get_sf_root) then
+        -- TODO: it seems not set correctly. Check why.
         vim.bo.fixendofline = false
       end
     end
@@ -59,6 +60,7 @@ local init = function()
     pattern = 'apex',
     callback = function()
       vim.bo.commentstring = '//%s'
+      vim.bo.fixendofline = false
     end
   })
 
