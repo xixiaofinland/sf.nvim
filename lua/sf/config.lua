@@ -40,7 +40,7 @@ local init = function()
     }
   })
 
-  local sf_group = vim.api.nvim_create_augroup("Sf", { clear = true })
+  local sf_group = vim.api.nvim_create_augroup("SF", { clear = true })
 
   -- Disable "end of line" for relevant filetypes in sf project folder,
   -- Because metadata files retrieved from Salesforce don't have it
@@ -121,10 +121,8 @@ local init = function()
     nmap('<leader>sD', Sf.diff_in_org, "[D]iff in org...")
 
     nmap('<leader>ml', Sf.list_md_to_retrieve, "[M]etadata [L]isting")
-    nmap('<leader>mL', Sf.pull_and_list_md, "Force pull and list metadata")
 
     nmap('<leader>mtl', Sf.list_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
-    nmap('<leader>mtL', Sf.pull_and_list_md_type, "Force pull and list metadata types")
 
     nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
 
@@ -146,99 +144,99 @@ local init = function()
 
     -- user commands
 
-    vim.api.nvim_create_user_command("SfFetchOrgList", function()
+    vim.api.nvim_create_user_command("SFFetchOrgList", function()
       Sf.fetch_org_list()
     end, {})
 
-    vim.api.nvim_create_user_command("SfSetTargetOrg", function()
+    vim.api.nvim_create_user_command("SFSetTargetOrg", function()
       Sf.set_target_org()
     end, {})
 
-    vim.api.nvim_create_user_command("SfDiff", function()
+    vim.api.nvim_create_user_command("SFDiff", function()
       Sf.diff_in_target_org()
     end, {})
 
-    vim.api.nvim_create_user_command("SfDiffInOrg", function()
+    vim.api.nvim_create_user_command("SFDiffInOrg", function()
       Sf.diff_in_org()
     end, {})
 
-    vim.api.nvim_create_user_command("SfListMdToRetrieve", function()
+    vim.api.nvim_create_user_command("SFListMdToRetrieve", function()
       Sf.list_md_to_retrieve()
     end, {})
 
-    vim.api.nvim_create_user_command("SfPullAndListMd", function()
-      Sf.pull_and_list_md()
+    vim.api.nvim_create_user_command("SFPullMd", function()
+      Sf.pull_md_json()
     end, {})
 
-    vim.api.nvim_create_user_command("SfListMdTypeToRetrieve", function()
+    vim.api.nvim_create_user_command("SFListMdTypeToRetrieve", function()
       Sf.list_md_type_to_retrieve()
     end, {})
 
-    vim.api.nvim_create_user_command("SfPullAndListMdType", function()
-      Sf.pull_and_list_md_type()
+    vim.api.nvim_create_user_command("SFPullMdType", function()
+      Sf.pull_md_type_json()
     end, {})
 
-    vim.api.nvim_create_user_command("SfCreateApexClass", function()
+    vim.api.nvim_create_user_command("SFCreateApexClass", function()
       Sf.create_apex_class()
     end, {})
 
-    vim.api.nvim_create_user_command("SfCreateAuraBundle", function()
+    vim.api.nvim_create_user_command("SFCreateAuraBundle", function()
       Sf.create_aura_bundle()
     end, {})
 
-    vim.api.nvim_create_user_command("SfCreateLwcBundle", function()
+    vim.api.nvim_create_user_command("SFCreateLwcBundle", function()
       Sf.create_lwc_bundle()
     end, {})
 
-    vim.api.nvim_create_user_command("SfToggle", function()
+    vim.api.nvim_create_user_command("SFToggle", function()
       Sf.toggle_term()
     end, {})
 
-    vim.api.nvim_create_user_command("SfSaveAndPush", function()
+    vim.api.nvim_create_user_command("SFSaveAndPush", function()
       Sf.save_and_push()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRetrieve", function()
+    vim.api.nvim_create_user_command("SFRetrieve", function()
       Sf.retrieve()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRetrievePackage", function ()
+    vim.api.nvim_create_user_command("SFRetrievePackage", function ()
       Sf.retrieve_package()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRunAnonymousApex", function ()
+    vim.api.nvim_create_user_command("SFRunAnonymousApex", function ()
       Sf.run_anonymous()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRunQuery", function ()
+    vim.api.nvim_create_user_command("SFRunQuery", function ()
       Sf.run_query()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRunToolingQuery", function ()
+    vim.api.nvim_create_user_command("SFRunToolingQuery", function ()
       Sf.run_tooling_query()
     end, {})
 
-    vim.api.nvim_create_user_command("SfCancelCommand", function()
+    vim.api.nvim_create_user_command("SFCancelCommand", function()
       Sf.cancel()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRunAllTestsInThisFile", function()
+    vim.api.nvim_create_user_command("SFRunAllTestsInThisFile", function()
       Sf.run_all_tests_in_this_file()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRunCurrentTest", function()
+    vim.api.nvim_create_user_command("SFRunCurrentTest", function()
       Sf.run_current_test()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRepeatTest", function()
+    vim.api.nvim_create_user_command("SFRepeatTest", function()
       Sf.repeat_last_tests()
     end, {})
 
-    vim.api.nvim_create_user_command("SfRunLocalTests", function()
+    vim.api.nvim_create_user_command("SFRunLocalTests", function()
       Sf.run_local_tests()
     end, {})
 
-    vim.api.nvim_create_user_command("SfOpenTestSelect", function()
+    vim.api.nvim_create_user_command("SFOpenTestSelect", function()
       Sf.open_test_select()
     end, {})
   end

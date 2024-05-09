@@ -16,9 +16,9 @@ function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
 end
 
-function Md.pull_and_list_md()
-  H.pull_and_list_md()
-end
+-- function Md.pull_and_list_md()
+--   H.pull_and_list_md()
+-- end
 
 function Md.pull_md_type_json()
   H.pull_md_type_json()
@@ -47,13 +47,6 @@ end
 function Md.create_lwc_bundle()
   H.create_lwc_bundle()
 end
-
--- local pickers = require "telescope.pickers"
--- local finders = require "telescope.finders"
--- local previewers = require 'telescope.previewers'
--- local conf = require("telescope.config").values
--- local actions = require "telescope.actions"
--- local action_state = require "telescope.actions.state"
 
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
@@ -84,77 +77,20 @@ H.list_md_to_retrieve = function()
     local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      -- vim.notify('%s not exist! Pulling now...', vim.log.levels.WARN)
-      return H.pull_and_list_md()
-    else
-      local metadata = vim.fn.readfile(md_file)
-      local md_tbl = vim.json.decode(table.concat(metadata), {})
+      return U.show_err(string.format('%s not exists locally. Pull it again.', type))
+    end
 
-      for _, v in ipairs(md_tbl) do
-        if v["manageableState"] == 'unmanaged' then
-          table.insert(md_to_display, v)
-        end
+    local metadata = vim.fn.readfile(md_file)
+    local md_tbl = vim.json.decode(table.concat(metadata), {})
+
+    for _, v in ipairs(md_tbl) do
+      if v["manageableState"] == 'unmanaged' then
+        table.insert(md_to_display, v)
       end
     end
   end
 
   -- H.tele_metadata(md_to_display, {})
-end
-
--- H.tele_metadata = function(source, opts)
---   opts = opts or {}
---
---   local p = previewers.new_buffer_previewer({
---     title = "Metadata details",
---
---     define_preview = function(self, entry)
---       local data = ''
---       for key, value in pairs(entry.value) do
---         data = string.format('%s\n\n%s: %s', data, key, value)
---       end
---       vim.api.nvim_buf_set_lines(self.state.bufnr, 1, -1, true, vim.split(data, '\n'))
---     end,
---   })
---
---   pickers.new({}, {
---     prompt_title = 'Org: ' .. U.target_org,
---
---     finder = finders.new_table {
---       results = source,
---       entry_maker = function(entry)
---         return {
---           value = entry,
---           display = entry["fullName"] .. ' | ' .. entry["type"],
---           ordinal = entry["fullName"] .. ' | ' .. entry["type"],
---         }
---       end
---     },
---
---     sorter = conf.generic_sorter(opts),
---
---     previewer = p,
---
---     attach_mappings = function(prompt_bufnr, map)
---       actions.select_default:replace(function()
---         actions.close(prompt_bufnr)
---         local md = action_state.get_selected_entry().value
---
---         H.retrieve_md(md["type"], md["fullName"])
---       end)
---       return true
---     end,
---   }):find()
--- end
-
--- jobstart() tracking
-H.counter = 0;
-H.all_spawned = false;
-
-H.md_pull_cb = function()
-  H.counter = H.counter - 1
-  if H.all_spawned and H.counter == 0 then
-    H.list_md_to_retrieve()
-  end
 end
 
 H.pull_md_json = function()
@@ -164,19 +100,7 @@ H.pull_md_json = function()
   end
 end
 
-H.pull_and_list_md = function()
-  H.counter = 0;
-  H.all_spawned = false;
-
-  local md_types = C.config.types_to_retrieve
-  for _, type in pairs(md_types) do
-    H.counter = H.counter + 1
-    H.pull_metadata(type, H.md_pull_cb)
-  end
-  H.all_spawned = true
-end
-
-H.pull_metadata = function(type, cb)
+H.pull_metadata = function(type)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
   end
@@ -195,10 +119,10 @@ H.pull_metadata = function(type, cb)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
-  U.job_call(cmd, msg, err_msg, cb);
+  U.silent_job_call(cmd, msg, err_msg);
 end
 
-H.pull_md_type_json = function(cb)
+H.pull_md_type_json = function()
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
   end
@@ -216,7 +140,7 @@ H.pull_md_type_json = function(cb)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
-  U.job_call(cmd, msg, err_msg, cb);
+  U.silent_job_call(cmd, msg, err_msg);
 end
 
 H.list_md_type_to_retrieve = function()
@@ -238,36 +162,6 @@ H.list_md_type_to_retrieve = function()
 
   -- H.tele_metadata_type(md_types, {})
 end
-
--- H.tele_metadata_type = function(source, opts)
---   opts = opts or {}
---   pickers.new({}, {
---     prompt_title = 'metadata-type: ' .. U.target_org,
---
---     finder = finders.new_table {
---       results = source,
---       entry_maker = function(entry)
---         return {
---           value = entry,
---           display = entry["xmlName"],
---           ordinal = entry["xmlName"],
---         }
---       end
---     },
---
---     sorter = conf.generic_sorter(opts),
---
---     attach_mappings = function(prompt_bufnr, map)
---       actions.select_default:replace(function()
---         actions.close(prompt_bufnr)
---         local md_type = action_state.get_selected_entry().value
---
---         H.retrieve_md_type(md_type["xmlName"])
---       end)
---       return true
---     end,
---   }):find()
--- end
 
 H.retrieve_md_type = function(type)
   if U.isempty(U.target_org) then
@@ -295,11 +189,12 @@ H.generate_class = function(name)
 end
 
 H.create_apex_class = function(name)
-    U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
+  U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
 end
 
 H.generate_aura = function(name)
-  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_sf_root() .. H.default_dir .. "/aura", name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
+    U.get_sf_root() .. H.default_dir .. "/aura", name)
   U.silent_job_call(
     cmd,
     nil,
@@ -311,11 +206,12 @@ H.generate_aura = function(name)
 end
 
 H.create_aura_bundle = function(name)
-    U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
+  U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
 end
 
 H.generate_lwc = function(name)
-  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. H.default_dir .. "/lwc", name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
+    U.get_sf_root() .. H.default_dir .. "/lwc", name)
   U.silent_job_call(
     cmd,
     nil,
@@ -327,7 +223,7 @@ H.generate_lwc = function(name)
 end
 
 H.create_lwc_bundle = function(name)
-    U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
+  U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
 end
 
 return Md
