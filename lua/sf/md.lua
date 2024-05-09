@@ -16,20 +16,12 @@ function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
 end
 
--- function Md.pull_and_list_md()
---   H.pull_and_list_md()
--- end
-
 function Md.pull_md_type_json()
   H.pull_md_type_json()
 end
 
 function Md.list_md_type_to_retrieve()
   H.list_md_type_to_retrieve()
-end
-
-function Md.pull_and_list_md_type()
-  H.pull_md_type_json(H.list_md_type_to_retrieve)
 end
 
 function Md.retrieve_apex_under_cursor()
@@ -69,10 +61,12 @@ H.list_md_to_retrieve = function()
     return U.show_err('Target_org empty!')
   end
 
-  local md_to_display = {}
   local md_folder = U.get_sf_root() .. H.md_folder_name
 
   local md_types = C.config.types_to_retrieve
+  local md = {}
+  local md_names = {}
+
   for _, type in pairs(md_types) do
     local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
@@ -85,12 +79,20 @@ H.list_md_to_retrieve = function()
 
     for _, v in ipairs(md_tbl) do
       if v["manageableState"] == 'unmanaged' then
-        table.insert(md_to_display, v)
+        md[v["fullName"]] = v["type"]
+        table.insert(md_names, v["fullName"])
       end
     end
   end
 
-  -- H.tele_metadata(md_to_display, {})
+  require("fzf-lua").fzf_exec(md_names, {
+    actions = {
+      ['default'] = function(selected)
+        H.retrieve_md(md[selected[1]], selected[1])
+      end
+    }
+  }
+  )
 end
 
 H.pull_md_json = function()
@@ -158,9 +160,20 @@ H.list_md_type_to_retrieve = function()
 
   local file_content = vim.fn.readfile(md_type_json)
   local tbl = vim.json.decode(table.concat(file_content), {})
-  local md_types = tbl["metadataObjects"]
 
-  -- H.tele_metadata_type(md_types, {})
+  local md_types = {}
+
+  for _, obj in pairs(tbl["metadataObjects"]) do
+    table.insert(md_types, obj["xmlName"])
+  end
+
+  require("fzf-lua").fzf_exec(md_types, {
+    actions = {
+      ['default'] = function(selected)
+        H.retrieve_md_type(selected[1])
+      end
+    }
+  })
 end
 
 H.retrieve_md_type = function(type)
