@@ -48,12 +48,12 @@ function Md.create_lwc_bundle()
   H.create_lwc_bundle()
 end
 
-local pickers = require "telescope.pickers"
-local finders = require "telescope.finders"
-local previewers = require 'telescope.previewers'
-local conf = require("telescope.config").values
-local actions = require "telescope.actions"
-local action_state = require "telescope.actions.state"
+-- local pickers = require "telescope.pickers"
+-- local finders = require "telescope.finders"
+-- local previewers = require 'telescope.previewers'
+-- local conf = require("telescope.config").values
+-- local actions = require "telescope.actions"
+-- local action_state = require "telescope.actions.state"
 
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
@@ -98,53 +98,53 @@ H.list_md_to_retrieve = function()
     end
   end
 
-  H.tele_metadata(md_to_display, {})
+  -- H.tele_metadata(md_to_display, {})
 end
 
-H.tele_metadata = function(source, opts)
-  opts = opts or {}
-
-  local p = previewers.new_buffer_previewer({
-    title = "Metadata details",
-
-    define_preview = function(self, entry)
-      local data = ''
-      for key, value in pairs(entry.value) do
-        data = string.format('%s\n\n%s: %s', data, key, value)
-      end
-      vim.api.nvim_buf_set_lines(self.state.bufnr, 1, -1, true, vim.split(data, '\n'))
-    end,
-  })
-
-  pickers.new({}, {
-    prompt_title = 'Org: ' .. U.target_org,
-
-    finder = finders.new_table {
-      results = source,
-      entry_maker = function(entry)
-        return {
-          value = entry,
-          display = entry["fullName"] .. ' | ' .. entry["type"],
-          ordinal = entry["fullName"] .. ' | ' .. entry["type"],
-        }
-      end
-    },
-
-    sorter = conf.generic_sorter(opts),
-
-    previewer = p,
-
-    attach_mappings = function(prompt_bufnr, map)
-      actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local md = action_state.get_selected_entry().value
-
-        H.retrieve_md(md["type"], md["fullName"])
-      end)
-      return true
-    end,
-  }):find()
-end
+-- H.tele_metadata = function(source, opts)
+--   opts = opts or {}
+--
+--   local p = previewers.new_buffer_previewer({
+--     title = "Metadata details",
+--
+--     define_preview = function(self, entry)
+--       local data = ''
+--       for key, value in pairs(entry.value) do
+--         data = string.format('%s\n\n%s: %s', data, key, value)
+--       end
+--       vim.api.nvim_buf_set_lines(self.state.bufnr, 1, -1, true, vim.split(data, '\n'))
+--     end,
+--   })
+--
+--   pickers.new({}, {
+--     prompt_title = 'Org: ' .. U.target_org,
+--
+--     finder = finders.new_table {
+--       results = source,
+--       entry_maker = function(entry)
+--         return {
+--           value = entry,
+--           display = entry["fullName"] .. ' | ' .. entry["type"],
+--           ordinal = entry["fullName"] .. ' | ' .. entry["type"],
+--         }
+--       end
+--     },
+--
+--     sorter = conf.generic_sorter(opts),
+--
+--     previewer = p,
+--
+--     attach_mappings = function(prompt_bufnr, map)
+--       actions.select_default:replace(function()
+--         actions.close(prompt_bufnr)
+--         local md = action_state.get_selected_entry().value
+--
+--         H.retrieve_md(md["type"], md["fullName"])
+--       end)
+--       return true
+--     end,
+--   }):find()
+-- end
 
 -- jobstart() tracking
 H.counter = 0;
@@ -236,38 +236,38 @@ H.list_md_type_to_retrieve = function()
   local tbl = vim.json.decode(table.concat(file_content), {})
   local md_types = tbl["metadataObjects"]
 
-  H.tele_metadata_type(md_types, {})
+  -- H.tele_metadata_type(md_types, {})
 end
 
-H.tele_metadata_type = function(source, opts)
-  opts = opts or {}
-  pickers.new({}, {
-    prompt_title = 'metadata-type: ' .. U.target_org,
-
-    finder = finders.new_table {
-      results = source,
-      entry_maker = function(entry)
-        return {
-          value = entry,
-          display = entry["xmlName"],
-          ordinal = entry["xmlName"],
-        }
-      end
-    },
-
-    sorter = conf.generic_sorter(opts),
-
-    attach_mappings = function(prompt_bufnr, map)
-      actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local md_type = action_state.get_selected_entry().value
-
-        H.retrieve_md_type(md_type["xmlName"])
-      end)
-      return true
-    end,
-  }):find()
-end
+-- H.tele_metadata_type = function(source, opts)
+--   opts = opts or {}
+--   pickers.new({}, {
+--     prompt_title = 'metadata-type: ' .. U.target_org,
+--
+--     finder = finders.new_table {
+--       results = source,
+--       entry_maker = function(entry)
+--         return {
+--           value = entry,
+--           display = entry["xmlName"],
+--           ordinal = entry["xmlName"],
+--         }
+--       end
+--     },
+--
+--     sorter = conf.generic_sorter(opts),
+--
+--     attach_mappings = function(prompt_bufnr, map)
+--       actions.select_default:replace(function()
+--         actions.close(prompt_bufnr)
+--         local md_type = action_state.get_selected_entry().value
+--
+--         H.retrieve_md_type(md_type["xmlName"])
+--       end)
+--       return true
+--     end,
+--   }):find()
+-- end
 
 H.retrieve_md_type = function(type)
   if U.isempty(U.target_org) then
