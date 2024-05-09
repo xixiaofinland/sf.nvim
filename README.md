@@ -32,8 +32,8 @@ return {
   dir = '~/projects/sf.nvim',
 
   dependencies = {
+    "ibhagwan/fzf-lua",
     'nvim-treesitter/nvim-treesitter',
-    'nvim-telescope/telescope.nvim',
   },
 
   config = function()
@@ -73,8 +73,7 @@ require('sf').setup({
 
 ## Prerequisites
 - [sf cli](https://developer.salesforce.com/tools/salesforcecli)
-- Add apex parser in nvim-treesitter plugin: `ensure_installed = { "apex", "soql", "sosl"}`, e.g.: in [my setting](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
-- Telescope.nvim
+- Make sure apex parser is installed in nvim-treesitter plugin: `ensure_installed = { "apex", "soql", "sosl"}`, e.g.: in [my setting](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
 
 
 ## Usage
