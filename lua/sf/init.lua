@@ -111,7 +111,6 @@ Sf.create_lwc_bundle = Metadata.create_lwc_bundle
 -- From Test module ==========================================================
 
 --- Open a top-split window to display the Apex tests in the current file.
---- This window also enables to select tests from multiple files.
 Sf.open_test_select = Test.open
 
 --- Run the Apex test under the cursor.
