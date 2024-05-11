@@ -128,7 +128,7 @@ local init = function()
 
     nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
 
-    nmap('<leader>s-', Sf.go_to_sf_root, "CD into root")
+    nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
     nmap('<C-c>', Sf.cancel, "cancel running command")
 
     nmap('<leader>sp', Sf.save_and_push, "push current file")
