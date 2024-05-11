@@ -71,13 +71,13 @@ local init = function()
     callback = function()
       local nmap = function(keys, func, desc)
         if desc then
-          desc = '[Sf] ' .. desc
+          desc = desc .. ' [Sf]'
         end
         vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
       end
 
-      nmap('<leader><leader>', require('sf').toggle_term, '[T]erminal toggle')
-      nmap('<C-c>', require('sf').cancel, '[C]ancel current running command')
+      nmap('<leader><leader>', require('sf').toggle_term, 'terminal toggle')
+      nmap('<C-c>', require('sf').cancel, 'cancel running command')
     end
   })
 
@@ -105,42 +105,42 @@ local init = function()
 
     local nmap = function(keys, func, desc)
       if desc then
-        desc = '[Sf] ' .. desc
+        desc = desc .. ' [Sf]'
       end
       vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
     end
 
     local Sf = require('sf')
 
-    nmap('<leader>ss', Sf.set_target_org, "[s]et target_org current workspace")
-    nmap('<leader>sS', Sf.set_global_target_org, "[S]et global target_org")
+    nmap('<leader>ss', Sf.set_target_org, "set target_org current workspace")
+    nmap('<leader>sS', Sf.set_global_target_org, "set global target_org")
 
-    nmap('<leader>sf', Sf.fetch_org_list, "[F]etch orgs info")
+    nmap('<leader>sf', Sf.fetch_org_list, "fetch orgs info")
 
-    nmap('<leader>sd', Sf.diff_in_target_org, "[d]iff in target_org")
-    nmap('<leader>sD', Sf.diff_in_org, "[D]iff in org...")
+    nmap('<leader>sd', Sf.diff_in_target_org, "diff in target_org")
+    nmap('<leader>sD', Sf.diff_in_org, "diff in org...")
 
-    nmap('<leader>ml', Sf.list_md_to_retrieve, "[M]etadata [L]isting")
+    nmap('<leader>ml', Sf.list_md_to_retrieve, "metadata listing")
 
-    nmap('<leader>mtl', Sf.list_md_type_to_retrieve, "[M]etadata-[T]ype [L]isting")
+    nmap('<leader>mtl', Sf.list_md_type_to_retrieve, "metadata-type listing")
 
-    nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "[A]pex under cursor retrieve")
+    nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "apex under cursor retrieve")
 
-    nmap('<leader><leader>', Sf.toggle_term, "[T]erminal toggle")
+    nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
 
-    nmap('<leader>s-', Sf.go_to_sf_root, "CD into [R]oot")
-    nmap('<C-c>', Sf.cancel, "[C]ancel current running command")
+    nmap('<leader>s-', Sf.go_to_sf_root, "CD into root")
+    nmap('<C-c>', Sf.cancel, "cancel running command")
 
-    nmap('<leader>sp', Sf.save_and_push, "[P]ush current file")
-    nmap('<leader>sr', Sf.retrieve, "[R]etrieve current file")
+    nmap('<leader>sp', Sf.save_and_push, "push current file")
+    nmap('<leader>sr', Sf.retrieve, "retrieve current file")
 
-    nmap('<leader>ta', Sf.run_all_tests_in_this_file, "[T]est [A]ll")
-    nmap('<leader>tt', Sf.run_current_test, "[T]est [T]his under cursor")
+    nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all")
+    nmap('<leader>tt', Sf.run_current_test, "test this under cursor")
 
-    nmap('<leader>to', Sf.open_test_select, "[T]est [O]pen Buf Select")
-    nmap('<leader>tr', Sf.repeat_last_tests, "[T]est [R]epeat")
+    nmap('<leader>to', Sf.open_test_select, "open test select buf")
+    nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
 
-    nmap('<leader>cc', Sf.copy_apex_name, "[c]opy apex name")
+    nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
 
     -- user commands
 
@@ -200,19 +200,19 @@ local init = function()
       Sf.retrieve()
     end, {})
 
-    vim.api.nvim_create_user_command("SFRetrievePackage", function ()
+    vim.api.nvim_create_user_command("SFRetrievePackage", function()
       Sf.retrieve_package()
     end, {})
 
-    vim.api.nvim_create_user_command("SFRunAnonymousApex", function ()
+    vim.api.nvim_create_user_command("SFRunAnonymousApex", function()
       Sf.run_anonymous()
     end, {})
 
-    vim.api.nvim_create_user_command("SFRunQuery", function ()
+    vim.api.nvim_create_user_command("SFRunQuery", function()
       Sf.run_query()
     end, {})
 
-    vim.api.nvim_create_user_command("SFRunToolingQuery", function ()
+    vim.api.nvim_create_user_command("SFRunToolingQuery", function()
       Sf.run_tooling_query()
     end, {})
 
