@@ -79,7 +79,7 @@ H.list_md_to_retrieve = function()
 
     for _, v in ipairs(md_tbl) do
       if v["manageableState"] == 'unmanaged' then
-        md[v["fullName"]] = v["type"]
+        md[v["fullName"]] = v
         table.insert(md_names, v["fullName"])
       end
     end
@@ -88,11 +88,20 @@ H.list_md_to_retrieve = function()
   require("fzf-lua").fzf_exec(md_names, {
     actions = {
       ['default'] = function(selected)
-        H.retrieve_md(md[selected[1]], selected[1])
+        H.retrieve_md(md[selected[1]]["fullName"], selected[1])
       end
-    }
-  }
-  )
+    },
+    fzf_opts = {
+      ['--preview-window'] = 'nohidden,down,50%',
+      ['--preview'] = function(items)
+        local contents = {}
+        vim.tbl_map(function(x)
+          table.insert(contents, "\n" .. U.table_to_string_lines(md[x]))
+        end, items)
+        return contents
+      end
+    },
+  })
 end
 
 H.pull_md_json = function()
