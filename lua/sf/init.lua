@@ -88,20 +88,12 @@ Sf.pull_md_json = Metadata.pull_md_json
 --- Its popup list depends on data retrieved by |Sf.retrieve_metadata_lists| in prior.
 Sf.list_md_to_retrieve = Metadata.list_md_to_retrieve
 
---- Pull pre-defined metadata files to local and list them in telescope for further retrieving
---- It's |Sf.pull_md_json| and |Sf.list_md_to_retrieve| in one go.
-Sf.pull_and_list_md = Metadata.pull_and_list_md
-
 --- Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
 Sf.pull_md_type_json = Metadata.pull_md_type_json
 
 --- Select a specific metadata-type to download all its files. For example, download all ApexClass files.
 --- Its popup list depends on data retrieved by |Sf.pull_metadata_type_list| in prior.
 Sf.list_md_type_to_retrieve = Metadata.list_md_type_to_retrieve
-
---- Pull the list of metadata-types into a local json file, and list them in a pop-up.
---- It's |Sf.pull_md_type_json| and |Sf.list_md_type_to_retrieve| in one go.
-Sf.pull_and_list_md_type = Metadata.pull_and_list_md_type
 
 --- Uses the word under the cursor as Apex name to attempt to retreive from the org.
 --- A convenient way to quickly pull Apex into local.
@@ -119,7 +111,6 @@ Sf.create_lwc_bundle = Metadata.create_lwc_bundle
 -- From Test module ==========================================================
 
 --- Open a top-split window to display the Apex tests in the current file.
---- This window also enables to select tests from multiple files.
 Sf.open_test_select = Test.open
 
 --- Run the Apex test under the cursor.

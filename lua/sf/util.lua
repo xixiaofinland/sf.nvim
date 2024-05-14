@@ -125,4 +125,16 @@ M.run_cb_with_input = function(arg, prompt, cb)
   end
 end
 
+M.table_to_string_lines = function(tbl)
+  local result = ""
+  for key, value in pairs(tbl) do
+    result = result .. key .. ": " .. tostring(value) .. "\n"
+  end
+  return result
+end
+
+M.is_installed = function(plugin_name)
+  return pcall(require, plugin_name)
+end
+
 return M

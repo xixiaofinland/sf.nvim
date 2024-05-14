@@ -10,83 +10,82 @@
 <h1 align="center">Sf.nvim</h1>
 <p align="center">📸 Offer common functionalities for Salesforce development</p>
 
-## ✨Features
-- 🔥 Push/retrieve/create metadata files
-- 💻 Integrated scratch terminal
-- 😎 Diff file between local and org
-- 🤩 Target org shows in status line
-- 👏 pre-downloaded metadata file list
-- 🤖 Quick Apex test runs
+## ✨ Features
+- 🔥 Push, retrieve, and create metadata files
+- 💻 Integrated scratch terminal for on-the-fly commands
+- 😎 Diff files between local and org environments
+- 🤩 Display target org in the status line
+- 👏 Access to a pre-downloaded list of metadata files
+- 🤖 Facilitate quick Apex test runs
 
-## 🎦Video intro (6mins)
+## 🎦 Video Intro (6 mins)
 
-[![Feature intro (6min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
+[![Feature Intro (6 min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
-## Install
-Lazy.nvim
+## Installation
+Install using Lazy.nvim by adding the following configuration to your setup:
 
 ```lua
 return {
   'xixiaofinland/sf.nvim',
   branch = 'dev',
-  dir = '~/projects/sf.nvim',
 
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
-    'nvim-telescope/telescope.nvim',
+    'ibhagwan/fzf-lua', -- this is not needed if you don't use listing metadata files
   },
 
   config = function()
-    require('sf').setup() -- important to call setup() to init the plugin!
+    require('sf').setup()  -- Call setup() to initialize the plugin!
   end
 }
-
 ```
+## Configuration
 
-You can also pass a config table into `setup()`. It can be defined as:
+**Note.** The hotkeys and user commands are **ONLY** enabled when the file
+resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json`
+in the root path).
+
+Additional configuration can be passed into setup(). Below are the default
+settings.
 
 ```lua
--- These are the default settings, no need to set them if you are happy already.
-
 require('sf').setup({
+  -- This plugin has default supplied hotkeys, You might want to use your own.
+  -- You can turn them off by setting to `false`.
+  enable_hotkeys = true,
 
-      -- Hotkeys and user commands are enabled for these filetypes
-      hotkeys_in_filetypes = {
-        "apex", "sosl", "soql", "javascript", "html"
-      },
+  -- Metadata related hotkeys (e.g. push/retrieve Apex) are supplied only in
+  -- these filetypes. You can adjust as see need.
+  hotkeys_in_filetypes = {
+    "apex", "sosl", "soql", "javascript", "html"
+  },
 
-      -- When set to `false`(default), filetypes defined in `hotkeys_in_filetypes` have
-      -- hotkeys and user commands enabled.
-      -- When set to `true`, hotkeys and user commands are only enabled when the file also
-      -- resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
-      enable_hotkeys_only_in_sf_project_folder = false,
-
-      -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
-      types_to_retrieve = {
-        "ApexClass",
-        "ApexTrigger",
-        "StaticResource",
-        "LightningComponentBundle"
-      },
-    })
+  -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
+  types_to_retrieve = {
+    "ApexClass",
+    "ApexTrigger",
+    "StaticResource",
+    "LightningComponentBundle"
+  },
+})
 ```
 
 ## Prerequisites
-- [sf cli](https://developer.salesforce.com/tools/salesforcecli)
-- Add apex parser in nvim-treesitter plugin: `ensure_installed = { "apex", "soql", "sosl"}`, e.g.: in [my setting](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
-- Telescope.nvim
 
+- [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
+- Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
+- (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
 
 ## Usage
 
-All public facing functions can be checked by `:h sf.nvim` or in [help.txt](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt)
+Checking all public-facing features through `:h sf.nvim` or by consulting the [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
 ### Display target_org
 
-When Nvim starts, Sf.nvim runs `SfFetchOrgList` to fetch the authenticated org names and save the target_org name in the plugin if it exists.
-As a majority of commands execute against a target_org, it's recommended to display target_org in your statusline.
+Upon starting Nvim, Sf.nvim executes SfFetchOrgList to fetch and save authenticated org names. Display the target_org in your status line to facilitate command execution against the target org.
 
-For example, I use lualine.nvim, and configure/show target_org(`xixiao100`) as below.
+Example configuration using lualine.nvim with target_org(`xixiao100`):
 
 ```lua
     sections = {
@@ -97,21 +96,21 @@ For example, I use lualine.nvim, and configure/show target_org(`xixiao100`) as b
 ![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
 ### Commands
-Hotkeys and user commands are defined in the middle of this file [here](https://github.com/xixiaofinland/sf.nvim/blob/main/lua/sf/config.lua).
 
-When they are enabled:
+For a full list of commands and hotkeys, see the middle section of this file [here](https://github.com/xixiaofinland/sf.nvim/blob/main/lua/sf/config.lua).
 
-type `<leader>s` should see hotkeys as in the screenshot.
+Example:
+
+- Press `<leader>s` to activate hotkeys as shown in the screenshot below.
+  Remember that they are enabled only inside sf folder.
 ![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
-Type `:Sf` in Ex will list all user commands:
+Type `:Sf` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
-### Self defined commands
-Chances are you have more than the predefined command to run, such as `sf org
-list`.
+### Other shell Commands
 
-you can pass the command into `run()` method to execute it in the integrate
+you can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('sf org list')`.
 
 ## License

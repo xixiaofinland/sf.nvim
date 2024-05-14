@@ -51,9 +51,6 @@ end
 
 -- prompt below
 
-local actions = require 'telescope.actions'
-local action_state = require 'telescope.actions.state'
-
 local api = vim.api
 local buftype = 'nowrite'
 local filetype = 'sf_test_prompt'
@@ -104,10 +101,6 @@ end
 P.set_keys = function()
   vim.keymap.set('n', 'x', function()
     P.toggle()
-  end, { buffer = true, noremap = true })
-
-  vim.keymap.set('n', 'tt', function()
-    P.open_tests_in_selected()
   end, { buffer = true, noremap = true })
 
   vim.keymap.set('n', 'cc', function()
@@ -225,32 +218,6 @@ P.close = function()
   if P.win and api.nvim_win_is_valid(P.win) then
     api.nvim_win_close(P.win, false)
   end
-end
-
-P.open_tests_in_selected = function()
-  local opts = {
-    attach_mappings = P.tele_pick_test_file,
-    prompt_title = 'Select Test File',
-    search_file = '*.cls', -- TODO: how to get rid of xml in the list?
-  }
-  require('telescope.builtin').find_files(opts)
-end
-
-P.tele_pick_test_file = function(prompt_bufnr, map)
-  actions.select_default:replace(function()
-    actions.close(prompt_bufnr)
-    local path = action_state.get_selected_entry().path
-    P.open_selected(path)
-  end)
-  return true
-end
-
-P.open_selected = function(abs_file_name)
-  local bufnr = vim.api.nvim_create_buf(false, false)
-  vim.api.nvim_buf_call(bufnr, function()
-    vim.cmd('edit ' .. abs_file_name)
-    P.open()
-  end)
 end
 
 return Test
