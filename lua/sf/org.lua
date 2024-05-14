@@ -73,6 +73,11 @@ H.store_orgs = function(data)
   end
 
   local org_data = vim.json.decode(s, {}).result.nonScratchOrgs
+  local scratch_org_data = vim.json.decode(s, {}).result.scratchOrgs
+
+  for i = 1, #scratch_org_data do
+    org_data[#org_data + 1] = scratch_org_data[i]
+  end
 
   for _, v in pairs(org_data) do
     if v.isDefaultUsername == true then
