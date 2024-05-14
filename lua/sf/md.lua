@@ -61,6 +61,10 @@ H.list_md_to_retrieve = function()
     return U.show_err('Target_org empty!')
   end
 
+  if not U.is_installed('fzf-lua') then
+    return U.show_err('fzf-lua is not installed. Need it to show the list.')
+  end
+
   local md_folder = U.get_sf_root() .. H.md_folder_name
 
   local md_types = C.config.types_to_retrieve
@@ -157,6 +161,10 @@ end
 H.list_md_type_to_retrieve = function()
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
+  end
+
+  if not U.is_installed('fzf-lua') then
+    return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name

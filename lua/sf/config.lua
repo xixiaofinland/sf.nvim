@@ -2,16 +2,14 @@ local Cfg = {}
 
 local default_cfg = {
 
+  -- Both hotkeys and Ex commands are supplied by default.
+  -- If you want to define your own hotkeys, you can turn hotkeys off.
+  enable_hotkeys = true,
+
   -- Hotkeys and user commands are enabled for these filetypes
   hotkeys_in_filetypes = {
     "apex", "sosl", "soql", "javascript", "html"
   },
-
-  -- When set to `true`, hotkeys and user commands are only enabled when the file
-  -- resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path)
-  -- When set to `false`, filetypes defined in `hotkeys_in_filetypes` have
-  -- hotkeys and user commands enabled.
-  enable_hotkeys_only_in_sf_project_folder = false,
 
   -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
   types_to_retrieve = {
@@ -92,57 +90,13 @@ local init = function()
   })
 
   local function set_keys()
-    if not vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
+    if not pcall(require('sf.util').get_sf_root) then
       return
-    end
-
-    if Cfg.config.enable_hotkeys_only_in_sf_project_folder and
-        not pcall(require('sf.util').get_sf_root) then
-      return
-    end
-
-    -- Set hotkeys
-
-    local nmap = function(keys, func, desc)
-      if desc then
-        desc = desc .. ' [Sf]'
-      end
-      vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
     end
 
     local Sf = require('sf')
 
-    nmap('<leader>ss', Sf.set_target_org, "set target_org current workspace")
-    nmap('<leader>sS', Sf.set_global_target_org, "set global target_org")
-
-    nmap('<leader>sf', Sf.fetch_org_list, "fetch orgs info")
-
-    nmap('<leader>sd', Sf.diff_in_target_org, "diff in target_org")
-    nmap('<leader>sD', Sf.diff_in_org, "diff in org...")
-
-    nmap('<leader>ml', Sf.list_md_to_retrieve, "metadata listing")
-
-    nmap('<leader>mtl', Sf.list_md_type_to_retrieve, "metadata-type listing")
-
-    nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "apex under cursor retrieve")
-
-    nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
-
-    nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
-    nmap('<C-c>', Sf.cancel, "cancel running command")
-
-    nmap('<leader>sp', Sf.save_and_push, "push current file")
-    nmap('<leader>sr', Sf.retrieve, "retrieve current file")
-
-    nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all")
-    nmap('<leader>tt', Sf.run_current_test, "test this under cursor")
-
-    nmap('<leader>to', Sf.open_test_select, "open test select buf")
-    nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
-
-    nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
-
-    -- user commands
+    -- Ex user commands
 
     vim.api.nvim_create_user_command("SFFetchOrgList", function()
       Sf.fetch_org_list()
@@ -239,6 +193,43 @@ local init = function()
     vim.api.nvim_create_user_command("SFOpenTestSelect", function()
       Sf.open_test_select()
     end, {})
+
+    if not Cfg.config.enable_hotkeys then
+      return
+    end
+
+    -- Set hotkeys
+
+    local nmap = function(keys, func, desc)
+      if desc then
+        desc = desc .. ' [Sf]'
+      end
+      vim.keymap.set('n', keys, func, { buffer = true, desc = desc })
+    end
+
+    -- Common hotkeys for all files;
+    nmap('<leader>ss', Sf.set_target_org, "set target_org current workspace")
+    nmap('<leader>sS', Sf.set_global_target_org, "set global target_org")
+    nmap('<leader>sf', Sf.fetch_org_list, "fetch orgs info")
+    nmap('<leader>ml', Sf.list_md_to_retrieve, "metadata listing")
+    nmap('<leader>mtl', Sf.list_md_type_to_retrieve, "metadata-type listing")
+
+    -- Hotkeys for metadata files only;
+    if vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
+      nmap('<leader>sd', Sf.diff_in_target_org, "diff in target_org")
+      nmap('<leader>sD', Sf.diff_in_org, "diff in org...")
+      nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "apex under cursor retrieve")
+      nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
+      nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
+      nmap('<C-c>', Sf.cancel, "cancel running command")
+      nmap('<leader>sp', Sf.save_and_push, "push current file")
+      nmap('<leader>sr', Sf.retrieve, "retrieve current file")
+      nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all")
+      nmap('<leader>tt', Sf.run_current_test, "test this under cursor")
+      nmap('<leader>to', Sf.open_test_select, "open test select buf")
+      nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
+      nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
+    end
   end
 
   -- Set hotkeys and user commands

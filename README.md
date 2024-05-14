@@ -32,7 +32,7 @@ return {
 
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
-    'ibhagwan/fzf-lua',
+    'ibhagwan/fzf-lua', -- this is not needed if you don't use listing metadata files
   },
 
   config = function()
@@ -40,22 +40,34 @@ return {
   end
 }
 ```
+## Configuration
 
-Additional configuration can be passed into setup(). Below are the default settings
+**Note.** The hotkeys and user commands are **ONLY** enabled when the file
+resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json`
+in the root path).
+
+Additional configuration can be passed into setup(). Below are the default
+settings.
 
 ```lua
 require('sf').setup({
-      -- No need to add these lines if you are content with the default settings.
+  -- This plugin has default supplied hotkeys, You might want to use your own.
+  -- You can turn them off by setting to `false`.
+  enable_hotkeys = true,
 
-      -- Enables hotkeys and user commands for these filetypes
-      hotkeys_in_filetypes = ["apex", "sosl", "soql", "javascript", "html"],
+  -- Metadata related hotkeys (e.g. push/retrieve Apex) are supplied only in
+  -- these filetypes. You can adjust as see need.
+  hotkeys_in_filetypes = {
+    "apex", "sosl", "soql", "javascript", "html"
+  },
 
-      -- When `false` (default), hotkeys are enabled for filetypes defined above.
-      -- When `true`, hotkeys are only enabled in a Salesforce project folder.
-      enable_hotkeys_only_in_sf_project_folder = false,
-
-      -- Defines metadata file types to be retrieved by Ex command `SFPullMd`
-      types_to_retrieve = ["ApexClass", "ApexTrigger", "StaticResource", "LightningComponentBundle"],
+  -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
+  types_to_retrieve = {
+    "ApexClass",
+    "ApexTrigger",
+    "StaticResource",
+    "LightningComponentBundle"
+  },
 })
 ```
 
@@ -63,7 +75,7 @@ require('sf').setup({
 
 - [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
 - Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
-- fzf-lua plugin for executing Ex commands like `SFListMdToRetrieve` and `SFListMdTypeToRetrieve`
+- (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
 
 ## Usage
 
@@ -90,12 +102,13 @@ For a full list of commands and hotkeys, see the middle section of this file [he
 Example:
 
 - Press `<leader>s` to activate hotkeys as shown in the screenshot below.
+  Remember that they are enabled only inside sf folder.
 ![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
 Type `:Sf` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
-### Shell Commands
+### Other shell Commands
 
 you can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('sf org list')`.
