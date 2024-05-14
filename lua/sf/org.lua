@@ -37,10 +37,11 @@ H.set_target_org = function()
     prompt = 'Local target_org:'
   }, function(choice)
     if choice ~= nil then
-      local cmd = 'sf config set target-org ' .. choice
-      local err_msg = choice .. ' - set target_org failed! Not in a sfdx project folder?'
+      local org = string.gsub(choice, '%[S%] ', '')
+      local cmd = 'sf config set target-org ' .. org
+      local err_msg = org .. ' - set target_org failed! Not in a sfdx project folder?'
       local cb = function()
-        U.target_org = choice
+        U.target_org = org
       end
 
       U.silent_job_call(cmd, nil, err_msg, cb)
@@ -55,11 +56,12 @@ H.set_global_target_org = function()
     prompt = 'Global target_org:'
   }, function(choice)
     if choice ~= nil then
-      local cmd = 'sf config set target-org --global ' .. choice
-      local msg = 'Global target_org set: ' .. choice
-      local err_msg = string.format('Global set target_org [%s] failed!', choice)
+      local org = string.gsub(choice, '%[S%] ', '')
+      local cmd = 'sf config set target-org --global ' .. org
+      local msg = 'Global target_org set: ' .. org
+      local err_msg = string.format('Global set target_org [%s] failed!', org)
       local cb = function()
-        U.target_org = choice
+        U.target_org = org
       end
       U.silent_job_call(cmd, msg, err_msg, cb)
     end
@@ -83,7 +85,12 @@ H.store_orgs = function(data)
     if v.isDefaultUsername == true then
       U.target_org = v.alias
     end
-    table.insert(H.orgs, v.alias)
+    local alias = v.alias == nil and v.username or v.alias;
+    if v.isScratch == true then
+      table.insert(H.orgs, '[S] ' .. alias)
+    else
+      table.insert(H.orgs, alias)
+    end
   end
 
   U.is_table_empty(H.orgs)
