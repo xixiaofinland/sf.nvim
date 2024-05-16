@@ -33,8 +33,14 @@ Sf.toggle_term = Term.toggle
 --- Save the file in the current buffer and push to target_org.
 Sf.save_and_push = Term.save_and_push
 
+--- Push local changes to target_org.
+Sf.push_delta = Term.push_delta
+
 --- Retrieve the file in the current buffer from target_org.
 Sf.retrieve = Term.retrieve
+
+--- Retrieve remote changes from target_org.
+Sf.retrieve_delta = Term.retrieve_delta
 
 --- Retrieve the file in the current buffer as a manifest from target_org
 Sf.retrieve_package = Term.retrieve_package

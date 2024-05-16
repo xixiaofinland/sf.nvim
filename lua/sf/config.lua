@@ -150,8 +150,16 @@ local init = function()
       Sf.save_and_push()
     end, {})
 
+    vim.api.nvim_create_user_command("SFPushDelta", function()
+      Sf.push_delta()
+    end, {})
+
     vim.api.nvim_create_user_command("SFRetrieve", function()
       Sf.retrieve()
+    end, {})
+
+    vim.api.nvim_create_user_command("SFRetrieveDelta", function()
+      Sf.retrieve_delta()
     end, {})
 
     vim.api.nvim_create_user_command("SFRetrievePackage", function()
