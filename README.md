@@ -22,7 +22,7 @@
 
 [![Feature Intro (6 min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
-## Installation
+## ⚙️  Installation
 
 Install using Lazy.nvim by adding the following configuration to your setup:
 
@@ -33,7 +33,7 @@ return {
 
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
-    'ibhagwan/fzf-lua', -- this is not needed if you don't use listing metadata files
+    'ibhagwan/fzf-lua', -- no need if you don't use listing metadata feature
   },
 
   config = function()
@@ -42,18 +42,17 @@ return {
 }
 ```
 
-**Note.** The hotkeys and user commands are **ONLY** enabled when the file
-resides in a sf project folder (i.e. has `.forceignore` or `sfdx-project.json`
-in the root path).
+**Note.** The hotkeys and user commands are **ONLY** enabled in a sf project
+folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path).
 
-## Configuration
+## 🛠️ Configuration
 
-Custom configuration can be passed into setup(). Below are the default
-settings.
+Custom configuration can be passed into `setup()` Below are the default
+settings:
 
 ```lua
 require('sf').setup({
-  -- Unless you want to customize no need to copy paste any of these
+  -- Unless you want to customize, no need to copy-paste any of these
   -- They are applied automatically
 
   -- This plugin has both hotkeys and user commands supplied
@@ -61,12 +60,12 @@ require('sf').setup({
   enable_hotkeys = true,
 
   -- Metadata related hotkeys (e.g. push/retrieve Apex) are only enabled in
-  -- the buffer loaded with these filetypes.
+  -- these filetypes
   hotkeys_in_filetypes = {
     "apex", "sosl", "soql", "javascript", "html"
   },
 
-  -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
+  -- Define what metadata to be listed in `list_md_to_retrieve()` (<leader>ml)
   types_to_retrieve = {
     "ApexClass",
     "ApexTrigger",
@@ -76,16 +75,18 @@ require('sf').setup({
 })
 ```
 
-## Prerequisites
+## 📝 Prerequisites
 
-- [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
-- Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
-- (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
+- 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
+- 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
+- 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
 
 
-## Display target_org
+## 🎯 Display target_org
 
-Upon starting Nvim, Sf.nvim executes SfFetchOrgList to fetch and save authenticated org names. Display the target_org in your status line to facilitate command execution against the target org.
+Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
+authenticated org names. Display the target_org in your status line to
+facilitate command execution against the target org.
 
 Example configuration using lualine.nvim with target_org(`xixiao100`):
 
@@ -97,7 +98,7 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 ```
 ![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
-## Commands
+## 🔑 Keys
 
 ### Often used
 
@@ -124,30 +125,31 @@ Type `:Sf` in Ex mode will list all user commands:
 
 Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
-### Feature: List/retrieve metadata and metadata types
+## 🚀 Feature: List/retrieve metadata and metadata types
 
 Sometimes you don't know what metadata the target org contains, and you want to
 list them and fetch specific ones.
 
-You can first retrieve the the metadata data by running user command `SFPullMd`, then run
-`SFListMdToRetrieve` (or `require'sf'.list_md_to_retrieve()`) to show the list in
-fzf-lua pop-up (it requires dependended fzf-lua plugin), and select one to download to local.
+1. Retrieve the metadata data by running the user command `SFPullMd`.
+2. Run `SFListMdToRetrieve` (or `require('sf').list_md_to_retrieve()`) to show
+   the list in a pop-up (requires the fzf-lua plugin) and select one to
+   download to local.
 
-Same applies to metadata types(like all Apex Class, Apex Trigger, LWC, Aura,
-etc.), you can see list them and fetch all of specific one.
+The same applies to metadata types (like all Apex Classes, Apex Triggers, LWC,
+Aura, etc.). You can list them and fetch all of a specific type.
 
-You can first retrieve the list of the metadata types by running user command
-`SFPullMdType`, then run `SFPullMdType` (or
-`require'sf'.list_md_type_to_retrieve()`) to show the list in fzf-lua pop-up (it
-requires dependended fzf-lua plugin), and select one to download all metadata of
-this type to local.
+1. Retrieve the metadata types by running the user command `SFPullMdType`.
+2. Run `SFListMdTypeToRetrieve` (or `require('sf').list_md_type_to_retrieve()`) to show the
+   list in a pop-up (requires the fzf-lua plugin) and select one to
+   download all metadata of this type to local.
 
-### Integrated terminal
+
+## 🖥️ Integrated terminal
 
 The integrated terminal is a general purpose term.
 
 you can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('ls -la')`.
 
-## License
+## 📜 License
 MIT.
