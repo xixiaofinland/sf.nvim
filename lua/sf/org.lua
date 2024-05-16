@@ -82,15 +82,13 @@ H.store_orgs = function(data)
   end
 
   for _, v in pairs(org_data) do
-    if v.isDefaultUsername == true then
-      U.target_org = v.alias
+    local alias = v.alias or v.username
+    if v.isDefaultUsername then
+      U.target_org = alias
     end
-    local alias = v.alias == nil and v.username or v.alias;
-    if v.isScratch == true then
-      table.insert(H.orgs, '[S] ' .. alias)
-    else
-      table.insert(H.orgs, alias)
-    end
+
+    local org_entry = v.isScratch and '[S] ' .. alias or alias
+    table.insert(H.orgs, org_entry)
   end
 
   U.is_table_empty(H.orgs)
