@@ -178,5 +178,14 @@ terminal. For instance, `require('sf').run('ls -la')`.
 
 <br>
 
+## 🤝 Contributions
+
+Thanks to the following people for contributing to this project:
+
+- ![GitHub Profile Image](https://github.com/FedeAbella.png?size=50) [@FedeAbella](https://github.com/FedeAbella)
+- ![GitHub Profile Image](https://github.com/waltonzt.png?size=50) [@waltonzt](https://github.com/waltonzt)
+
+<br>
+
 ## 📜 License
 MIT.
