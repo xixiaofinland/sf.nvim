@@ -37,10 +37,11 @@ H.set_target_org = function()
     prompt = 'Local target_org:'
   }, function(choice)
     if choice ~= nil then
-      local cmd = 'sf config set target-org ' .. choice
-      local err_msg = choice .. ' - set target_org failed! Not in a sfdx project folder?'
+      local org = string.gsub(choice, '%[S%] ', '')
+      local cmd = 'sf config set target-org ' .. org
+      local err_msg = org .. ' - set target_org failed! Not in a sfdx project folder?'
       local cb = function()
-        U.target_org = choice
+        U.target_org = org
       end
 
       U.silent_job_call(cmd, nil, err_msg, cb)
@@ -55,11 +56,12 @@ H.set_global_target_org = function()
     prompt = 'Global target_org:'
   }, function(choice)
     if choice ~= nil then
-      local cmd = 'sf config set target-org --global ' .. choice
-      local msg = 'Global target_org set: ' .. choice
-      local err_msg = string.format('Global set target_org [%s] failed!', choice)
+      local org = string.gsub(choice, '%[S%] ', '')
+      local cmd = 'sf config set target-org --global ' .. org
+      local msg = 'Global target_org set: ' .. org
+      local err_msg = string.format('Global set target_org [%s] failed!', org)
       local cb = function()
-        U.target_org = choice
+        U.target_org = org
       end
       U.silent_job_call(cmd, msg, err_msg, cb)
     end
@@ -73,12 +75,20 @@ H.store_orgs = function(data)
   end
 
   local org_data = vim.json.decode(s, {}).result.nonScratchOrgs
+  local scratch_org_data = vim.json.decode(s, {}).result.scratchOrgs
+
+  for i = 1, #scratch_org_data do
+    org_data[#org_data + 1] = scratch_org_data[i]
+  end
 
   for _, v in pairs(org_data) do
-    if v.isDefaultUsername == true then
-      U.target_org = v.alias
+    local alias = v.alias or v.username
+    if v.isDefaultUsername then
+      U.target_org = alias
     end
-    table.insert(H.orgs, v.alias)
+
+    local org_entry = v.isScratch and '[S] ' .. alias or alias
+    table.insert(H.orgs, org_entry)
   end
 
   U.is_table_empty(H.orgs)

@@ -213,15 +213,15 @@ local init = function()
     nmap('<leader>sf', Sf.fetch_org_list, "fetch orgs info")
     nmap('<leader>ml', Sf.list_md_to_retrieve, "metadata listing")
     nmap('<leader>mtl', Sf.list_md_type_to_retrieve, "metadata-type listing")
+    nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
+    nmap('<C-c>', Sf.cancel, "cancel running command")
+    nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
 
     -- Hotkeys for metadata files only;
     if vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
       nmap('<leader>sd', Sf.diff_in_target_org, "diff in target_org")
       nmap('<leader>sD', Sf.diff_in_org, "diff in org...")
       nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "apex under cursor retrieve")
-      nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
-      nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
-      nmap('<C-c>', Sf.cancel, "cancel running command")
       nmap('<leader>sp', Sf.save_and_push, "push current file")
       nmap('<leader>sr', Sf.retrieve, "retrieve current file")
       nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all")
