@@ -31,9 +31,19 @@ Toggle the SFTerm float window.
 Save the file in the current buffer and push to target_org.
 
 ------------------------------------------------------------------------------
+                                                                 *Sf.push_delta*
+                               `Sf.push_delta`
+Push local changes to target_org.
+
+------------------------------------------------------------------------------
                                                                    *Sf.retrieve*
                                  `Sf.retrieve`
 Retrieve the file in the current buffer from target_org.
+
+------------------------------------------------------------------------------
+                                                            *Sf.retrieve_delta
+                                 `Sf.retrieve_delta`
+Retrieve remote changes from target_org.
 
 ------------------------------------------------------------------------------
                                                            *Sf.retrieve_package*
