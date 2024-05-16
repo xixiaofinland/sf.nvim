@@ -113,15 +113,17 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
 | `<leader>to`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
 
-
 Example:
 
-- Press `<leader>s` to activate hotkeys as shown in the screenshot below.
-  Remember that they are enabled only inside sf folder.
+- Press `<leader>s`, `:lua require'sf'.set_target_org()` to activate hotkeys as
+  shown in the screenshot below. Remember that they are enabled only inside sf
+  folder.
 ![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
 Type `:Sf` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
+
+## 📚 Full Document
 
 Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
