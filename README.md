@@ -19,13 +19,23 @@
 - 👏 Access to a pre-downloaded list of metadata files
 - 🤖 Facilitate quick Apex test runs
 
-<br><br>
+<br>
 
 ## 🎦 Video Intro (6 mins)
 
 [![Feature Intro (6 min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
-<br><br>
+<br>
+
+## 📝 Prerequisites
+
+- 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
+- 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
+- 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
+
+
+<br>
+
 
 ## ⚙️  Installation
 
@@ -50,7 +60,7 @@ return {
 **Note.** The hotkeys and user commands are **ONLY** enabled in a sf project
 folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path).
 
-<br><br>
+<br>
 
 ## 🛠️ Configuration
 
@@ -82,17 +92,7 @@ require('sf').setup({
 })
 ```
 
-<br><br>
-
-
-## 📝 Prerequisites
-
-- 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
-- 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
-- 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
-
-
-<br><br>
+<br>
 
 
 ## 🎯 Display target_org
@@ -112,7 +112,7 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 ![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
 
-<br><br>
+<br>
 
 ## 🔑 Keys
 
@@ -140,14 +140,14 @@ Type `:Sf` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
 
-<br><br>
+<br>
 
 ## 📚 Full Document
 
 Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
 
-<br><br>
+<br>
 
 ## 🚀 Feature: List/retrieve metadata and metadata types
 
@@ -167,7 +167,7 @@ Aura, etc.). You can list them and fetch all of a specific type.
    list in a pop-up (requires the fzf-lua plugin) and select one to
    download all metadata of this type to local.
 
-<br><br>
+<br>
 
 ## 🖥️ Integrated terminal
 
@@ -176,7 +176,7 @@ The integrated terminal is a general purpose term.
 you can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('ls -la')`.
 
-<br><br>
+<br>
 
 ## 📜 License
 MIT.
