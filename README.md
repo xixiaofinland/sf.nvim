@@ -176,6 +176,16 @@ LWC, Aura, etc.). You can list them and fetch all of a specific type.
 
 <br>
 
+## ⚡Apex Test
+
+You can,
+
+- Run all tests in the current file by `<leader>ta`
+- Run the test under the cursor by `<leader>tt`
+- Select tests from the current file by `<leader>to`
+
+(check the Key section for their corresponding keys and user commands if needed)
+
 ## 🖥️ Integrated terminal
 
 The integrated terminal is a general purpose term.
