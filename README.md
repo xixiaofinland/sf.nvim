@@ -44,7 +44,7 @@ Install using Lazy.nvim by adding the following configuration to your setup:
 ```lua
 return {
   'xixiaofinland/sf.nvim',
-  branch = 'dev',
+  branch = 'dev', -- use `main` if you want the more stable version
 
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
@@ -57,8 +57,13 @@ return {
 }
 ```
 
-**Note.** The hotkeys and user commands are **ONLY** enabled in a sf project
+🚨 **Notice:**
+
+The hotkeys and user commands are **ONLY** enabled in a sf project
 folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path).
+
+Run `:lua require'sf.util'.get_sf_root()` to verify if the current opened file
+resides in sf project folder or not.
 
 <br>
 
@@ -73,7 +78,7 @@ require('sf').setup({
   -- They are applied automatically
 
   -- This plugin has both hotkeys and user commands supplied
-  -- This flag enable/disable hotkeys rather than user commands
+  -- This flag enable/disable hotkeys while user commands are always enabled
   enable_hotkeys = true,
 
   -- Metadata related hotkeys (e.g. push/retrieve Apex) are only enabled in
@@ -129,6 +134,8 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
 | `<leader>to`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
 
+All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
+
 Example:
 
 - Press `<leader>s`, `:lua require'sf'.set_target_org()` to activate hotkeys as
@@ -159,8 +166,8 @@ list them and fetch specific ones.
    the list in a pop-up (requires the fzf-lua plugin) and select one to
    download to local.
 
-The same applies to metadata types (like all Apex Classes, Apex Triggers, LWC,
-Aura, etc.). You can list them and fetch all of a specific type.
+Sometimes you want to fetch all files of a certain metadata type (Apex class,
+LWC, Aura, etc.). You can list them and fetch all of a specific type.
 
 1. Retrieve the metadata types by running the user command `SFPullMdType`.
 2. Run `SFListMdTypeToRetrieve` (or `require('sf').list_md_type_to_retrieve()`) to show the
@@ -168,6 +175,16 @@ Aura, etc.). You can list them and fetch all of a specific type.
    download all metadata of this type to local.
 
 <br>
+
+## ⚡Apex Test
+
+You can,
+
+- Run all tests in the current file by `<leader>ta`
+- Run the test under the cursor by `<leader>tt`
+- Select tests from the current file by `<leader>to`
+
+(check the Key section for their corresponding keys and user commands if needed)
 
 ## 🖥️ Integrated terminal
 
