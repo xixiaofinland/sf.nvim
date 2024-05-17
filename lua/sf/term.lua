@@ -18,8 +18,18 @@ function Term.save_and_push()
   t:run(cmd)
 end
 
+function Term.push_delta()
+  local cmd = vim.fn.expandcmd('sf project deploy start -o ') .. U.get()
+  t:run(cmd)
+end
+
 function Term.retrieve()
   local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. U.get()
+  t:run(cmd)
+end
+
+function Term.retrieve_delta()
+  local cmd = vim.fn.expandcmd('sf project retrieve start -o ') .. U.get()
   t:run(cmd)
 end
 
