@@ -134,6 +134,8 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
 | `<leader>to`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
 
+All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
+
 Example:
 
 - Press `<leader>s`, `:lua require'sf'.set_target_org()` to activate hotkeys as
