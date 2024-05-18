@@ -124,7 +124,7 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 This plugin supplies both default hotkeys and user commands.
 Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to `false`.
 
-### Often used
+### 📈 Often used keys
 
 | Default key       | function name           |   User command     | Explain           |
 | ----------| ------------------| ----------| ------------------|
@@ -149,12 +149,16 @@ Example:
 Type `:Sf` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
-### Custom hotkeys
-
 <br>
 
-you can pass any shell command into `run()` method to execute it in the integrate
+### 💡 Custom hotkeys
+
+What if the default keys don't meet your requirement?
+
+You can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('ls -la')`.
+
+<br>
 
 ## 📚 Full Document
 
@@ -206,7 +210,21 @@ terminal. For instance, `require('sf').run('ls -la')`.
 
 <br>
 
-## 🤝 Contributions
+## 🏆 Contributions
+
+Please create an issue to discuss your PR before submitting it. This ensures
+that the PR will be merged.
+
+The PR must be submitted against the `dev` branch.
+
+The `help.txt` file is auto-generated from the comments with the `---` suffix
+before each function in `init.lua` (have a look at its existing format). The plugin
+uses `mini.doc` to automatically generate `help.txt` from `init.lua`. Therefore,
+updating `init.lua` without modifying `help.txt` is sufficient.
+
+<br>
+
+### 🤝 Contributors
 
 Thanks to the following people for contributing to this project:
 
