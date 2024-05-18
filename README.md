@@ -121,6 +121,9 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 
 ## 🔑 Keys
 
+This plugin supplies both default hotkeys and user commands.
+Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to `false`.
+
 ### Often used
 
 | Default key       | function name           |   User command     | Explain           |
@@ -146,13 +149,16 @@ Example:
 Type `:Sf` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
+### Custom hotkeys
 
 <br>
+
+you can pass any shell command into `run()` method to execute it in the integrate
+terminal. For instance, `require('sf').run('ls -la')`.
 
 ## 📚 Full Document
 
 Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
-
 
 <br>
 
@@ -188,9 +194,14 @@ You can,
 
 ## 🖥️ Integrated terminal
 
-The integrated terminal is a general purpose term.
+The integrated terminal is desgined to
 
-you can pass any shell command into `run()` method to execute it in the integrate
+- accept input from hotkeys and user commands
+- be a read-only buffer
+- be disposable
+- be self-displayed when the execution finishes
+
+You can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('ls -la')`.
 
 <br>
