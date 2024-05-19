@@ -113,7 +113,6 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 ```
 ![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
-
 <br>
 
 ## 🔑 Keys
