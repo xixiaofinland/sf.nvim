@@ -99,7 +99,6 @@ require('sf').setup({
 
 <br>
 
-
 ## 🎯 Display target_org
 
 Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
