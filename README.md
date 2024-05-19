@@ -200,10 +200,12 @@ You can,
 
 The integrated terminal is desgined to
 
-- accept input from hotkeys and user commands
-- be a read-only buffer
-- be disposable
-- be self-displayed when the execution finishes
+- accept input from hotkeys and user commands, such as "retrieve current metadata"
+  `<leader>sr`
+- be a read-only buffer. It's not allowed to manually type commands on purpose
+- be disposable. The output text of the previous command is removed when a new command is invoked
+- be auto-prompt when the term window is hidden and the execution completes.
+  This is handy when you have a long running command.
 
 You can pass any shell command into `run()` method to execute it in the integrate
 terminal. For instance, `require('sf').run('ls -la')`.
