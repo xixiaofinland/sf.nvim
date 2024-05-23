@@ -92,7 +92,9 @@ H.list_md_to_retrieve = function()
   require("fzf-lua").fzf_exec(md_names, {
     actions = {
       ['default'] = function(selected)
-        H.retrieve_md(md[selected[1]]["fullName"], selected[1])
+        print(md[selected[1]])
+        print(selected[1])
+        H.retrieve_md(md[selected[1]]["type"], selected[1])
       end
     },
     fzf_opts = {

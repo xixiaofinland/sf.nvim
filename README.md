@@ -1,12 +1,8 @@
 ![Image](https://github.com/xixiaofinland/sf.nvim/assets/13655323/454d4a3d-d455-43f6-b44b-506862106b66)
 <p align="center">
-
 <img src="https://img.shields.io/badge/Neovim-57A143?logo=neovim&logoColor=fff&style=for-the-badge" alt="Neovim" />
-
 <img src="https://img.shields.io/badge/Made%20With%20Lua-2C2D72?logo=lua&logoColor=fff&style=for-the-badge" alt="made with lua" >
-
 </p>
-
 <h1 align="center">Sf.nvim</h1>
 <p align="center">📸 Offer common functionalities for Salesforce development</p>
 
@@ -33,9 +29,7 @@
 - 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
 - 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
 
-
 <br>
-
 
 ## ⚙️  Installation
 
@@ -99,7 +93,6 @@ require('sf').setup({
 
 <br>
 
-
 ## 🎯 Display target_org
 
 Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
@@ -115,7 +108,6 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
       } },
 ```
 ![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
-
 
 <br>
 
