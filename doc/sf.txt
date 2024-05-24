@@ -133,30 +133,6 @@ Select a specific metadata-type to download all its files. For example, download
 Its popup list depends on data retrieved by |Sf.pull_metadata_type_list| in prior.
 
 ------------------------------------------------------------------------------
-<<<<<<< HEAD
-                                                      *Sf.pull_and_list_md_type*
-                           `Sf.pull_and_list_md_type`
-Pull the list of metadata-types into a local json file, and list them in a pop-up.
-It's |Sf.pull_md_type_json| and |Sf.list_md_type_to_retrieve| in one go.
-
-------------------------------------------------------------------------------
-                                                          *Sf.create_apex_class*
-                           `Sf.create_apex_class`
-Creates a new Apex Class using an input name or prompting the user to enter one.
-
-------------------------------------------------------------------------------
-                                                         *Sf.create_aura_bundle*
-                           `Sf.create_aura_bundle`
-Creates a new Aura Bundle using an input name or prompting the user to enter one.
-
-------------------------------------------------------------------------------
-                                                         *Sf.create_lwc_bundle*
-                           `Sf.create_lwc_bundle`
-Creates a new LWC Bundle using an input name or prompting the user to enter one.
-
-------------------------------------------------------------------------------
-=======
->>>>>>> 844c9f01dd08036b9b1cafc9d037152b83ac167b
                                                  *Sf.retrieve_apex_under_cursor*
                         `Sf.retrieve_apex_under_cursor`
 Uses the word under the cursor as Apex name to attempt to retreive from the org.
@@ -203,9 +179,4 @@ A convenient way to repeat the last executed Apex test command.
                               `Sf.run_local_tests`
 Run all local tests in target_org
 
-<<<<<<< HEAD
  vim:tw=78:ts=8:noet:ft=help:norl:
-=======
-
- vim:tw=78:ts=8:noet:ft=help:norl:
->>>>>>> 844c9f01dd08036b9b1cafc9d037152b83ac167b
