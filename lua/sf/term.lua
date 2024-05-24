@@ -12,7 +12,7 @@ function Term.open()
 end
 
 function Term.save_and_push()
-  vim.api.nvim_command('e') -- reload file to avoid invoking y/n pop-up in Ex
+  -- vim.api.nvim_command('e') -- reload file to avoid invoking y/n pop-up in Ex
   vim.api.nvim_command('write!')
   local cmd = vim.fn.expandcmd('sf project deploy start -d %:p -o ') .. U.get()
   t:run(cmd)
