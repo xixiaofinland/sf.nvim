@@ -30,7 +30,8 @@ Test.run_all_tests_in_this_file = function()
     return U.show_warn('Not in a test class.')
   end
 
-  local cmd = string.format("sf apex run test --class-names %s --result-format human --synchronous --code-coverage --target-org %s", test_class_name, U.get())
+  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, U.get())
+  U.last_tests = cmd
   T.run(cmd)
 end
 
@@ -43,14 +44,12 @@ Test.repeat_last_tests = function()
 end
 
 Test.run_local_tests = function ()
-  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 --target-org %s", U.get())
+  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 -o %s", U.get())
+  U.last_tests = cmd
   T.run(cmd)
 end
 
 -- prompt below
-
-local actions = require 'telescope.actions'
-local action_state = require 'telescope.actions.state'
 
 local api = vim.api
 local buftype = 'nowrite'
@@ -102,10 +101,6 @@ end
 P.set_keys = function()
   vim.keymap.set('n', 'x', function()
     P.toggle()
-  end, { buffer = true, noremap = true })
-
-  vim.keymap.set('n', 'tt', function()
-    P.open_tests_in_selected()
   end, { buffer = true, noremap = true })
 
   vim.keymap.set('n', 'cc', function()
@@ -223,32 +218,6 @@ P.close = function()
   if P.win and api.nvim_win_is_valid(P.win) then
     api.nvim_win_close(P.win, false)
   end
-end
-
-P.open_tests_in_selected = function()
-  local opts = {
-    attach_mappings = P.tele_pick_test_file,
-    prompt_title = 'Select Test File',
-    search_file = '*.cls', -- TODO: how to get rid of xml in the list?
-  }
-  require('telescope.builtin').find_files(opts)
-end
-
-P.tele_pick_test_file = function(prompt_bufnr, map)
-  actions.select_default:replace(function()
-    actions.close(prompt_bufnr)
-    local path = action_state.get_selected_entry().path
-    P.open_selected(path)
-  end)
-  return true
-end
-
-P.open_selected = function(abs_file_name)
-  local bufnr = vim.api.nvim_create_buf(false, false)
-  vim.api.nvim_buf_call(bufnr, function()
-    vim.cmd('edit ' .. abs_file_name)
-    P.open()
-  end)
 end
 
 return Test

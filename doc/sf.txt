@@ -31,18 +31,28 @@ Toggle the SFTerm float window.
 Save the file in the current buffer and push to target_org.
 
 ------------------------------------------------------------------------------
+                                                                 *Sf.push_delta*
+                                `Sf.push_delta`
+Run `sf project deploy start` against the target_org
+
+------------------------------------------------------------------------------
                                                                    *Sf.retrieve*
                                  `Sf.retrieve`
 Retrieve the file in the current buffer from target_org.
 
 ------------------------------------------------------------------------------
+                                                             *Sf.retrieve_delta*
+                              `Sf.retrieve_delta`
+Run `sf project retrieve start` against the target_org
+
+------------------------------------------------------------------------------
                                                            *Sf.retrieve_package*
-                                 `Sf.retrieve_package`
+                             `Sf.retrieve_package`
 Retrieve the file in the current buffer as a manifest from target_org
 
 ------------------------------------------------------------------------------
                                                               *Sf.run_anonymous*
-                                 `Sf.run_anonymous`
+                               `Sf.run_anonymous`
 Run the file in the current buffer as anonymous apex in target_org
 
 ------------------------------------------------------------------------------
@@ -52,7 +62,7 @@ Run the query defined in current buffer in target_org
 
 ------------------------------------------------------------------------------
                                                           *Sf.run_tooling_query*
-                                 `Sf.run_query`
+                             `Sf.run_tooling_query`
 Run the tooling API query defined in the current buffer in target_org
 
 ------------------------------------------------------------------------------
@@ -112,12 +122,6 @@ Choose a specific metadata file to retrieve.
 Its popup list depends on data retrieved by |Sf.retrieve_metadata_lists| in prior.
 
 ------------------------------------------------------------------------------
-                                                           *Sf.pull_and_list_md*
-                             `Sf.pull_and_list_md`
-Pull pre-defined metadata files to local and list them in telescope for further retrieving
-It's |Sf.pull_md_json| and |Sf.list_md_to_retrieve| in one go.
-
-------------------------------------------------------------------------------
                                                           *Sf.pull_md_type_json*
                              `Sf.pull_md_type_json`
 Download metadata-type list, e.g. ApexClass, LWC, Aura, FlexiPage, etc. as a Json file into the project root path "md" folder.
@@ -129,6 +133,7 @@ Select a specific metadata-type to download all its files. For example, download
 Its popup list depends on data retrieved by |Sf.pull_metadata_type_list| in prior.
 
 ------------------------------------------------------------------------------
+<<<<<<< HEAD
                                                       *Sf.pull_and_list_md_type*
                            `Sf.pull_and_list_md_type`
 Pull the list of metadata-types into a local json file, and list them in a pop-up.
@@ -150,16 +155,32 @@ Creates a new Aura Bundle using an input name or prompting the user to enter one
 Creates a new LWC Bundle using an input name or prompting the user to enter one.
 
 ------------------------------------------------------------------------------
+=======
+>>>>>>> 844c9f01dd08036b9b1cafc9d037152b83ac167b
                                                  *Sf.retrieve_apex_under_cursor*
                         `Sf.retrieve_apex_under_cursor`
 Uses the word under the cursor as Apex name to attempt to retreive from the org.
 A convenient way to quickly pull Apex into local.
 
 ------------------------------------------------------------------------------
+                                                          *Sf.create_apex_class*
+                             `Sf.create_apex_class`
+Creates a new Apex Class using an input name or prompting the user to enter one
+
+------------------------------------------------------------------------------
+                                                         *Sf.create_aura_bundle*
+                            `Sf.create_aura_bundle`
+Creates a new Aura Bundle using an input name or prompting the user to enter one
+
+------------------------------------------------------------------------------
+                                                          *Sf.create_lwc_bundle*
+                             `Sf.create_lwc_bundle`
+Creates a new LWC Bundle using an input name or prompting the user to enter one
+
+------------------------------------------------------------------------------
                                                            *Sf.open_test_select*
                              `Sf.open_test_select`
 Open a top-split window to display the Apex tests in the current file.
-This window also enables to select tests from multiple files.
 
 ------------------------------------------------------------------------------
                                                            *Sf.run_current_test*
@@ -179,7 +200,12 @@ A convenient way to repeat the last executed Apex test command.
 
 ------------------------------------------------------------------------------
                                                             *Sf.run_local_tests*
-                             `Sf.run_local_tests`
+                              `Sf.run_local_tests`
 Run all local tests in target_org
 
+<<<<<<< HEAD
  vim:tw=78:ts=8:noet:ft=help:norl:
+=======
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
+>>>>>>> 844c9f01dd08036b9b1cafc9d037152b83ac167b

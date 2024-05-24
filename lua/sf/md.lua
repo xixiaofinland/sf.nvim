@@ -16,20 +16,12 @@ function Md.list_md_to_retrieve()
   H.list_md_to_retrieve()
 end
 
-function Md.pull_and_list_md()
-  H.pull_and_list_md()
-end
-
 function Md.pull_md_type_json()
   H.pull_md_type_json()
 end
 
 function Md.list_md_type_to_retrieve()
   H.list_md_type_to_retrieve()
-end
-
-function Md.pull_and_list_md_type()
-  H.pull_md_type_json(H.list_md_type_to_retrieve)
 end
 
 function Md.retrieve_apex_under_cursor()
@@ -47,13 +39,6 @@ end
 function Md.create_lwc_bundle()
   H.create_lwc_bundle()
 end
-
-local pickers = require "telescope.pickers"
-local finders = require "telescope.finders"
-local previewers = require 'telescope.previewers'
-local conf = require("telescope.config").values
-local actions = require "telescope.actions"
-local action_state = require "telescope.actions.state"
 
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
@@ -76,85 +61,53 @@ H.list_md_to_retrieve = function()
     return U.show_err('Target_org empty!')
   end
 
-  local md_to_display = {}
+  if not U.is_installed('fzf-lua') then
+    return U.show_err('fzf-lua is not installed. Need it to show the list.')
+  end
+
   local md_folder = U.get_sf_root() .. H.md_folder_name
 
   local md_types = C.config.types_to_retrieve
+  local md = {}
+  local md_names = {}
+
   for _, type in pairs(md_types) do
     local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      -- vim.notify('%s not exist! Pulling now...', vim.log.levels.WARN)
-      return H.pull_and_list_md()
-    else
-      local metadata = vim.fn.readfile(md_file)
-      local md_tbl = vim.json.decode(table.concat(metadata), {})
+      return U.show_err(string.format('%s not exists locally. Pull it again.', type))
+    end
 
-      for _, v in ipairs(md_tbl) do
-        if v["manageableState"] == 'unmanaged' then
-          table.insert(md_to_display, v)
-        end
+    local metadata = vim.fn.readfile(md_file)
+    local md_tbl = vim.json.decode(table.concat(metadata), {})
+
+    for _, v in ipairs(md_tbl) do
+      if v["manageableState"] == 'unmanaged' then
+        md[v["fullName"]] = v
+        table.insert(md_names, v["fullName"])
       end
     end
   end
 
-  H.tele_metadata(md_to_display, {})
-end
-
-H.tele_metadata = function(source, opts)
-  opts = opts or {}
-
-  local p = previewers.new_buffer_previewer({
-    title = "Metadata details",
-
-    define_preview = function(self, entry)
-      local data = ''
-      for key, value in pairs(entry.value) do
-        data = string.format('%s\n\n%s: %s', data, key, value)
-      end
-      vim.api.nvim_buf_set_lines(self.state.bufnr, 1, -1, true, vim.split(data, '\n'))
-    end,
-  })
-
-  pickers.new({}, {
-    prompt_title = 'Org: ' .. U.target_org,
-
-    finder = finders.new_table {
-      results = source,
-      entry_maker = function(entry)
-        return {
-          value = entry,
-          display = entry["fullName"] .. ' | ' .. entry["type"],
-          ordinal = entry["fullName"] .. ' | ' .. entry["type"],
-        }
+  require("fzf-lua").fzf_exec(md_names, {
+    actions = {
+      ['default'] = function(selected)
+        print(md[selected[1]])
+        print(selected[1])
+        H.retrieve_md(md[selected[1]]["type"], selected[1])
       end
     },
-
-    sorter = conf.generic_sorter(opts),
-
-    previewer = p,
-
-    attach_mappings = function(prompt_bufnr, map)
-      actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local md = action_state.get_selected_entry().value
-
-        H.retrieve_md(md["type"], md["fullName"])
-      end)
-      return true
-    end,
-  }):find()
-end
-
--- jobstart() tracking
-H.counter = 0;
-H.all_spawned = false;
-
-H.md_pull_cb = function()
-  H.counter = H.counter - 1
-  if H.all_spawned and H.counter == 0 then
-    H.list_md_to_retrieve()
-  end
+    fzf_opts = {
+      ['--preview-window'] = 'nohidden,down,50%',
+      ['--preview'] = function(items)
+        local contents = {}
+        vim.tbl_map(function(x)
+          table.insert(contents, "\n" .. U.table_to_string_lines(md[x]))
+        end, items)
+        return contents
+      end
+    },
+  })
 end
 
 H.pull_md_json = function()
@@ -164,19 +117,7 @@ H.pull_md_json = function()
   end
 end
 
-H.pull_and_list_md = function()
-  H.counter = 0;
-  H.all_spawned = false;
-
-  local md_types = C.config.types_to_retrieve
-  for _, type in pairs(md_types) do
-    H.counter = H.counter + 1
-    H.pull_metadata(type, H.md_pull_cb)
-  end
-  H.all_spawned = true
-end
-
-H.pull_metadata = function(type, cb)
+H.pull_metadata = function(type)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
   end
@@ -195,10 +136,10 @@ H.pull_metadata = function(type, cb)
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
-  U.job_call(cmd, msg, err_msg, cb);
+  U.silent_job_call(cmd, msg, err_msg);
 end
 
-H.pull_md_type_json = function(cb)
+H.pull_md_type_json = function()
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
   end
@@ -216,12 +157,16 @@ H.pull_md_type_json = function(cb)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
-  U.job_call(cmd, msg, err_msg, cb);
+  U.silent_job_call(cmd, msg, err_msg);
 end
 
 H.list_md_type_to_retrieve = function()
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
+  end
+
+  if not U.is_installed('fzf-lua') then
+    return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
   local md_folder = U.get_sf_root() .. H.md_folder_name
@@ -234,39 +179,20 @@ H.list_md_type_to_retrieve = function()
 
   local file_content = vim.fn.readfile(md_type_json)
   local tbl = vim.json.decode(table.concat(file_content), {})
-  local md_types = tbl["metadataObjects"]
 
-  H.tele_metadata_type(md_types, {})
-end
+  local md_types = {}
 
-H.tele_metadata_type = function(source, opts)
-  opts = opts or {}
-  pickers.new({}, {
-    prompt_title = 'metadata-type: ' .. U.target_org,
+  for _, obj in pairs(tbl["metadataObjects"]) do
+    table.insert(md_types, obj["xmlName"])
+  end
 
-    finder = finders.new_table {
-      results = source,
-      entry_maker = function(entry)
-        return {
-          value = entry,
-          display = entry["xmlName"],
-          ordinal = entry["xmlName"],
-        }
+  require("fzf-lua").fzf_exec(md_types, {
+    actions = {
+      ['default'] = function(selected)
+        H.retrieve_md_type(selected[1])
       end
-    },
-
-    sorter = conf.generic_sorter(opts),
-
-    attach_mappings = function(prompt_bufnr, map)
-      actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local md_type = action_state.get_selected_entry().value
-
-        H.retrieve_md_type(md_type["xmlName"])
-      end)
-      return true
-    end,
-  }):find()
+    }
+  })
 end
 
 H.retrieve_md_type = function(type)
@@ -281,23 +207,26 @@ H.retrieve_md_type = function(type)
 end
 
 H.generate_class = function(name)
-  local cmd = string.format("sf apex generate class --output-dir %s --name %s", U.get_sf_root() .. H.default_dir .. "/classes", name)
-  U.silent_job_call(
+  local path = U.get_sf_root() .. H.default_dir .. "/classes"
+  local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
+  U.job_call(
     cmd,
     nil,
     "Something went wrong creating the class",
     function()
-      vim.notify("Class " .. name .. " created", vim.log.levels.INFO)
+      local open_new_file = string.format(":e %s/%s.cls", path, name)
+      vim.cmd(open_new_file)
     end
   )
 end
 
 H.create_apex_class = function(name)
-    U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
+  U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
 end
 
 H.generate_aura = function(name)
-  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_sf_root() .. H.default_dir .. "/aura", name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
+    U.get_sf_root() .. H.default_dir .. "/aura", name)
   U.silent_job_call(
     cmd,
     nil,
@@ -309,11 +238,12 @@ H.generate_aura = function(name)
 end
 
 H.create_aura_bundle = function(name)
-    U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
+  U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
 end
 
 H.generate_lwc = function(name)
-  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. H.default_dir .. "/lwc", name)
+  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
+    U.get_sf_root() .. H.default_dir .. "/lwc", name)
   U.silent_job_call(
     cmd,
     nil,
@@ -325,7 +255,7 @@ H.generate_lwc = function(name)
 end
 
 H.create_lwc_bundle = function(name)
-    U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
+  U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
 end
 
 return Md

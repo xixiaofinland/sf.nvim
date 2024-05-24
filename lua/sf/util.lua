@@ -97,7 +97,7 @@ M.silent_job_call = function(cmd, msg, err_msg, cb)
 end
 
 M.job_call = function(cmd, msg, err_msg, cb)
-  vim.notify('Async job starts...', vim.log.levels.INFO);
+  vim.notify('| Async job starts...', vim.log.levels.INFO);
   M.silent_job_call(cmd, msg, err_msg, cb)
 end
 
@@ -123,6 +123,18 @@ M.run_cb_with_input = function(arg, prompt, cb)
       end
     )
   end
+end
+
+M.table_to_string_lines = function(tbl)
+  local result = ""
+  for key, value in pairs(tbl) do
+    result = result .. key .. ": " .. tostring(value) .. "\n"
+  end
+  return result
+end
+
+M.is_installed = function(plugin_name)
+  return pcall(require, plugin_name)
 end
 
 return M
