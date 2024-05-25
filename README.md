@@ -134,9 +134,8 @@ All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiao
 
 Example:
 
-- Press `<leader>s`, `:lua require'sf'.set_target_org()` to activate hotkeys as
-  shown in the screenshot below. Remember that they are enabled only inside sf
-  folder.
+- If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, press `<leader>s` will hint you what keys are enabled as
+  shown in the screenshot below. Remember that default hotkeys are enabled only inside a sf folder.
 ![Image 001](https://github.com/xixiaofinland/sf.nvim/assets/13655323/2971de8f-7f13-4248-bc3b-eff0eb7f3f98)
 
 Type `:SF` in Ex mode will list all user commands:
