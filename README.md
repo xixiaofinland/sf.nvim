@@ -127,7 +127,9 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>sr`     |retrieve|SFRetrieve|retrieve current file|
 | `<leader>ta`     |run_all_tests_in_this_file|SFRunAllTestsInThisFile|run all Apex tests in current file|
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
-| `<leader>to`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
+| `<leader>tr`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
+| `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select
+tests|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
@@ -138,7 +140,7 @@ Example:
   folder.
 ![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
 
-Type `:Sf` in Ex mode will list all user commands:
+Type `:SF` in Ex mode will list all user commands:
 ![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
 
 <br>
@@ -185,6 +187,7 @@ You can,
 - Run all tests in the current file by `<leader>ta`
 - Run the test under the cursor by `<leader>tt`
 - Select tests from the current file by `<leader>to`
+- Re-run the last test command `<leader>tr`
 
 (check the Key section for their corresponding keys and user commands if needed)
 
