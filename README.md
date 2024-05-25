@@ -212,9 +212,9 @@ that the PR will be merged.
 The PR must be submitted against the `dev` branch.
 
 The `help.txt` file is auto-generated from the comments with the `---` suffix
-before each function in `init.lua` (have a look at its existing format). The plugin
-uses `mini.doc` to automatically generate `help.txt` from `init.lua`. Therefore,
-updating `init.lua` without modifying `help.txt` is sufficient.
+before each function in [init.lua](https://github.com/xixiaofinland/sf.nvim/blob/dev/lua/sf/init.lua). The plugin
+uses `mini.doc` to automatically generate `help.txt` from these `---` suffixed comments. Therefore,
+add your doc content in `init.lua` without touching `help.txt` is sufficient.
 
 <br>
 
