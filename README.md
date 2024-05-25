@@ -128,8 +128,7 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>ta`     |run_all_tests_in_this_file|SFRunAllTestsInThisFile|run all Apex tests in current file|
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
 | `<leader>tr`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
-| `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select
-tests|
+| `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select tests|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
