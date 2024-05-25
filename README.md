@@ -136,7 +136,7 @@ Example:
 
 - If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, press `<leader>s` will hint you what keys are enabled as
   shown in the screenshot below. Remember that default hotkeys are enabled only inside a sf folder.
-![Image 001](https://github.com/xixiaofinland/sf.nvim/assets/13655323/2971de8f-7f13-4248-bc3b-eff0eb7f3f98)
+![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
 Type `:SF` in Ex mode will list all user commands:
 ![Image 002](https://github.com/xixiaofinland/sf.nvim/assets/13655323/056648c5-5f4f-4385-9cc5-ab2ef2ad96f6)
