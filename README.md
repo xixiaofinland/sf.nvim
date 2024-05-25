@@ -138,10 +138,10 @@ Example:
 - Press `<leader>s`, `:lua require'sf'.set_target_org()` to activate hotkeys as
   shown in the screenshot below. Remember that they are enabled only inside sf
   folder.
-![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
+![Image 001](https://github.com/xixiaofinland/sf.nvim/assets/13655323/2971de8f-7f13-4248-bc3b-eff0eb7f3f98)
 
 Type `:SF` in Ex mode will list all user commands:
-![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
+![Image 002](https://github.com/xixiaofinland/sf.nvim/assets/13655323/056648c5-5f4f-4385-9cc5-ab2ef2ad96f6)
 
 <br>
 
@@ -193,16 +193,16 @@ You can,
 
 ## 🖥️ Integrated terminal
 
-The integrated terminal is desgined to
+The integrated terminal is designed to
 
 - accept input from hotkeys and user commands, such as "retrieve current metadata"
   `<leader>sr`
 - be a read-only buffer. It's not allowed to manually type commands on purpose
 - be disposable. The output text of the previous command is removed when a new command is invoked
 - be auto-prompt when the term window is hidden and the execution completes.
-  This is handy when you have a long running command.
+  This is handy when you have a long-running command.
 
-You can pass any shell command into `run()` method to execute it in the integrate
+You can pass any shell command into `run()` method to execute it in the integrated
 terminal. For instance, `require('sf').run('ls -la')`.
 
 <br>
