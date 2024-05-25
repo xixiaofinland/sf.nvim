@@ -134,7 +134,7 @@ All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiao
 
 Example:
 
-- If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, press `<leader>s` will hint you what keys are enabled as
+- If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, pressing `<leader>s` will hint to you what keys are enabled as
   shown in the screenshot below. Remember that default hotkeys are enabled only inside a sf folder.
 ![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
@@ -145,10 +145,10 @@ Type `:SF` in Ex mode will list all user commands:
 
 ### 💡 Custom hotkeys
 
-What if the default keys don't meet your requirement?
+What if the default keys don't meet your requirements?
 
-You can pass any shell command into `run()` method to execute it in the integrate
-terminal. For instance, `require('sf').run('ls -la')`.
+You can pass any shell command into `run()` method to execute it in the integrated
+terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: `vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })`.
 
 <br>
 
@@ -195,10 +195,9 @@ The integrated terminal is designed to
 
 - accept input from hotkeys and user commands, such as "retrieve current metadata"
   `<leader>sr`
-- be a read-only buffer. It's not allowed to manually type commands on purpose
+- be a read-only buffer. It's, by design, not allowed to manually type commands e
 - be disposable. The output text of the previous command is removed when a new command is invoked
-- be auto-prompt when the term window is hidden and the execution completes.
-  This is handy when you have a long-running command.
+- be auto-prompt, in case the terminal is hidden at the moment the command execution completes. This is handy when you have a long-running command.
 
 You can pass any shell command into `run()` method to execute it in the integrated
 terminal. For instance, `require('sf').run('ls -la')`.
