@@ -52,7 +52,7 @@ H.retrieve_md = function(type, name)
   end
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m %s:%s -o %s', type, name, U.target_org)
+  local cmd = string.format('sf project retrieve start -m \'%s:%s\' -o %s', type, name, U.target_org)
   T.run(cmd)
 end
 
