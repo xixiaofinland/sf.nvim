@@ -127,28 +127,28 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>sr`     |retrieve|SFRetrieve|retrieve current file|
 | `<leader>ta`     |run_all_tests_in_this_file|SFRunAllTestsInThisFile|run all Apex tests in current file|
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
-| `<leader>to`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
+| `<leader>tr`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
+| `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select tests|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
 Example:
 
-- Press `<leader>s`, `:lua require'sf'.set_target_org()` to activate hotkeys as
-  shown in the screenshot below. Remember that they are enabled only inside sf
-  folder.
-![Image 007](https://github.com/xixiaofinland/sf.nvim/assets/13655323/c0bc474c-3d2f-4fad-9bc0-5076cf4dd108)
+- If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, pressing `<leader>s` will hint to you what keys are enabled as
+  shown in the screenshot below. Remember that default hotkeys are enabled only inside a sf folder.
+![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
-Type `:Sf` in Ex mode will list all user commands:
-![Image 005](https://github.com/xixiaofinland/sf.nvim/assets/13655323/d5e9b626-e75f-4ecb-befc-c8535da8f2d9)
+Type `:SF` in Ex mode will list all user commands:
+![Image 002](https://github.com/xixiaofinland/sf.nvim/assets/13655323/056648c5-5f4f-4385-9cc5-ab2ef2ad96f6)
 
 <br>
 
 ### 💡 Custom hotkeys
 
-What if the default keys don't meet your requirement?
+What if the default keys don't meet your requirements?
 
-You can pass any shell command into `run()` method to execute it in the integrate
-terminal. For instance, `require('sf').run('ls -la')`.
+You can pass any shell command into `run()` method to execute it in the integrated
+terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: `vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })`.
 
 <br>
 
@@ -185,21 +185,21 @@ You can,
 - Run all tests in the current file by `<leader>ta`
 - Run the test under the cursor by `<leader>tt`
 - Select tests from the current file by `<leader>to`
+- Re-run the last test command `<leader>tr`
 
 (check the Key section for their corresponding keys and user commands if needed)
 
 ## 🖥️ Integrated terminal
 
-The integrated terminal is desgined to
+The integrated terminal is designed to
 
 - accept input from hotkeys and user commands, such as "retrieve current metadata"
   `<leader>sr`
-- be a read-only buffer. It's not allowed to manually type commands on purpose
+- be a read-only buffer. It's, by design, not allowed to manually type commands e
 - be disposable. The output text of the previous command is removed when a new command is invoked
-- be auto-prompt when the term window is hidden and the execution completes.
-  This is handy when you have a long running command.
+- be auto-prompt, in case the terminal is hidden at the moment the command execution completes. This is handy when you have a long-running command.
 
-You can pass any shell command into `run()` method to execute it in the integrate
+You can pass any shell command into `run()` method to execute it in the integrated
 terminal. For instance, `require('sf').run('ls -la')`.
 
 <br>
@@ -212,9 +212,9 @@ that the PR will be merged.
 The PR must be submitted against the `dev` branch.
 
 The `help.txt` file is auto-generated from the comments with the `---` suffix
-before each function in `init.lua` (have a look at its existing format). The plugin
-uses `mini.doc` to automatically generate `help.txt` from `init.lua`. Therefore,
-updating `init.lua` without modifying `help.txt` is sufficient.
+before each function in [init.lua](https://github.com/xixiaofinland/sf.nvim/blob/dev/lua/sf/init.lua). The plugin
+uses `mini.doc` to automatically generate `help.txt` from these `---` suffixed comments. Therefore,
+add your doc content in `init.lua` without touching `help.txt` is sufficient.
 
 <br>
 
