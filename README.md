@@ -38,7 +38,6 @@ Install using Lazy.nvim by adding the following configuration to your setup:
 ```lua
 return {
   'xixiaofinland/sf.nvim',
-  branch = 'dev', -- use `main` if you want the more stable version
 
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
