@@ -85,7 +85,9 @@ local init = function()
     desc = 'Run sf org cmd and store org info in the plugin',
     once = true,
     callback = function()
-      require('sf').fetch_org_list()
+      if vim.fn.executable('sf') == 1 then
+        require('sf').fetch_org_list()
+      end
     end,
   })
 
