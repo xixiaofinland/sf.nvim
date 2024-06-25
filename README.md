@@ -204,6 +204,13 @@ terminal. For instance, `require('sf').run('ls -la')`.
 
 <br>
 
+## 📝 TODO
+
+- add test_coverage feature (-c parameter)
+- change diff() to use md_type.json to determine .cls -> ApexClass
+
+<br>
+
 ## 🏆 Contributions
 
 Please create an issue to discuss your PR before submitting it. This ensures
