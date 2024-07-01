@@ -212,8 +212,10 @@ Salesforce's Apex LSP (apex-jorje-lsp.jar) offers a jump-to-definition feature, 
 perfect. You may encounter cases where it doesn't function correctly in certain codebases. To
 address this, the LSP jump-to-definition is enhanced by ctags.
 
+If you don't yet know what ctags is, it's wise to google "ctags in vim" to prepare a bit more.
+
 Ctags is ideal in this scenario because:
-- it is natively supported by Nvim/Vim, although you need to install `ctags` yourself
+- It is natively supported by Nvim/Vim, although you need to install `ctags` yourself
 - The default `<C-]>` key in Nvim will first attempt to jump with LSP and fall back to ctags if LSP fails
 
 There are several versions of ctags, this repo uses [universal
