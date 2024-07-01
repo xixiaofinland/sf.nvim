@@ -48,6 +48,12 @@ M.is_sf_cmd_installed = function()
   end
 end
 
+M.is_ctags_installed = function()
+  if vim.fn.executable('ctags') ~= 1 then
+    error('*ctags cli not found*')
+  end
+end
+
 M.is_table_empty = function(tbl)
   if vim.tbl_isempty(tbl) then
     error('*Empty table*')

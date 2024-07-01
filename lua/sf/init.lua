@@ -9,6 +9,7 @@ local Term = require('sf.term')
 local Org = require('sf.org')
 local Metadata = require('sf.md')
 local Test = require('sf.test')
+local Ctags = require('sf.ctags')
 local Cfg = require('sf.config')
 local Sf = {}
 
@@ -131,5 +132,15 @@ Sf.repeat_last_tests = Test.repeat_last_tests
 
 --- Run all local tests in target_org
 Sf.run_local_tests = Test.run_local_tests
+
+-- From Ctags module ==========================================================
+
+--- Create tags file in the root path by using universal ctags cli tool.
+Sf.create_ctags = Ctags.create
+
+--- Create tags file in the root path and list them by fzf plugin.
+--- When fzf is not found, the command exists with an error msg.
+Sf.create_and_list_ctags = Ctags.create_and_list
+
 
 return Sf

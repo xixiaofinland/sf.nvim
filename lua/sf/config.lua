@@ -204,6 +204,10 @@ local init = function()
       Sf.open_test_select()
     end, {})
 
+    vim.api.nvim_create_user_command("SFCreateCtags", function()
+      Sf.create_ctags()
+    end, {})
+
     if not Cfg.config.enable_hotkeys then
       return
     end
@@ -226,6 +230,8 @@ local init = function()
     nmap('<leader><leader>', Sf.toggle_term, "terminal toggle")
     nmap('<C-c>', Sf.cancel, "cancel running command")
     nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
+    nmap('<leader>ct', Sf.create_ctags, 'create ctag file in project root')
+    nmap('<leader>ft', Sf.create_and_list_ctags, 'fzf list updated ctags')
 
     -- Hotkeys for metadata files only;
     if vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then

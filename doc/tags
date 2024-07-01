@@ -1,6 +1,8 @@
 Sf.cancel	sf.txt	/*Sf.cancel*
+Sf.create_and_list_ctags	sf.txt	/*Sf.create_and_list_ctags*
 Sf.create_apex_class	sf.txt	/*Sf.create_apex_class*
 Sf.create_aura_bundle	sf.txt	/*Sf.create_aura_bundle*
+Sf.create_ctags	sf.txt	/*Sf.create_ctags*
 Sf.create_lwc_bundle	sf.txt	/*Sf.create_lwc_bundle*
 Sf.diff_in_org	sf.txt	/*Sf.diff_in_org*
 Sf.diff_in_target_org	sf.txt	/*Sf.diff_in_target_org*
