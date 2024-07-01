@@ -179,5 +179,16 @@ A convenient way to repeat the last executed Apex test command.
                               `Sf.run_local_tests`
 Run all local tests in target_org
 
+------------------------------------------------------------------------------
+                                                               *Sf.create_ctags*
+                               `Sf.create_ctags`
+Create tags file in the root path by using universal ctags cli tool.
+
+------------------------------------------------------------------------------
+                                                      *Sf.create_and_list_ctags*
+                           `Sf.create_and_list_ctags`
+Create tags file in the root path and list them by fzf plugin.
+When fzf is not found, the command exists with an error msg.
+
 
  vim:tw=78:ts=8:noet:ft=help:norl:

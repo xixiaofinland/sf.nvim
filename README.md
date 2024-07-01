@@ -14,6 +14,7 @@
 - 🤩 Display target org in the status line
 - 👏 Access to a pre-downloaded list of metadata files
 - 🤖 Facilitate quick Apex test runs
+- 🦘 Enhanced jump-to-definition (Apex)
 
 <br>
 
@@ -129,6 +130,7 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
 | `<leader>tr`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
 | `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select tests|
+| `<leader>ct`     |create_ctags |SFCreateCtags|create ctags file|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
@@ -201,6 +203,28 @@ The integrated terminal is designed to
 
 You can pass any shell command into `run()` method to execute it in the integrated
 terminal. For instance, `require('sf').run('ls -la')`.
+
+<br>
+
+## 🏃 Enhanced jump-to-definition (Apex)
+
+Salesforce's Apex LSP (apex-jorje-lsp.jar) offers a jump-to-definition feature, but it's not
+perfect. You may encounter cases where it doesn't function correctly in certain codebases. To
+address this, the LSP jump-to-definition is enhanced by ctags.
+
+Ctags is ideal in this scenario because:
+- it is natively supported by Nvim/Vim, although you need to install `ctags` yourself
+- The default `<C-]>` key in Nvim will first attempt to jump with LSP and fall back to ctags if LSP fails
+
+There are several versions of ctags, this repo uses [universal
+ctags](https://github.com/universal-ctags/ctags). So you need to install it to use this feature.
+
+### How to use it?
+
+`require('sf').create_ctags()` generates the ctags file in the project root.
+Using the `<C-]>` key for jump-to-definition will automatically use both LSP and ctags in order.
+`require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in  `fzf-lua`
+plugin.
 
 <br>
 
