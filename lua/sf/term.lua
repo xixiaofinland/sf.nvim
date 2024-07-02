@@ -24,7 +24,7 @@ function Term.push_delta()
 end
 
 function Term.retrieve()
-  local cmd = vim.fn.expandcmd('sf project retrieve start -d %:p -o ') .. U.get()
+  local cmd = vim.fn.expandcmd('sf project retrieve start -d "%:p" -o ') .. U.get()
   t:run(cmd)
 end
 
@@ -34,22 +34,22 @@ function Term.retrieve_delta()
 end
 
 function Term.retrieve_package()
-     local cmd = vim.fn.expandcmd("sf project retrieve start -x %:p -o ") .. U.get()
+     local cmd = vim.fn.expandcmd('sf project retrieve start -x "%:p" -o ') .. U.get()
      t:run(cmd)
 end
 
 function Term.run_anonymous()
-     local cmd = vim.fn.expandcmd("sf apex run -f %:p -o ") .. U.get()
+     local cmd = vim.fn.expandcmd('sf apex run -f "%:p" -o ') .. U.get()
      t:run(cmd)
 end
 
 function Term.run_query()
-     local cmd = vim.fn.expandcmd("sf data query -w 5 -f %:p -o ") .. U.get()
+     local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
      t:run(cmd)
 end
 
 function Term.run_tooling_query()
-     local cmd = vim.fn.expandcmd("sf data query -t -w 5 -f %:p -o ") .. U.get()
+     local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
      t:run(cmd)
 end
 
