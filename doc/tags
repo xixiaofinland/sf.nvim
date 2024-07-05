@@ -22,8 +22,10 @@ Sf.retrieve_delta	sf.txt	/*Sf.retrieve_delta*
 Sf.retrieve_package	sf.txt	/*Sf.retrieve_package*
 Sf.run	sf.txt	/*Sf.run*
 Sf.run_all_tests_in_this_file	sf.txt	/*Sf.run_all_tests_in_this_file*
+Sf.run_all_tests_in_this_file_with_coverage	sf.txt	/*Sf.run_all_tests_in_this_file_with_coverage*
 Sf.run_anonymous	sf.txt	/*Sf.run_anonymous*
 Sf.run_current_test	sf.txt	/*Sf.run_current_test*
+Sf.run_current_test_with_coverage	sf.txt	/*Sf.run_current_test_with_coverage*
 Sf.run_local_tests	sf.txt	/*Sf.run_local_tests*
 Sf.run_query	sf.txt	/*Sf.run_query*
 Sf.run_tooling_query	sf.txt	/*Sf.run_tooling_query*

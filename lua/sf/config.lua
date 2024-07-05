@@ -188,8 +188,17 @@ local init = function()
       Sf.run_all_tests_in_this_file()
     end, {})
 
+    vim.api.nvim_create_user_command("SFRunAllTestsInThisFileWithCoverage", function()
+      Sf.run_all_tests_in_this_file_with_coverage()
+    end, {})
+
+
     vim.api.nvim_create_user_command("SFRunCurrentTest", function()
       Sf.run_current_test()
+    end, {})
+
+    vim.api.nvim_create_user_command("SFRunCurrentTestWithCoverage", function()
+      Sf.run_current_test_with_coverage()
     end, {})
 
     vim.api.nvim_create_user_command("SFRepeatTest", function()
@@ -240,8 +249,11 @@ local init = function()
       nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "apex under cursor retrieve")
       nmap('<leader>sp', Sf.save_and_push, "push current file")
       nmap('<leader>sr', Sf.retrieve, "retrieve current file")
-      nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all")
+
+      nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all in this file")
+      nmap('<leader>tA', Sf.run_all_tests_in_this_file_with_coverage, "test all with coverage info")
       nmap('<leader>tt', Sf.run_current_test, "test this under cursor")
+      nmap('<leader>tT', Sf.run_current_test_with_coverage, "test this under cursor with coverage info")
       nmap('<leader>to', Sf.open_test_select, "open test select buf")
       nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
       nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")

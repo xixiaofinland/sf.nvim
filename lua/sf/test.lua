@@ -8,7 +8,13 @@ Test.open = function()
   P.open()
 end
 
-Test.run_current_test = function()
+Test.run_current_test_with_coverage = function()
+  Test.run_current_test('-c ')
+end
+
+Test.run_current_test = function(extraParams)
+  extraParams = extraParams or ''
+
   local test_class_name = TS.get_test_class_name()
   if U.isempty(test_class_name) then
     return U.show_warn('Not in a test class.')
@@ -18,19 +24,24 @@ Test.run_current_test = function()
     return U.show_warn('Cursor not in a test method.')
   end
 
-  local cmd = string.format("sf apex run test --tests %s.%s --result-format human -y -o %s", test_class_name, test_name,
-    U.get())
+  local cmd = string.format("sf apex run test --tests %s.%s -r human -y %s-o %s", test_class_name, test_name, extraParams, U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
 
-Test.run_all_tests_in_this_file = function()
+Test.run_all_tests_in_this_file_with_coverage = function()
+  Test.run_all_tests_in_this_file('-c ')
+end
+
+Test.run_all_tests_in_this_file = function(extraParams)
+  extraParams = extraParams or ''
+
   local test_class_name = TS.get_test_class_name()
   if U.isempty(test_class_name) then
     return U.show_warn('Not in a test class.')
   end
 
-  local cmd = string.format("sf apex run test --class-names %s --result-format human -y -o %s", test_class_name, U.get())
+  local cmd = string.format("sf apex run test --class-names %s -r human -y %s-o %s", test_class_name, extraParams, U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
@@ -43,8 +54,8 @@ Test.repeat_last_tests = function()
   T.run(U.last_tests)
 end
 
-Test.run_local_tests = function ()
-  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage --result-format human --wait 180 -o %s", U.get())
+Test.run_local_tests = function()
+  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s", U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
@@ -111,7 +122,7 @@ P.set_keys = function()
     P.selected_tests = {}
   end, { buffer = true, noremap = true })
 
-  vim.keymap.set('n', 'cC', function()
+  vim.keymap.set('n', 'CC', function()
     local cmd = P.build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. U.get()
     P.close()
     T.run(cmd)
@@ -124,7 +135,7 @@ P.display = function()
   api.nvim_set_current_win(P.win)
   local names = {}
   table.insert(names,
-    '** "x": toggle tests; "tt": change a test file; "cc": run tests; "cC": run tests with code coverage.')
+    '** "x": toggle tests; "cc": run tests; "CC": run tests with code coverage.')
 
   for _, test in ipairs(P.tests) do
     local class_test = string.format('%s.%s', P.class, test)

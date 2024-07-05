@@ -124,8 +124,14 @@ Sf.open_test_select = Test.open
 --- It uses Treesitter to determine @IsTest method.
 Sf.run_current_test = Test.run_current_test
 
+--- Same as `run_current_test`, but with code coverage info in the result.
+Sf.run_current_test_with_coverage = Test.run_current_test_with_coverage
+
 --- Run all Apex tests in the current Apex file.
 Sf.run_all_tests_in_this_file = Test.run_all_tests_in_this_file
+
+--- Run all Apex tests in the current Apex file, but with code coverage info in the result.
+Sf.run_all_tests_in_this_file_with_coverage = Test.run_all_tests_in_this_file_with_coverage
 
 --- A convenient way to repeat the last executed Apex test command.
 Sf.repeat_last_tests = Test.repeat_last_tests

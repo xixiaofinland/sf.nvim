@@ -5,7 +5,6 @@
 
 MIT License Copyright (c) 2024 Xi Xiao
 
-
 ------------------------------------------------------------------------------
                                                                       *Sf.setup*
                                    `Sf.setup`
@@ -165,9 +164,19 @@ Run the Apex test under the cursor.
 It uses Treesitter to determine @IsTest method.
 
 ------------------------------------------------------------------------------
+                                             *Sf.run_current_test_with_coverage*
+                      `Sf.run_current_test_with_coverage`
+Same as `run_current_test`, but with code coverage info in the result.
+
+------------------------------------------------------------------------------
                                                  *Sf.run_all_tests_in_this_file*
                         `Sf.run_all_tests_in_this_file`
 Run all Apex tests in the current Apex file.
+
+------------------------------------------------------------------------------
+                                   *Sf.run_all_tests_in_this_file_with_coverage*
+                 `Sf.run_all_tests_in_this_file_with_coverage`
+Run all Apex tests in the current Apex file, but with code coverage info in the result.
 
 ------------------------------------------------------------------------------
                                                           *Sf.repeat_last_tests*
