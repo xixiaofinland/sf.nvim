@@ -76,13 +76,17 @@ require('sf').setup({
   -- This flag enable/disable hotkeys while user commands are always enabled
   enable_hotkeys = true,
 
-  -- Metadata related hotkeys (e.g. push/retrieve Apex) are only enabled in
-  -- these filetypes
+  -- Some hotkeys should be enabled regardless of whether metadata files are open, they are "project
+  -- level". Examples: "set default org", "fetch org info".
+  -- Other hotkeys should only be enabled when certain metadata filetypes are loaded in the current buffer.
+  -- Example: "push/retrieve current metadata file"
+  -- The "certain metadata filetypes" are defined in the list below.
   hotkeys_in_filetypes = {
     "apex", "sosl", "soql", "javascript", "html"
   },
 
   -- Define what metadata to be listed in `list_md_to_retrieve()` (<leader>ml)
+  -- Salesforce has numerous metadata types and files; we'll narrow the scope here.
   types_to_retrieve = {
     "ApexClass",
     "ApexTrigger",
