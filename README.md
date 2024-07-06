@@ -86,7 +86,7 @@ require('sf').setup({
   },
 
   -- Define what metadata to be listed in `list_md_to_retrieve()` (<leader>ml)
-  -- Salesforce has numerous metadata types and files; we'll narrow the scope here.
+  -- Salesforce has numerous metadata types. We narrow down the scope of `list_md_to_retrieve()`.
   types_to_retrieve = {
     "ApexClass",
     "ApexTrigger",
@@ -167,7 +167,7 @@ Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xix
 ## 🚀 Feature: List/retrieve metadata and metadata types
 
 Sometimes you don't know what metadata the target org contains, and you want to
-list them and fetch specific ones.
+list them and fetch specific ones. Steps:
 
 1. Retrieve the metadata data by running the user command `SFPullMd`.
 2. Run `SFListMdToRetrieve` (or `require('sf').list_md_to_retrieve()`) to show
@@ -175,7 +175,7 @@ list them and fetch specific ones.
    download to local.
 
 Sometimes you want to fetch all files of a certain metadata type (Apex class,
-LWC, Aura, etc.). You can list them and fetch all of a specific type.
+LWC, Aura, etc.). You can list them and fetch all of a specific type. Steps:
 
 1. Retrieve the metadata types by running the user command `SFPullMdType`.
 2. Run `SFListMdTypeToRetrieve` (or `require('sf').list_md_type_to_retrieve()`) to show the
@@ -201,7 +201,7 @@ The integrated terminal is designed to
 
 - accept input from hotkeys and user commands, such as "retrieve current metadata"
   `<leader>sr`
-- be a read-only buffer. It's, by design, not allowed to manually type commands e
+- be a read-only buffer. It's, by design, not allowed to manually type commands
 - be disposable. The output text of the previous command is removed when a new command is invoked
 - be auto-prompt, in case the terminal is hidden at the moment the command execution completes. This is handy when you have a long-running command.
 
@@ -236,7 +236,6 @@ plugin.
 
 ## 📝 TODO
 
-- add test_coverage feature (-c parameter)
 - change diff() to use md_type.json to determine .cls -> ApexClass
 
 <br>
@@ -246,7 +245,7 @@ plugin.
 Please create an issue to discuss your PR before submitting it. This ensures
 that the PR will be merged.
 
-The PR must be submitted against the `dev` branch.
+The PR is highly recommended to be submitted against the `dev` branch.
 
 The `help.txt` file is auto-generated from the comments with the `---` suffix
 before each function in [init.lua](https://github.com/xixiaofinland/sf.nvim/blob/dev/lua/sf/init.lua). The plugin
