@@ -1,7 +1,12 @@
 local U = require('sf.util')
-local t = require('sf.term.raw_term'):new()
-
 local Term = {}
+local t
+
+-- this function is called in config.lua
+-- it's meant to delay the raw term initialization so the term_cfg is ready after user's setup() call
+function Term.setup(term_cfg)
+  t = require('sf.term.raw_term'):new(term_cfg)
+end
 
 function Term.toggle()
   t:toggle()
@@ -34,23 +39,23 @@ function Term.retrieve_delta()
 end
 
 function Term.retrieve_package()
-     local cmd = vim.fn.expandcmd('sf project retrieve start -x "%:p" -o ') .. U.get()
-     t:run(cmd)
+  local cmd = vim.fn.expandcmd('sf project retrieve start -x "%:p" -o ') .. U.get()
+  t:run(cmd)
 end
 
 function Term.run_anonymous()
-     local cmd = vim.fn.expandcmd('sf apex run -f "%:p" -o ') .. U.get()
-     t:run(cmd)
+  local cmd = vim.fn.expandcmd('sf apex run -f "%:p" -o ') .. U.get()
+  t:run(cmd)
 end
 
 function Term.run_query()
-     local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
-     t:run(cmd)
+  local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
+  t:run(cmd)
 end
 
 function Term.run_tooling_query()
-     local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
-     t:run(cmd)
+  local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
+  t:run(cmd)
 end
 
 function Term.cancel()

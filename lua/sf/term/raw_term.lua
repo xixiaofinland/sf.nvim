@@ -4,12 +4,15 @@ local cmd = api.nvim_command
 local T = {}
 local H = {}
 
-function T:new()
+function T:new(cfg)
+  cfg = cfg or {}
+  local config = vim.tbl_deep_extend('force', H.defaults, cfg)
+
   return setmetatable({
     win = nil,
     buf = nil,
     is_running = false,
-    config = H.defaults,
+    config = config,
   }, { __index = self })
 end
 
@@ -175,17 +178,17 @@ end
 
 H.defaults = {
   ft = 'SFTerm',
-  border = 'single',
-  auto_close = false,
-  hl = 'Normal',
   blend = 10,
-  clear_env = false,
   dimensions = {
     height = 0.4,
     width = 0.8,
     x = 0.5,
     y = 0.9,
   },
+  border = 'single',
+  hl = 'Normal',
+  clear_env = false,
+  -- auto_close = false,
 }
 
 function H.is_win_valid(win)

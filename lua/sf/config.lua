@@ -1,23 +1,41 @@
+local T = require('sf.term')
 local Cfg = {}
 
 local default_cfg = {
+  -- Unless you want to customize, no need to copy-paste any of these
+  -- They are applied automatically
 
-  -- Both hotkeys and Ex commands are supplied by default.
-  -- If you want to define your own hotkeys, you can turn hotkeys off.
+  -- This plugin has both hotkeys and user commands supplied
+  -- This flag enable/disable hotkeys while user commands are always enabled
   enable_hotkeys = true,
 
-  -- Hotkeys and user commands are enabled for these filetypes
+  -- Some hotkeys are on "project level" thus always enabled. Examples: "set default org", "fetch org info".
+  -- Other hotkeys are enabled when only metadata filetypes are loaded in the current buffer. Example: "push/retrieve current metadata file"
+  -- This list defines what metadata filetypes have the "other hotkeys" enabled.
+  -- For example, if you want to push/retrieve css files, it needs to be added into this list.
   hotkeys_in_filetypes = {
     "apex", "sosl", "soql", "javascript", "html"
   },
 
-  -- Define what metadata file names to be listed in `list_md_to_retrieve()` (<leader>ml)
+  -- Define what metadata to be listed in `list_md_to_retrieve()` (<leader>ml)
+  -- Salesforce has numerous metadata types. We narrow down the scope of `list_md_to_retrieve()`.
   types_to_retrieve = {
     "ApexClass",
     "ApexTrigger",
     "StaticResource",
     "LightningComponentBundle"
   },
+
+  -- Configuration for the integrated terminal
+  term_config = {
+    blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
+    dimensions = {
+      height = 0.4, -- proportional of the editor height. 0.4 means 40%.
+      width = 0.8,  -- proportional of the editor width. 0.8 means 80%.
+      x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
+      y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
+    },
+  }
 }
 
 local apply_config = function(opt)
@@ -265,6 +283,9 @@ local init = function()
     group = sf_group,
     callback = set_keys
   })
+
+  -- Initiate the raw term
+  T.setup(Cfg.config.term_config)
 end
 
 Cfg.setup = function(opt)

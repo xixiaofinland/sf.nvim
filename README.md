@@ -76,11 +76,10 @@ require('sf').setup({
   -- This flag enable/disable hotkeys while user commands are always enabled
   enable_hotkeys = true,
 
-  -- Some hotkeys should be enabled regardless of whether metadata files are open, they are "project
-  -- level". Examples: "set default org", "fetch org info".
-  -- Other hotkeys should only be enabled when certain metadata filetypes are loaded in the current buffer.
-  -- Example: "push/retrieve current metadata file"
-  -- The "certain metadata filetypes" are defined in the list below.
+  -- Some hotkeys are on "project level" thus always enabled. Examples: "set default org", "fetch org info".
+  -- Other hotkeys are enabled when only metadata filetypes are loaded in the current buffer. Example: "push/retrieve current metadata file"
+  -- This list defines what metadata filetypes have the "other hotkeys" enabled.
+  -- For example, if you want to push/retrieve css files, it needs to be added into this list.
   hotkeys_in_filetypes = {
     "apex", "sosl", "soql", "javascript", "html"
   },
@@ -93,6 +92,17 @@ require('sf').setup({
     "StaticResource",
     "LightningComponentBundle"
   },
+
+  -- Configuration for the integrated terminal
+  term_config = {
+    blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
+    dimensions = {
+      height = 0.4, -- proportional of the editor height. 0.4 means 40%.
+      width = 0.8,  -- proportional of the editor width. 0.8 means 80%.
+      x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
+      y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
+    },
+  }
 })
 ```
 
