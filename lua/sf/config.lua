@@ -18,6 +18,17 @@ local default_cfg = {
     "StaticResource",
     "LightningComponentBundle"
   },
+
+  -- Configuration for the integrated terminal
+  term_config = {
+    blend = 10, -- background transparency: 0 is fully opaque; 100 is fully transparent
+    dimensions = {
+      height = 0.4, -- proportional of the editor height. 0.4 means 40%.
+      width = 0.8, -- proportional of the editor width. 0.8 means 80%.
+      x = 0.5, -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
+      y = 0.9, -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
+    },
+  }
 }
 
 local apply_config = function(opt)
