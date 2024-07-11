@@ -65,6 +65,11 @@ Run the query defined in current buffer in target_org
 Run the tooling API query defined in the current buffer in target_org
 
 ------------------------------------------------------------------------------
+                                                       *Sf.run_highlighted_soql*
+                           `Sf.run_highlighted_soql`
+Run visual mode highlight selected text as SOQL in the term
+
+------------------------------------------------------------------------------
                                                                      *Sf.cancel*
                                   `Sf.cancel`
 Terminate the running command in SFTerm.
