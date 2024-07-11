@@ -268,6 +268,8 @@ local init = function()
       nmap('<leader>sp', Sf.save_and_push, "push current file")
       nmap('<leader>sr', Sf.retrieve, "retrieve current file")
 
+      vim.keymap.set('x', '<leader>sq', Sf.run_highlighted_soql, { buffer = true, desc = "SOQL run highlighted text" })
+
       nmap('<leader>ta', Sf.run_all_tests_in_this_file, "test all in this file")
       nmap('<leader>tA', Sf.run_all_tests_in_this_file_with_coverage, "test all with coverage info")
       nmap('<leader>tt', Sf.run_current_test, "test this under cursor")

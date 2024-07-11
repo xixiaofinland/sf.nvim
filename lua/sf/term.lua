@@ -1,5 +1,6 @@
 local U = require('sf.util')
 local Term = {}
+local H = {}
 local t
 
 -- this function is called in config.lua
@@ -58,6 +59,22 @@ function Term.run_tooling_query()
   t:run(cmd)
 end
 
+function Term.run_highlighted_soql()
+  if vim.fn.mode() ~= 'v' then
+    vim.notify('Not in normal visual mode per character.', vim.log.levels.WARN);
+    return
+  end
+
+  local selected_text = H.get_visual_selection()
+  if not selected_text then
+    vim.notify('Empty selection.', vim.log.levels.WARN);
+  end
+
+  local raw_cmd = string.format('sf data query -q "%s" -o %s', selected_text, U.target_org)
+  local cmd = string.gsub(raw_cmd, "'", "\'") -- escape `'` char
+  t:run(cmd)
+end
+
 function Term.cancel()
   t.is_running = false -- set the flag to stop the running task
   t:run('\3')
@@ -71,6 +88,24 @@ end
 function Term.run(c)
   local cmd = vim.fn.expandcmd(c)
   t:run(cmd)
+end
+
+H.get_visual_selection = function()
+  -- Save the current register content and type
+  local old_reg = vim.fn.getreg('"')
+  local old_regtype = vim.fn.getregtype('"')
+
+  -- Execute normal mode commands to yank the visual selection
+  vim.cmd('noautocmd normal! "vy"')
+
+  -- Get the content of the unnamed register (which now contains our selection)
+  local selection = vim.fn.getreg('v')
+
+  -- Restore the register to its previous state
+  vim.fn.setreg('"', old_reg, old_regtype)
+
+  -- Return the selected text
+  return selection
 end
 
 return Term
