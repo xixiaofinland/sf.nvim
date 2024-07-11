@@ -55,6 +55,9 @@ Sf.run_query = Term.run_query
 --- Run the tooling API query defined in the current buffer in target_org
 Sf.run_tooling_query = Term.run_tooling_query
 
+--- Run visual mode highlight selected text as SOQL in the term
+Sf.run_highlighted_soql = Term.run_highlighted_soql
+
 --- Terminate the running command in SFTerm.
 Sf.cancel = Term.cancel
 

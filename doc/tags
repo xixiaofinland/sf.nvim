@@ -26,6 +26,7 @@ Sf.run_all_tests_in_this_file_with_coverage	sf.txt	/*Sf.run_all_tests_in_this_fi
 Sf.run_anonymous	sf.txt	/*Sf.run_anonymous*
 Sf.run_current_test	sf.txt	/*Sf.run_current_test*
 Sf.run_current_test_with_coverage	sf.txt	/*Sf.run_current_test_with_coverage*
+Sf.run_highlighted_soql	sf.txt	/*Sf.run_highlighted_soql*
 Sf.run_local_tests	sf.txt	/*Sf.run_local_tests*
 Sf.run_query	sf.txt	/*Sf.run_query*
 Sf.run_tooling_query	sf.txt	/*Sf.run_tooling_query*
