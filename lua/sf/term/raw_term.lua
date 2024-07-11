@@ -59,7 +59,8 @@ function T:run_after_setup(cmd)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
 
-  local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', cmd, cmd) -- echo Cyan color
+  local echo_msg = string.gsub(cmd, '"','\\"')
+  local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
   vim.fn.termopen(cmd_with_echo, {
     clear_env = self.config.clear_env,
     env = self.config.env,
