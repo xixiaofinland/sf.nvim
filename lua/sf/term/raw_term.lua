@@ -68,10 +68,18 @@ function T:run_after_setup(cmd)
       self.is_running = false
       self:close() -- hack way to scroll to end
       self:open()
-      print("exit_code: " .. exit_code)
+
+      if not string.find(cmd, '-c ') then -- not test code coverage cmd
+        return
+      end
+
       local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
-      local output = table.concat(lines, "\n")
-      print("Output:\n" .. output)
+      local id = H.extract_test_run_id(lines)
+
+      print("exit_code: " .. exit_code)
+      if id then
+        print("Id: " .. id)
+      end
     end,
   })
 
@@ -195,6 +203,15 @@ H.defaults = {
   clear_env = false,
   -- auto_close = false,
 }
+
+function H.extract_test_run_id(lines)
+  for _, line in ipairs(lines) do
+    if string.find(line, "Test Run Id") then
+      return string.match(line, "Test Run Id%s*(%w+)")
+    end
+  end
+  return nil
+end
 
 function H.is_win_valid(win)
   return win and vim.api.nvim_win_is_valid(win)

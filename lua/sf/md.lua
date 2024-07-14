@@ -3,9 +3,6 @@ local U = require('sf.util')
 local C = require('sf.config')
 local H = {}
 
-H.md_folder_name = '/md'
-H.default_dir = '/force-app/main/default'
-
 local Md = {}
 
 function Md.pull_md_json()
@@ -65,7 +62,7 @@ H.list_md_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
+  local md_folder = U.get_sf_root() .. C.config.md_folder_name
 
   local md_types = C.config.types_to_retrieve
   local md = {}
@@ -122,7 +119,7 @@ H.pull_metadata = function(type)
     return U.show_err('Target_org empty!')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
+  local md_folder = U.get_sf_root() .. C.config.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
     local result = vim.fn.mkdir(md_folder)
     if result == 0 then
@@ -144,7 +141,7 @@ H.pull_md_type_json = function()
     return U.show_err('Target_org empty!')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
+  local md_folder = U.get_sf_root() .. C.config.md_folder_name
   if vim.fn.isdirectory(md_folder) == 0 then
     local result = vim.fn.mkdir(md_folder)
     if result == 0 then
@@ -169,7 +166,7 @@ H.list_md_type_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
+  local md_folder = U.get_sf_root() .. C.config.md_folder_name
   local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
 
   if vim.fn.filereadable(md_type_json) == 0 then
@@ -207,7 +204,7 @@ H.retrieve_md_type = function(type)
 end
 
 H.generate_class = function(name)
-  local path = U.get_sf_root() .. H.default_dir .. "/classes"
+  local path = U.get_sf_root() .. C.config.default_dir .. "/classes"
   local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
   U.job_call(
     cmd,
@@ -226,7 +223,7 @@ end
 
 H.generate_aura = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
-    U.get_sf_root() .. H.default_dir .. "/aura", name)
+    U.get_sf_root() .. C.config.default_dir .. "/aura", name)
   U.silent_job_call(
     cmd,
     nil,
@@ -243,7 +240,7 @@ end
 
 H.generate_lwc = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
-    U.get_sf_root() .. H.default_dir .. "/lwc", name)
+    U.get_sf_root() .. C.config.default_dir .. "/lwc", name)
   U.silent_job_call(
     cmd,
     nil,

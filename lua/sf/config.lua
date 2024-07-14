@@ -35,7 +35,10 @@ local default_cfg = {
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
     },
-  }
+  },
+
+  md_folder_name = '/md',
+  default_dir = '/force-app/main/default',
 }
 
 local apply_config = function(opt)
