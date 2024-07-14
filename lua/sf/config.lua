@@ -1,4 +1,3 @@
-local T = require('sf.term')
 local Cfg = {}
 
 local default_cfg = {
@@ -37,7 +36,7 @@ local default_cfg = {
     },
   },
 
-  md_folder_name = '/md',
+  md_folder_name = '/md/',
   default_dir = '/force-app/main/default',
 }
 
@@ -290,7 +289,7 @@ local init = function()
   })
 
   -- Initiate the raw term
-  T.setup(Cfg.config.term_config)
+  require('sf.term').setup(Cfg.config.term_config)
 end
 
 Cfg.setup = function(opt)

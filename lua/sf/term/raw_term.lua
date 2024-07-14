@@ -1,7 +1,6 @@
 local api = vim.api
 local cmd = api.nvim_command
-local U = require('sf.util')
-local C = require('sf.config')
+local Test = require('sf.test')
 
 local T = {}
 local H = {}
@@ -76,13 +75,11 @@ function T:run_after_setup(cmd)
       end
 
       local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
-      local id = H.extract_test_run_id(lines)
+      local test_run_id = H.extract_test_run_id(lines)
 
       -- print("exit_code: " .. exit_code)
-      if id then
-        local md_folder = U.get_sf_root() .. C.config.md_folder_name
-        local cmd = 'sf apex get test -i 7071n0000Buux9s -c --json > ' .. md_folder .. '/test_result.json'
-        U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!")
+      if test_run_id then
+        Test.save_test_coverage_locally()
       end
     end,
   })

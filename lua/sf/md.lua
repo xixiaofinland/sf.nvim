@@ -166,17 +166,7 @@ H.list_md_type_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local md_folder = U.get_sf_root() .. C.config.md_folder_name
-  local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
-
-  if vim.fn.filereadable(md_type_json) == 0 then
-    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels
-      .ERROR)
-  end
-
-  local file_content = vim.fn.readfile(md_type_json)
-  local tbl = vim.json.decode(table.concat(file_content), {})
-
+  local tbl = U.read_file_json_to_tbl("metadata-types.json", U.get_md_path())
   local md_types = {}
 
   for _, obj in pairs(tbl["metadataObjects"]) do

@@ -1,6 +1,8 @@
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
+local C = require('sf.config')
+
 local P = {}
 local Test = {}
 
@@ -24,7 +26,8 @@ Test.run_current_test = function(extraParams)
     return U.show_warn('Cursor not in a test method.')
   end
 
-  local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name, extraParams, U.get())
+  local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name,
+    extraParams, U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
@@ -41,7 +44,8 @@ Test.run_all_tests_in_this_file = function(extraParams)
     return U.show_warn('Not in a test class.')
   end
 
-  local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams, U.get())
+  local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams,
+    U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
@@ -55,9 +59,16 @@ Test.repeat_last_tests = function()
 end
 
 Test.run_local_tests = function()
-  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s", U.get())
+  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s",
+    U.get())
   U.last_tests = cmd
   T.run(cmd)
+end
+
+Test.save_test_coverage_locally = function()
+  local md_folder = U.get_sf_root() .. C.config.md_folder_name
+  local cmd = 'sf apex get test -i 7071n0000Buux9s -c --json > ' .. md_folder .. '/test_result.json'
+  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!")
 end
 
 -- prompt below

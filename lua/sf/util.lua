@@ -1,3 +1,4 @@
+local C = require('sf.config')
 local M = {}
 
 M.cmd_params = '-w 5 -r human'
@@ -24,6 +25,10 @@ M.get = function()
   end
 
   return M.target_org
+end
+
+M.get_md_path = function()
+  return M.get_sf_root() .. C.config.md_folder_name
 end
 
 M.get_sf_root = function()
@@ -141,6 +146,31 @@ end
 
 M.is_installed = function(plugin_name)
   return pcall(require, plugin_name)
+end
+
+M.read_file_json_to_tbl = function(name, path)
+  return M.parse_from_json_to_tbl(M.read_local_file(name, path))
+end
+
+M.read_local_file = function(name, path)
+  local absolute_path = path .. name
+
+  local ok, content = pcall(vim.fn.readfile, absolute_path)
+  if not ok then
+    return vim.notify('File not found.', vim.log.levels.ERROR)
+  end
+
+  return content
+end
+
+M.parse_from_json_to_tbl = function(content)
+  local json = table.concat(content)
+  local ok, tbl = pcall(vim.json.decode, json, {})
+  if not ok then
+    return vim.notify('Parse file content from json to tbl failed.', vim.log.levels.ERROR)
+  end
+
+  return tbl
 end
 
 return M

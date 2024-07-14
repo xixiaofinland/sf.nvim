@@ -1,3 +1,6 @@
+local U = require('sf.util')
+local C = require('sf.config')
+
 local M = {}
 local ns = "sf_"
 local enabled = false
@@ -66,6 +69,16 @@ M.setup = function()
   -- })
 
   -- vim.fn.sign_placelist([{}])
+end
+
+M.parse = function()
+  local path = U.get_sf_root() .. C.config.md_folder_name
+  local tbl = U.read_file_json_to_tbl('test_result.json', path)
+  -- local file_content = vim.fn.readfile(test_result_file)
+  -- local tbl = vim.json.decode(table.concat(file_content), {})
+  -- -- print(tbl["result"]["coverage"]["coverage"])
+  -- return tbl["result"]["coverage"]["coverage"]
+  return tbl
 end
 
 --- Places a list of signs.
