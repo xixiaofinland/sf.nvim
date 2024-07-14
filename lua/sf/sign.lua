@@ -32,8 +32,28 @@ end
 --- Defines signs.
 M.setup = function()
   highlight("SfUncovered", { fg = "#F07178" })
-  vim.fn.sign_define(M.name("uncovered"), { text = "▎", texthl = "SfUncovered", })
-  vim.fn.sign_place(0, "", "sf_uncovered", vim.fn.bufname("%"), { lnum = 1, priority = 10 })
+  vim.fn.sign_define("sf_uncovered", { text = "▎", texthl = "SfUncovered", })
+  vim.fn.sign_placelist({
+    {
+      id = 0,
+      group = "",
+      name = "sf_uncovered",
+      buffer = vim.fn.bufname("%"),
+      lnum = 2,
+      priority = 10
+    },
+    {
+      id = 0,
+      group = "",
+      name = "sf_uncovered",
+      buffer = vim.fn.bufname("%"),
+      lnum = 1,
+      priority = 10
+    }
+  })
+
+
+  -- vim.fn.sign_place(0, "", "sf_uncovered", vim.fn.bufname("%"), { lnum = 1, priority = 10 })
 
   -- vim.fn.sign_define(M.name("covered"), {
   --     text = config.opts.signs.covered.text,
@@ -58,12 +78,6 @@ M.place = function(signs)
   vim.fn.sign_placelist(signs)
   enabled = true
   cached_signs = signs
-end
-
---- Returns a namespaced sign name.
---- @param name string
-M.name = function(name)
-  return ns .. name
 end
 
 --- Caches signs but does not place them.
