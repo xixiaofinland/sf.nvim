@@ -3,6 +3,7 @@ local C = require('sf.config')
 
 local M = {}
 local enabled = false
+local cached_coverages = nil
 
 local highlight = function(group, color)
   local style = color.style and "gui=" .. color.style or "gui=NONE"
@@ -42,16 +43,21 @@ end
 M.parse_from_coverages = function()
   M.setup()
 
-  local tbl = U.read_file_json_to_tbl('test_result.json', U.get_cache_path())
-  local coverages = tbl["result"]["coverage"]["coverage"]
+  local coverages
+
+  if cached_coverages ~= nil then
+    coverages = cached_coverages
+  else
+    local tbl = U.read_file_json_to_tbl('test_result.json', U.get_cache_path())
+    coverages = tbl["result"]["coverage"]["coverage"]
+    cached_coverages = coverages
+  end
 
   local signs = {}
   for i, v in pairs(coverages) do
     local apex_name = v["name"] .. '.cls'
 
     if U.is_apex_loaded_in_buf(apex_name) then
-      print(apex_name)
-      print('IN')
       for line, value in pairs(v["lines"]) do
         if value == 0 then
           local sign = {}
@@ -68,12 +74,12 @@ M.parse_from_coverages = function()
       end
     end
   end
-  vim.fn.sign_placelist(signs)
   return signs
 end
 
-M.place = function(signs)
+M.place = function()
   M.unplace()
+  local signs = M.parse_from_coverages()
   vim.fn.sign_placelist(signs)
   enabled = true
 end
@@ -91,7 +97,7 @@ M.toggle = function()
   if enabled then
     M.unplace()
   else
-    M.place(M.parse_from_coverages())
+    M.place()
   end
 end
 
@@ -158,27 +164,5 @@ M.new_uncovered = function(buffer, lnum)
     priority = config.opts.signs.uncovered.priority or default_priority,
   }
 end
-
--- --- Returns a new partial coverage sign in the format used by sign_placelist.
--- --- @param buffer string|integer buffer name or id
--- --- @param lnum integer line number
--- --- @return SignPlace
--- M.new_partial = function(buffer, lnum)
---     local priority = config.opts.signs.partial.priority
---     if priority == nil then
---         if config.opts.signs.uncovered.priority ~= nil then
---             priority = config.opts.signs.uncovered.priority + 1
---         else
---             priority = default_priority + 1
---         end
---     end
---     return {
---         buffer = buffer,
---         group = config.opts.sign_group,
---         lnum = lnum,
---         name = M.name("partial"),
---         priority = priority,
---     }
--- end
 
 return M

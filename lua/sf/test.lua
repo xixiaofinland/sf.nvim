@@ -2,6 +2,7 @@ local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
 local C = require('sf.config')
+local S = require('sf.sign')
 
 local P = {}
 local Test = {}
@@ -71,7 +72,7 @@ Test.save_test_coverage_locally = function()
   local name = "test_result.json"
   local cache_folder = U.get_cache_path()
   local cmd = 'sf apex get test -i 7071n0000Buux9s -c --json > ' .. cache_folder .. name
-  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!")
+  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!", S.place)
 end
 
 -- prompt below
