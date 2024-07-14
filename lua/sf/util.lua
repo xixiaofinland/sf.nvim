@@ -27,8 +27,18 @@ M.get = function()
   return M.target_org
 end
 
-M.get_md_path = function()
-  return M.get_sf_root() .. C.config.md_folder_name
+M.get_cache_path = function()
+  return M.get_sf_root() .. C.config.cache_folder_name
+end
+
+M.create_cache_folder_if_not_exist = function()
+  local cache_folder = M.get_cache_path()
+  if vim.fn.isdirectory(cache_folder) == 0 then
+    local result = vim.fn.mkdir(cache_folder)
+    if result == 0 then
+      return vim.notify('cache folder creation failed!', vim.log.levels.ERROR)
+    end
+  end
 end
 
 M.get_sf_root = function()
@@ -149,7 +159,8 @@ M.is_installed = function(plugin_name)
 end
 
 M.read_file_json_to_tbl = function(name, path)
-  return M.parse_from_json_to_tbl(M.read_local_file(name, path))
+  local content = M.read_local_file(name, path)
+  return M.parse_from_json_to_tbl(content)
 end
 
 M.read_local_file = function(name, path)
@@ -171,6 +182,21 @@ M.parse_from_json_to_tbl = function(content)
   end
 
   return tbl
+end
+
+M.is_apex_loaded_in_buf = function(name)
+  local buf_num = M.get_apex_buf_num(name)
+  return buf_num ~= -1 and vim.fn.bufloaded(buf_num) == 1
+end
+
+M.get_apex_buf_num = function(name)
+  local path = C.config.cache_folder_dir .. "classes/" .. name
+  return M.get_buf_num(path)
+
+end
+
+M.get_buf_num = function(path)
+  return vim.fn.bufnr(path)
 end
 
 return M

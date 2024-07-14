@@ -54,31 +54,35 @@ M.setup = function()
       priority = 10
     }
   })
-
-
-  -- vim.fn.sign_place(0, "", "sf_uncovered", vim.fn.bufname("%"), { lnum = 1, priority = 10 })
-
-  -- vim.fn.sign_define(M.name("covered"), {
-  --     text = config.opts.signs.covered.text,
-  --     texthl = config.opts.signs.covered.hl,
-  -- })
-
-  -- vim.fn.sign_define(M.name("partial"), {
-  --     text = config.opts.signs.partial.text,
-  --     texthl = config.opts.signs.partial.hl,
-  -- })
-
-  -- vim.fn.sign_placelist([{}])
 end
 
-M.parse = function()
-  local path = U.get_sf_root() .. C.config.md_folder_name
-  local tbl = U.read_file_json_to_tbl('test_result.json', path)
-  -- local file_content = vim.fn.readfile(test_result_file)
-  -- local tbl = vim.json.decode(table.concat(file_content), {})
-  -- -- print(tbl["result"]["coverage"]["coverage"])
-  -- return tbl["result"]["coverage"]["coverage"]
-  return tbl
+M.parse_from_coverages = function()
+  local tbl = U.read_file_json_to_tbl('test_result.json', U.get_cache_path())
+  local coverages = tbl["result"]["coverage"]["coverage"]
+
+  local signs = {}
+  for i, v in pairs(coverages) do
+    local apex_name = v["name"] .. '.cls'
+
+    if U.is_apex_loaded_in_buf(apex_name) then
+      print(apex_name)
+      print('IN')
+      for line, value in pairs(v["lines"]) do
+        if value == 0 then
+          local sign = {}
+
+          sign.id = 0
+          sign.name = "sf_uncovered"
+          sign.buffer = U.get_buf_num(apex_name)
+          sign.lnum = line
+          sign.priority = 10
+
+          table.insert(signs, sign)
+        end
+      end
+    end
+  end
+  return signs
 end
 
 --- Places a list of signs.

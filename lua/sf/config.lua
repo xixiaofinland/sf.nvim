@@ -36,8 +36,11 @@ local default_cfg = {
     },
   },
 
-  md_folder_name = '/md/',
-  default_dir = '/force-app/main/default',
+  -- the sf project metadata folder, update this in case you changed the folder structure
+  cache_folder_dir = '/force-app/main/default/',
+
+  -- sf.nvim uses this folder under project root to store retrieved files, such as metadata names, test result
+  cache_folder_name = '/cache/',
 }
 
 local apply_config = function(opt)

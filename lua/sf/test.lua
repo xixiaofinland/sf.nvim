@@ -66,8 +66,11 @@ Test.run_local_tests = function()
 end
 
 Test.save_test_coverage_locally = function()
-  local md_folder = U.get_sf_root() .. C.config.md_folder_name
-  local cmd = 'sf apex get test -i 7071n0000Buux9s -c --json > ' .. md_folder .. '/test_result.json'
+  U.create_cache_folder_if_not_exist()
+
+  local name = "test_result.json"
+  local cache_folder = U.get_cache_path()
+  local cmd = 'sf apex get test -i 7071n0000Buux9s -c --json > ' .. cache_folder .. name
   U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!")
 end
 
