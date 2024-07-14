@@ -41,6 +41,8 @@ local default_cfg = {
 
   -- sf.nvim uses this folder under project root to store retrieved files, such as metadata names, test result
   cache_folder_name = '/cache/',
+
+  sign_group = "SfUncovered"
 }
 
 local apply_config = function(opt)
