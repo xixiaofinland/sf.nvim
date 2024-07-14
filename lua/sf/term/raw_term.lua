@@ -59,15 +59,19 @@ function T:run_after_setup(cmd)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
 
-  local echo_msg = string.gsub(cmd, '"','\\"')
+  local echo_msg = string.gsub(cmd, '"', '\\"')
   local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
   vim.fn.termopen(cmd_with_echo, {
     clear_env = self.config.clear_env,
     env = self.config.env,
-    on_exit = function()
+    on_exit = function(job_id, exit_code, event_name)
       self.is_running = false
       self:close() -- hack way to scroll to end
       self:open()
+      print("exit_code: " .. exit_code)
+      local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
+      local output = table.concat(lines, "\n")
+      print("Output:\n" .. output)
     end,
   })
 

@@ -24,7 +24,7 @@ Test.run_current_test = function(extraParams)
     return U.show_warn('Cursor not in a test method.')
   end
 
-  local cmd = string.format("sf apex run test --tests %s.%s -r human -y %s-o %s", test_class_name, test_name, extraParams, U.get())
+  local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name, extraParams, U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
@@ -41,7 +41,7 @@ Test.run_all_tests_in_this_file = function(extraParams)
     return U.show_warn('Not in a test class.')
   end
 
-  local cmd = string.format("sf apex run test --class-names %s -r human -y %s-o %s", test_class_name, extraParams, U.get())
+  local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams, U.get())
   U.last_tests = cmd
   T.run(cmd)
 end
