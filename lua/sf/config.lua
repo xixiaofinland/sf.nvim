@@ -86,6 +86,12 @@ local init = function()
     callback = function()
       vim.bo.commentstring = '//%s'
       vim.bo.fixendofline = false
+
+      -- the code-coverage sign applies to the newly opened Apex
+      local sign = require('sf.sign')
+      if sign.is_enabled() then
+        sign.refresh_and_place()
+      end
     end
   })
 

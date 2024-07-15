@@ -8,12 +8,12 @@
 
 ## ✨ Features
 
-- 🔥 Apex/Lwc/Aura: push/retrieve/create
+- 🔥 Apex/Lwc/Aura: push, retrieve, create
 - 💻 Integrated term
 - 😎 File diff: local v.s. org
 - 🤩 Target-org icon
 - 👏 Org Metadata browsing
-- 🤖 Quick apex test run 
+- 🤖 Quick apex test run
 - ✨ Test report and code coverage info
 - 🦘 Enhanced jump-to-definition (Apex)
 
@@ -31,7 +31,7 @@
 - 🐢 Nvim v0.10 or newer ([why must > 0.10?](https://github.com/xixiaofinland/sf.nvim/issues/73))
 - 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
 - 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
-  (Why not telescope? Because it's UI is slow)
+  (Why not telescope.nvim? Because its UI is slow)
 
 <br>
 
