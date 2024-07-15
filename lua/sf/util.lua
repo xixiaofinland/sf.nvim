@@ -204,4 +204,9 @@ M.get_buf_num = function(path)
   return vim.fn.bufnr(path)
 end
 
+M.open_file = function(absolute_path)
+  local open_new_file = string.format(":e %s", absolute_path)
+  vim.cmd(open_new_file)
+end
+
 return M
