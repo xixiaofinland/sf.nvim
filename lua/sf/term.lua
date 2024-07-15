@@ -85,9 +85,9 @@ function Term.go_to_sf_root()
   t:run('cd ' .. root)
 end
 
-function Term.run(c)
+function Term.run(c, cb)
   local cmd = vim.fn.expandcmd(c)
-  t:run(cmd)
+  t:run(cmd, cb)
 end
 
 H.get_visual_selection = function()

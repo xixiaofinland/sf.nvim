@@ -3,9 +3,6 @@ local U = require('sf.util')
 local C = require('sf.config')
 local H = {}
 
-H.md_folder_name = '/md'
-H.default_dir = '/force-app/main/default'
-
 local Md = {}
 
 function Md.pull_md_json()
@@ -42,18 +39,20 @@ end
 
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
-  print(current_word)
-  H.retrieve_md('ApexClass', current_word)
+  local cb = function()
+    U.open_file(U.get_apex_folder_path() .. current_word .. '.cls')
+  end
+  H.retrieve_md('ApexClass', current_word, cb)
 end
 
-H.retrieve_md = function(type, name)
+H.retrieve_md = function(type, name, cb)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
   end
   U.get_sf_root()
 
   local cmd = string.format('sf project retrieve start -m \'%s:%s\' -o %s', type, name, U.target_org)
-  T.run(cmd)
+  T.run(cmd, cb)
 end
 
 H.list_md_to_retrieve = function()
@@ -65,17 +64,17 @@ H.list_md_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
+  local plugin_folder = U.get_plugin_folder_path()
 
   local md_types = C.config.types_to_retrieve
   local md = {}
   local md_names = {}
 
   for _, type in pairs(md_types) do
-    local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
+    local md_file = string.format('%s/%s_%s.json', plugin_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      return U.show_err(string.format('%s not exists locally. Pull it again.', type))
+      return U.show_err(string.format('%s not exists locally. Run `SfPullMd` in Ex to Pull it?', type))
     end
 
     local metadata = vim.fn.readfile(md_file)
@@ -122,15 +121,9 @@ H.pull_metadata = function(type)
     return U.show_err('Target_org empty!')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
-  if vim.fn.isdirectory(md_folder) == 0 then
-    local result = vim.fn.mkdir(md_folder)
-    if result == 0 then
-      return vim.notify('md folder creation failed!', vim.log.levels.ERROR)
-    end
-  end
+  U.create_plugin_folder_if_not_exist()
 
-  local md_file = string.format('%s/%s_%s.json', md_folder, type, U.target_org)
+  local md_file = string.format('%s/%s_%s.json', U.get_plugin_folder_path(), type, U.target_org)
 
   local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
   local msg = string.format('%s retrieved', type)
@@ -144,15 +137,9 @@ H.pull_md_type_json = function()
     return U.show_err('Target_org empty!')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
-  if vim.fn.isdirectory(md_folder) == 0 then
-    local result = vim.fn.mkdir(md_folder)
-    if result == 0 then
-      return vim.notify('md folder creation failed!', vim.log.levels.ERROR)
-    end
-  end
+  U.create_plugin_folder_if_not_exist()
 
-  local metadata_types_file = string.format('%s/%s.json', md_folder, 'metadata-types')
+  local metadata_types_file = string.format('%s/%s.json', U.get_plugin_folder_path(), 'metadata-types')
   local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
@@ -169,17 +156,7 @@ H.list_md_type_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local md_folder = U.get_sf_root() .. H.md_folder_name
-  local md_type_json = string.format('%s/%s.json', md_folder, 'metadata-types')
-
-  if vim.fn.filereadable(md_type_json) == 0 then
-    return vim.notify('Metadata-type file not exist, run`SfPullMetadataTypeList` to pull it first.', vim.log.levels
-      .ERROR)
-  end
-
-  local file_content = vim.fn.readfile(md_type_json)
-  local tbl = vim.json.decode(table.concat(file_content), {})
-
+  local tbl = U.read_cache_file_json_to_tbl("metadata-types.json", U.get_plugin_folder_path())
   local md_types = {}
 
   for _, obj in pairs(tbl["metadataObjects"]) do
@@ -207,15 +184,15 @@ H.retrieve_md_type = function(type)
 end
 
 H.generate_class = function(name)
-  local path = U.get_sf_root() .. H.default_dir .. "/classes"
+  local path = U.get_apex_folder_path()
   local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
   U.job_call(
     cmd,
     nil,
     "Something went wrong creating the class",
     function()
-      local open_new_file = string.format(":e %s/%s.cls", path, name)
-      vim.cmd(open_new_file)
+      local absolute_path = path .. name .. '.cls'
+      U.open_file(absolute_path)
     end
   )
 end
@@ -226,13 +203,13 @@ end
 
 H.generate_aura = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
-    U.get_sf_root() .. H.default_dir .. "/aura", name)
+    U.get_default_dir_path() .. "/aura", name)
   U.silent_job_call(
     cmd,
     nil,
     "Something went wrong creating the Aura bundle",
     function()
-      vim.notify("Aura bundle " .. name .. " created", vim.log.levels.INFO)
+      U.open_file(U.get_default_dir_path() .. 'aura/' .. name  .. '/'.. name .. '.cmp')
     end
   )
 end
@@ -243,13 +220,13 @@ end
 
 H.generate_lwc = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
-    U.get_sf_root() .. H.default_dir .. "/lwc", name)
+    U.get_sf_root() .. C.config.default_dir .. "/lwc", name)
   U.silent_job_call(
     cmd,
     nil,
     "Something went wrong creating the LWC bundle",
     function()
-      vim.notify("LWC bundle " .. name .. " created", vim.log.levels.INFO)
+      U.open_file(U.get_default_dir_path() .. 'lwc/' .. name  .. '/'.. name .. '.js')
     end
   )
 end

@@ -1,6 +1,9 @@
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
+local C = require('sf.config')
+local S = require('sf.sign')
+
 local P = {}
 local Test = {}
 
@@ -9,10 +12,10 @@ Test.open = function()
 end
 
 Test.run_current_test_with_coverage = function()
-  Test.run_current_test('-c ')
+  Test.run_current_test('-c ', Test.save_test_coverage_locally)
 end
 
-Test.run_current_test = function(extraParams)
+Test.run_current_test = function(extraParams, cb)
   extraParams = extraParams or ''
 
   local test_class_name = TS.get_test_class_name()
@@ -24,16 +27,17 @@ Test.run_current_test = function(extraParams)
     return U.show_warn('Cursor not in a test method.')
   end
 
-  local cmd = string.format("sf apex run test --tests %s.%s -r human -y %s-o %s", test_class_name, test_name, extraParams, U.get())
+  local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name,
+    extraParams, U.get())
   U.last_tests = cmd
-  T.run(cmd)
+  T.run(cmd, cb)
 end
 
 Test.run_all_tests_in_this_file_with_coverage = function()
-  Test.run_all_tests_in_this_file('-c ')
+  Test.run_all_tests_in_this_file('-c ', Test.save_test_coverage_locally)
 end
 
-Test.run_all_tests_in_this_file = function(extraParams)
+Test.run_all_tests_in_this_file = function(extraParams, cb)
   extraParams = extraParams or ''
 
   local test_class_name = TS.get_test_class_name()
@@ -41,9 +45,10 @@ Test.run_all_tests_in_this_file = function(extraParams)
     return U.show_warn('Not in a test class.')
   end
 
-  local cmd = string.format("sf apex run test --class-names %s -r human -y %s-o %s", test_class_name, extraParams, U.get())
+  local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams,
+    U.get())
   U.last_tests = cmd
-  T.run(cmd)
+  T.run(cmd, cb)
 end
 
 Test.repeat_last_tests = function()
@@ -55,9 +60,37 @@ Test.repeat_last_tests = function()
 end
 
 Test.run_local_tests = function()
-  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s", U.get())
+  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s",
+    U.get())
   U.last_tests = cmd
   T.run(cmd)
+end
+
+-- a callback function
+Test.save_test_coverage_locally = function(self, cmd, exit_code)
+  U.create_plugin_folder_if_not_exist()
+
+  local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
+  local id = Test.extract_test_run_id(lines)
+  if id == nil then
+    return
+  end
+
+  local file_name = "test_result.json"
+  local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. U.get_plugin_folder_path() .. file_name
+
+  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed! " .. cmd, S.invalidate_cache_and_try_place)
+end
+
+Test.toggle_sign = S.toggle
+
+Test.extract_test_run_id = function(lines)
+  for _, line in ipairs(lines) do
+    if string.find(line, "Test Run Id") then
+      return string.match(line, "Test Run Id%s*(%w+)")
+    end
+  end
+  return nil
 end
 
 -- prompt below

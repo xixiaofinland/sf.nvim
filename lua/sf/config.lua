@@ -1,4 +1,3 @@
-local T = require('sf.term')
 local Cfg = {}
 
 local default_cfg = {
@@ -35,7 +34,17 @@ local default_cfg = {
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
     },
-  }
+  },
+
+  -- the sf project metadata folder, update this in case you diverged from the default sf folder structure
+  default_dir = '/force-app/main/default/',
+
+  -- the folder this plugin uses to store intermediate data. It's under the sf project root directory.
+  plugin_folder_name = '/cache/',
+
+  -- after the test running with code coverage completes, display uncovered line sign automatically.
+  -- you can set it to `false`, then manually run toggle_sign command.
+  auto_display_sign = true,
 }
 
 local apply_config = function(opt)
@@ -275,7 +284,9 @@ local init = function()
       nmap('<leader>tt', Sf.run_current_test, "test this under cursor")
       nmap('<leader>tT', Sf.run_current_test_with_coverage, "test this under cursor with coverage info")
       nmap('<leader>to', Sf.open_test_select, "open test select buf")
+      nmap('\\s', Sf.toggle_sign, "toggle signs for code coverage")
       nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
+      nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
       nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
     end
   end
@@ -287,7 +298,7 @@ local init = function()
   })
 
   -- Initiate the raw term
-  T.setup(Cfg.config.term_config)
+  require('sf.term').setup(Cfg.config.term_config)
 end
 
 Cfg.setup = function(opt)

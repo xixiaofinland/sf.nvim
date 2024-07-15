@@ -142,6 +142,9 @@ Sf.repeat_last_tests = Test.repeat_last_tests
 --- Run all local tests in target_org
 Sf.run_local_tests = Test.run_local_tests
 
+--- show sign icons to indicates uncovered lines from the latest test running result.
+Sf.toggle_sign = Test.toggle_sign
+
 -- From Ctags module ==========================================================
 
 --- Create tags file in the root path by using universal ctags cli tool.

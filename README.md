@@ -145,7 +145,7 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>tr`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
 | `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select tests|
 | `<leader>ct`     |create_ctags |SFCreateCtags|create ctags file|
-| `<leader>sq`     | run_highlighted_soql |N/A|Run visual mode selected text as SOQL (visual mode per char only)
+| `<leader>sq`     | run_highlighted_soql |N/A|Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 

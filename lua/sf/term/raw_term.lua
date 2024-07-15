@@ -1,5 +1,6 @@
 local api = vim.api
 local cmd = api.nvim_command
+local Test = require('sf.test')
 
 local T = {}
 local H = {}
@@ -33,7 +34,7 @@ function T:store(win, buf)
   return self
 end
 
-function T:run(cmd)
+function T:run(cmd, cb)
   if self.is_running then
     return vim.notify('Wait the current task to finish.', vim.log.levels.WARN)
   end
@@ -50,24 +51,28 @@ function T:run(cmd)
     running_win = self:create_and_open_win(running_buf)
   end
 
-  self:store(running_win, running_buf):run_after_setup(cmd)
+  self:store(running_win, running_buf):run_after_setup(cmd, cb)
 
   return self
 end
 
-function T:run_after_setup(cmd)
+function T:run_after_setup(cmd, cb)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
 
-  local echo_msg = string.gsub(cmd, '"','\\"')
+  local echo_msg = string.gsub(cmd, '"', '\\"')
   local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
   vim.fn.termopen(cmd_with_echo, {
     clear_env = self.config.clear_env,
     env = self.config.env,
-    on_exit = function()
+    on_exit = function(job_id, exit_code, event_name)
       self.is_running = false
       self:close() -- hack way to scroll to end
       self:open()
+
+      if cb ~= nil then
+        cb(self, cmd, exit_code)
+      end
     end,
   })
 
