@@ -72,7 +72,7 @@ H.list_md_to_retrieve = function()
     local md_file = string.format('%s/%s_%s.json', plugin_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
-      return U.show_err(string.format('%s not exists locally. Pull it again.', type))
+      return U.show_err(string.format('%s not exists locally. Run `SfPullMd` in Ex to Pull it?', type))
     end
 
     local metadata = vim.fn.readfile(md_file)
@@ -121,7 +121,7 @@ H.pull_metadata = function(type)
 
   U.create_plugin_folder_if_not_exist()
 
-  local md_file = string.format('%s/%s_%s.json', cache_folder, type, U.target_org)
+  local md_file = string.format('%s/%s_%s.json', U.get_plugin_folder_path(), type, U.target_org)
 
   local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
   local msg = string.format('%s retrieved', type)
@@ -137,7 +137,7 @@ H.pull_md_type_json = function()
 
   U.create_plugin_folder_if_not_exist()
 
-  local metadata_types_file = string.format('%s/%s.json', cache_folder, 'metadata-types')
+  local metadata_types_file = string.format('%s/%s.json', U.get_plugin_folder_path(), 'metadata-types')
   local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
