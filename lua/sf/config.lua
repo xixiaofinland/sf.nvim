@@ -39,7 +39,7 @@ local default_cfg = {
   -- the sf project metadata folder, update this in case you diverged from the default sf folder structure
   default_dir = '/force-app/main/default/',
 
-  -- the folder this plugin uses to store intermediate data
+  -- the folder this plugin uses to store intermediate data. It's under the sf project root directory.
   plugin_folder_name = '/cache/',
 }
 
