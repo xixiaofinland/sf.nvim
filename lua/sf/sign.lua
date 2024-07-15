@@ -109,8 +109,10 @@ end
 
 M.toggle = function()
   if enabled then
+    vim.notify('Sign disabled.', vim.log.levels.INFO)
     M.unplace()
   else
+    vim.notify('Sign enabled.', vim.log.levels.INFO)
     M.place()
   end
 end
