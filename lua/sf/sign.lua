@@ -4,6 +4,7 @@ local C = require('sf.config')
 local M = {}
 local enabled = false
 local cache = nil
+local sign_group = "SfUncovered"
 
 local highlight = function(group, color)
   local style = color.style and "gui=" .. color.style or "gui=NONE"
@@ -18,7 +19,7 @@ local highlight = function(group, color)
 end
 
 M.setup = function()
-  highlight("SfUncovered", { fg = "#F07178" })
+  highlight(sign_group, { fg = "#F07178" })
   vim.fn.sign_define("sf_uncovered", { text = "▎", texthl = "SfUncovered", })
   -- vim.fn.sign_placelist({
   --   {
@@ -86,12 +87,14 @@ M.parse_from_json_file = function()
   return signs
 end
 
-M.invalidate_cache_and_place = function()
+M.invalidate_cache_and_try_place = function()
   cache = nil
-  M.place()
+  if M.is_enabled() or C.config.auto_display_sign then
+    M.refresh_and_place()
+  end
 end
 
-M.place = function()
+M.refresh_and_place = function()
   M.unplace()
   local signs = M.parse_from_json_file()
   vim.fn.sign_placelist(signs)
@@ -99,7 +102,7 @@ M.place = function()
 end
 
 M.unplace = function()
-  vim.fn.sign_unplace(C.config.sign_group)
+  vim.fn.sign_unplace(sign_group)
   enabled = false
 end
 
@@ -113,7 +116,7 @@ M.toggle = function()
     M.unplace()
   else
     vim.notify('Sign enabled.', vim.log.levels.INFO)
-    M.place()
+    M.refresh_and_place()
   end
 end
 
