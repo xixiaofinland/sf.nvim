@@ -70,10 +70,6 @@ function T:run_after_setup(cmd, cb)
       self:close() -- hack way to scroll to end
       self:open()
 
-      if not string.find(cmd, '-c ') then -- not test code coverage cmd
-        return
-      end
-
       if cb ~= nil then
         cb(self, cmd, exit_code)
       end

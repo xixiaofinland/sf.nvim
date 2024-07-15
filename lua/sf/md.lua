@@ -39,18 +39,20 @@ end
 
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
-  print(current_word)
-  H.retrieve_md('ApexClass', current_word)
+  local cb = function()
+    U.open_file(U.get_apex_folder_path() .. current_word .. '.cls')
+  end
+  H.retrieve_md('ApexClass', current_word, cb)
 end
 
-H.retrieve_md = function(type, name)
+H.retrieve_md = function(type, name, cb)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
   end
   U.get_sf_root()
 
   local cmd = string.format('sf project retrieve start -m \'%s:%s\' -o %s', type, name, U.target_org)
-  T.run(cmd)
+  T.run(cmd, cb)
 end
 
 H.list_md_to_retrieve = function()

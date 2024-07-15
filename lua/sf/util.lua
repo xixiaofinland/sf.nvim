@@ -27,6 +27,10 @@ M.get = function()
   return M.target_org
 end
 
+M.get_apex_folder_path = function()
+  return M.get_sf_root() .. C.config.default_dir .. 'classes/'
+end
+
 M.get_plugin_folder_path = function()
   return M.get_sf_root() .. C.config.plugin_folder_name
 end
