@@ -8,12 +8,13 @@
 
 ## ✨ Features
 
-- 🔥 Push, retrieve, and create metadata files
-- 💻 Integrated scratch terminal for on-the-fly commands
-- 😎 Diff files between local and org environments
-- 🤩 Display target org in the status line
-- 👏 Access to a pre-downloaded list of metadata files
-- 🤖 Facilitate quick Apex test runs
+- 🔥 Apex/Lwc/Aura: push/retrieve/create
+- 💻 Integrated term
+- 😎 File diff: local v.s. org
+- 🤩 Target-org icon
+- 👏 Org Metadata browsing
+- 🤖 Quick apex test run 
+- ✨ Test report and code coverage info
 - 🦘 Enhanced jump-to-definition (Apex)
 
 <br>
@@ -27,9 +28,10 @@
 ## 📝 Prerequisites
 
 - 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
-- 🐢 Nvim v0.10 or newer ([why?](https://github.com/xixiaofinland/sf.nvim/issues/73))
+- 🐢 Nvim v0.10 or newer ([why must > 0.10?](https://github.com/xixiaofinland/sf.nvim/issues/73))
 - 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
 - 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve()` and `SFListMdTypeToRetrieve()`
+  (Why not telescope? Because it's UI is slow)
 
 <br>
 
@@ -102,7 +104,17 @@ require('sf').setup({
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
     },
-  }
+  },
+
+  -- the sf project metadata folder, update this in case you diverged from the default sf folder structure
+  default_dir = '/force-app/main/default/',
+
+  -- the folder this plugin uses to store intermediate data. It's under the sf project root directory.
+  plugin_folder_name = '/cache/',
+
+  -- after the test running with code coverage completes, display uncovered line sign automatically.
+  -- you can set it to `false`, then manually run toggle_sign command.
+  auto_display_sign = true,
 })
 ```
 
@@ -146,6 +158,7 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select tests|
 | `<leader>ct`     |create_ctags |SFCreateCtags|create ctags file|
 | `<leader>sq`     | run_highlighted_soql |N/A|Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
+|`\s`|toggle_sign |N/A|Show/hide line coverage sign icon|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
@@ -205,6 +218,16 @@ You can,
 - Re-run the last test command `<leader>tr`
 
 (check the Key section for their corresponding keys and user commands if needed)
+
+## ⚡Apex Test with code coverage
+
+Some test commands come with code coverage information such as `<leader>tA`, `<leader>tT`.
+After running these commands successfully, the uncovered code lines for corresponding Apex show with the red
+color icon next to the line number.
+The line coverage icon shows automaticall if the `auto_display_sign` setting is set to `true`.
+You can also run `\s` hotkey (or `require'sf'.toggle_sign()`) to toggle this feature.
+
+For example: 
 
 ## 🖥️ Integrated terminal
 
