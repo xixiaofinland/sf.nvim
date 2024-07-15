@@ -39,8 +39,8 @@ local default_cfg = {
   -- the sf project metadata folder, update this in case you changed the folder structure
   cache_folder_dir = '/force-app/main/default/',
 
-  -- sf.nvim uses this folder under project root to store retrieved files, such as metadata names, test result
-  cache_folder_name = '/cache/',
+  -- the folder this plugin uses to store intermediate data
+  plugin_folder_name = '/cache/',
 
   sign_group = "SfUncovered"
 }
@@ -282,7 +282,9 @@ local init = function()
       nmap('<leader>tt', Sf.run_current_test, "test this under cursor")
       nmap('<leader>tT', Sf.run_current_test_with_coverage, "test this under cursor with coverage info")
       nmap('<leader>to', Sf.open_test_select, "open test select buf")
+      nmap('\\s', Sf.toggle_sign, "toggle signs for code coverage")
       nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
+      nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
       nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
     end
   end

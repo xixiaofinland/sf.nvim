@@ -3,7 +3,7 @@ local C = require('sf.config')
 
 local M = {}
 local enabled = false
-local cached_coverages = nil
+local cache = nil
 
 local highlight = function(group, color)
   local style = color.style and "gui=" .. color.style or "gui=NONE"
@@ -40,21 +40,30 @@ M.setup = function()
   -- })
 end
 
-M.parse_from_coverages = function()
+M.parse_from_json_file = function()
   M.setup()
 
-  local coverages
+  local coverage
 
-  if cached_coverages ~= nil then
-    coverages = cached_coverages
+  if cache ~= nil then
+    coverage = cache
   else
-    local tbl = U.read_file_json_to_tbl('test_result.json', U.get_cache_path())
-    coverages = tbl["result"]["coverage"]["coverage"]
-    cached_coverages = coverages
+    local tbl = U.read_file_in_plugin_folder('test_result.json')
+    if not tbl then
+      return vim.notify('No data read from test_result.json. Empty or bad format?', vim.log.levels.WARN)
+    end
+
+    coverage = vim.tbl_get(tbl, "result", "coverage", "coverage")
+
+    if coverage == nil then
+      return vim.notify("Coverage element does not exist.", vim.log.levels.ERROR)
+    end
+
+    cache = coverage
   end
 
   local signs = {}
-  for i, v in pairs(coverages) do
+  for i, v in pairs(coverage) do
     local apex_name = v["name"] .. '.cls'
 
     if U.is_apex_loaded_in_buf(apex_name) then
@@ -79,7 +88,7 @@ end
 
 M.place = function()
   M.unplace()
-  local signs = M.parse_from_coverages()
+  local signs = M.parse_from_json_file()
   vim.fn.sign_placelist(signs)
   enabled = true
 end

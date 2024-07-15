@@ -62,14 +62,14 @@ H.list_md_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local cache_folder = U.get_sf_root() .. C.config.cache_folder_name
+  local plugin_folder = U.get_plugin_folder_path()
 
   local md_types = C.config.types_to_retrieve
   local md = {}
   local md_names = {}
 
   for _, type in pairs(md_types) do
-    local md_file = string.format('%s/%s_%s.json', cache_folder, type, U.target_org)
+    local md_file = string.format('%s/%s_%s.json', plugin_folder, type, U.target_org)
 
     if vim.fn.filereadable(md_file) == 0 then
       return U.show_err(string.format('%s not exists locally. Pull it again.', type))
@@ -119,7 +119,7 @@ H.pull_metadata = function(type)
     return U.show_err('Target_org empty!')
   end
 
-  U.create_cache_folder_if_not_exist()
+  U.create_plugin_folder_if_not_exist()
 
   local md_file = string.format('%s/%s_%s.json', cache_folder, type, U.target_org)
 
@@ -135,7 +135,7 @@ H.pull_md_type_json = function()
     return U.show_err('Target_org empty!')
   end
 
-  U.create_cache_folder_if_not_exist()
+  U.create_plugin_folder_if_not_exist()
 
   local metadata_types_file = string.format('%s/%s.json', cache_folder, 'metadata-types')
   local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
@@ -154,7 +154,7 @@ H.list_md_type_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local tbl = U.read_file_json_to_tbl("metadata-types.json", U.get_cache_path())
+  local tbl = U.read_cache_file_json_to_tbl("metadata-types.json", U.get_plugin_folder_path())
   local md_types = {}
 
   for _, obj in pairs(tbl["metadataObjects"]) do

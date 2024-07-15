@@ -27,12 +27,12 @@ M.get = function()
   return M.target_org
 end
 
-M.get_cache_path = function()
-  return M.get_sf_root() .. C.config.cache_folder_name
+M.get_plugin_folder_path = function()
+  return M.get_sf_root() .. C.config.plugin_folder_name
 end
 
-M.create_cache_folder_if_not_exist = function()
-  local cache_folder = M.get_cache_path()
+M.create_plugin_folder_if_not_exist = function()
+  local cache_folder = M.get_plugin_folder_path()
   if vim.fn.isdirectory(cache_folder) == 0 then
     local result = vim.fn.mkdir(cache_folder)
     if result == 0 then
@@ -158,17 +158,23 @@ M.is_installed = function(plugin_name)
   return pcall(require, plugin_name)
 end
 
+M.read_file_in_plugin_folder = function(name)
+  M.create_plugin_folder_if_not_exist()
+
+  local path = M.get_plugin_folder_path()
+  return M.read_file_json_to_tbl(name, path)
+end
+
 M.read_file_json_to_tbl = function(name, path)
-  local content = M.read_local_file(name, path)
+  local absolute_path = path .. name
+  local content = M.read_local_file(absolute_path)
   return M.parse_from_json_to_tbl(content)
 end
 
-M.read_local_file = function(name, path)
-  local absolute_path = path .. name
-
+M.read_local_file = function(absolute_path)
   local ok, content = pcall(vim.fn.readfile, absolute_path)
   if not ok then
-    return vim.notify('File not found.', vim.log.levels.ERROR)
+    error('::File not found: ' .. absolute_path)
   end
 
   return content
@@ -178,7 +184,7 @@ M.parse_from_json_to_tbl = function(content)
   local json = table.concat(content)
   local ok, tbl = pcall(vim.json.decode, json, {})
   if not ok then
-    return vim.notify('Parse file content from json to tbl failed.', vim.log.levels.ERROR)
+    error('::Parse file from json to tbl failed: ' .. absolute_path)
   end
 
   return tbl
@@ -192,7 +198,6 @@ end
 M.get_apex_buf_num = function(name)
   local path = C.config.cache_folder_dir .. "classes/" .. name
   return M.get_buf_num(path)
-
 end
 
 M.get_buf_num = function(path)
