@@ -230,7 +230,7 @@ The line coverage icon shows automatically if the `auto_display_sign` setting is
 
 You can also run `\s` hotkey (or `require'sf'.toggle_sign()`) to toggle this feature.
 
-For example as the screenshot below: 
+🧩 For example as the screenshot below: 
 
 After executing "run current test with code coverage" `<leader>tT` in `CrudTest.cls`, the `Crud.cls` has the red-icon (next to the line num) indicating uncovered lines.
 
