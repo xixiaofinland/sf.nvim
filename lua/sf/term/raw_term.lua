@@ -79,7 +79,7 @@ function T:run_after_setup(cmd)
 
       -- print("exit_code: " .. exit_code)
       if test_run_id then
-        Test.save_test_coverage_locally()
+        Test.save_test_coverage_locally(test_run_id)
       end
     end,
   })

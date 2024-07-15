@@ -66,12 +66,12 @@ Test.run_local_tests = function()
   T.run(cmd)
 end
 
-Test.save_test_coverage_locally = function()
+Test.save_test_coverage_locally = function(id)
   U.create_plugin_folder_if_not_exist()
 
   local name = "test_result.json"
   local cache_folder = U.get_plugin_folder_path()
-  local cmd = 'sf apex get test -i 7071n0000Buux9s -c --json > ' .. cache_folder .. name
+  local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. cache_folder .. name
   U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!", S.place)
 end
 
