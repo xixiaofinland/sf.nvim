@@ -86,6 +86,11 @@ M.parse_from_json_file = function()
   return signs
 end
 
+M.invalidate_cache_and_place = function()
+  cache = nil
+  M.place()
+end
+
 M.place = function()
   M.unplace()
   local signs = M.parse_from_json_file()

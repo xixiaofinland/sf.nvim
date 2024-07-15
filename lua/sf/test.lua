@@ -72,7 +72,7 @@ Test.save_test_coverage_locally = function(id)
   local name = "test_result.json"
   local cache_folder = U.get_plugin_folder_path()
   local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. cache_folder .. name
-  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed!", S.place)
+  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed! " .. cmd, S.invalidate_cache_and_place)
 end
 
 Test.toggle_sign = S.toggle
