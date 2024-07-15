@@ -196,7 +196,7 @@ M.is_apex_loaded_in_buf = function(name)
 end
 
 M.get_apex_buf_num = function(name)
-  local path = C.config.cache_folder_dir .. "classes/" .. name
+  local path = C.config.default_dir .. "classes/" .. name
   return M.get_buf_num(path)
 end
 

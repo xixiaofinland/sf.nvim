@@ -36,13 +36,11 @@ local default_cfg = {
     },
   },
 
-  -- the sf project metadata folder, update this in case you changed the folder structure
-  cache_folder_dir = '/force-app/main/default/',
+  -- the sf project metadata folder, update this in case you diverged from the default sf folder structure
+  default_dir = '/force-app/main/default/',
 
   -- the folder this plugin uses to store intermediate data
   plugin_folder_name = '/cache/',
-
-  sign_group = "SfUncovered"
 }
 
 local apply_config = function(opt)
