@@ -222,12 +222,23 @@ You can,
 ## ⚡Apex Test with code coverage
 
 Some test commands come with code coverage information such as `<leader>tA`, `<leader>tT`.
+
 After running these commands successfully, the uncovered code lines for corresponding Apex show with the red
 color icon next to the line number.
-The line coverage icon shows automaticall if the `auto_display_sign` setting is set to `true`.
+
+The line coverage icon shows automatically if the `auto_display_sign` setting is set to `true`.
+
 You can also run `\s` hotkey (or `require'sf'.toggle_sign()`) to toggle this feature.
 
-For example: 
+🧩 For example as the screenshot below: 
+
+After executing "run current test with code coverage" `<leader>tT` in `CrudTest.cls`, the `Crud.cls` has the red-icon (next to the line num) indicating uncovered lines.
+
+<br>
+
+![Image 011](https://github.com/user-attachments/assets/db1aaa52-4cd7-4a1d-930b-d4eba783538e)
+
+<br>
 
 ## 🖥️ Integrated terminal
 
