@@ -34,7 +34,7 @@ function T:store(win, buf)
   return self
 end
 
-function T:run(cmd)
+function T:run(cmd, cb)
   if self.is_running then
     return vim.notify('Wait the current task to finish.', vim.log.levels.WARN)
   end
@@ -51,12 +51,12 @@ function T:run(cmd)
     running_win = self:create_and_open_win(running_buf)
   end
 
-  self:store(running_win, running_buf):run_after_setup(cmd)
+  self:store(running_win, running_buf):run_after_setup(cmd, cb)
 
   return self
 end
 
-function T:run_after_setup(cmd)
+function T:run_after_setup(cmd, cb)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
 
@@ -74,12 +74,8 @@ function T:run_after_setup(cmd)
         return
       end
 
-      local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
-      local test_run_id = H.extract_test_run_id(lines)
-
-      -- print("exit_code: " .. exit_code)
-      if test_run_id then
-        Test.save_test_coverage_locally(test_run_id)
+      if cb ~= nil then
+        cb(self, cmd, exit_code)
       end
     end,
   })
@@ -204,15 +200,6 @@ H.defaults = {
   clear_env = false,
   -- auto_close = false,
 }
-
-function H.extract_test_run_id(lines)
-  for _, line in ipairs(lines) do
-    if string.find(line, "Test Run Id") then
-      return string.match(line, "Test Run Id%s*(%w+)")
-    end
-  end
-  return nil
-end
 
 function H.is_win_valid(win)
   return win and vim.api.nvim_win_is_valid(win)
