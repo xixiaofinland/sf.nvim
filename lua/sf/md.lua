@@ -184,7 +184,7 @@ H.retrieve_md_type = function(type)
 end
 
 H.generate_class = function(name)
-  local path = U.get_sf_root() .. C.config.default_dir .. "classes/"
+  local path = U.get_apex_folder_path()
   local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
   U.job_call(
     cmd,
@@ -203,13 +203,13 @@ end
 
 H.generate_aura = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
-    U.get_sf_root() .. C.config.default_dir .. "/aura", name)
+    U.get_default_dir_path() .. "/aura", name)
   U.silent_job_call(
     cmd,
     nil,
     "Something went wrong creating the Aura bundle",
     function()
-      vim.notify("Aura bundle " .. name .. " created", vim.log.levels.INFO)
+      U.open_file(U.get_default_dir_path() .. 'aura/' .. name  .. '/'.. name .. '.cmp')
     end
   )
 end
@@ -226,7 +226,7 @@ H.generate_lwc = function(name)
     nil,
     "Something went wrong creating the LWC bundle",
     function()
-      vim.notify("LWC bundle " .. name .. " created", vim.log.levels.INFO)
+      U.open_file(U.get_default_dir_path() .. 'lwc/' .. name  .. '/'.. name .. '.js')
     end
   )
 end
