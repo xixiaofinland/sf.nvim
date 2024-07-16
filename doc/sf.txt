@@ -194,6 +194,21 @@ A convenient way to repeat the last executed Apex test command.
 Run all local tests in target_org
 
 ------------------------------------------------------------------------------
+                                                                *Sf.toggle_sign*
+                                `Sf.toggle_sign`
+show sign icons to indicates uncovered lines from the latest test running result.
+
+------------------------------------------------------------------------------
+                                                     *Sf.uncovered_jump_forward*
+                          `Sf.uncovered_jump_forward`
+When code coverage sign icon is enabled on the current buffer, the cursor jumps to the next uncovered line
+
+------------------------------------------------------------------------------
+                                                    *Sf.uncovered_jump_backward*
+                          `Sf.uncovered_jump_backward`
+When code coverage sign icon is enabled on the current buffer, the cursor jumps to the previous uncovered line
+
+------------------------------------------------------------------------------
                                                                *Sf.create_ctags*
                                `Sf.create_ctags`
 Create tags file in the root path by using universal ctags cli tool.
@@ -203,6 +218,24 @@ Create tags file in the root path by using universal ctags cli tool.
                            `Sf.create_and_list_ctags`
 Create tags file in the root path and list them by fzf plugin.
 When fzf is not found, the command exists with an error msg.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                               *M.new_covered()*
+                       `M.new_covered`({buffer}, {lnum})
+Returns a new covered sign in the format used by sign_placelist.
+@param buffer string|integer buffer name or id
+@param lnum integer line number
+@return SignPlace
+
+------------------------------------------------------------------------------
+                                                             *M.new_uncovered()*
+                      `M.new_uncovered`({buffer}, {lnum})
+Returns a new uncovered sign in the format used by sign_placelist.
+@param buffer string|integer buffer name or id
+@param lnum integer line number
+@return SignPlace
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

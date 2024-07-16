@@ -1,3 +1,5 @@
+M.new_covered()	sf.txt	/*M.new_covered()*
+M.new_uncovered()	sf.txt	/*M.new_uncovered()*
 Sf.cancel	sf.txt	/*Sf.cancel*
 Sf.create_and_list_ctags	sf.txt	/*Sf.create_and_list_ctags*
 Sf.create_apex_class	sf.txt	/*Sf.create_apex_class*
@@ -34,6 +36,9 @@ Sf.save_and_push	sf.txt	/*Sf.save_and_push*
 Sf.set_global_target_org	sf.txt	/*Sf.set_global_target_org*
 Sf.set_target_org	sf.txt	/*Sf.set_target_org*
 Sf.setup	sf.txt	/*Sf.setup*
+Sf.toggle_sign	sf.txt	/*Sf.toggle_sign*
 Sf.toggle_term	sf.txt	/*Sf.toggle_term*
+Sf.uncovered_jump_backward	sf.txt	/*Sf.uncovered_jump_backward*
+Sf.uncovered_jump_forward	sf.txt	/*Sf.uncovered_jump_forward*
 SfNvim	sf.txt	/*SfNvim*
 sf.nvim	sf.txt	/*sf.nvim*
