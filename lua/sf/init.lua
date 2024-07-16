@@ -145,6 +145,12 @@ Sf.run_local_tests = Test.run_local_tests
 --- show sign icons to indicates uncovered lines from the latest test running result.
 Sf.toggle_sign = Test.toggle_sign
 
+--- When code coverage sign icon is enabled on the current buffer, the cursor jumps to the next uncovered line
+Sf.uncovered_jump_forward = Test.uncovered_jump_forward
+
+--- When code coverage sign icon is enabled on the current buffer, the cursor jumps to the previous uncovered line
+Sf.uncovered_jump_backward = Test.uncovered_jump_backward
+
 -- From Ctags module ==========================================================
 
 --- Create tags file in the root path by using universal ctags cli tool.

@@ -300,6 +300,8 @@ local init = function()
       nmap('<leader>tr', Sf.repeat_last_tests, "repeat last test")
       nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
       nmap('<leader>cc', Sf.copy_apex_name, "copy apex name")
+      nmap('[v', Sf.uncovered_jump_backward, "jump to previous uncovered sign icon line")
+      nmap(']v', Sf.uncovered_jump_forward, "jump to next uncovered sign icon line")
     end
   end
 

@@ -83,6 +83,8 @@ Test.save_test_coverage_locally = function(self, cmd, exit_code)
 end
 
 Test.toggle_sign = S.toggle
+Test.uncovered_jump_forward = S.uncovered_jump_forward
+Test.uncovered_jump_backward = S.uncovered_jump_backward
 
 Test.extract_test_run_id = function(lines)
   for _, line in ipairs(lines) do
