@@ -159,6 +159,8 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>ct`     |create_ctags |SFCreateCtags|create ctags file|
 | `<leader>sq`     | run_highlighted_soql |N/A|Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
 |`\s`|toggle_sign |N/A|Show/hide line coverage sign icon|
+|`]v`|uncovered_jump_forward |N/A|jump to next test uncovered line|
+|`[v`|`uncovered_jump_backward |N/A|jump to last test uncovered line|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
@@ -210,33 +212,43 @@ LWC, Aura, etc.). You can list them and fetch all of a specific type. Steps:
 
 ## ⚡Apex Test
 
+There are two categories of test actions.
+
+1. Simple use-case: Test without code coverage info
+
 You can,
 
 - Run all tests in the current file by `<leader>ta`
 - Run the test under the cursor by `<leader>tt`
 - Select tests from the current file by `<leader>to`
-- Re-run the last test command `<leader>tr`
 
-(check the Key section for their corresponding keys and user commands if needed)
+These commands aim to quickly run and verify the pass/fail result.
 
-## ⚡Apex Test with code coverage
+2. Complex use-case: Test with code coverage info
 
-Some test commands come with code coverage information such as `<leader>tA`, `<leader>tT`.
+They are the same hotkey but capitalized the last letter.
 
-After running these commands successfully, the uncovered code lines for corresponding Apex show with the red
-color icon next to the line number.
+- `<leader>tA`
+- `<leader>tT`
+- `<leader>tO`
 
-The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true`.
+These test results contains code coverage information.
+
+After running these commands successfully, the test result is saved locally and the
+covered/uncovered lines are illustrated as sign-icons next to the line num (screenshot).
+
+The line coverage icon shows automatically if the `auto_display_code_sign` setting (default to `true`) is set to `true`.
 
 You can also run `\s` hotkey (or `require'sf'.toggle_sign()`) to toggle this feature.
 
-🧩 For example as the screenshot below: 
+You can use `]v` and `[v` to jump to next/last uncovered lines when the toggle_sign feature is
+enabled.
 
-After executing "run current test with code coverage" `<leader>tT` in `CrudTest.cls`, the `Crud.cls` has the red-icon (next to the line num) indicating uncovered lines.
+🧩 Screenshot
 
+Test finishes in `CrudTest.cls` with `UNCOVERED LINES: 9,10,11,13,14` and the line coverage in `Crud.cls` is indicated with green/red icon
+signs.
 <br>
-
-![Image 011](https://github.com/user-attachments/assets/db1aaa52-4cd7-4a1d-930b-d4eba783538e)
 
 <br>
 
