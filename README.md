@@ -214,7 +214,7 @@ LWC, Aura, etc.). You can list them and fetch all of a specific type. Steps:
 
 There are two categories of test actions.
 
-✨ Simple use-case: Test without code coverage info
+✨ 1. Simple use-case: Test without code coverage info
 
 You can,
 
@@ -224,7 +224,7 @@ You can,
 
 These commands quickly run and verify the pass/fail result.
 
-🔀 Complex use-case: Test with code coverage info
+🔀 2. Complex use-case: Test with code coverage info
 
 Use the same hotkeys but capitalize the last letter:
 
