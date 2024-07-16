@@ -222,11 +222,11 @@ You can,
 - Run the test under the cursor by `<leader>tt`
 - Select tests from the current file by `<leader>to`
 
-These commands aim to quickly run and verify the pass/fail result.
+These commands quickly run and verify the pass/fail result.
 
 🔀 Complex use-case: Test with code coverage info
 
-They are the same hotkey but capitalized the last letter.
+Use the same hotkeys but capitalize the last letter:
 
 - `<leader>tA`
 - `<leader>tT`
@@ -234,20 +234,23 @@ They are the same hotkey but capitalized the last letter.
 
 These test results contains code coverage information.
 
-After running these commands successfully, the test result is saved locally and the
-covered/uncovered lines are illustrated as sign-icons next to the line num (screenshot).
+After running these commands successfully, the test result is saved locally, and the
+covered/uncovered lines are illustrated as sign-icons next to the line number (screenshot).
 
-The line coverage icon shows automatically if the `auto_display_code_sign` setting (default to `true`) is set to `true`.
+📏 Note.
 
-You can also run `\s` hotkey (or `require'sf'.toggle_sign()`) to toggle this feature.
+- The line coverage icon shows automatically if the `auto_display_code_sign` setting (default to `true`) is set to `true`.
+- Toggle this feature on/off with the \s hotkey (or require'sf'.toggle_sign()).
 
-You can use `]v` and `[v` to jump to next/last uncovered lines when the toggle_sign feature is
-enabled.
+🏗️ Jump to next uncovered line
+
+- Use `]v` and `[v` to jump to the next/previous uncovered lines when the toggle_sign feature is enabled.
 
 🧩 Screenshot
 
 Test finishes in `CrudTest.cls` with `UNCOVERED LINES: 9,10,11,13,14` and the line coverage in `Crud.cls` is indicated with green/red icon
 signs.
+
 <br>
 
 <br>
