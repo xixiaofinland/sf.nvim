@@ -245,8 +245,8 @@ covered/uncovered lines are illustrated as sign-icons next to the line number (s
 
 📏 Note.
 
-- The line coverage icon shows automatically if the `auto_display_code_sign` setting (default to `true`) is set to `true`.
-- Toggle this feature on/off with the \s hotkey (or require'sf'.toggle_sign()).
+- The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true` (default).
+- Toggle this feature on/off with the `\s` hotkey (or `require'sf'.toggle_sign()`).
 
 🏗️ Jump to next uncovered line
 
