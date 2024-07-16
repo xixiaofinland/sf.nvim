@@ -38,7 +38,7 @@ function Md.create_lwc_bundle()
 end
 
 H.open_apex = function(name)
-  U.open_file(U.get_apex_folder_path() .. name .. '.cls')
+  U.try_open_file(U.get_apex_folder_path() .. name .. '.cls')
 end
 
 H.retrieve_apex_under_cursor = function()
@@ -74,7 +74,7 @@ H.list_md_to_retrieve = function()
   for _, type in pairs(md_types) do
     local md_file = string.format('%s/%s_%s.json', plugin_folder, type, U.target_org)
 
-    if vim.fn.filereadable(md_file) == 0 then
+    if not U.file_readable() then
       return U.show_err(string.format('%s not exists locally. Run `SfPullMd` in Ex to Pull it?', type))
     end
 
@@ -191,7 +191,7 @@ H.generate_class = function(name)
     "Something went wrong creating the class",
     function()
       local absolute_path = path .. name .. '.cls'
-      U.open_file(absolute_path)
+      U.try_open_file(absolute_path)
     end
   )
 end
@@ -208,7 +208,7 @@ H.generate_aura = function(name)
     nil,
     "Something went wrong creating the Aura bundle",
     function()
-      U.open_file(U.get_default_dir_path() .. 'aura/' .. name .. '/' .. name .. '.cmp')
+      U.try_open_file(U.get_default_dir_path() .. 'aura/' .. name .. '/' .. name .. '.cmp')
     end
   )
 end
@@ -225,7 +225,7 @@ H.generate_lwc = function(name)
     nil,
     "Something went wrong creating the LWC bundle",
     function()
-      U.open_file(U.get_default_dir_path() .. 'lwc/' .. name .. '/' .. name .. '.js')
+      U.try_open_file(U.get_default_dir_path() .. 'lwc/' .. name .. '/' .. name .. '.js')
     end
   )
 end
