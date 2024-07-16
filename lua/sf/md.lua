@@ -37,12 +37,13 @@ function Md.create_lwc_bundle()
   H.create_lwc_bundle()
 end
 
+H.open_apex = function(name)
+  U.open_file(U.get_apex_folder_path() .. name .. '.cls')
+end
+
 H.retrieve_apex_under_cursor = function()
   local current_word = vim.fn.expand('<cword>')
-  local cb = function()
-    U.open_file(U.get_apex_folder_path() .. current_word .. '.cls')
-  end
-  H.retrieve_md('ApexClass', current_word, cb)
+  H.retrieve_md('ApexClass', current_word, function() H.open_apex(current_word) end)
 end
 
 H.retrieve_md = function(type, name, cb)
@@ -91,9 +92,7 @@ H.list_md_to_retrieve = function()
   require("fzf-lua").fzf_exec(md_names, {
     actions = {
       ['default'] = function(selected)
-        print(md[selected[1]])
-        print(selected[1])
-        H.retrieve_md(md[selected[1]]["type"], selected[1])
+        H.retrieve_md(md[selected[1]]["type"], selected[1], function() H.open_apex(selected[1]) end)
       end
     },
     fzf_opts = {
@@ -209,7 +208,7 @@ H.generate_aura = function(name)
     nil,
     "Something went wrong creating the Aura bundle",
     function()
-      U.open_file(U.get_default_dir_path() .. 'aura/' .. name  .. '/'.. name .. '.cmp')
+      U.open_file(U.get_default_dir_path() .. 'aura/' .. name .. '/' .. name .. '.cmp')
     end
   )
 end
@@ -226,7 +225,7 @@ H.generate_lwc = function(name)
     nil,
     "Something went wrong creating the LWC bundle",
     function()
-      U.open_file(U.get_default_dir_path() .. 'lwc/' .. name  .. '/'.. name .. '.js')
+      U.open_file(U.get_default_dir_path() .. 'lwc/' .. name .. '/' .. name .. '.js')
     end
   )
 end
