@@ -4,7 +4,14 @@ local C = require('sf.config')
 local M = {}
 local enabled = false
 local cache = nil
-local sign_group = "SfUncovered"
+
+local covered_group = "SfCovered"
+local uncovered_group = "SfUncovered"
+local covered_sign = "sf_covered"
+local uncovered_sign = "sf_uncovered"
+
+local show_covered = true
+local show_uncovered = true
 
 local highlight = function(group, color)
   local style = color.style and "gui=" .. color.style or "gui=NONE"
@@ -19,31 +26,22 @@ local highlight = function(group, color)
 end
 
 M.setup = function()
-  highlight(sign_group, { fg = "#F07178" })
-  vim.fn.sign_define("sf_uncovered", { text = "▎", texthl = "SfUncovered", })
-  -- vim.fn.sign_placelist({
-  --   {
-  --     id = 0,
-  --     group = "",
-  --     name = "sf_uncovered",
-  --     buffer = vim.fn.bufname("%"),
-  --     lnum = 2,
-  --     priority = 10
-  --   },
-  --   {
-  --     id = 0,
-  --     group = "",
-  --     name = "sf_uncovered",
-  --     buffer = vim.fn.bufname("%"),
-  --     lnum = 1,
-  --     priority = 10
-  --   }
-  -- })
+  if C.config.code_sign_highlight.covered.fg == "" then
+    show_covered = false
+  end
+
+  if C.config.code_sign_highlight.uncovered.fg == "" then
+    show_uncovered = false
+  end
+
+  highlight(covered_group, { fg = C.config.code_sign_highlight.covered.fg })
+  highlight(uncovered_group, { fg = C.config.code_sign_highlight.uncovered.fg })
+
+  vim.fn.sign_define(covered_sign, { text = "▎", texthl = covered_group, })
+  vim.fn.sign_define(uncovered_sign, { text = "▎", texthl = uncovered_group, })
 end
 
 M.parse_from_json_file = function()
-  M.setup()
-
   local coverage
 
   if cache ~= nil then
@@ -69,16 +67,22 @@ M.parse_from_json_file = function()
 
     if U.is_apex_loaded_in_buf(apex_name) then
       for line, value in pairs(v["lines"]) do
-        if value == 0 then
-          local sign = {}
-
+        local sign = {}
+        if show_covered and value == 1 then
           sign.id = 0
-          sign.name = "sf_uncovered"
+          sign.name = covered_sign
+          sign.group = covered_group
           sign.buffer = U.get_buf_num(apex_name)
           sign.lnum = line
-          sign.group = "SfUncovered"
           sign.priority = 1000
-
+          table.insert(signs, sign)
+        elseif show_uncovered and value == 0 then
+          sign.id = 0
+          sign.name = uncovered_sign
+          sign.group = uncovered_group
+          sign.buffer = U.get_buf_num(apex_name)
+          sign.lnum = line
+          sign.priority = 1000
           table.insert(signs, sign)
         end
       end
@@ -89,7 +93,7 @@ end
 
 M.invalidate_cache_and_try_place = function()
   cache = nil
-  if M.is_enabled() or C.config.auto_display_sign then
+  if M.is_enabled() or C.config.auto_display_code_sign then
     M.refresh_and_place()
   end
 end
@@ -102,7 +106,8 @@ M.refresh_and_place = function()
 end
 
 M.unplace = function()
-  vim.fn.sign_unplace(sign_group)
+  vim.fn.sign_unplace(covered_group)
+  vim.fn.sign_unplace(uncovered_group)
   enabled = false
 end
 

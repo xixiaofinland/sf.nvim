@@ -114,7 +114,7 @@ require('sf').setup({
 
   -- after the test running with code coverage completes, display uncovered line sign automatically.
   -- you can set it to `false`, then manually run toggle_sign command.
-  auto_display_sign = true,
+  auto_display_code_sign = true,
 })
 ```
 
@@ -226,7 +226,7 @@ Some test commands come with code coverage information such as `<leader>tA`, `<l
 After running these commands successfully, the uncovered code lines for corresponding Apex show with the red
 color icon next to the line number.
 
-The line coverage icon shows automatically if the `auto_display_sign` setting is set to `true`.
+The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true`.
 
 You can also run `\s` hotkey (or `require'sf'.toggle_sign()`) to toggle this feature.
 

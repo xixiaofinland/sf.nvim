@@ -44,7 +44,13 @@ local default_cfg = {
 
   -- after the test running with code coverage completes, display uncovered line sign automatically.
   -- you can set it to `false`, then manually run toggle_sign command.
-  auto_display_sign = true,
+  auto_display_code_sign = true,
+
+  -- code coverage sign icon colors
+  code_sign_highlight = {
+    covered = { fg = "#B7F071" }, -- set `fg = ""` to disable this sign icon
+    uncovered = { fg = "#F07178" }, -- set `fg = ""` to disable this sign icon
+  },
 }
 
 local apply_config = function(opt)
@@ -305,6 +311,8 @@ local init = function()
 
   -- Initiate the raw term
   require('sf.term').setup(Cfg.config.term_config)
+
+  require('sf.sign').setup()
 end
 
 Cfg.setup = function(opt)
