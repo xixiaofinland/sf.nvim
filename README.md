@@ -235,7 +235,7 @@ Use the same hotkeys but capitalize the last letter:
 These test results contains code coverage information.
 
 After running these commands successfully, the test result is saved locally, and the
-covered/uncovered lines are illustrated as sign-icons next to the line number (screenshot).
+covered/uncovered lines are illustrated as sign-icons next to the line number (screenshot below).
 
 📏 Note.
 
@@ -252,6 +252,7 @@ Test finishes in `CrudTest.cls` with `UNCOVERED LINES: 9,10,11,13,14` and the li
 signs.
 
 <br>
+![Image 012](https://github.com/user-attachments/assets/84c21be8-06b4-439e-a697-d270c71cde07)
 
 <br>
 
