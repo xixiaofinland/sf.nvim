@@ -212,9 +212,18 @@ M.get_buf_num = function(path)
   return vim.fn.bufnr(path)
 end
 
-M.open_file = function(absolute_path)
-  local open_new_file = string.format(":e %s", absolute_path)
-  vim.cmd(open_new_file)
+M.try_open_file = function(path)
+  if M.file_readable(path) then
+    local open_new_file = string.format(":e %s", path)
+    vim.cmd(open_new_file)
+  end
+end
+
+M.file_readable = function(path)
+  if vim.fn.filereadable(path) == 0 then
+    return false
+  end
+  return true
 end
 
 return M
