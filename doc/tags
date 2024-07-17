@@ -12,6 +12,8 @@ Sf.go_to_sf_root	sf.txt	/*Sf.go_to_sf_root*
 Sf.list_md_to_retrieve	sf.txt	/*Sf.list_md_to_retrieve*
 Sf.list_md_type_to_retrieve	sf.txt	/*Sf.list_md_type_to_retrieve*
 Sf.open_test_select	sf.txt	/*Sf.open_test_select*
+Sf.org_open	sf.txt	/*Sf.org_open*
+Sf.org_open_current_file	sf.txt	/*Sf.org_open_current_file*
 Sf.pull_md_json	sf.txt	/*Sf.pull_md_json*
 Sf.pull_md_type_json	sf.txt	/*Sf.pull_md_type_json*
 Sf.push_delta	sf.txt	/*Sf.push_delta*

@@ -115,6 +115,16 @@ Similar to |Sf.diff_in_target_org|, you can choose which org to diff with.
 The left window displays the org verison, the right window displays the local verison.
 
 ------------------------------------------------------------------------------
+                                                                   *Sf.org_open*
+                                 `Sf.org_open`
+Open the target_org in browser
+
+------------------------------------------------------------------------------
+                                                      *Sf.org_open_current_file*
+                           `Sf.org_open_current_file`
+Open the current file in the target_org in browser
+
+------------------------------------------------------------------------------
                                                                *Sf.pull_md_json*
                                `Sf.pull_md_json`
 Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
