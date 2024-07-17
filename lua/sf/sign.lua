@@ -133,63 +133,57 @@ M.uncovered_jump_backward = function()
   M.jump(-1)
 end
 
+local function get_hunks(placed_signs, direction)
+  local hunks = {}
+  local current_hunk = { placed_signs[1] }
+
+  for i = 2, #placed_signs do
+    local sign = placed_signs[i]
+    if sign.lnum == current_hunk[#current_hunk].lnum + 1 then
+      table.insert(current_hunk, sign)
+    else
+      table.insert(hunks, current_hunk)
+      current_hunk = { sign }
+    end
+  end
+  table.insert(hunks, current_hunk)
+
+  if direction < 0 then
+    table.sort(hunks, function(a, b)
+      return a[1].lnum > b[1].lnum
+    end)
+  end
+
+  return hunks
+end
+
 M.jump = function(direction)
   if not enabled then
     return
   end
 
   local placed = vim.fn.sign_getplaced("", { group = uncovered_group })
-  if #placed == 0 then
+  local placed_signs = placed[1].signs
+
+  if #placed == 0 or #placed_signs == 0 then
     return
   end
 
   local current_lnum = vim.fn.line(".")
-  local sign_name = uncovered_sign
-  local placed_signs = placed[1].signs
 
-  if direction < 0 then
-    table.sort(placed_signs, function(a, b)
-      return a.lnum > b.lnum
-    end)
-  end
+  local hunks = get_hunks(placed_signs, direction)
 
-  for _, sign in ipairs(placed_signs) do
-    if direction > 0 and sign.lnum > current_lnum and sign_name == sign.name then
-      vim.fn.sign_jump(sign.id, uncovered_group, "")
-      return
-    elseif direction < 0 and sign.lnum < current_lnum and sign_name == sign.name then
-      vim.fn.sign_jump(sign.id, uncovered_group, "")
+  for _, hunk in ipairs(hunks) do
+    local hunk_start_lnum = hunk[1].lnum
+    if (direction > 0 and hunk_start_lnum > current_lnum) or
+        (direction < 0 and hunk_start_lnum < current_lnum) then
+      vim.fn.sign_jump(hunk[1].id, uncovered_group, "")
       return
     end
   end
-end
 
---- Returns a new covered sign in the format used by sign_placelist.
---- @param buffer string|integer buffer name or id
---- @param lnum integer line number
---- @return SignPlace
-M.new_covered = function(buffer, lnum)
-  return {
-    buffer = buffer,
-    group = config.opts.sign_group,
-    lnum = lnum,
-    name = M.name("covered"),
-    priority = config.opts.signs.covered.priority or default_priority,
-  }
-end
-
---- Returns a new uncovered sign in the format used by sign_placelist.
---- @param buffer string|integer buffer name or id
---- @param lnum integer line number
---- @return SignPlace
-M.new_uncovered = function(buffer, lnum)
-  return {
-    buffer = buffer,
-    group = config.opts.sign_group,
-    lnum = lnum,
-    name = M.name("uncovered"),
-    priority = config.opts.signs.uncovered.priority or default_priority,
-  }
+  -- If no hunk was found in the current direction, loop to the opposite end
+  vim.fn.sign_jump(hunks[1][1].id, uncovered_group, "")
 end
 
 return M
