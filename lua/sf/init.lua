@@ -28,6 +28,12 @@ Sf.copy_apex_name = Util.copy_apex_name
 
 -- From Term module ==========================================================
 
+--- Open the current org in browser
+Sf.org_open = Term.org_open
+
+--- Open the current file in browser
+Sf.org_open_current_file = Term.org_open_current_file
+
 --- Toggle the SFTerm float window.
 Sf.toggle_term = Term.toggle
 
