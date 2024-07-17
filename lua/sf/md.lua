@@ -37,6 +37,8 @@ function Md.create_lwc_bundle()
   H.create_lwc_bundle()
 end
 
+-- helper;
+
 H.open_apex = function(name)
   U.try_open_file(U.get_apex_folder_path() .. name .. '.cls')
 end

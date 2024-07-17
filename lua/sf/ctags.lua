@@ -3,17 +3,8 @@ local M = {}
 
 M.create = function()
   U.is_ctags_installed();
-
   local cmd = 'ctags --extras=+q --langmap=java:.cls.trigger -f ./tags -R **/main/default/classes/**'
-  vim.fn.jobstart(cmd, {
-    on_exit = function(_, code, _)
-      if code == 0 then
-        vim.notify("Tags updated successfully.", vim.log.levels.INFO)
-      else
-        vim.notify("Error updating tags.", vim.log.levels.ERROR)
-      end
-    end
-  })
+  U.silent_job_call(cmd, "Tags updated successfully.", "Error updating tags.")
 end
 
 M.create_and_list = function()

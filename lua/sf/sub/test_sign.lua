@@ -2,6 +2,7 @@ local U = require('sf.util')
 local C = require('sf.config')
 
 local M = {}
+local H = {}
 local enabled = false
 local cache = nil
 
@@ -13,17 +14,6 @@ local uncovered_sign = "sf_uncovered"
 local show_covered = true
 local show_uncovered = true
 
-local highlight = function(group, color)
-  local style = color.style and "gui=" .. color.style or "gui=NONE"
-  local fg = color.fg and "guifg=" .. color.fg or "guifg=NONE"
-  local bg = color.bg and "guibg=" .. color.bg or "guibg=NONE"
-  local sp = color.sp and "guisp=" .. color.sp or ""
-  local hl = "highlight default " .. group .. " " .. style .. " " .. fg .. " " .. bg .. " " .. sp
-  vim.cmd(hl)
-  if color.link then
-    vim.cmd("highlight default link " .. group .. " " .. color.link)
-  end
-end
 
 M.setup = function()
   if C.config.code_sign_highlight.covered.fg == "" then
@@ -34,14 +24,47 @@ M.setup = function()
     show_uncovered = false
   end
 
-  highlight(covered_group, { fg = C.config.code_sign_highlight.covered.fg })
-  highlight(uncovered_group, { fg = C.config.code_sign_highlight.uncovered.fg })
+  H.highlight(covered_group, { fg = C.config.code_sign_highlight.covered.fg })
+  H.highlight(uncovered_group, { fg = C.config.code_sign_highlight.uncovered.fg })
 
   vim.fn.sign_define(covered_sign, { text = "▎", texthl = covered_group, })
   vim.fn.sign_define(uncovered_sign, { text = "▎", texthl = uncovered_group, })
 end
 
-M.parse_from_json_file = function()
+M.toggle = function()
+  if enabled then
+    vim.notify('Sign disabled.', vim.log.levels.INFO)
+    H.unplace()
+  else
+    vim.notify('Sign enabled.', vim.log.levels.INFO)
+    M.refresh_and_place()
+  end
+end
+
+M.uncovered_jump_forward = function()
+  local isForward = true
+  H.uncovered_jump(isForward)
+end
+
+M.uncovered_jump_backward = function()
+  local isForward = false
+  H.uncovered_jump(isForward)
+end
+
+M.is_enabled = function()
+  return enabled
+end
+
+M.refresh_and_place = function()
+  H.unplace()
+  local signs = H.parse_from_json_file()
+  vim.fn.sign_placelist(signs)
+  enabled = true
+end
+
+-- helpers
+
+H.parse_from_json_file = function()
   local coverage
 
   if cache ~= nil then
@@ -91,49 +114,52 @@ M.parse_from_json_file = function()
   return signs
 end
 
-M.invalidate_cache_and_try_place = function()
+H.invalidate_cache_and_try_place = function()
   cache = nil
   if M.is_enabled() or C.config.auto_display_code_sign then
     M.refresh_and_place()
   end
 end
 
-M.refresh_and_place = function()
-  M.unplace()
-  local signs = M.parse_from_json_file()
-  vim.fn.sign_placelist(signs)
-  enabled = true
-end
-
-M.unplace = function()
+H.unplace = function()
   vim.fn.sign_unplace(covered_group)
   vim.fn.sign_unplace(uncovered_group)
   enabled = false
 end
 
-M.is_enabled = function()
-  return enabled
-end
-
-M.toggle = function()
-  if enabled then
-    vim.notify('Sign disabled.', vim.log.levels.INFO)
-    M.unplace()
-  else
-    vim.notify('Sign enabled.', vim.log.levels.INFO)
-    M.refresh_and_place()
+H.uncovered_jump = function(isForward)
+  if not enabled then
+    return
   end
+
+  local placed = vim.fn.sign_getplaced("", { group = uncovered_group })
+  local placed_signs = placed[1].signs
+
+  if #placed == 0 or #placed_signs == 0 then
+    return
+  end
+
+  local current_lnum = vim.fn.line(".")
+
+  local hunks = H.get_hunks(placed_signs)
+
+  if not isForward then
+    hunks = H.revert(hunks)
+  end
+
+  for _, hunk in ipairs(hunks) do
+    local hunk_start_lnum = hunk[1].lnum
+
+    if (isForward and hunk_start_lnum > current_lnum) or (not isForward and hunk_start_lnum < current_lnum) then
+      vim.fn.sign_jump(hunk[1].id, uncovered_group, "")
+      return
+    end
+  end
+
+  vim.fn.sign_jump(hunks[1][1].id, uncovered_group, "") -- loop back
 end
 
-M.uncovered_jump_forward = function()
-  M.jump(1)
-end
-
-M.uncovered_jump_backward = function()
-  M.jump(-1)
-end
-
-local function get_hunks(placed_signs, direction)
+H.get_hunks = function(placed_signs)
   local hunks = {}
   local current_hunk = { placed_signs[1] }
 
@@ -148,42 +174,26 @@ local function get_hunks(placed_signs, direction)
   end
   table.insert(hunks, current_hunk)
 
-  if direction < 0 then
-    table.sort(hunks, function(a, b)
-      return a[1].lnum > b[1].lnum
-    end)
-  end
-
   return hunks
 end
 
-M.jump = function(direction)
-  if not enabled then
-    return
+H.highlight = function(group, color)
+  local style = color.style and "gui=" .. color.style or "gui=NONE"
+  local fg = color.fg and "guifg=" .. color.fg or "guifg=NONE"
+  local bg = color.bg and "guibg=" .. color.bg or "guibg=NONE"
+  local sp = color.sp and "guisp=" .. color.sp or ""
+  local hl = "highlight default " .. group .. " " .. style .. " " .. fg .. " " .. bg .. " " .. sp
+  vim.cmd(hl)
+  if color.link then
+    vim.cmd("highlight default link " .. group .. " " .. color.link)
   end
+end
 
-  local placed = vim.fn.sign_getplaced("", { group = uncovered_group })
-  local placed_signs = placed[1].signs
-
-  if #placed == 0 or #placed_signs == 0 then
-    return
-  end
-
-  local current_lnum = vim.fn.line(".")
-
-  local hunks = get_hunks(placed_signs, direction)
-
-  for _, hunk in ipairs(hunks) do
-    local hunk_start_lnum = hunk[1].lnum
-    if (direction > 0 and hunk_start_lnum > current_lnum) or
-        (direction < 0 and hunk_start_lnum < current_lnum) then
-      vim.fn.sign_jump(hunk[1].id, uncovered_group, "")
-      return
-    end
-  end
-
-  -- If no hunk was found in the current direction, loop to the opposite end
-  vim.fn.sign_jump(hunks[1][1].id, uncovered_group, "")
+H.revert = function(hunks)
+  table.sort(hunks, function(a, b)
+    return a[1].lnum > b[1].lnum
+  end)
+  return hunks
 end
 
 return M
