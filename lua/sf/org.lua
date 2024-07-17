@@ -42,15 +42,15 @@ H.clean_org_cache = function()
 end
 
 H.open = function()
-	local cmd = 'sf org open'
+  local cmd = 'sf org open'
   local err_msg = org .. ' - open command failed!'
-	U.silent_job_call(cmd, nil, err_msg, nil)
+  U.silent_job_call(cmd, nil, err_msg, nil)
 end
 
 H.open_current_file = function() 
-	local cmd 'sf org open --source-file "%:p"'
+  local cmd = 'sf org open --source-file "%:p"'
   local err_msg = org .. ' - open command failed for the current file!'
-	U.silent_job_call(cmd, nil, err_msg, nil)
+  U.silent_job_call(cmd, nil, err_msg, nil)
 end
 
 H.set_target_org = function()
