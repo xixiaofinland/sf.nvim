@@ -326,7 +326,7 @@ add your doc content in `init.lua` without touching `help.txt` is sufficient.
 
 Thanks to the following people for contributing to this project:
 
-- ![GitHub Profile Image](https://github.com/ognjen-vuceljic.png?size=50) [@ognjen-vuceljic](https://github.com/ognjen-vuceljic)
+- [@ognjen-vuceljic](https://github.com/ognjen-vuceljic)
 - ![GitHub Profile Image](https://github.com/waltonzt.png?size=50) [@waltonzt](https://github.com/waltonzt)
 - ![GitHub Profile Image](https://github.com/FedeAbella.png?size=50) [@FedeAbella](https://github.com/FedeAbella)
 
