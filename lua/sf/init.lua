@@ -93,6 +93,7 @@ Sf.diff_in_org = Org.diff_in_org
 Sf.org_open = Org.open
 
 --- Open the current file in the target_org in browser
+
 Sf.org_open_current_file = Org.open_current_file
 
 -- From Metadata module ==========================================================
