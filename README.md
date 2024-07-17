@@ -165,8 +165,8 @@ Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to 
 | `<leader>ct`     |create_ctags |SFCreateCtags|create ctags file|
 | `<leader>sq`     | run_highlighted_soql |N/A|Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
 |`\s`|toggle_sign |N/A|Show/hide line coverage sign icon|
-|`]v`|uncovered_jump_forward |N/A|jump to next test uncovered line|
-|`[v`|`uncovered_jump_backward |N/A|jump to last test uncovered line|
+|`]v`|uncovered_jump_forward |N/A|jump to next test uncovered hunk|
+|`[v`|`uncovered_jump_backward |N/A|jump to last test uncovered hunk|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
@@ -220,7 +220,7 @@ LWC, Aura, etc.). You can list them and fetch all of a specific type. Steps:
 
 There are two categories of test actions.
 
-✨ 1. Simple use-case: Test without code coverage info
+✨ Use-case 1: without code coverage info
 
 You can,
 
@@ -230,7 +230,7 @@ You can,
 
 These commands quickly run and verify the pass/fail result.
 
-🔀 2. Complex use-case: Test with code coverage info
+🔀 2. Use-case 2: with code coverage info
 
 Use the same hotkeys but capitalize the last letter:
 
@@ -248,9 +248,9 @@ covered/uncovered lines are illustrated as sign-icons next to the line number (s
 - The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true` (default).
 - Toggle this feature on/off with the `\s` hotkey (or `require'sf'.toggle_sign()`).
 
-🏗️ Jump to next uncovered line
+🏗️ Jump to next uncovered hunk
 
-- Use `]v` and `[v` to jump to the next/previous uncovered lines when the toggle_sign feature is enabled.
+- Use `]v` and `[v` to jump to the next/previous uncovered hunk when the toggle_sign feature is enabled.
 
 🧩 Screenshot
 
