@@ -31,8 +31,6 @@ function Org.open_current_file()
   H.open_current_file()
 end
 
-local api = vim.api
-
 -- helpers;
 
 H.orgs = {}
