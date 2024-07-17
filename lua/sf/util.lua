@@ -8,15 +8,15 @@ M.last_tests = ''
 M.target_org = ''
 
 M.show = function(msg)
-  vim.notify(msg, vim.log.levels.INFO)
+  vim.notify(msg, vim.log.levels.INFO, { title = 'sf.nvim' })
 end
 
 M.show_err = function(msg)
-  vim.notify(msg, vim.log.levels.ERROR)
+  vim.notify(msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
 end
 
 M.show_warn = function(msg)
-  vim.notify(msg, vim.log.levels.WARN)
+  vim.notify(msg, vim.log.levels.WARN, { title = 'sf.nvim' })
 end
 
 M.get = function()
