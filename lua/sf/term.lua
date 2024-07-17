@@ -90,6 +90,8 @@ function Term.run(c, cb)
   t:run(cmd, cb)
 end
 
+-- helper;
+
 H.get_visual_selection = function()
   -- Save the current register content and type
   local old_reg = vim.fn.getreg('"')
