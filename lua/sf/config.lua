@@ -280,9 +280,11 @@ local init = function()
     nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
     nmap('<leader>ct', Sf.create_ctags, 'create ctag file in project root')
     nmap('<leader>ft', Sf.create_and_list_ctags, 'fzf list updated ctags')
+    nmap("<leader>so", Sf.org_open, "open target_org")
 
     -- Hotkeys for metadata files only;
     if vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
+      nmap("<leader>sO", Sf.org_open_current_file, "open file in target_org")
       nmap('<leader>sd', Sf.diff_in_target_org, "diff in target_org")
       nmap('<leader>sD', Sf.diff_in_org, "diff in org...")
       nmap('<leader>ma', Sf.retrieve_apex_under_cursor, "apex under cursor retrieve")

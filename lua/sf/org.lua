@@ -23,6 +23,14 @@ function Org.diff_in_org()
   H.diff_in_org()
 end
 
+function Org.open()
+  H.open()
+end
+
+function Org.open_current_file()
+  H.open_current_file()
+end
+
 local api = vim.api
 
 -- helpers;
@@ -31,6 +39,19 @@ H.orgs = {}
 
 H.clean_org_cache = function()
   H.orgs = {}
+end
+
+H.open = function()
+  local cmd = 'sf org open -o ' .. U.get()
+  local err_msg = 'Command failed: ' .. cmd
+  U.silent_job_call(cmd, nil, err_msg)
+end
+
+H.open_current_file = function()
+  local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
+  print(cmd)
+  local err_msg = 'Command failed: ' .. cmd
+  U.silent_job_call(cmd, nil, err_msg)
 end
 
 H.set_target_org = function()
