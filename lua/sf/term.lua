@@ -17,16 +17,6 @@ function Term.open()
   t:open()
 end
 
-function Term.org_open()
-	local cmd = vim.fn.expandcmd('sf org open')
-	t:run(cmd)
-end
-
-function Term.org_open_current_file()
-	local cmd = vim.fn.expandcmd('sf org open --source-file "%:p"')
-	t:run(cmd)
-end
-
 function Term.save_and_push()
   -- vim.api.nvim_command('e') -- reload file to avoid invoking y/n pop-up in Ex
   vim.api.nvim_command('write!')
