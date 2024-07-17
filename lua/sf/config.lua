@@ -280,6 +280,8 @@ local init = function()
     nmap('<leader>s-', Sf.go_to_sf_root, "cd into root")
     nmap('<leader>ct', Sf.create_ctags, 'create ctag file in project root')
     nmap('<leader>ft', Sf.create_and_list_ctags, 'fzf list updated ctags')
+    nmap("<leader>so", Sf.org_open, "open current org in browser")
+    nmap("<leader>sO", Sf.org_open_current_file, "open current file in browser")
 
     -- Hotkeys for metadata files only;
     if vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
