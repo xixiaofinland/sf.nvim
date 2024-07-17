@@ -93,10 +93,10 @@ local init = function()
       vim.bo.commentstring = '//%s'
       vim.bo.fixendofline = false
 
-      -- the code-coverage sign applies to the newly opened Apex
-      local sign = require('sf.sign')
-      if sign.is_enabled() then
-        sign.refresh_and_place()
+      -- try refresh code coverage signs in the new opened Apex file
+      local t = require('sf.test')
+      if t.is_sign_enabled() then
+        t.refresh_and_place_sign()
       end
     end
   })
@@ -314,7 +314,7 @@ local init = function()
   -- Initiate the raw term
   require('sf.term').setup(Cfg.config.term_config)
 
-  require('sf.sign').setup()
+  require('sf.test').setup_sign()
 end
 
 Cfg.setup = function(opt)
