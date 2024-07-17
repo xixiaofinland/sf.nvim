@@ -110,7 +110,7 @@ require('sf').setup({
   default_dir = '/force-app/main/default/',
 
   -- the folder this plugin uses to store intermediate data. It's under the sf project root directory.
-  plugin_folder_name = '/cache/',
+  plugin_folder_name = '/sf_cache/',
 
   -- after the test running with code coverage completes, display uncovered line sign automatically.
   -- you can set it to `false`, then manually run toggle_sign command.
