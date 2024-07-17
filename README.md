@@ -265,10 +265,6 @@ signs.
 
 <br>
 
-![Image 012](https://github.com/user-attachments/assets/c9539cec-7dcc-48fc-b8e8-929cc1514b07)
-
-<br>
-
 ## 🖥️ Integrated terminal
 
 The integrated terminal is designed to
