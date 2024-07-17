@@ -89,10 +89,11 @@ Sf.diff_in_target_org = Org.diff_in_target_org
 --- The left window displays the org verison, the right window displays the local verison.
 Sf.diff_in_org = Org.diff_in_org
 
---- Open the current org in browser
+--- Open the target_org in browser
 Sf.org_open = Org.open
 
---- Open the current file in browser
+--- Open the current file in the target_org in browser
+
 Sf.org_open_current_file = Org.open_current_file
 
 -- From Metadata module ==========================================================

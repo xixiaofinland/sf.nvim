@@ -24,14 +24,16 @@ function Org.diff_in_org()
 end
 
 function Org.open()
-  H.open()
+  local cmd = 'sf org open -o ' .. U.get()
+  local err_msg = 'Command failed: ' .. cmd
+  U.silent_job_call(cmd, nil, err_msg)
 end
 
 function Org.open_current_file()
-  H.open_current_file()
+  local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
+  local err_msg = 'Command failed: ' .. cmd
+  U.silent_job_call(cmd, nil, err_msg)
 end
-
-local api = vim.api
 
 -- helpers;
 
