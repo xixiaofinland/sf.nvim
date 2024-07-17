@@ -28,12 +28,6 @@ Sf.copy_apex_name = Util.copy_apex_name
 
 -- From Term module ==========================================================
 
---- Open the current org in browser
-Sf.org_open = Term.org_open
-
---- Open the current file in browser
-Sf.org_open_current_file = Term.org_open_current_file
-
 --- Toggle the SFTerm float window.
 Sf.toggle_term = Term.toggle
 
@@ -94,6 +88,12 @@ Sf.diff_in_target_org = Org.diff_in_target_org
 --- Similar to |Sf.diff_in_target_org|, you can choose which org to diff with.
 --- The left window displays the org verison, the right window displays the local verison.
 Sf.diff_in_org = Org.diff_in_org
+
+--- Open the current org in browser
+Sf.org_open = Org.open
+
+--- Open the current file in browser
+Sf.org_open_current_file = Org.open_current_file
 
 -- From Metadata module ==========================================================
 
