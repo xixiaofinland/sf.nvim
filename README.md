@@ -230,7 +230,7 @@ You can,
 
 These commands quickly run and verify the pass/fail result.
 
-🔀 2. Use-case 2: with code coverage info
+🔀 Use-case 2: with code coverage info
 
 Use the same hotkeys but capitalize the last letter:
 
