@@ -243,6 +243,17 @@ These test results contains code coverage information.
 After running these commands successfully, the test result is saved locally, and the
 covered/uncovered lines are illustrated as sign-icons next to the line number (screenshot below).
 
+🧩 Screenshot
+
+Test finishes in `CrudTest.cls` with `UNCOVERED LINES: 9,10,11,13,14` and the line coverage in `Crud.cls` is indicated with green/red icon
+signs.
+
+<br>
+
+![Image 012](https://github.com/user-attachments/assets/c9539cec-7dcc-48fc-b8e8-929cc1514b07)
+
+<br>
+
 📏 Note.
 
 - The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true` (default).
@@ -251,11 +262,6 @@ covered/uncovered lines are illustrated as sign-icons next to the line number (s
 🏗️ Jump to next uncovered hunk
 
 - Use `]v` and `[v` to jump to the next/previous uncovered hunk when the toggle_sign feature is enabled.
-
-🧩 Screenshot
-
-Test finishes in `CrudTest.cls` with `UNCOVERED LINES: 9,10,11,13,14` and the line coverage in `Crud.cls` is indicated with green/red icon
-signs.
 
 <br>
 
