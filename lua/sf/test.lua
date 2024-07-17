@@ -3,6 +3,7 @@ local TS = require('sf.ts')
 local U = require('sf.util')
 local S = require('sf.sign')
 
+local H = {}
 local P = {}
 local Test = {}
 
@@ -16,7 +17,7 @@ Test.open = function()
 end
 
 Test.run_current_test_with_coverage = function()
-  Test.run_current_test('-c ', Test.save_test_coverage_locally)
+  Test.run_current_test('-c ', H.save_test_coverage_locally)
 end
 
 Test.run_current_test = function(extraParams, cb)
@@ -38,7 +39,7 @@ Test.run_current_test = function(extraParams, cb)
 end
 
 Test.run_all_tests_in_this_file_with_coverage = function()
-  Test.run_all_tests_in_this_file('-c ', Test.save_test_coverage_locally)
+  Test.run_all_tests_in_this_file('-c ', H.save_test_coverage_locally)
 end
 
 Test.run_all_tests_in_this_file = function(extraParams, cb)
@@ -70,12 +71,22 @@ Test.run_local_tests = function()
   T.run(cmd)
 end
 
--- a callback function
-Test.save_test_coverage_locally = function(self, cmd, exit_code)
+-- helper;
+
+H.extract_test_run_id = function(lines)
+  for _, line in ipairs(lines) do
+    if string.find(line, "Test Run Id") then
+      return string.match(line, "Test Run Id%s*(%w+)")
+    end
+  end
+  return nil
+end
+
+H.save_test_coverage_locally = function(self, cmd, exit_code)
   U.create_plugin_folder_if_not_exist()
 
   local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
-  local id = Test.extract_test_run_id(lines)
+  local id = H.extract_test_run_id(lines)
   if id == nil then
     return
   end
@@ -84,15 +95,6 @@ Test.save_test_coverage_locally = function(self, cmd, exit_code)
   local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. U.get_plugin_folder_path() .. file_name
 
   U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed! " .. cmd, S.invalidate_cache_and_try_place)
-end
-
-Test.extract_test_run_id = function(lines)
-  for _, line in ipairs(lines) do
-    if string.find(line, "Test Run Id") then
-      return string.match(line, "Test Run Id%s*(%w+)")
-    end
-  end
-  return nil
 end
 
 -- prompt below

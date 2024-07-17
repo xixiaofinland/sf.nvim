@@ -1,6 +1,5 @@
 local api = vim.api
 local cmd = api.nvim_command
-local Test = require('sf.test')
 
 local T = {}
 local H = {}
