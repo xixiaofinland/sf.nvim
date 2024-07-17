@@ -177,7 +177,7 @@ Example:
 ![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
 Type `:SF` in Ex mode will list all user commands:
-![Image 002](https://github.com/xixiaofinland/sf.nvim/assets/13655323/056648c5-5f4f-4385-9cc5-ab2ef2ad96f6)
+![Screenshot 2024-07-17 at 9 43 07](https://github.com/user-attachments/assets/3cb2f4e9-2ac4-4a9c-825c-a94240f97e66)
 
 <br>
 
@@ -230,7 +230,7 @@ You can,
 
 These commands quickly run and verify the pass/fail result.
 
-🔀 2. Use-case 2: with code coverage info
+🔀 Use-case 2: with code coverage info
 
 Use the same hotkeys but capitalize the last letter:
 
@@ -243,15 +243,6 @@ These test results contains code coverage information.
 After running these commands successfully, the test result is saved locally, and the
 covered/uncovered lines are illustrated as sign-icons next to the line number (screenshot below).
 
-📏 Note.
-
-- The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true` (default).
-- Toggle this feature on/off with the `\s` hotkey (or `require'sf'.toggle_sign()`).
-
-🏗️ Jump to next uncovered hunk
-
-- Use `]v` and `[v` to jump to the next/previous uncovered hunk when the toggle_sign feature is enabled.
-
 🧩 Screenshot
 
 Test finishes in `CrudTest.cls` with `UNCOVERED LINES: 9,10,11,13,14` and the line coverage in `Crud.cls` is indicated with green/red icon
@@ -260,6 +251,17 @@ signs.
 <br>
 
 ![Image 012](https://github.com/user-attachments/assets/c9539cec-7dcc-48fc-b8e8-929cc1514b07)
+
+<br>
+
+📏 Note.
+
+- The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true` (default).
+- Toggle this feature on/off with the `\s` hotkey (or `require'sf'.toggle_sign()`).
+
+🏗️ Jump to next uncovered hunk
+
+- Use `]v` and `[v` to jump to the next/previous uncovered hunk when the toggle_sign feature is enabled.
 
 <br>
 
