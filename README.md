@@ -177,7 +177,7 @@ Example:
 ![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
 Type `:SF` in Ex mode will list all user commands:
-![Image 002](https://github.com/xixiaofinland/sf.nvim/assets/13655323/056648c5-5f4f-4385-9cc5-ab2ef2ad96f6)
+![Screenshot 2024-07-17 at 9 43 07](https://github.com/user-attachments/assets/3cb2f4e9-2ac4-4a9c-825c-a94240f97e66)
 
 <br>
 
