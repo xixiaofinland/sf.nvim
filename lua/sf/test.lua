@@ -1,12 +1,14 @@
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
-local S = require('sf.sign')
+local S = require('sf.sub.test_sign')
 
 local H = {}
 local P = {}
 local Test = {}
 
+Test.is_sign_enabled = S.is_enabled
+Test.refresh_and_place_sign = S.refresh_and_place
 Test.setup_sign = S.setup
 Test.toggle_sign = S.toggle
 Test.uncovered_jump_forward = S.uncovered_jump_forward

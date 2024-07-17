@@ -6,7 +6,7 @@ local t
 -- this function is called in config.lua
 -- it's meant to delay the raw term initialization so the term_cfg is ready after user's setup() call
 function Term.setup(term_cfg)
-  t = require('sf.term.raw_term'):new(term_cfg)
+  t = require('sf.sub.raw_term'):new(term_cfg)
 end
 
 function Term.toggle()
