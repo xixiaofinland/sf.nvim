@@ -314,7 +314,7 @@ local init = function()
   -- Initiate the raw term
   require('sf.term').setup(Cfg.config.term_config)
 
-  require('sf.sign').setup()
+  require('sf.test').setup_sign()
 end
 
 Cfg.setup = function(opt)

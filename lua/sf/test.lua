@@ -1,11 +1,15 @@
 local T = require('sf.term')
 local TS = require('sf.ts')
 local U = require('sf.util')
-local C = require('sf.config')
 local S = require('sf.sign')
 
 local P = {}
 local Test = {}
+
+Test.setup_sign = S.setup
+Test.toggle_sign = S.toggle
+Test.uncovered_jump_forward = S.uncovered_jump_forward
+Test.uncovered_jump_backward = S.uncovered_jump_backward
 
 Test.open = function()
   P.open()
@@ -81,10 +85,6 @@ Test.save_test_coverage_locally = function(self, cmd, exit_code)
 
   U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed! " .. cmd, S.invalidate_cache_and_try_place)
 end
-
-Test.toggle_sign = S.toggle
-Test.uncovered_jump_forward = S.uncovered_jump_forward
-Test.uncovered_jump_backward = S.uncovered_jump_backward
 
 Test.extract_test_run_id = function(lines)
   for _, line in ipairs(lines) do

@@ -1,5 +1,3 @@
-M.new_covered()	sf.txt	/*M.new_covered()*
-M.new_uncovered()	sf.txt	/*M.new_uncovered()*
 Sf.cancel	sf.txt	/*Sf.cancel*
 Sf.create_and_list_ctags	sf.txt	/*Sf.create_and_list_ctags*
 Sf.create_apex_class	sf.txt	/*Sf.create_apex_class*
