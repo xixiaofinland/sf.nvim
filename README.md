@@ -9,11 +9,18 @@
 # 📖 Table of Content
 
 - [Features](#-features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
+- [Intro video](#-intro-video-6min)
+- [Prerequisites](#-prerequisites)
+- [Installation](#%EF%B8%8F--installation)
+- [Configuration](#%EF%B8%8F-configuration)
+- [Display target org](#-display-target_org)
+- [Keys](#-keys)
+- [Full doc](#-full-document)
+- [List/retrieve metadata](#-feature-listretrieve-metadata-and-metadata-types)
+- [Apex test](#apex-test)
+- [Integrated term](#%EF%B8%8F-integrated-terminal)
+- [Apex jump](#-enhanced-jump-to-definition-apex)
+- [Contributions](#-contributions)
 
 ## ✨ Features
 
@@ -108,7 +115,7 @@ require('sf').setup({
   term_config = {
     blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
     dimensions = {
-      height = 0.4, -- proportional of the editor height. 0.4 means 40%.
+      height = 0.4, --proportional of the editor height. 0.4 means 40%.
       width = 0.8,  -- proportional of the editor width. 0.8 means 80%.
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
@@ -239,7 +246,7 @@ You can,
 
 These commands quickly run and verify the pass/fail result.
 
-🔀 Use-case 2: with code coverage info
+🌩️ Use-case 2: with code coverage info
 
 Use the same hotkeys but capitalize the last letter:
 
@@ -271,6 +278,11 @@ signs.
 🏗️ Jump to next uncovered hunk
 
 - Use `]v` and `[v` to jump to the next/previous uncovered hunk when the toggle_sign feature is enabled.
+
+📊 Apex file code coverage info
+
+- `require('sf').covered_percent()` has the current Apex file code coverage information. You can
+  display it as you want. For example, I use it in my status line [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
 
 <br>
 
@@ -310,12 +322,6 @@ ctags](https://github.com/universal-ctags/ctags). So you need to install it to u
 Using the `<C-]>` key for jump-to-definition will automatically use both LSP and ctags in order.
 `require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in  `fzf-lua`
 plugin.
-
-<br>
-
-## 📝 TODO
-
-- change diff() to use md_type.json to determine .cls -> ApexClass
 
 <br>
 
