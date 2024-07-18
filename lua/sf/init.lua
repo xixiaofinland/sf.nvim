@@ -23,8 +23,14 @@ Sf.setup = Cfg.setup
 --- or manually by |Sf.set_target_org|.
 Sf.get_target_org = Util.get
 
--- A convenient way to quickly copy file name trimming dot-after, e.g. copy "Hello" from "Hello.cls"
+--- Display the Apex test coverage percent for the current Apex file
+Sf.covered_percent = Test.covered_percent
+
+--- A convenient way to quickly copy file name trimming dot-after, e.g. copy "Hello" from "Hello.cls"
 Sf.copy_apex_name = Util.copy_apex_name
+
+--- get latest code coverage percentage info for the current Apex
+Sf.refresh_current_file_covered_percent = Test.refresh_current_file_covered_percent
 
 -- From Term module ==========================================================
 
