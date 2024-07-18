@@ -48,7 +48,7 @@ local default_cfg = {
 
   -- code coverage sign icon colors
   code_sign_highlight = {
-    covered = { fg = "#B7F071" }, -- set `fg = ""` to disable this sign icon
+    covered = { fg = "#B7F071" },   -- set `fg = ""` to disable this sign icon
     uncovered = { fg = "#F07178" }, -- set `fg = ""` to disable this sign icon
   },
 }
@@ -115,6 +115,14 @@ local init = function()
 
       nmap('<leader><leader>', require('sf').toggle_term, 'terminal toggle')
       nmap('<C-c>', require('sf').cancel, 'cancel running command')
+    end
+  })
+
+  -- Refresh test code coverage info for the current Apex file
+  vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = { "*.cls" },
+    callback = function()
+      require('sf').refresh_current_file_covered_percent()
     end
   })
 

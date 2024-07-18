@@ -14,6 +14,7 @@ local uncovered_sign = "sf_uncovered"
 local show_covered = true
 local show_uncovered = true
 
+M.covered_percent = ""
 
 M.setup = function()
   if C.config.code_sign_highlight.covered.fg == "" then
@@ -57,68 +58,91 @@ end
 
 M.refresh_and_place = function()
   H.unplace()
-  local signs = H.parse_from_json_file()
+  local coverage = H.get_coverage()
+
+  local signs = H.get_signs_from(coverage)
   vim.fn.sign_placelist(signs)
   enabled = true
 end
 
--- helpers
+M.refresh_current_file_covered_percent = function()
+  local coverage = H.get_coverage()
+  local file_name = vim.fn.expand("%:t")
 
-H.parse_from_json_file = function()
-  local coverage
-
-  if cache ~= nil then
-    coverage = cache
-  else
-    local tbl = U.read_file_in_plugin_folder('test_result.json')
-    if not tbl then
-      return vim.notify('No data read from test_result.json. Empty or bad format?', vim.log.levels.WARN)
-    end
-
-    coverage = vim.tbl_get(tbl, "result", "coverage", "coverage")
-
-    if coverage == nil then
-      return vim.notify("Coverage element does not exist.", vim.log.levels.ERROR)
-    end
-
-    cache = coverage
-  end
-
-  local signs = {}
   for i, v in pairs(coverage) do
     local apex_name = v["name"] .. '.cls'
+
+    if file_name == apex_name then
+      M.covered_percent = v["coveredPercent"]
+      return
+    end
+  end
+  M.covered_percent = ""
+end
+
+M.invalidate_cache_and_try_place = function()
+  cache = nil
+  if M.is_enabled() or C.config.auto_display_code_sign then
+    M.refresh_and_place()
+  end
+end
+
+-- helpers
+
+H.get_signs_from = function(coverage)
+  local signs = {}
+
+  for i, v in pairs(coverage) do
+    local apex_name = v["name"] .. '.cls'
+
+    if vim.fn.expand("%:t") == apex_name then
+      M.covered_percent = v["coveredPercent"]
+    end
 
     if U.is_apex_loaded_in_buf(apex_name) then
       for line, value in pairs(v["lines"]) do
         local sign = {}
+        sign.id = 0
+        sign.buffer = U.get_buf_num(apex_name)
+        sign.lnum = line
+        sign.priority = 1000
+
         if show_covered and value == 1 then
-          sign.id = 0
           sign.name = covered_sign
           sign.group = covered_group
-          sign.buffer = U.get_buf_num(apex_name)
-          sign.lnum = line
-          sign.priority = 1000
-          table.insert(signs, sign)
         elseif show_uncovered and value == 0 then
-          sign.id = 0
           sign.name = uncovered_sign
           sign.group = uncovered_group
-          sign.buffer = U.get_buf_num(apex_name)
-          sign.lnum = line
-          sign.priority = 1000
-          table.insert(signs, sign)
         end
+
+        table.insert(signs, sign)
       end
     end
   end
   return signs
 end
 
-H.invalidate_cache_and_try_place = function()
-  cache = nil
-  if M.is_enabled() or C.config.auto_display_code_sign then
-    M.refresh_and_place()
+H.get_coverage = function()
+  local coverage
+
+  if cache ~= nil then
+    coverage = cache
+    return coverage
   end
+
+  local tbl = U.read_file_in_plugin_folder('test_result.json')
+  if not tbl then
+    error('::Read from test_result.json failed. Empty or bad format?')
+  end
+
+  coverage = vim.tbl_get(tbl, "result", "coverage", "coverage")
+  if coverage == nil then
+    error('::Coverage element does not exist in test_result.json.')
+  end
+
+  cache = coverage
+
+  return coverage
 end
 
 H.unplace = function()

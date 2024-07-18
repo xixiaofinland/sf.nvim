@@ -13,6 +13,10 @@ Test.setup_sign = S.setup
 Test.toggle_sign = S.toggle
 Test.uncovered_jump_forward = S.uncovered_jump_forward
 Test.uncovered_jump_backward = S.uncovered_jump_backward
+Test.refresh_current_file_covered_percent = S.refresh_current_file_covered_percent
+Test.covered_percent = function()
+  return S.covered_percent
+end
 
 Test.open = function()
   P.open()
