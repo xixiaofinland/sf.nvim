@@ -261,6 +261,8 @@ signs.
 
 - Use `]v` and `[v` to jump to the next/previous uncovered hunk.
 
+<br> 
+
 ## 🎯 Display target_org and code coverage
 
 ### target_org
