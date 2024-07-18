@@ -283,6 +283,7 @@ signs.
 
 - `require('sf').covered_percent()` has the current Apex file code coverage information. You can
   display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
+  
 ![Image 015](https://github.com/user-attachments/assets/3b1ba158-dbcb-4516-a53c-61a824772933)
 
 <br>
