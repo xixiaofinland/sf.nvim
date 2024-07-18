@@ -8,7 +8,7 @@
 
 # 📖 Table of Content
 
-- [Features](#Features)
+- [Features](#-features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -28,7 +28,7 @@
 
 <br>
 
-## 🎦 Intro video
+## 🎦 Intro video (6min)
 
 [![Feature Intro (6 min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
