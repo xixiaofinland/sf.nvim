@@ -1,4 +1,6 @@
 Sf.cancel	sf.txt	/*Sf.cancel*
+Sf.copy_apex_name	sf.txt	/*Sf.copy_apex_name*
+Sf.covered_percent	sf.txt	/*Sf.covered_percent*
 Sf.create_and_list_ctags	sf.txt	/*Sf.create_and_list_ctags*
 Sf.create_apex_class	sf.txt	/*Sf.create_apex_class*
 Sf.create_aura_bundle	sf.txt	/*Sf.create_aura_bundle*
@@ -13,10 +15,10 @@ Sf.list_md_to_retrieve	sf.txt	/*Sf.list_md_to_retrieve*
 Sf.list_md_type_to_retrieve	sf.txt	/*Sf.list_md_type_to_retrieve*
 Sf.open_test_select	sf.txt	/*Sf.open_test_select*
 Sf.org_open	sf.txt	/*Sf.org_open*
-Sf.org_open_current_file	sf.txt	/*Sf.org_open_current_file*
 Sf.pull_md_json	sf.txt	/*Sf.pull_md_json*
 Sf.pull_md_type_json	sf.txt	/*Sf.pull_md_type_json*
 Sf.push_delta	sf.txt	/*Sf.push_delta*
+Sf.refresh_current_file_covered_percent	sf.txt	/*Sf.refresh_current_file_covered_percent*
 Sf.repeat_last_tests	sf.txt	/*Sf.repeat_last_tests*
 Sf.retrieve	sf.txt	/*Sf.retrieve*
 Sf.retrieve_apex_under_cursor	sf.txt	/*Sf.retrieve_apex_under_cursor*

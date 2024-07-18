@@ -20,6 +20,21 @@ get the value of the plugin internal variable "target_org".
 or manually by |Sf.set_target_org|.
 
 ------------------------------------------------------------------------------
+                                                            *Sf.covered_percent*
+                              `Sf.covered_percent`
+Display the Apex test coverage percent for the current Apex file
+
+------------------------------------------------------------------------------
+                                                             *Sf.copy_apex_name*
+                              `Sf.copy_apex_name`
+A convenient way to quickly copy file name trimming dot-after, e.g. copy "Hello" from "Hello.cls"
+
+------------------------------------------------------------------------------
+                                       *Sf.refresh_current_file_covered_percent*
+                   `Sf.refresh_current_file_covered_percent`
+get latest code coverage percentage info for the current Apex
+
+------------------------------------------------------------------------------
                                                                 *Sf.toggle_term*
                                 `Sf.toggle_term`
 Toggle the SFTerm float window.
@@ -120,8 +135,6 @@ The left window displays the org verison, the right window displays the local ve
 Open the target_org in browser
 
 ------------------------------------------------------------------------------
-                                                      *Sf.org_open_current_file*
-                           `Sf.org_open_current_file`
 Open the current file in the target_org in browser
 
 ------------------------------------------------------------------------------
