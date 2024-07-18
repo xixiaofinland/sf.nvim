@@ -6,6 +6,15 @@
 <h1 align="center">Sf.nvim</h1>
 <p align="center">📸 Offer common functionalities for Salesforce development</p>
 
+# 📖 Table of Content
+
+- [Features](#Features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## ✨ Features
 
 - 🔥 Apex/Lwc/Aura: push, retrieve, create
@@ -19,7 +28,7 @@
 
 <br>
 
-## 🎦 Video Intro (6 mins)
+## 🎦 Intro video
 
 [![Feature Intro (6 min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
 
