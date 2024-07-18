@@ -115,7 +115,7 @@ require('sf').setup({
   term_config = {
     blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
     dimensions = {
-      height = 0.4, --proportional of the editor height. 0.4 means 40%.
+      height = 0.4, -- proportional of the editor height. 0.4 means 40%.
       width = 0.8,  -- proportional of the editor width. 0.8 means 80%.
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
@@ -139,24 +139,6 @@ require('sf').setup({
   },
 })
 ```
-
-<br>
-
-## 🎯 Display target_org
-
-Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
-authenticated org names. Display the target_org in your status line to
-facilitate command execution against the target org.
-
-Example configuration using lualine.nvim with target_org(`xixiao100`):
-
-```lua
-    sections = {
-      lualine_c = { 'filename', {
-        "require'sf'.get_target_org()",
-      } },
-```
-![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
 <br>
 
@@ -279,11 +261,31 @@ signs.
 
 - Use `]v` and `[v` to jump to the next/previous uncovered hunk.
 
-📊 Apex file code coverage info
+## 🎯 Display target_org and code coverage
 
-- `require('sf').covered_percent()` has the current Apex file code coverage information. You can
-  display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
-  
+### target_org
+
+Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
+authenticated org names. Display the target_org in your status line to
+facilitate command execution against the target org.
+
+Example configuration using lualine.nvim with target_org(`xixiao100`):
+
+```lua
+    sections = {
+      lualine_c = { 'filename', {
+        "require'sf'.get_target_org()",
+      } },
+```
+
+### code coverage
+
+Once you have run Apex test with code coverage and the result is saved locally,
+`require('sf').covered_percent()` retrieves the current Apex file code coverage information.
+You can also display it in the status line in the same way.
+
+For example, I display code coverage (`92` percent) in my lualine next to target_org (`devhub`), configured [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
+
 ![Image 015](https://github.com/user-attachments/assets/3b1ba158-dbcb-4516-a53c-61a824772933)
 
 <br>
