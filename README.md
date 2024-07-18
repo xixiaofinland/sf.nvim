@@ -13,11 +13,11 @@
 - [Prerequisites](#-prerequisites)
 - [Installation](#%EF%B8%8F--installation)
 - [Configuration](#%EF%B8%8F-configuration)
-- [Display target org](#-display-target_org)
 - [Keys](#-keys)
 - [Full doc](#-full-document)
 - [List/retrieve metadata](#-feature-listretrieve-metadata-and-metadata-types)
 - [Apex test](#apex-test)
+- [Display target org and code coverage](#-display-target_org-and-code-coverage)
 - [Integrated term](#%EF%B8%8F-integrated-terminal)
 - [Apex jump](#-enhanced-jump-to-definition-apex)
 - [Contributions](#-contributions)
@@ -278,13 +278,13 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
       } },
 ```
 
+![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
+
 ### code coverage
 
-Once you have run Apex test with code coverage and the result is saved locally,
-`require('sf').covered_percent()` retrieves the current Apex file code coverage information.
-You can also display it in the status line in the same way.
-
-For example, I display code coverage (`92` percent) in my lualine next to target_org (`devhub`), configured [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
+`require('sf').covered_percent()` has the current Apex file code coverage information.
+You can
+  display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
 
 ![Image 015](https://github.com/user-attachments/assets/3b1ba158-dbcb-4516-a53c-61a824772933)
 
