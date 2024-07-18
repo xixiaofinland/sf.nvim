@@ -273,16 +273,16 @@ signs.
 📏 Note.
 
 - The line coverage icon shows automatically if the `auto_display_code_sign` setting is set to `true` (default).
-- Toggle this feature on/off with the `\s` hotkey (or `require'sf'.toggle_sign()`).
+- Toggle sign icon on/off with the `\s` hotkey (or `require'sf'.toggle_sign()`).
 
 🏗️ Jump to next uncovered hunk
 
-- Use `]v` and `[v` to jump to the next/previous uncovered hunk when the toggle_sign feature is enabled.
+- Use `]v` and `[v` to jump to the next/previous uncovered hunk.
 
 📊 Apex file code coverage info
 
 - `require('sf').covered_percent()` has the current Apex file code coverage information. You can
-  display it as you want. For example, I use it in my status line [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
+  display it as you want. For example, I use it in my status line next to target_org, configred in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
 
 <br>
 
