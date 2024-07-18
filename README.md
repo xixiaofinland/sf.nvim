@@ -13,11 +13,11 @@
 - [Prerequisites](#-prerequisites)
 - [Installation](#%EF%B8%8F--installation)
 - [Configuration](#%EF%B8%8F-configuration)
-- [Display target org](#-display-target_org)
 - [Keys](#-keys)
 - [Full doc](#-full-document)
 - [List/retrieve metadata](#-feature-listretrieve-metadata-and-metadata-types)
 - [Apex test](#apex-test)
+- [Display target org and code coverage](#-display-target_org-and-code-coverage)
 - [Integrated term](#%EF%B8%8F-integrated-terminal)
 - [Apex jump](#-enhanced-jump-to-definition-apex)
 - [Contributions](#-contributions)
@@ -115,7 +115,7 @@ require('sf').setup({
   term_config = {
     blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
     dimensions = {
-      height = 0.4, --proportional of the editor height. 0.4 means 40%.
+      height = 0.4, -- proportional of the editor height. 0.4 means 40%.
       width = 0.8,  -- proportional of the editor width. 0.8 means 80%.
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
@@ -139,24 +139,6 @@ require('sf').setup({
   },
 })
 ```
-
-<br>
-
-## 🎯 Display target_org
-
-Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
-authenticated org names. Display the target_org in your status line to
-facilitate command execution against the target org.
-
-Example configuration using lualine.nvim with target_org(`xixiao100`):
-
-```lua
-    sections = {
-      lualine_c = { 'filename', {
-        "require'sf'.get_target_org()",
-      } },
-```
-![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
 
 <br>
 
@@ -279,11 +261,35 @@ signs.
 
 - Use `]v` and `[v` to jump to the next/previous uncovered hunk.
 
-📊 Apex file code coverage info
+<br> 
 
-- `require('sf').covered_percent()` has the current Apex file code coverage information. You can
+## 🎯 Display target_org and code coverage
+
+### target_org
+
+Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
+authenticated org names. Display the target_org in your status line to
+facilitate command execution against the target org.
+
+If you don't have a default target_org, then this value is empty. You can use `<leader>ss` to set it.
+
+Example configuration using lualine.nvim with target_org(`xixiao100`):
+
+```lua
+    sections = {
+      lualine_c = { 'filename', {
+        "require'sf'.get_target_org()",
+      } },
+```
+
+![Image 012](https://github.com/xixiaofinland/sf.nvim/assets/13655323/645a6625-aec6-4593-931e-84534ad3ac4c)
+
+### code coverage
+
+`require('sf').covered_percent()` has the current Apex file code coverage information.
+You can
   display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
-  
+
 ![Image 015](https://github.com/user-attachments/assets/3b1ba158-dbcb-4516-a53c-61a824772933)
 
 <br>
