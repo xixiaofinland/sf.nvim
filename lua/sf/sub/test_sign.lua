@@ -59,6 +59,9 @@ end
 M.refresh_and_place = function()
   H.unplace()
   local coverage = H.get_coverage()
+  if coverage == nil then
+    return
+  end
 
   local signs = H.get_signs_from(coverage)
   vim.fn.sign_placelist(signs)
@@ -67,6 +70,10 @@ end
 
 M.refresh_current_file_covered_percent = function()
   local coverage = H.get_coverage()
+  if coverage == nil then
+    return
+  end
+
   local file_name = vim.fn.expand("%:t")
 
   for i, v in pairs(coverage) do
@@ -132,12 +139,12 @@ H.get_coverage = function()
 
   local tbl = U.read_file_in_plugin_folder('test_result.json')
   if not tbl then
-    error('::Read from test_result.json failed. Empty or bad format?')
+    return vim.notify_once('Local test_result.json not found.', vim.log.levels.WARN)
   end
 
   coverage = vim.tbl_get(tbl, "result", "coverage", "coverage")
   if coverage == nil then
-    error('::Coverage element does not exist in test_result.json.')
+    return vim.notify_once('Local test_result.json has no coverage element.', vim.log.levels.WARN)
   end
 
   cache = coverage
