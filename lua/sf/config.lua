@@ -122,7 +122,10 @@ local init = function()
   vim.api.nvim_create_autocmd("BufEnter", {
     pattern = { "*.cls" },
     callback = function()
-      require('sf').refresh_current_file_covered_percent()
+      local ok, content = pcall(require('sf').refresh_current_file_covered_percent)
+      if not ok then
+        -- swallow error and be silent
+      end
     end
   })
 
