@@ -148,124 +148,211 @@ local init = function()
 
     local Sf = require('sf')
 
+    local function switch(value)
+      return function(cases)
+        setmetatable(cases, cases)
+        local f = cases[value]
+        if f then
+          f()
+        end
+      end
+    end
+
     -- Ex user commands
+    local sub_cmd_args = {
+      "push",
+      "retrieve",
+      "diff",
+      "diffWith",
+    }
 
-    vim.api.nvim_create_user_command("SFFetchOrgList", function()
-      Sf.fetch_org_list()
-    end, {})
+    ---@class MyCmdSubcommand
+    ---@field impl fun(args:string[], opts: table) The command implementation
+    ---@field complete? fun(subcmd_arg_lead: string): string[] (optional) Command completions callback, taking the lead of the subcommand's arguments
 
-    vim.api.nvim_create_user_command("SFSetTargetOrg", function()
-      Sf.set_target_org()
-    end, {})
+    ---@type table<string, MyCmdSubcommand>
+    local sub_cmd_tbl = {
+      current = {
+        impl = function(args, opts)
+          print(sub_cmd_args)
+          local a = args[1]
+          switch(a) {
+            ["push"] = function()
+              print("push")
+            end,
+          }
 
-    vim.api.nvim_create_user_command("SFDiff", function()
-      Sf.diff_in_target_org()
-    end, {})
+          -- print(vim.inspect(args))
+          -- print(vim.inspect(opts))
+        end,
+        complete = function(subcmd_arg_lead)
+          return vim.iter(sub_cmd_args)
+              :filter(function(install_arg)
+                return install_arg:find(subcmd_arg_lead) ~= nil
+              end)
+              :totable()
+        end,
+      },
+    }
 
-    vim.api.nvim_create_user_command("SFDiffInOrg", function()
-      Sf.diff_in_org()
-    end, {})
+    ---@param opts table
+    local function create_sf_cmd(opts)
+      local fargs = opts.fargs
+      local sub_cmd = fargs[1]
+      local matched_sub_cmd = sub_cmd_tbl[sub_cmd]
 
-    vim.api.nvim_create_user_command("SFListMdToRetrieve", function()
-      Sf.list_md_to_retrieve()
-    end, {})
+      if not matched_sub_cmd then
+        vim.notify("Sf: Unknown command: " .. sub_cmd, vim.log.levels.ERROR)
+        return
+      end
 
-    vim.api.nvim_create_user_command("SFPullMd", function()
-      Sf.pull_md_json()
-    end, {})
+      local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
+      matched_sub_cmd.impl(args, opts)
+    end
 
-    vim.api.nvim_create_user_command("SFListMdTypeToRetrieve", function()
-      Sf.list_md_type_to_retrieve()
-    end, {})
+    vim.api.nvim_create_user_command("Sf", create_sf_cmd, {
+      nargs = "+",
+      desc = "Sf commands",
+      bang = false, -- TODO: should we support it?
+      complete = function(arg_lead, cmdline, _)
+        -- sub_cmd complete
+        local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*Sf[!]*%s(%S+)%s(.*)$")
+        if subcmd
+            and subcmd_arg_lead
+            and sub_cmd_tbl[subcmd]
+            and sub_cmd_tbl[subcmd].complete
+        then
+          return sub_cmd_tbl[subcmd].complete(subcmd_arg_lead)
+        end
 
-    vim.api.nvim_create_user_command("SFPullMdType", function()
-      Sf.pull_md_type_json()
-    end, {})
+        -- sub_cmd with args complete
+        if cmdline:match("^['<,'>]*Sf[!]*%s+%w*$") then
+          local sub_cmd_keys = vim.tbl_keys(sub_cmd_tbl)
+          return vim.iter(sub_cmd_keys)
+              :filter(function(key)
+                return key:find(arg_lead) ~= nil
+              end)
+              :totable()
+        end
+      end,
+    })
 
-    vim.api.nvim_create_user_command("SFCreateApexClass", function()
-      Sf.create_apex_class()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFCreateAuraBundle", function()
-      Sf.create_aura_bundle()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFCreateLwcBundle", function()
-      Sf.create_lwc_bundle()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFToggle", function()
-      Sf.toggle_term()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFSaveAndPush", function()
-      Sf.save_and_push()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFPushDelta", function()
-      Sf.push_delta()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRetrieve", function()
-      Sf.retrieve()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRetrieveDelta", function()
-      Sf.retrieve_delta()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRetrievePackage", function()
-      Sf.retrieve_package()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunAnonymousApex", function()
-      Sf.run_anonymous()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunQuery", function()
-      Sf.run_query()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunToolingQuery", function()
-      Sf.run_tooling_query()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFCancelCommand", function()
-      Sf.cancel()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunAllTestsInThisFile", function()
-      Sf.run_all_tests_in_this_file()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunAllTestsInThisFileWithCoverage", function()
-      Sf.run_all_tests_in_this_file_with_coverage()
-    end, {})
-
-
-    vim.api.nvim_create_user_command("SFRunCurrentTest", function()
-      Sf.run_current_test()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunCurrentTestWithCoverage", function()
-      Sf.run_current_test_with_coverage()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRepeatTest", function()
-      Sf.repeat_last_tests()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFRunLocalTests", function()
-      Sf.run_local_tests()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFOpenTestSelect", function()
-      Sf.open_test_select()
-    end, {})
-
-    vim.api.nvim_create_user_command("SFCreateCtags", function()
-      Sf.create_ctags()
-    end, {})
+    -- vim.api.nvim_create_user_command("SFFetchOrgList", function()
+    --   Sf.fetch_org_list()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFSetTargetOrg", function()
+    --   Sf.set_target_org()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFDiff", function()
+    --   Sf.diff_in_target_org()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFDiffInOrg", function()
+    --   Sf.diff_in_org()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFListMdToRetrieve", function()
+    --   Sf.list_md_to_retrieve()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFPullMd", function()
+    --   Sf.pull_md_json()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFListMdTypeToRetrieve", function()
+    --   Sf.list_md_type_to_retrieve()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFPullMdType", function()
+    --   Sf.pull_md_type_json()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFCreateApexClass", function()
+    --   Sf.create_apex_class()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFCreateAuraBundle", function()
+    --   Sf.create_aura_bundle()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFCreateLwcBundle", function()
+    --   Sf.create_lwc_bundle()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFToggle", function()
+    --   Sf.toggle_term()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFSaveAndPush", function()
+    --   Sf.save_and_push()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFPushDelta", function()
+    --   Sf.push_delta()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRetrieve", function()
+    --   Sf.retrieve()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRetrieveDelta", function()
+    --   Sf.retrieve_delta()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRetrievePackage", function()
+    --   Sf.retrieve_package()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunAnonymousApex", function()
+    --   Sf.run_anonymous()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunQuery", function()
+    --   Sf.run_query()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunToolingQuery", function()
+    --   Sf.run_tooling_query()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFCancelCommand", function()
+    --   Sf.cancel()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunAllTestsInThisFile", function()
+    --   Sf.run_all_tests_in_this_file()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunAllTestsInThisFileWithCoverage", function()
+    --   Sf.run_all_tests_in_this_file_with_coverage()
+    -- end, {})
+    --
+    --
+    -- vim.api.nvim_create_user_command("SFRunCurrentTest", function()
+    --   Sf.run_current_test()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunCurrentTestWithCoverage", function()
+    --   Sf.run_current_test_with_coverage()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRepeatTest", function()
+    --   Sf.repeat_last_tests()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFRunLocalTests", function()
+    --   Sf.run_local_tests()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFOpenTestSelect", function()
+    --   Sf.open_test_select()
+    -- end, {})
+    --
+    -- vim.api.nvim_create_user_command("SFCreateCtags", function()
+    --   Sf.create_ctags()
+    -- end, {})
 
     if not Cfg.config.enable_hotkeys then
       return
