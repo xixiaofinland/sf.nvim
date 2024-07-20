@@ -52,6 +52,8 @@
 
 💡 It comes with a health check feature. Run `:che sf` to auto-check prerequiste statistics.
 
+![Image 019](https://github.com/user-attachments/assets/aad0ac11-f980-423b-8332-a2b4359fb4ae)
+
 <br>
 
 ## ⚙️  Installation
