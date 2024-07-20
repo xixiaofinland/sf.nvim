@@ -50,6 +50,8 @@
   (Why not telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
 
+💡 It comes with a health check feature. Run `:che sf` to auto-check prerequiste statistics.
+
 <br>
 
 ## ⚙️  Installation
