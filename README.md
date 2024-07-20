@@ -51,7 +51,7 @@
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
 
 ----
-💡 It comes with a health check feature. Run `:che sf` to auto-check prerequiste statistics.
+💡 Plugin comes with a health check feature. Run `:che sf` to auto-check prerequiste statistics.
 
 ![Image 019](https://github.com/user-attachments/assets/aad0ac11-f980-423b-8332-a2b4359fb4ae)
 
