@@ -325,6 +325,8 @@ You can
 
 ## 🖥️ Integrated terminal
 
+![Image 022](https://github.com/user-attachments/assets/bd61e9fc-fa0d-4782-8f2d-68e90dcb0d10)
+
 The integrated terminal is designed to
 
 - accept input from hotkeys and user commands, such as "retrieve current metadata"
