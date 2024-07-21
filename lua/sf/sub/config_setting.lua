@@ -1,25 +1,12 @@
 local M = {}
-
 local Sf = require('sf')
 local U = require('sf.util')
 
-local function curry(func)
-  return function(a)
-    return function(b)
-      return func(a, b)
-    end
-  end
-end
-
 local complete = function(supported_args, subcmd_arg_lead)
-  return vim.iter(supported_args)
-      :filter(function(arg)
-        return arg:find(subcmd_arg_lead) ~= nil
-      end)
-      :totable()
+  return vim.tbl_filter(function(arg)
+    return arg:find('^' .. vim.pesc(subcmd_arg_lead)) ~= nil
+  end, supported_args)
 end
-
-local complete_func = curry(complete)
 
 -- sub commands' arg mapping to corresponding function
 local arg_to_func_map = {
@@ -32,8 +19,8 @@ local arg_to_func_map = {
 }
 
 local impl_func = function(sub_cmd, arg)
-  if arg_to_func_map[sub_cmd][arg] == nil then
-    return U.show_err(arg .. ' is not a supported sub command')
+  if vim.tbl_get(arg_to_func_map, sub_cmd, arg) == nil then
+    return U.show_err(string.format("'%s %s' is not valid command", sub_cmd, arg))
   end
   arg_to_func_map[sub_cmd][arg]()
 end
@@ -41,15 +28,14 @@ end
 ---@param opts table
 M.create_sf_cmd = function(opts)
   local fargs = opts.fargs
-  local sub_cmd = fargs[1]
-  local matched_sub_cmd = M.sub_cmd_tbl[sub_cmd]
-
-  if not matched_sub_cmd then
-    return U.show_err("unknown command: " .. sub_cmd)
+  if #fargs ~= 2 then
+    return U.show_err("Command must supply two and only two arguments")
   end
 
-  if #fargs ~= 2 then
-    return U.show_err(sub_cmd .. " must supply one and only one argument")
+  local sub_cmd = fargs[1]
+  local matched_sub_cmd = M.sub_cmd_tbl[sub_cmd]
+  if not matched_sub_cmd then
+    return U.show_err("unknown command: " .. sub_cmd)
   end
 
   matched_sub_cmd.impl(fargs[1], fargs[2])
@@ -63,7 +49,9 @@ end
 M.sub_cmd_tbl = {
   current = {
     impl = impl_func,
-    complete = complete_func(vim.tbl_keys(arg_to_func_map.current))
+    complete = function(subcmd_arg_lead)
+      return complete(vim.tbl_keys(arg_to_func_map.current), subcmd_arg_lead)
+    end,
   },
 }
 

@@ -151,13 +151,13 @@ local init = function()
 
     -- TODO: inject user command
 
-    vim.api.nvim_create_user_command("Sf", S.create_sf_cmd, {
+    vim.api.nvim_create_user_command("SF", S.create_sf_cmd, {
       nargs = "+",
       desc = "Sf commands",
       bang = false, -- TODO: should we support it?
       complete = function(arg_lead, cmdline, _)
         -- sub_cmd complete
-        local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*Sf[!]*%s(%S+)%s(.*)$")
+        local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*SF[!]*%s(%S+)%s(.*)$")
         print(cmdline)
         print(arg_lead)
         if subcmd
@@ -169,7 +169,7 @@ local init = function()
         end
 
         -- sub_cmd with args complete
-        if cmdline:match("^['<,'>]*Sf[!]*%s+%w*$") then
+        if cmdline:match("^['<,'>]*SF[!]*%s+%w*$") then
           print(vim.inspect(S.sub_cmd_tbl))
           local sub_cmd_keys = vim.tbl_keys(S.sub_cmd_tbl)
           return vim.iter(sub_cmd_keys)
