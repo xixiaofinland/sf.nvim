@@ -24,11 +24,7 @@ local common_impl = function(sub_cmd, arg)
 end
 
 
----@class MyCmdSubcommand
----@field impl fun(sub_cmd:string, arg:string) The command implementation
----@field complete fun(subcmd_arg_lead: string): string[] Command completions callback, taking the lead of the subcommand's arguments
----@type table<string, MyCmdSubcommand>
-
+---@type table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>
 M.sub_cmd_tbl = {
   current = {
     funcs = {
@@ -113,7 +109,7 @@ M.sub_cmd_tbl = {
 }
 
 ---@param opts table
-M.create_sf_cmd = function(opts)
+local create_sf_cmd = function(opts)
   local fargs = opts.fargs
   if #fargs ~= 2 then
     return U.show_err("Command must supply two and only two arguments")
@@ -126,6 +122,38 @@ M.create_sf_cmd = function(opts)
   end
 
   matched_sub_cmd.impl(fargs[1], fargs[2])
+end
+
+M.create_user_commands = function()
+  vim.api.nvim_create_user_command("SF", create_sf_cmd, {
+    nargs = "+",
+    desc = "Sf commands",
+    bang = false, -- TODO: should we support it?
+    complete = function(arg_lead, cmdline, _)
+      -- sub_cmd complete
+      local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*SF[!]*%s(%S+)%s(.*)$")
+      print(cmdline)
+      print(arg_lead)
+      if subcmd
+          and subcmd_arg_lead
+          and M.sub_cmd_tbl[subcmd]
+          and M.sub_cmd_tbl[subcmd].complete
+      then
+        return M.sub_cmd_tbl[subcmd].complete(subcmd_arg_lead)
+      end
+
+      -- sub_cmd with args complete
+      if cmdline:match("^['<,'>]*SF[!]*%s+%w*$") then
+        print(vim.inspect(M.sub_cmd_tbl))
+        local sub_cmd_keys = vim.tbl_keys(M.sub_cmd_tbl)
+        return vim.iter(sub_cmd_keys)
+            :filter(function(key)
+              return key:find(arg_lead) ~= nil
+            end)
+            :totable()
+      end
+    end,
+  })
 end
 
 return M
