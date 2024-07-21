@@ -1,4 +1,3 @@
-local C = require('sf.config')
 local M = {}
 
 M.cmd_params = '-w 5 -r human'
@@ -28,7 +27,7 @@ M.get = function()
 end
 
 M.get_default_dir_path = function()
-  return M.get_sf_root() .. C.config.default_dir
+  return M.get_sf_root() .. vim.g.sf.default_dir
 end
 
 M.get_apex_folder_path = function()
@@ -36,7 +35,7 @@ M.get_apex_folder_path = function()
 end
 
 M.get_plugin_folder_path = function()
-  return M.get_sf_root() .. C.config.plugin_folder_name
+  return M.get_sf_root() .. vim.g.sf.plugin_folder_name
 end
 
 M.create_plugin_folder_if_not_exist = function()
@@ -204,7 +203,7 @@ M.is_apex_loaded_in_buf = function(name)
 end
 
 M.get_apex_buf_num = function(name)
-  local path = C.config.default_dir .. "classes/" .. name
+  local path = vim.g.sf.default_dir .. "classes/" .. name
   return M.get_buf_num(path)
 end
 

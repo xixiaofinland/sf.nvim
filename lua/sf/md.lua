@@ -1,6 +1,5 @@
 local T = require('sf.term')
 local U = require('sf.util')
-local C = require('sf.config')
 local H = {}
 
 local Md = {}
@@ -67,7 +66,7 @@ H.list_md_to_retrieve = function()
     return U.show_err('fzf-lua is not installed. Need it to show the list.')
   end
 
-  local md_types = C.config.types_to_retrieve
+  local md_types = vim.g.sf.types_to_retrieve
   local md = {}
   local md_names = {}
 
@@ -103,7 +102,7 @@ H.list_md_to_retrieve = function()
 end
 
 H.pull_md_json = function()
-  local md_types = C.config.types_to_retrieve
+  local md_types = vim.g.sf.types_to_retrieve
   for _, type in pairs(md_types) do
     H.pull_metadata(type)
   end
@@ -213,7 +212,7 @@ end
 
 H.generate_lwc = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
-    U.get_sf_root() .. C.config.default_dir .. "/lwc", name)
+    U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
   U.silent_job_call(
     cmd,
     nil,

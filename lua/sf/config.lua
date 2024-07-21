@@ -1,4 +1,5 @@
 local Cfg = {}
+local S = require('sf.sub.config_setting')
 
 local default_cfg = {
   -- Unless you want to customize, no need to copy-paste any of these
@@ -54,7 +55,7 @@ local default_cfg = {
 }
 
 local apply_config = function(opt)
-  Cfg.config = vim.tbl_deep_extend('force', default_cfg, opt)
+  vim.g.sf = vim.tbl_deep_extend('force', default_cfg, opt)
 end
 
 local init = function()
@@ -148,69 +149,9 @@ local init = function()
 
     local Sf = require('sf')
 
-    local function switch(value)
-      return function(cases)
-        setmetatable(cases, cases)
-        local f = cases[value]
-        if f then
-          f()
-        end
-      end
-    end
+    -- TODO: inject user command
 
-    -- Ex user commands
-    local sub_cmd_args = {
-      "push",
-      "retrieve",
-      "diff",
-      "diffWith",
-    }
-
-    ---@class MyCmdSubcommand
-    ---@field impl fun(args:string[], opts: table) The command implementation
-    ---@field complete? fun(subcmd_arg_lead: string): string[] (optional) Command completions callback, taking the lead of the subcommand's arguments
-
-    ---@type table<string, MyCmdSubcommand>
-    local sub_cmd_tbl = {
-      current = {
-        impl = function(args, opts)
-          print(sub_cmd_args)
-          local a = args[1]
-          switch(a) {
-            ["push"] = function()
-              print("push")
-            end,
-          }
-
-          -- print(vim.inspect(args))
-          -- print(vim.inspect(opts))
-        end,
-        complete = function(subcmd_arg_lead)
-          return vim.iter(sub_cmd_args)
-              :filter(function(install_arg)
-                return install_arg:find(subcmd_arg_lead) ~= nil
-              end)
-              :totable()
-        end,
-      },
-    }
-
-    ---@param opts table
-    local function create_sf_cmd(opts)
-      local fargs = opts.fargs
-      local sub_cmd = fargs[1]
-      local matched_sub_cmd = sub_cmd_tbl[sub_cmd]
-
-      if not matched_sub_cmd then
-        vim.notify("Sf: Unknown command: " .. sub_cmd, vim.log.levels.ERROR)
-        return
-      end
-
-      local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
-      matched_sub_cmd.impl(args, opts)
-    end
-
-    vim.api.nvim_create_user_command("Sf", create_sf_cmd, {
+    vim.api.nvim_create_user_command("Sf", S.create_sf_cmd, {
       nargs = "+",
       desc = "Sf commands",
       bang = false, -- TODO: should we support it?
@@ -219,15 +160,15 @@ local init = function()
         local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*Sf[!]*%s(%S+)%s(.*)$")
         if subcmd
             and subcmd_arg_lead
-            and sub_cmd_tbl[subcmd]
-            and sub_cmd_tbl[subcmd].complete
+            and S.sub_cmd_tbl[subcmd]
+            and S.sub_cmd_tbl[subcmd].complete
         then
-          return sub_cmd_tbl[subcmd].complete(subcmd_arg_lead)
+          return S.sub_cmd_tbl[subcmd].complete(subcmd_arg_lead)
         end
 
         -- sub_cmd with args complete
         if cmdline:match("^['<,'>]*Sf[!]*%s+%w*$") then
-          local sub_cmd_keys = vim.tbl_keys(sub_cmd_tbl)
+          local sub_cmd_keys = vim.tbl_keys(S.sub_cmd_tbl)
           return vim.iter(sub_cmd_keys)
               :filter(function(key)
                 return key:find(arg_lead) ~= nil
@@ -236,6 +177,7 @@ local init = function()
         end
       end,
     })
+
 
     -- vim.api.nvim_create_user_command("SFFetchOrgList", function()
     --   Sf.fetch_org_list()
@@ -354,7 +296,7 @@ local init = function()
     --   Sf.create_ctags()
     -- end, {})
 
-    if not Cfg.config.enable_hotkeys then
+    if not vim.g.sf.enable_hotkeys then
       return
     end
 
@@ -381,7 +323,7 @@ local init = function()
     nmap("<leader>so", Sf.org_open, "open target_org")
 
     -- Hotkeys for metadata files only;
-    if vim.tbl_contains(Cfg.config.hotkeys_in_filetypes, vim.bo.filetype) then
+    if vim.tbl_contains(vim.g.sf.hotkeys_in_filetypes, vim.bo.filetype) then
       nmap("<leader>sO", Sf.org_open_current_file, "open file in target_org")
       nmap('<leader>sd', Sf.diff_in_target_org, "diff in target_org")
       nmap('<leader>sD', Sf.diff_in_org, "diff in org...")
@@ -412,7 +354,7 @@ local init = function()
   })
 
   -- Initiate the raw term
-  require('sf.term').setup(Cfg.config.term_config)
+  require('sf.term').setup(vim.g.sf.term_config)
 
   require('sf.test').setup_sign()
 end

@@ -13,9 +13,9 @@ local Ctags = require('sf.ctags')
 local Sf = {}
 
 --- Before using this plugin, it's mandatory to invoke this function by "require'sf'.setup()".
----@param config table|nil Optional config table to overwrite default settings.
-Sf.setup = function(config)
-  require('sf.config').setup(config)
+---@param opt table|nil Optional config table to overwrite default settings.
+Sf.setup = function(opt)
+  require('sf.config').setup(opt)
 end
 
 
