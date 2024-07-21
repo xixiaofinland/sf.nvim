@@ -86,12 +86,6 @@ M.isempty = function(s)
   return s == nil or s == ''
 end
 
-M.is_empty = function(t)
-  if t == '' or t == nil then
-    error('Sf: Empty value')
-  end
-end
-
 M.list_find = function(tbl, value)
   for i, v in pairs(tbl) do
     if v == value then
