@@ -159,10 +159,10 @@ suggestion.
 
 For example, 
 
-- type `:SF<space>` and hit `tab` to list available categories(i.e. `sub_cmd1`) as screenshot 1.
-- Then select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
+1. type `:SF<space>` and hit `tab` to list available categories(i.e. `sub_cmd1`) as screenshot 1.
+2. Then select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
 category as screenshot 2
-- Finally choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
+3. Finally choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
 
 ![Image 020](https://github.com/user-attachments/assets/725e5d6a-843e-4434-a0c9-a9e72dcb1528)
 
