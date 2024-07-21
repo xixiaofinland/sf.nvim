@@ -83,11 +83,4 @@ H.sub_cmd_tbl = {
   },
 }
 
-H.is_tbl_empty = function(tbl)
-  if next(tbl) == nil then
-    return true
-  end
-  return false
-end
-
 return M
