@@ -210,7 +210,11 @@ Example:
 What if the default keys don't meet your requirements?
 
 You can pass any shell command into `run()` method to execute it in the integrated
-terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: `vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })`.
+terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: 
+
+```lua
+vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })
+```.
 
 <br>
 
