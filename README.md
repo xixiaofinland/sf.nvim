@@ -164,9 +164,9 @@ For example, type `:SF<space>` and hit `tab` to list available categories(i.e. `
 Then, select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
 category.
 
-Finally, we choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
-
 ![Image 021](https://github.com/user-attachments/assets/ab78ef40-6606-4575-b664-a1f905092dc4)
+
+Finally, we choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
 
 ### ⌨️ Default hotkeys
 
