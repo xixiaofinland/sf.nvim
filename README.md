@@ -176,7 +176,7 @@ They are supplied to assist new users.
 It is recommended to disable these keys and define the ones you use.
 They can be disabled in the configuration by setting `enable_hotkeys` to `false`.
 
-### 📈 Often used default keys
+### Often used default keys
 
 | Default key       | function name           | Explain           |
 | ----------| ------------------| ------------------|
