@@ -214,8 +214,7 @@ terminal. For instance, `require('sf').run('ls -la')`, then define it as your ke
 
 ```lua
 vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })
-```.
-
+```
 <br>
 
 ## 📚 Full Document
