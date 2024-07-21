@@ -10,12 +10,13 @@ local Org = require('sf.org')
 local Metadata = require('sf.md')
 local Test = require('sf.test')
 local Ctags = require('sf.ctags')
-local Cfg = require('sf.config')
 local Sf = {}
 
 --- Before using this plugin, it's mandatory to invoke this function by "require'sf'.setup()".
 ---@param config table|nil Optional config table to overwrite default settings.
-Sf.setup = Cfg.setup
+Sf.setup = function(config)
+  require('sf.config').setup(config)
+end
 
 
 --- get the value of the plugin internal variable "target_org".
