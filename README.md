@@ -157,12 +157,14 @@ This plugin supplies both user commands (`:h user-commands`) and default hotkeys
 User commands are categories into two level subcommands (`:SF sub_cmd1 sub_cmd2`) to leverage the `tab`
 suggestion.
 
-For example, type `:SF<space>` and hit `tab` to list available categories(i.e. sub_cmd1).
+For example, type `:SF<space>` and hit `tab` to list available categories(i.e. `sub_cmd1`).
 
 ![Image 020](https://github.com/user-attachments/assets/725e5d6a-843e-4434-a0c9-a9e72dcb1528)
 
 Then, select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
 category.
+
+Finally, we choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
 
 ![Image 021](https://github.com/user-attachments/assets/ab78ef40-6606-4575-b664-a1f905092dc4)
 
