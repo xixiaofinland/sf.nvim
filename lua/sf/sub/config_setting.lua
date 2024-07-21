@@ -1,35 +1,10 @@
 local M = {}
 local H = {}
 
-local sf = require('sf')
+local Sf = require('sf')
+local U = require('sf.util')
 
----@class MyCmdSubcommand
----@field impl fun(args:string[], opts: table) The command implementation
----@field complete? fun(subcmd_arg_lead: string): string[] (optional) Command completions callback, taking the lead of the subcommand's arguments
-
----@type table<string, MyCmdSubcommand>
--- print(vim.inspect(opts))
-M.sub_cmd_tbl = {
-  current = {
-    impl = function(args, opts)
-      local arg = H.sub_cmd_sanity_check(opts.fargs[1], args)
-      if not arg then return end
-
-      H.switch(arg) {
-        ["push"] = function()
-          Sf.save_and_push()
-        end,
-      }
-    end,
-    complete = function(subcmd_arg_lead)
-      return vim.iter(H.sub_cmd_args.current)
-          :filter(function(install_arg)
-            return install_arg:find(subcmd_arg_lead) ~= nil
-          end)
-          :totable()
-    end,
-  },
-}
+M.sub_cmd_tbl = H.sub_cmd_tbl
 
 ---@param opts table
 M.create_sf_cmd = function(opts)
@@ -38,46 +13,75 @@ M.create_sf_cmd = function(opts)
   local matched_sub_cmd = M.sub_cmd_tbl[sub_cmd]
 
   if not matched_sub_cmd then
-    vim.notify("Sf: Unknown command: " .. sub_cmd, vim.log.levels.ERROR)
-    return
+    return U.show_err("unknown command: " .. sub_cmd)
   end
 
-  local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
-  matched_sub_cmd.impl(args, opts)
+  if #fargs ~= 2 then
+    return U.show_err(sub_cmd .. " must supply one and only one argument")
+  end
+
+  matched_sub_cmd.impl(fargs[2])
 end
 
 -- helper;
 
-H.switch = function(value)
-  return function(cases)
-    setmetatable(cases, cases)
-    local f = cases[value]
-    if f then
-      f()
+local function curry(func)
+  return function(a)
+    return function(b)
+      return func(a, b)
     end
   end
 end
+
+local complete = function(supported_args, subcmd_arg_lead)
+  return vim.iter(supported_args)
+      :filter(function(arg)
+        return arg:find(subcmd_arg_lead) ~= nil
+      end)
+      :totable()
+end
+
+H.complete_func = curry(complete)
 
 H.sub_cmd_args = {
   current = {
     "push",
     "retrieve",
     "diff",
-    "diffWith",
+    "diffIn",
   },
 }
 
-H.sub_cmd_sanity_check = function(sub_cmd, args)
-  if H.is_tbl_empty(args) then
-    return vim.notify("Sf: missing second parameter", vim.log.levels.ERROR)
-  end
+---@class MyCmdSubcommand
+---@field impl fun(args:string[]) The command implementation
+---@field complete fun(subcmd_arg_lead: string): string[] Command completions callback, taking the lead of the subcommand's arguments
 
-  if not H.sub_cmd_args[sub_cmd] then
-    return vim.notify("Sf: unsupported second parameter", vim.log.levels.ERROR)
-  end
-
-  return args[1]
-end
+---@type table<string, MyCmdSubcommand>
+-- print(vim.inspect(opts))
+H.sub_cmd_tbl = {
+  current = {
+    impl = function(arg)
+      U.switch(arg) {
+        ["push"] = function()
+          Sf.save_and_push()
+        end,
+        ["retrieve"] = function()
+          Sf.retrieve()
+        end,
+        ["diff"] = function()
+          Sf.diff_in_target_org()
+        end,
+        ["diffIn"] = function()
+          Sf.diff_in_org()
+        end,
+        __index = function()
+          U.show_err("not supported argument")
+        end
+      }
+    end,
+    complete = H.complete_func(H.sub_cmd_args.current)
+  },
+}
 
 H.is_tbl_empty = function(tbl)
   if next(tbl) == nil then
