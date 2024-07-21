@@ -152,7 +152,7 @@ require('sf').setup({
 
 This plugin supplies both user commands (`:h user-commands`) and default hotkeys(`:h mapping`).
 
-### User commands
+### 🖥️ User commands
 
 User commands are categories into two level subcommands (`:SF sub_cmd1 sub_cmd2`) to leverage the `tab`
 suggestion.
@@ -166,7 +166,7 @@ category.
 
 ![Image 021](https://github.com/user-attachments/assets/ab78ef40-6606-4575-b664-a1f905092dc4)
 
-### Default hotkeys
+### ⌨️ Default hotkeys
 
 This plugin comes with many default hotkeys, which may conflict and overwrite your existing hotkeys.
 They are supplied to assist new users.
