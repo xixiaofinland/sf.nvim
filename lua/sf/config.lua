@@ -121,6 +121,7 @@ local init = function()
 
   -- Refresh test code coverage info for the current Apex file
   vim.api.nvim_create_autocmd("BufEnter", {
+    group = sf_group,
     pattern = { "*.cls" },
     callback = function()
       local ok, content = pcall(require('sf').refresh_current_file_covered_percent)
