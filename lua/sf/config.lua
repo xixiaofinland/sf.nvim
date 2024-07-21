@@ -158,6 +158,8 @@ local init = function()
       complete = function(arg_lead, cmdline, _)
         -- sub_cmd complete
         local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*Sf[!]*%s(%S+)%s(.*)$")
+        print(cmdline)
+        print(arg_lead)
         if subcmd
             and subcmd_arg_lead
             and S.sub_cmd_tbl[subcmd]
@@ -168,6 +170,7 @@ local init = function()
 
         -- sub_cmd with args complete
         if cmdline:match("^['<,'>]*Sf[!]*%s+%w*$") then
+          print(vim.inspect(S.sub_cmd_tbl))
           local sub_cmd_keys = vim.tbl_keys(S.sub_cmd_tbl)
           return vim.iter(sub_cmd_keys)
               :filter(function(key)
