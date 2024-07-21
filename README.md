@@ -172,7 +172,7 @@ category as screenshot 2
 
 ### ⌨️ Default hotkeys
 
-This plugin comes with many default hotkeys, which may conflict and overwrite your existing hotkeys.
+This plugin comes with many default hotkeys (all defined in [this file](./lua/sf/sub/config_user_key.lua)), which may conflict and overwrite your existing hotkeys.
 They are supplied to assist new users.
 
 It is recommended to disable these keys and define the ones you use.
