@@ -26,7 +26,7 @@ end
 
 ---@type table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>
 M.sub_cmd_tbl = {
-  current = {
+  currentFile = {
     funcs = {
       push = Sf.save_and_push,
       retrieve = Sf.retrieve,
@@ -36,7 +36,7 @@ M.sub_cmd_tbl = {
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('current', subcmd_arg_lead)
+      return common_complete('currentFile', subcmd_arg_lead)
     end,
   },
   md = {
