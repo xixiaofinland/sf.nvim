@@ -1,4 +1,3 @@
-local C = require('sf.config')
 local M = {}
 
 M.cmd_params = '-w 5 -r human'
@@ -8,27 +7,27 @@ M.last_tests = ''
 M.target_org = ''
 
 M.show = function(msg)
-  vim.notify(msg, vim.log.levels.INFO, { title = 'sf.nvim' })
+  vim.notify("Sf: " .. msg, vim.log.levels.INFO, { title = 'sf.nvim' })
 end
 
 M.show_err = function(msg)
-  vim.notify(msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
+  vim.notify("Sf: " .. msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
 end
 
 M.show_warn = function(msg)
-  vim.notify(msg, vim.log.levels.WARN, { title = 'sf.nvim' })
+  vim.notify("Sf: " .. msg, vim.log.levels.WARN, { title = 'sf.nvim' })
 end
 
 M.get = function()
   if M.isempty(M.target_org) then
-    error('::Target_org empty!')
+    error('Sf: Target_org empty!')
   end
 
   return M.target_org
 end
 
 M.get_default_dir_path = function()
-  return M.get_sf_root() .. C.config.default_dir
+  return M.get_sf_root() .. vim.g.sf.default_dir
 end
 
 M.get_apex_folder_path = function()
@@ -36,7 +35,7 @@ M.get_apex_folder_path = function()
 end
 
 M.get_plugin_folder_path = function()
-  return M.get_sf_root() .. C.config.plugin_folder_name
+  return M.get_sf_root() .. vim.g.sf.plugin_folder_name
 end
 
 M.create_plugin_folder_if_not_exist = function()
@@ -59,7 +58,7 @@ M.get_sf_root = function()
   })[1])
 
   if root == nil then
-    error('*File not in a sf project folder*')
+    error('Sf: File not in a sf project folder')
   end
 
   return root
@@ -67,30 +66,24 @@ end
 
 M.is_sf_cmd_installed = function()
   if vim.fn.executable('sf') ~= 1 then
-    error('*SF cli not found*')
+    error('Sf: sf cli not found')
   end
 end
 
 M.is_ctags_installed = function()
   if vim.fn.executable('ctags') ~= 1 then
-    error('*ctags cli not found*')
+    error('Sf: ctags cli not found')
   end
 end
 
 M.is_table_empty = function(tbl)
   if vim.tbl_isempty(tbl) then
-    error('*Empty table*')
+    error('Sf: Empty table')
   end
 end
 
 M.isempty = function(s)
   return s == nil or s == ''
-end
-
-M.is_empty = function(t)
-  if t == '' or t == nil then
-    error('*Empty value*')
-  end
 end
 
 M.list_find = function(tbl, value)
@@ -182,7 +175,7 @@ end
 M.read_local_file = function(absolute_path)
   local ok, content = pcall(vim.fn.readfile, absolute_path)
   if not ok then
-    error('::File not found: ' .. absolute_path)
+    error('Sf: File not found: ' .. absolute_path)
   end
 
   return content
@@ -192,7 +185,7 @@ M.parse_from_json_to_tbl = function(content)
   local json = table.concat(content)
   local ok, tbl = pcall(vim.json.decode, json, {})
   if not ok then
-    error('::Parse file from json to tbl failed: ' .. absolute_path)
+    error('Sf: Parse file from json to tbl failed: ' .. absolute_path)
   end
 
   return tbl
@@ -204,7 +197,7 @@ M.is_apex_loaded_in_buf = function(name)
 end
 
 M.get_apex_buf_num = function(name)
-  local path = C.config.default_dir .. "classes/" .. name
+  local path = vim.g.sf.default_dir .. "classes/" .. name
   return M.get_buf_num(path)
 end
 
@@ -224,6 +217,17 @@ M.file_readable = function(path)
     return false
   end
   return true
+end
+
+-- Mimic switch statement: https://gist.github.com/FreeBirdLjj/6303864
+M.switch = function(value)
+  return function(cases)
+    setmetatable(cases, cases)
+    local f = cases[value]
+    if f then
+      f()
+    end
+  end
 end
 
 return M

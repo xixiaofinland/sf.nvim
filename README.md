@@ -51,7 +51,7 @@
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
 
 ----
-💡 It comes with a health check feature. Run `:che sf` to auto-check prerequiste statistics.
+💡 Plugin comes with a health check feature. Run `:che sf` to auto-check prerequiste statistics.
 
 ![Image 019](https://github.com/user-attachments/assets/aad0ac11-f980-423b-8332-a2b4359fb4ae)
 
@@ -150,27 +150,52 @@ require('sf').setup({
 
 ## 🔑 Keys
 
-This plugin supplies both default hotkeys and user commands.
-Default hotkeys can be disabled in Configuration by setting *enable_hotkeys* to `false`.
+This plugin supplies both user commands (`:h user-commands`) and default hotkeys(`:h mapping`).
 
-### 📈 Often used keys
+### 🖥️ User commands
 
-| Default key       | function name           |   User command     | Explain           |
-| ----------| ------------------| ----------| ------------------|
-| `<leader>ss`     | set_target_org           |SFSetTargetOrg      | set target_org |
-| `<leader>sf`     | fetch_org_list              |SFFetchOrgList|fetch/refresh orgs info|
-| `<leader><leader>`     |toggle_term|SFToggle|terminal toggle|
-| `<leader>sp`     |save_and_push|SFSaveAndPush|push current file|
-| `<leader>sr`     |retrieve|SFRetrieve|retrieve current file|
-| `<leader>ta`     |run_all_tests_in_this_file|SFRunAllTestsInThisFile|run all Apex tests in current file|
-| `<leader>tt`     |run_current_test|SFRunCurrentTest|test this under cursor|
-| `<leader>tr`     |repeat_last_tests|SFRunCurrentTest|repeat the last test|
-| `<leader>to`     |open_test_select|SFOpenTestSelect|open a buffer to select tests|
-| `<leader>ct`     |create_ctags |SFCreateCtags|create ctags file|
-| `<leader>sq`     | run_highlighted_soql |N/A|Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
-|`\s`|toggle_sign |N/A|Show/hide line coverage sign icon|
-|`]v`|uncovered_jump_forward |N/A|jump to next test uncovered hunk|
-|`[v`|`uncovered_jump_backward |N/A|jump to last test uncovered hunk|
+User commands are categories into two level subcommands (`:SF sub_cmd1 sub_cmd2`) to leverage the `tab`
+suggestion.
+
+For example, 
+
+1. type `:SF<space>` and hit `tab` to list available categories(i.e. `sub_cmd1`) as screenshot 1.
+2. Then select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
+category as screenshot 2
+3. Finally choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
+
+![Image 020](https://github.com/user-attachments/assets/725e5d6a-843e-4434-a0c9-a9e72dcb1528)
+
+![Image 021](https://github.com/user-attachments/assets/ab78ef40-6606-4575-b664-a1f905092dc4)
+
+
+
+### ⌨️ Default hotkeys
+
+This plugin comes with many default hotkeys (all defined in [this file](./lua/sf/sub/config_user_key.lua)), which may conflict and overwrite your existing hotkeys.
+They are supplied to assist new users.
+
+It is recommended to disable these keys and define the ones you use.
+They can be disabled in the configuration by setting `enable_hotkeys` to `false`.
+
+### Often used default keys
+
+| Default key       | function name           | Explain           |
+| ----------| ------------------| ------------------|
+| `<leader>ss`     | set_target_org           | set target_org |
+| `<leader>sf`     | fetch_org_list              |fetch/refresh orgs info|
+| `<leader><leader>`     |toggle_term|terminal toggle|
+| `<leader>sp`     |save_and_push|push current file|
+| `<leader>sr`     |retrieve|retrieve current file|
+| `<leader>ta`     |run_all_tests_in_this_file|run all Apex tests in current file|
+| `<leader>tt`     |run_current_test|test this under cursor|
+| `<leader>tr`     |repeat_last_tests|repeat the last test|
+| `<leader>to`     |open_test_select|open a buffer to select tests|
+| `<leader>ct`     |create_ctags |create ctags file|
+| `<leader>sq`     | run_highlighted_soql |Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
+|`\s`|toggle_sign |Show/hide line coverage sign icon|
+|`]v`|uncovered_jump_forward |jump to next test uncovered hunk|
+|`[v`|`uncovered_jump_backward |jump to last test uncovered hunk|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
@@ -180,9 +205,6 @@ Example:
   shown in the screenshot below. Remember that default hotkeys are enabled only inside a sf folder.
 ![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
-Type `:SF` in Ex mode will list all user commands:
-![Screenshot 2024-07-17 at 9 43 07](https://github.com/user-attachments/assets/3cb2f4e9-2ac4-4a9c-825c-a94240f97e66)
-
 <br>
 
 ### 💡 Custom hotkeys
@@ -190,8 +212,11 @@ Type `:SF` in Ex mode will list all user commands:
 What if the default keys don't meet your requirements?
 
 You can pass any shell command into `run()` method to execute it in the integrated
-terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: `vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })`.
+terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: 
 
+```lua
+vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })
+```
 <br>
 
 ## 📚 Full Document
@@ -267,7 +292,7 @@ signs.
 
 - Use `]v` and `[v` to jump to the next/previous uncovered hunk.
 
-<br> 
+<br>
 
 ## 🎯 Display target_org and code coverage
 
@@ -301,6 +326,8 @@ You can
 <br>
 
 ## 🖥️ Integrated terminal
+
+![Image 022](https://github.com/user-attachments/assets/bd61e9fc-fa0d-4782-8f2d-68e90dcb0d10)
 
 The integrated terminal is designed to
 

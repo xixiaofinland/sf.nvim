@@ -1,6 +1,4 @@
 local U = require('sf.util')
-local C = require('sf.config')
-
 local M = {}
 local H = {}
 local enabled = false
@@ -17,16 +15,16 @@ local show_uncovered = true
 M.covered_percent = ""
 
 M.setup = function()
-  if C.config.code_sign_highlight.covered.fg == "" then
+  if vim.g.sf.code_sign_highlight.covered.fg == "" then
     show_covered = false
   end
 
-  if C.config.code_sign_highlight.uncovered.fg == "" then
+  if vim.g.sf.code_sign_highlight.uncovered.fg == "" then
     show_uncovered = false
   end
 
-  H.highlight(covered_group, { fg = C.config.code_sign_highlight.covered.fg })
-  H.highlight(uncovered_group, { fg = C.config.code_sign_highlight.uncovered.fg })
+  H.highlight(covered_group, { fg = vim.g.sf.code_sign_highlight.covered.fg })
+  H.highlight(uncovered_group, { fg = vim.g.sf.code_sign_highlight.uncovered.fg })
 
   vim.fn.sign_define(covered_sign, { text = "▎", texthl = covered_group, })
   vim.fn.sign_define(uncovered_sign, { text = "▎", texthl = uncovered_group, })
@@ -89,7 +87,7 @@ end
 
 M.invalidate_cache_and_try_place = function()
   cache = nil
-  if M.is_enabled() or C.config.auto_display_code_sign then
+  if M.is_enabled() or vim.g.sf.auto_display_code_sign then
     M.refresh_and_place()
   end
 end

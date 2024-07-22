@@ -75,7 +75,9 @@ H.set_target_org = function()
 end
 
 H.set_global_target_org = function()
-  U.is_empty(H.orgs)
+  if U.isempty(H.orgs) then
+    error('Sf: Empty value')
+  end
 
   vim.ui.select(H.orgs, {
     prompt = 'Global target_org:'
