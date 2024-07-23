@@ -1,4 +1,4 @@
-name: Sync Pre-release Branch
+name: Sync Pre-release from main Branch
 
 on:
   push:
