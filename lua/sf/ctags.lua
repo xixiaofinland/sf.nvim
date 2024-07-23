@@ -3,7 +3,7 @@ local M = {}
 
 M.create = function()
   U.is_ctags_installed();
-  local cmd = 'ctags --extras=+q --langmap=java:.cls.trigger -f ./tags -R **/main/default/classes/**'
+  local cmd = string.format('ctags --extras=+q --langmap=java:.cls.trigger -f ./tags -R **%sclasses/**', vim.g.sf.default_dir)
   U.silent_job_call(cmd, "Tags updated successfully.", "Error updating tags.")
 end
 
