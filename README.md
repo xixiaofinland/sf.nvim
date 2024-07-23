@@ -372,7 +372,14 @@ plugin.
 Please create an issue to discuss your PR before submitting it. This ensures
 that the PR will be merged.
 
-The PR is highly recommended to be submitted against the `dev` branch.
+The PR should be done against `main` branch.
+Commit messages should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), or the
+PR would fail in the status check.
+
+For example,
+
+- If it's a new feature, the commit message could be "feat: add a new user command".
+- If it's a bug fix, the commit message could be "fix: eliminate the error".
 
 The `help.txt` file is auto-generated from the comments with the `---` suffix
 before each function in [init.lua](https://github.com/xixiaofinland/sf.nvim/blob/dev/lua/sf/init.lua). The plugin
