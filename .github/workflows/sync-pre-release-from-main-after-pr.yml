@@ -8,19 +8,28 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Git
       run: |
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
 
     - name: Merge main into pre-release
       run: |
         git checkout pre-release
-        git merge main
+        git merge --no-ff origin/main
         git push origin pre-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Handle merge conflicts
+      if: failure()
+      run: |
+        echo "Merge conflict detected. Manual intervention required."
+        git merge --abort
+        exit 1
