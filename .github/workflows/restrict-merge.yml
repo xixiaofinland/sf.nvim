@@ -1,16 +1,14 @@
-name: Restrict Merge to Main from Pre-Release
-
+name: Restrict Merge to Main from feature branch
 on:
   pull_request:
     branches:
       - main
-
 jobs:
   restrict_merge:
     runs-on: ubuntu-latest
     steps:
       - name: Check Source Branch
-        if: github.event.pull_request.head.ref != 'pre-release'
+        if: "!startsWith(github.event.pull_request.head.ref, 'feature/')"
         run: |
-          echo "Pull requests to main must come from the pre-release branch."
+          echo "Pull requests to main must come from feature/* branch."
           exit 1
