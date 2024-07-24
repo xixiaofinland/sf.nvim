@@ -47,7 +47,7 @@
 - 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
 - 🐢 Nvim v0.10 or newer ([why must > 0.10?](https://github.com/xixiaofinland/sf.nvim/issues/73))
 - 📦 Nvim-treesitter with the Apex parser installed (ensure_installed = { "apex", "soql", "sosl" }), e.g., [in my settings](https://github.com/xixiaofinland/dotfiles/blob/main/.config/nvim/lua/plugins/nvim-tree-sitter.lua)
-- 🔍 (Optional) fzf-lua plugin for executing `SFListMdToRetrieve` and `SFListMdTypeToRetrieve`
+- 🔍 (Optional) fzf-lua plugin for executing `:SF md list` and `SFListMdTypeToRetrieve`
   (Why not telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
 
@@ -231,16 +231,16 @@ Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xix
 Sometimes you don't know what metadata the target org contains, and you want to
 list them and fetch specific ones. Steps:
 
-1. Retrieve the metadata data by running the user command `SFPullMd`.
-2. Run `SFListMdToRetrieve` (or `require('sf').list_md_to_retrieve()`) to show
+1. Retrieve the metadata data by running the user command `:SF md pull`.
+2. Run `:SF md list` (or `require('sf').list_md_to_retrieve()`) to show
    the list in a pop-up (requires the fzf-lua plugin) and select one to
    download to local.
 
 Sometimes you want to fetch all files of a certain metadata type (Apex class,
 LWC, Aura, etc.). You can list them and fetch all of a specific type. Steps:
 
-1. Retrieve the metadata types by running the user command `SFPullMdType`.
-2. Run `SFListMdTypeToRetrieve` (or `require('sf').list_md_type_to_retrieve()`) to show the
+1. Retrieve the metadata types by running the user command `:SF mdtype pull`.
+2. Run `:SF mdtype list` (or `require('sf').list_md_type_to_retrieve()`) to show the
    list in a pop-up (requires the fzf-lua plugin) and select one to
    download all metadata of this type to local.
 
@@ -299,7 +299,7 @@ signs.
 
 ### target_org
 
-Upon starting Nvim, Sf.nvim executes `SfFetchOrgList` to fetch and save
+Upon starting Nvim, Sf.nvim executes `:SF org fetchList` to fetch and save
 authenticated org names. Display the target_org in your status line to
 facilitate command execution against the target org.
 
@@ -332,7 +332,7 @@ You can
 
 The integrated terminal is designed to
 
-- accept input from hotkeys and user commands, such as "retrieve current metadata"
+- accept input from hotkeys and user commands, such as "retrieve current metadata file"
   `<leader>sr`
 - be a read-only buffer. It's, by design, not allowed to manually type commands
 - be disposable. The output text of the previous command is removed when a new command is invoked
@@ -360,9 +360,9 @@ ctags](https://github.com/universal-ctags/ctags). So you need to install it to u
 
 ### How to use it?
 
-`require('sf').create_ctags()` generates the ctags file in the project root.
+`:SF create ctags` or `require('sf').create_ctags()` generates the ctags file in the project root.
 Using the `<C-]>` key for jump-to-definition will automatically use both LSP and ctags in order.
-`require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in  `fzf-lua`
+`:SF create ctagsAndList` or `require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in  `fzf-lua`
 plugin.
 
 <br>
