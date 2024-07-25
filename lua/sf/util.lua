@@ -267,4 +267,15 @@ M.is_function = function(param)
   return type(param) == "function"
 end
 
+-- this func is supposed to be only manually called by the plugin developer to generate plugin help.txt
+M.gen_doc = function()
+  if not M.is_installed('mini.doc') then
+    M.notify_then_error('mini.doc not installed.')
+  end
+
+  require('mini.doc').generate({
+    'lua/sf/init.lua'
+  })
+end
+
 return M
