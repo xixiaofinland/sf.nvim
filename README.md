@@ -83,7 +83,7 @@ The hotkeys and user commands are **ONLY** enabled in a sf project
 folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path).
 
 Run `:lua require'sf.util'.get_sf_root()` to verify if the current opened file
-resides in sf project folder or not.
+resides in sf project folder or not. The command execution throws an error if not.
 
 <br>
 
