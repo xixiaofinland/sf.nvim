@@ -95,6 +95,7 @@ H.set_global_target_org = function()
   end)
 end
 
+---@param data string
 H.store_orgs = function(data)
   local s = ""
   for _, v in ipairs(data) do
@@ -158,6 +159,7 @@ H.diff_in_org = function()
   end)
 end
 
+---@param org string
 H.diff_in = function(org)
   local file_name = vim.fn.expand("%:t")
   local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
@@ -183,6 +185,8 @@ H.diff_in = function(org)
   U.silent_job_call(cmd, msg, err_msg, cb)
 end
 
+---@param fileName string
+---@return any
 H.get_file_name_without_extension = function(fileName)
   -- (.-) makes the match non-greedy
   -- see https://www.lua.org/manual/5.3/manual.html#6.4.1
@@ -210,6 +214,8 @@ H.metadata_types = {
   ["queues"] = "Queue",
 }
 
+---@param filePath string
+---@return string | nil
 H.get_metadata_type = function(filePath)
   for key, metadataType in pairs(H.metadata_types) do
     if filePath:find(key) then
@@ -219,6 +225,9 @@ H.get_metadata_type = function(filePath)
   return nil
 end
 
+---@param path string
+---@param target string
+---@return string
 H.find_file = function(path, target)
   local scanner = vim.loop.fs_scandir(path)
   -- if scanner is nil, then path is not a valid dir

@@ -38,6 +38,7 @@ end
 
 -- helper;
 
+---@param name string
 H.open_apex = function(name)
   U.try_open_file(U.get_apex_folder_path() .. name .. '.cls')
 end
@@ -47,6 +48,10 @@ H.retrieve_apex_under_cursor = function()
   H.retrieve_md('ApexClass', current_word, function() H.open_apex(current_word) end)
 end
 
+---@param type string
+---@param name string
+---@param cb function
+---@return nil
 H.retrieve_md = function(type, name, cb)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
@@ -108,6 +113,8 @@ H.pull_md_json = function()
   end
 end
 
+---@param type string
+---@return nil
 H.pull_metadata = function(type)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
@@ -164,6 +171,8 @@ H.list_md_type_to_retrieve = function()
   })
 end
 
+---@param type string
+---@return nil
 H.retrieve_md_type = function(type)
   if U.isempty(U.target_org) then
     return U.show_err('Target_org empty!')
@@ -175,6 +184,7 @@ H.retrieve_md_type = function(type)
   T.run(cmd)
 end
 
+---@param name string
 H.generate_class = function(name)
   local path = U.get_apex_folder_path()
   local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
@@ -189,10 +199,12 @@ H.generate_class = function(name)
   )
 end
 
+---@param name string
 H.create_apex_class = function(name)
   U.run_cb_with_input(name, "Enter Class name: ", H.generate_class)
 end
 
+---@param name string
 H.generate_aura = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
     U.get_default_dir_path() .. "/aura", name)
@@ -206,10 +218,12 @@ H.generate_aura = function(name)
   )
 end
 
+---@param name string
 H.create_aura_bundle = function(name)
   U.run_cb_with_input(name, "Enter Aura bundle name: ", H.generate_aura)
 end
 
+---@param name string
 H.generate_lwc = function(name)
   local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
     U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
@@ -223,6 +237,7 @@ H.generate_lwc = function(name)
   )
 end
 
+---@param name string
 H.create_lwc_bundle = function(name)
   U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
 end

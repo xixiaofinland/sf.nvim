@@ -6,18 +6,22 @@ M.cmd_coverage_params = '-w 5 -r human -c'
 M.last_tests = ''
 M.target_org = ''
 
+---@param msg string
 M.show = function(msg)
   vim.notify("Sf: " .. msg, vim.log.levels.INFO, { title = 'sf.nvim' })
 end
 
+---@param msg string
 M.show_err = function(msg)
   vim.notify("Sf: " .. msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
 end
 
+---@param msg string
 M.show_warn = function(msg)
   vim.notify("Sf: " .. msg, vim.log.levels.WARN, { title = 'sf.nvim' })
 end
 
+---@param msg string
 M.notify_then_error = function(msg)
   M.show_warn(msg)
   error(msg)
@@ -81,16 +85,22 @@ M.is_ctags_installed = function()
   end
 end
 
+---@param tbl table
 M.is_table_empty = function(tbl)
   if vim.tbl_isempty(tbl) then
     error('Sf: Empty table')
   end
 end
 
+---@param s string|nil
+---@return boolean
 M.isempty = function(s)
   return s == nil or s == ''
 end
 
+---@param tbl table
+---@param value string
+---@return number|nil
 M.list_find = function(tbl, value)
   for i, v in pairs(tbl) do
     if v == value then
@@ -99,12 +109,10 @@ M.list_find = function(tbl, value)
   end
 end
 
-M.removeKey = function(table, key)
-  local element = table[key]
-  table[key] = nil
-  return element
-end
-
+---@param cmd string
+---@param msg string|nil
+---@param err_msg string|nil
+---@param cb function|nil
 M.silent_job_call = function(cmd, msg, err_msg, cb)
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
@@ -123,6 +131,10 @@ M.silent_job_call = function(cmd, msg, err_msg, cb)
   })
 end
 
+---@param cmd string
+---@param msg string|nil
+---@param err_msg string|nil
+---@param cb function|nil
 M.job_call = function(cmd, msg, err_msg, cb)
   vim.notify('| Async job starts...', vim.log.levels.INFO);
   M.silent_job_call(cmd, msg, err_msg, cb)
@@ -135,6 +147,9 @@ M.copy_apex_name = function()
   vim.notify(string.format('"%s" copied.', file_name), vim.log.levels.INFO)
 end
 
+---@param arg string|nil
+---@param prompt string
+---@param cb function
 M.run_cb_with_input = function(arg, prompt, cb)
   if arg ~= nil then
     cb(arg)
@@ -152,6 +167,8 @@ M.run_cb_with_input = function(arg, prompt, cb)
   end
 end
 
+---@param tbl table
+---@return string
 M.table_to_string_lines = function(tbl)
   local result = ""
   for key, value in pairs(tbl) do
@@ -160,10 +177,14 @@ M.table_to_string_lines = function(tbl)
   return result
 end
 
+---@param plugin_name string
+---@return boolean
 M.is_installed = function(plugin_name)
   return pcall(require, plugin_name)
 end
 
+---@param name string
+---@return table|nil
 M.read_file_in_plugin_folder = function(name)
   M.create_plugin_folder_if_not_exist()
 
@@ -171,12 +192,17 @@ M.read_file_in_plugin_folder = function(name)
   return M.read_file_json_to_tbl(name, path)
 end
 
+---@param name string
+---@param path string
+---@return table|nil
 M.read_file_json_to_tbl = function(name, path)
   local absolute_path = path .. name
   local content = M.read_local_file(absolute_path)
   return M.parse_from_json_to_tbl(content)
 end
 
+---@param absolute_path string
+---@return string|nil
 M.read_local_file = function(absolute_path)
   local ok, content = pcall(vim.fn.readfile, absolute_path)
   if not ok then
@@ -186,6 +212,8 @@ M.read_local_file = function(absolute_path)
   return content
 end
 
+---@param content string
+---@return table|nil
 M.parse_from_json_to_tbl = function(content)
   local json = table.concat(content)
   local ok, tbl = pcall(vim.json.decode, json, {})
@@ -196,20 +224,27 @@ M.parse_from_json_to_tbl = function(content)
   return tbl
 end
 
+---@param name string
+---@return boolean
 M.is_apex_loaded_in_buf = function(name)
   local buf_num = M.get_apex_buf_num(name)
   return buf_num ~= -1 and vim.fn.bufloaded(buf_num) == 1
 end
 
+---@param name string
+---@return integer
 M.get_apex_buf_num = function(name)
   local path = vim.g.sf.default_dir .. "classes/" .. name
   return M.get_buf_num(path)
 end
 
+---@param path string
+---@return integer
 M.get_buf_num = function(path)
   return vim.fn.bufnr(path)
 end
 
+---@param path string
 M.try_open_file = function(path)
   if M.file_readable(path) then
     local open_new_file = string.format(":e %s", path)
@@ -217,6 +252,8 @@ M.try_open_file = function(path)
   end
 end
 
+---@param path string
+---@return boolean
 M.file_readable = function(path)
   if vim.fn.filereadable(path) == 0 then
     return false
@@ -224,17 +261,8 @@ M.file_readable = function(path)
   return true
 end
 
--- Mimic switch statement: https://gist.github.com/FreeBirdLjj/6303864
-M.switch = function(value)
-  return function(cases)
-    setmetatable(cases, cases)
-    local f = cases[value]
-    if f then
-      f()
-    end
-  end
-end
-
+---@param param any
+---@return boolean
 M.is_function = function(param)
   return type(param) == "function"
 end
