@@ -119,7 +119,7 @@ P.selected_tests = {}
 P.open = function()
   local class = TS.get_test_class_name()
   if U.isempty(class) then
-    U.show('Not an Apex test class.')
+    U.notify_then_error('Not an Apex test class.')
   end
 
   local test_names = TS.get_test_method_names_in_curr_file()

@@ -18,6 +18,11 @@ M.show_warn = function(msg)
   vim.notify("Sf: " .. msg, vim.log.levels.WARN, { title = 'sf.nvim' })
 end
 
+M.notify_then_error = function(msg)
+  M.show_warn(msg)
+  error(msg)
+end
+
 M.get = function()
   if M.isempty(M.target_org) then
     error('Sf: Target_org empty!')
@@ -228,6 +233,10 @@ M.switch = function(value)
       f()
     end
   end
+end
+
+M.is_function = function(param)
+  return type(param) == "function"
 end
 
 return M
