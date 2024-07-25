@@ -168,7 +168,7 @@ P.set_keys = function()
   vim.keymap.set('n', 'CC', function()
     local cmd = P.build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. U.get()
     P.close()
-    T.run(cmd)
+    T.run(cmd, H.save_test_coverage_locally)
     U.last_tests = cmd
     P.selected_tests = {}
   end, { buffer = true, noremap = true })
