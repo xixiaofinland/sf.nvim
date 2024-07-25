@@ -37,7 +37,7 @@ Sf.run_tooling_query	sf.txt	/*Sf.run_tooling_query*
 Sf.save_and_push	sf.txt	/*Sf.save_and_push*
 Sf.set_global_target_org	sf.txt	/*Sf.set_global_target_org*
 Sf.set_target_org	sf.txt	/*Sf.set_target_org*
-Sf.setup	sf.txt	/*Sf.setup*
+Sf.setup()	sf.txt	/*Sf.setup()*
 Sf.toggle_sign	sf.txt	/*Sf.toggle_sign*
 Sf.toggle_term	sf.txt	/*Sf.toggle_term*
 Sf.uncovered_jump_backward	sf.txt	/*Sf.uncovered_jump_backward*
