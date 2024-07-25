@@ -26,6 +26,9 @@ Test.run_current_test_with_coverage = function()
   Test.run_current_test('-c ', H.save_test_coverage_locally)
 end
 
+---@param extraParams string
+---@param cb function
+---@return nil
 Test.run_current_test = function(extraParams, cb)
   extraParams = extraParams or ''
 
@@ -48,6 +51,9 @@ Test.run_all_tests_in_this_file_with_coverage = function()
   Test.run_all_tests_in_this_file('-c ', H.save_test_coverage_locally)
 end
 
+---@param extraParams string
+---@param cb function
+---@return nil
 Test.run_all_tests_in_this_file = function(extraParams, cb)
   extraParams = extraParams or ''
 
@@ -79,6 +85,8 @@ end
 
 -- helper;
 
+---@param lines table
+---@return any
 H.extract_test_run_id = function(lines)
   for _, line in ipairs(lines) do
     if string.find(line, "Test Run Id") then
@@ -88,6 +96,9 @@ H.extract_test_run_id = function(lines)
   return nil
 end
 
+---@param self table
+---@param cmd string
+---@param exit_code number
 H.save_test_coverage_locally = function(self, cmd, exit_code)
   U.create_plugin_folder_if_not_exist()
 
@@ -254,6 +265,8 @@ P.toggle = function()
   vim.bo[0].modifiable = false
 end
 
+---@param param_str string
+---@return nil
 P.build_tests_cmd = function(param_str)
   if vim.tbl_isempty(P.selected_tests) then
     return U.show_err('No test is selected.')
