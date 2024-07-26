@@ -162,7 +162,7 @@ This plugin supplies both user commands (`:h user-commands`) and default hotkeys
 User commands are categories into two level subcommands (`:SF sub_cmd1 sub_cmd2`) to leverage the `tab`
 suggestion.
 
-For example, 
+For example,
 
 1. type `:SF<space>` and hit `tab` to list available categories(i.e. `sub_cmd1`) as screenshot 1.
 2. Then select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
@@ -212,12 +212,11 @@ Example:
 
 <br>
 
-### 💡 Custom hotkeys
+### 💡 Run any command in the term
 
-What if the default keys don't meet your requirements?
-
-You can pass any shell command into `run()` method to execute it in the integrated
-terminal. For instance, `require('sf').run('ls -la')`, then define it as your key: 
+The integrated term (i.e. SFTerm) is a general purpose one, you can pass any shell command into
+`run()` method to execute it terminal. For instance, `require('sf').run('ls -la')`, then define it
+as your key:
 
 ```lua
 vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })
