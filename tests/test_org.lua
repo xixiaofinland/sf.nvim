@@ -20,9 +20,9 @@ local T = new_set({
   },
 })
 
-T['fetch_org_list()'] = new_set({ hooks = { pre_case = mock_test } })
+T['fetch_org_list'] = new_set({ hooks = { pre_case = mock_test } })
 
-T['fetch_org_list()']['test1'] = function()
+T['fetch_org_list']['test1'] = function()
   eq(child.lua_get([[vim.lsp.buf_get_clients()]]), {'mock client'})
 end
 --
