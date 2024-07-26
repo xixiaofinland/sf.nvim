@@ -60,16 +60,18 @@ M.set_auto_cmd_and_try_set_default_keys = function()
   })
 
   -- Fetch org info in Vim start
-  vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-    group = sf_group,
-    desc = 'Run sf org cmd and store org info in the plugin',
-    once = true,
-    callback = function()
-      if vim.fn.executable('sf') == 1 then
-        require('sf').fetch_org_list()
-      end
-    end,
-  })
+  if vim.g.sf.fetch_org_list_at_nvim_start then
+    vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+      group = sf_group,
+      desc = 'Run sf org cmd and store org info in the plugin',
+      once = true,
+      callback = function()
+        if vim.fn.executable('sf') == 1 then
+          require('sf').fetch_org_list()
+        end
+      end,
+    })
+  end
 
   local function set_keys()
     if not pcall(require('sf.util').get_sf_root) then

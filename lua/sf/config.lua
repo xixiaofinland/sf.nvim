@@ -9,6 +9,10 @@ local default_cfg = {
   -- This flag enable/disable hotkeys while user commands are always enabled
   enable_hotkeys = true,
 
+  -- When Nvim is initiated, the sf org list is automatically fetched and target_org is set (if available) by `:SF org fetchList`
+  -- You can set it to `false` and have a manual control
+  fetch_org_list_at_nvim_start = true,
+
   -- Some hotkeys are on "project level" thus always enabled. Examples: "set default org", "fetch org info".
   -- Other hotkeys are enabled when only metadata filetypes are loaded in the current buffer. Example: "push/retrieve current metadata file"
   -- This list defines what metadata filetypes have the "other hotkeys" enabled.
