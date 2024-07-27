@@ -33,11 +33,11 @@ Test.run_current_test = function(extraParams, cb)
   extraParams = extraParams or ''
 
   local test_class_name = TS.get_test_class_name()
-  if U.isempty(test_class_name) then
+  if U.is_empty_str(test_class_name) then
     return U.show_warn('Not in a test class.')
   end
   local test_name = TS.get_current_test_method_name()
-  if U.isempty(test_name) then
+  if U.is_empty_str(test_name) then
     return U.show_warn('Cursor not in a test method.')
   end
 
@@ -58,7 +58,7 @@ Test.run_all_tests_in_this_file = function(extraParams, cb)
   extraParams = extraParams or ''
 
   local test_class_name = TS.get_test_class_name()
-  if U.isempty(test_class_name) then
+  if U.is_empty_str(test_class_name) then
     return U.show_warn('Not in a test class.')
   end
 
@@ -69,7 +69,7 @@ Test.run_all_tests_in_this_file = function(extraParams, cb)
 end
 
 Test.repeat_last_tests = function()
-  if U.isempty(U.last_tests) then
+  if U.is_empty_str(U.last_tests) then
     return U.show_warn('Last test command is empty.')
   end
 
@@ -129,7 +129,7 @@ P.selected_tests = {}
 
 P.open = function()
   local class = TS.get_test_class_name()
-  if U.isempty(class) then
+  if U.is_empty_str(class) then
     U.notify_then_error('Not an Apex test class.')
   end
 

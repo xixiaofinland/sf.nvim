@@ -53,7 +53,7 @@ end
 ---@param cb function
 ---@return nil
 H.retrieve_md = function(type, name, cb)
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
   U.get_sf_root()
@@ -63,7 +63,7 @@ H.retrieve_md = function(type, name, cb)
 end
 
 H.list_md_to_retrieve = function()
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
 
@@ -116,7 +116,7 @@ end
 ---@param type string
 ---@return nil
 H.pull_metadata = function(type)
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
 
@@ -132,7 +132,7 @@ H.pull_metadata = function(type)
 end
 
 H.pull_md_type_json = function()
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
 
@@ -147,7 +147,7 @@ H.pull_md_type_json = function()
 end
 
 H.list_md_type_to_retrieve = function()
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
 
@@ -174,7 +174,7 @@ end
 ---@param type string
 ---@return nil
 H.retrieve_md_type = function(type)
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
 

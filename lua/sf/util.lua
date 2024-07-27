@@ -8,27 +8,28 @@ M.target_org = ''
 
 ---@param msg string
 M.show = function(msg)
-  vim.notify("Sf: " .. msg, vim.log.levels.INFO, { title = 'sf.nvim' })
+  vim.notify(msg, vim.log.levels.INFO, { title = 'sf.nvim' })
 end
 
 ---@param msg string
 M.show_err = function(msg)
-  vim.notify("Sf: " .. msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
+  vim.notify(msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
 end
 
 ---@param msg string
 M.show_warn = function(msg)
-  vim.notify("Sf: " .. msg, vim.log.levels.WARN, { title = 'sf.nvim' })
+  vim.notify(msg, vim.log.levels.WARN, { title = 'sf.nvim' })
 end
 
 ---@param msg string
 M.notify_then_error = function(msg)
-  M.show_warn(msg)
-  error(msg)
+  local sf_msg = "Sf: " .. msg
+  M.show_warn(sf_msg)
+  error(sf_msg)
 end
 
 M.get = function()
-  if M.isempty(M.target_org) then
+  if M.is_empty_str(M.target_org) then
     error('Sf: Target_org empty!')
   end
 
@@ -67,7 +68,7 @@ M.get_sf_root = function()
   })[1])
 
   if root == nil then
-    error('Sf: File not in a sf project folder')
+    M.notify_then_error('File not in a sf project folder')
   end
 
   return root
@@ -75,26 +76,26 @@ end
 
 M.is_sf_cmd_installed = function()
   if vim.fn.executable('sf') ~= 1 then
-    error('Sf: sf cli not found')
+    M.notify_then_error('sf cli not found')
   end
 end
 
 M.is_ctags_installed = function()
   if vim.fn.executable('ctags') ~= 1 then
-    error('Sf: ctags cli not found')
+    M.notify_then_error('ctags cli not found')
   end
 end
 
 ---@param tbl table
 M.is_table_empty = function(tbl)
   if vim.tbl_isempty(tbl) then
-    error('Sf: Empty table')
+    M.notify_then_error('Empty table')
   end
 end
 
 ---@param s string|nil
 ---@return boolean
-M.isempty = function(s)
+M.is_empty_str = function(s)
   return s == nil or s == ''
 end
 
@@ -206,7 +207,7 @@ end
 M.read_local_file = function(absolute_path)
   local ok, content = pcall(vim.fn.readfile, absolute_path)
   if not ok then
-    error('Sf: File not found: ' .. absolute_path)
+    M.notify_then_error('File not found: ' .. absolute_path)
   end
 
   return content
@@ -218,7 +219,7 @@ M.parse_from_json_to_tbl = function(content)
   local json = table.concat(content)
   local ok, tbl = pcall(vim.json.decode, json, {})
   if not ok then
-    error('Sf: Parse file from json to tbl failed: ' .. absolute_path)
+    M.notify_then_error('Parse file from json to tbl failed: ' .. absolute_path)
   end
 
   return tbl
