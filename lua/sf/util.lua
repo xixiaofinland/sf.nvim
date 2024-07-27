@@ -68,7 +68,7 @@ M.get_sf_root = function()
   })[1])
 
   if root == nil then
-    M.notify_then_error('File not in a sf project folder')
+    error('File not in a sf project folder')
   end
 
   return root
