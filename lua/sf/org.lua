@@ -75,8 +75,8 @@ H.set_target_org = function()
 end
 
 H.set_global_target_org = function()
-  if U.isempty(H.orgs) then
-    error('Sf: Empty value')
+  if U.is_empty_str(H.orgs) then
+    U.notify_then_error('Empty value')
   end
 
   vim.ui.select(H.orgs, {
@@ -140,7 +140,7 @@ H.fetch_org_list = function()
 end
 
 H.diff_in_target_org = function()
-  if U.isempty(U.target_org) then
+  if U.is_empty_str(U.target_org) then
     return U.show_err('Target_org empty!')
   end
 
