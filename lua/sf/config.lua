@@ -32,6 +32,7 @@ local default_cfg = {
 
   -- Configuration for the integrated terminal
   term_config = {
+    ft = 'SFTerm',  -- term filetype
     blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
     dimensions = {
       height = 0.4, -- proportional of the editor height. 0.4 means 40%.
@@ -39,6 +40,10 @@ local default_cfg = {
       x = 0.5,      -- starting position of width. Details in `get_dimension()` in raw_term.lua source code.
       y = 0.9,      -- starting position of height. Details in `get_dimension()` in raw_term.lua source code.
     },
+    -- `:h jobstart-options` for below options
+    border = 'single',
+    hl = 'Normal',
+    clear_env = false,
   },
 
   -- the sf project metadata folder, update this in case you diverged from the default sf folder structure

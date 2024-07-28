@@ -8,6 +8,11 @@ Helpers.new_child_neovim = function()
     child.bo.readonly = false
   end
 
+  child.sf_setup = function(config)
+    local req = ([[require('sf').setup(...)]])
+    child.lua(req, { config })
+  end
+
   return child
 end
 
