@@ -64,7 +64,6 @@ M.set_auto_cmd_and_try_set_default_keys = function()
     vim.api.nvim_create_autocmd({ 'VimEnter' }, {
       group = sf_group,
       desc = 'Run sf org cmd and store org info in the plugin',
-      once = true,
       callback = function()
         if vim.fn.executable('sf') == 1 then
           require('sf').fetch_org_list()
@@ -73,7 +72,7 @@ M.set_auto_cmd_and_try_set_default_keys = function()
     })
   end
 
-  local function set_keys()
+  local function try_set_keys_and_user_commands()
     if not pcall(require('sf.util').get_sf_root) then
       return
     end
@@ -90,7 +89,7 @@ M.set_auto_cmd_and_try_set_default_keys = function()
   -- Set hotkeys and user commands
   vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType' }, {
     group = sf_group,
-    callback = set_keys
+    callback = try_set_keys_and_user_commands
   })
 end
 

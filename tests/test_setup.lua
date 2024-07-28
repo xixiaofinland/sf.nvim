@@ -1,6 +1,6 @@
 local helpers = dofile('tests/helpers.lua')
 local child = helpers.new_child_neovim()
-local expect, eq = MiniTest.expect, MiniTest.expect.equality
+local expect, eq = helpers.expect, helpers.expect.equality
 local new_set = MiniTest.new_set
 
 local T = new_set({
@@ -20,8 +20,12 @@ local T = new_set({
   },
 })
 
-local cmd_returns_pattern = function(cmd, pattern) return child.cmd_capture(cmd):find(pattern) ~= nil end
-local has_nmap = function(lhs, pattern) return cmd_returns_pattern('nmap ' .. lhs, pattern) end
+local has_cmd_pattern = function(cmd, pattern) return expect.match(child.cmd_capture(cmd), pattern) end
+local has_nmap = function(lhs) return has_cmd_pattern('nmap ' .. lhs, 'Sf') end
+
+local no_cmd_pattern = function(cmd, pattern) return expect.no_match(child.cmd_capture(cmd), pattern) end
+local no_nmap = function(lhs) return no_cmd_pattern('nmap ' .. lhs, 'Sf') end
+
 local expect_config = function(field, value) eq(child.lua_get('vim.g.sf.' .. field), value) end
 
 T['setup()'] = new_set()
@@ -67,8 +71,8 @@ T['setup()']['has default config'] = function()
   expect_config('plugin_folder_name', '/sf_cache/')
   expect_config('auto_display_code_sign', true)
   expect_config('code_sign_highlight', {
-    covered = { fg = "#B7F071" },
-    uncovered = { fg = "#F07178" },
+    covered = { fg = "#b7f071" },
+    uncovered = { fg = "#f07178" },
   })
 end
 
@@ -122,53 +126,85 @@ end
 T['setup()']['has default code sign config'] = function()
   eq(child.lua_get('type(vim.g.sf.code_sign_highlight)'), 'table')
 
-  cmd_returns_pattern('highlight SfCovered', child.lua_get('vim.g.sf.code_sign_highlight.covered.fg'))
-  cmd_returns_pattern('highlight SfUncovered', child.lua_get('vim.g.sf.code_sign_highlight.uncovered.fg'))
+  has_cmd_pattern('highlight SfCovered', child.lua_get('vim.g.sf.code_sign_highlight.covered.fg'))
+  has_cmd_pattern('highlight SfUncovered', child.lua_get('vim.g.sf.code_sign_highlight.uncovered.fg'))
 
-  eq(child.lua_get('vim.tbl_isempty(vim.fn.sign_getdefined("sf_covered"))'), false)
-  eq(child.lua_get('vim.tbl_isempty(vim.fn.sign_getdefined("sf_uncovered"))'), false)
+  eq(vim.tbl_isempty(child.fn.sign_getdefined("sf_covered")), false)
+  eq(vim.tbl_isempty(child.fn.sign_getdefined("sf_uncovered")), false)
 end
 
 T['setup()']['no user-keys when non-sf-project dir'] = function()
   child.cmd('edit tests/dir/non-sf-project/NonsfProject.cls')
 
   -- global;
-  eq(has_nmap('<leader>ss', 'Sf'), false)
-  eq(has_nmap('<leader>sf', 'Sf'), false)
-  eq(has_nmap('<leader>so', 'Sf'), false)
-  eq(has_nmap('<leader>ml', 'Sf'), false)
+  no_nmap('<leader>ss')
+  no_nmap('<leader>sf')
+  no_nmap('<leader>so')
+  no_nmap('<leader>ml')
 
   -- file-level;
-  eq(has_nmap('<leader>sp', 'Sf'), false)
-  eq(has_nmap('<leader>sr', 'Sf'), false)
+  no_nmap('<leader>sp')
+  no_nmap('<leader>sr')
 end
 
-T['setup()']['only global user-keys when sf-project dir but file not listed in "hotkeys_in_filetypes"'] = function()
+T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys_in_filetypes"'] = function()
   child.cmd('edit tests/dir/sf-project/test.txt')
 
   -- global;
-  eq(has_nmap('<leader>ss', 'Sf'), true)
-  eq(has_nmap('<leader>sf', 'Sf'), true)
-  eq(has_nmap('<leader>so', 'Sf'), true)
-  eq(has_nmap('<leader>ml', 'Sf'), true)
+  has_nmap('<leader>ss')
+  has_nmap('<leader>sf')
+  has_nmap('<leader>so')
+  has_nmap('<leader>ml')
 
   -- file-level;
-  eq(has_nmap('<leader>sp', 'Sf'), false)
-  eq(has_nmap('<leader>sr', 'Sf'), false)
+  no_nmap('<leader>sp')
+  no_nmap('<leader>sr')
 end
 
 T['setup()']['has all user-keys when opening Apex in sf-project dir'] = function()
   child.cmd('edit tests/dir/sf-project/SfProject.cls')
 
   -- global;
-  eq(has_nmap('<leader>ss', 'Sf'), true)
-  eq(has_nmap('<leader>sf', 'Sf'), true)
-  eq(has_nmap('<leader>so', 'Sf'), true)
-  eq(has_nmap('<leader>ml', 'Sf'), true)
+  has_nmap('<leader>ss')
+  has_nmap('<leader>sf')
+  has_nmap('<leader>so')
+  has_nmap('<leader>ml')
 
   -- file-level;
-  eq(has_nmap('<leader>sp', 'Sf'), true)
-  eq(has_nmap('<leader>sr', 'Sf'), true)
+  has_nmap('<leader>sp')
+  has_nmap('<leader>sr')
+end
+
+T['setup()']['SFTerm filetype has its user-keys defined by autocmd despite of non-sf-project dir.'] = function()
+  child.cmd('edit tests/dir/non-sf-project/SFTerm')
+  no_nmap('<leader><leader>')
+  no_nmap('<C-c>')
+
+  child.cmd('setfiletype SFTerm')
+  has_nmap('<leader><leader>')
+  has_nmap('<C-c>')
+end
+
+T['setup()']['default has a VimEnter event defined'] = function()
+  eq(#child.api.nvim_get_autocmds({ event = 'VimEnter', group = 'SF' }), 1)
+end
+
+T['setup()']['the VimEnter event can be disabled by custom config'] = function()
+  child.sf_setup({ fetch_org_list_at_nvim_start = false })
+
+  eq(#child.api.nvim_get_autocmds({ event = 'VimEnter', group = 'SF' }), 0)
+end
+
+T['setup()']['no user commands in non-sf-project dir'] = function()
+  child.cmd('edit tests/dir/non-sf-project/test.txt')
+
+  eq(child.api.nvim_get_commands({})['SF'], nil)
+end
+
+T['setup()']['has user commands in sf-project dir'] = function()
+  child.cmd('edit tests/dir/sf-project/text.txt')
+
+  eq(child.api.nvim_get_commands({})['SF'].name, 'SF')
 end
 
 return T
