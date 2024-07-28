@@ -58,8 +58,8 @@ local default_cfg = {
 
   -- code coverage sign icon colors
   code_sign_highlight = {
-    covered = { fg = "#B7F071" },   -- set `fg = ""` to disable this sign icon
-    uncovered = { fg = "#F07178" }, -- set `fg = ""` to disable this sign icon
+    covered = { fg = "#b7f071" },   -- set `fg = ""` to disable this sign icon
+    uncovered = { fg = "#f07178" }, -- set `fg = ""` to disable this sign icon
   },
 }
 
