@@ -25,13 +25,23 @@ Helpers.new_child_neovim = function()
   end
 
   child.setup = function()
-    child.restart({'-u', 'scripts/minimal_init.lua'})
+    child.restart({ '-u', 'scripts/minimal_init.lua' })
     child.bo.readonly = false
   end
 
   child.sf_setup = function(config)
     local req_cmd = ([[require('sf').setup(...)]])
     child.lua(req_cmd, { config })
+  end
+
+  child.open_in_sf_dir = function(file)
+    local lua_cmd = string.format('edit tests/dir/sf-project/%s', file)
+    child.cmd(lua_cmd)
+  end
+
+  child.open_in_non_sf_dir = function(file)
+    local lua_cmd = string.format('edit tests/dir/non-sf-project/%s', file)
+    child.cmd(lua_cmd)
   end
 
   return child

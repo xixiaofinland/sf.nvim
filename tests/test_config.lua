@@ -31,19 +31,19 @@ local expect_config = function(field, value) eq(child.lua_get('vim.g.sf.' .. fie
 T['setup()'] = new_set()
 
 T['setup()']['has filetypes defined'] = function()
-  child.cmd('edit tests/dir/sf-project/SfProject.cls')
+  child.open_in_sf_dir('SfProject.cls')
   eq(child.lua_get('vim.bo.filetype'), 'apex')
 
-  child.cmd('edit tests/dir/sf-project/Account.trigger')
+  child.open_in_sf_dir('Account.trigger')
   eq(child.lua_get('vim.bo.filetype'), 'apex')
 
-  child.cmd('edit tests/dir/sf-project/abc.soql')
+  child.open_in_sf_dir('abc.soql')
   eq(child.lua_get('vim.bo.filetype'), 'soql')
 
-  child.cmd('edit tests/dir/sf-project/query.sosl')
+  child.open_in_sf_dir('query.sosl')
   eq(child.lua_get('vim.bo.filetype'), 'sosl')
 
-  child.cmd('edit tests/dir/sf-project/page.html')
+  child.open_in_sf_dir('page.html')
   eq(child.lua_get('vim.bo.filetype'), 'html')
 end
 
@@ -134,7 +134,7 @@ T['setup()']['has default code sign config'] = function()
 end
 
 T['setup()']['no user-keys when non-sf-project dir'] = function()
-  child.cmd('edit tests/dir/non-sf-project/NonsfProject.cls')
+  child.open_in_non_sf_dir('NonsfProject.cls')
 
   -- global;
   no_nmap('<leader>ss')
@@ -148,7 +148,7 @@ T['setup()']['no user-keys when non-sf-project dir'] = function()
 end
 
 T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys_in_filetypes"'] = function()
-  child.cmd('edit tests/dir/sf-project/test.txt')
+  child.open_in_sf_dir('test.txt')
 
   -- global;
   has_nmap('<leader>ss')
@@ -162,7 +162,7 @@ T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys
 end
 
 T['setup()']['has all user-keys when opening Apex in sf-project dir'] = function()
-  child.cmd('edit tests/dir/sf-project/SfProject.cls')
+  child.open_in_sf_dir('SfProject.cls')
 
   -- global;
   has_nmap('<leader>ss')
@@ -176,7 +176,7 @@ T['setup()']['has all user-keys when opening Apex in sf-project dir'] = function
 end
 
 T['setup()']['SFTerm filetype has its user-keys defined by autocmd despite of non-sf-project dir.'] = function()
-  child.cmd('edit tests/dir/non-sf-project/SFTerm')
+  child.open_in_non_sf_dir('SFTerm')
   no_nmap('<leader><leader>')
   no_nmap('<C-c>')
 
@@ -196,13 +196,13 @@ T['setup()']['the VimEnter event can be disabled by custom config'] = function()
 end
 
 T['setup()']['no user commands in non-sf-project dir'] = function()
-  child.cmd('edit tests/dir/non-sf-project/test.txt')
+  child.open_in_non_sf_dir('test.txt')
 
   eq(child.api.nvim_get_commands({})['SF'], nil)
 end
 
 T['setup()']['has user commands in sf-project dir'] = function()
-  child.cmd('edit tests/dir/sf-project/text.txt')
+  child.open_in_sf_dir('text.txt')
 
   eq(child.api.nvim_get_commands({})['SF'].name, 'SF')
 end
