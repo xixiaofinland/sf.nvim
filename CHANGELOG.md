@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.3.0...v1.3.1) (2024-07-28)
+
+
+### Bug Fixes
+
+* elinimate warning in autocmd ([797ffef](https://github.com/xixiaofinland/sf.nvim/commit/797ffefdd5d13b126651bdb1716dba2bec4d35cf))
+
 ## [1.3.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.2.2...v1.3.0) (2024-07-27)
 
 
