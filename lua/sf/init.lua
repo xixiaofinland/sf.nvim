@@ -89,11 +89,11 @@ Sf.set_target_org = Org.set_target_org
 Sf.set_global_target_org = Org.set_global_target_org
 
 --- Fetch the file in the current buffer from target_org and display in the Nvim diff mode.
---- The left window displays the target_org verison, the right window displays the local verison.
+--- The left window displays the target_org verison, the right window displays the remote org verison
 Sf.diff_in_target_org = Org.diff_in_target_org
 
 --- Similar to |Sf.diff_in_target_org|, you can choose which org to diff with.
---- The left window displays the org verison, the right window displays the local verison.
+--- The left window displays the local verison, the right window displays the remote org verison
 Sf.diff_in_org = Org.diff_in_org
 
 --- Open the target_org in browser
