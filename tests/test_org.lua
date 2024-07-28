@@ -6,7 +6,7 @@ local new_set = MiniTest.new_set
 -- helper
 
 local mock_test = function()
-  child.cmd('luafile tests/dir-org/mock.lua')
+  child.cmd('luafile tests/mock/mock.lua')
 end
 
 local T = new_set({

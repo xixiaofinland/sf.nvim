@@ -5,8 +5,7 @@ local T = {}
 local H = {}
 
 function T:new(cfg)
-  cfg = cfg or {}
-  local config = vim.tbl_deep_extend('force', H.defaults, cfg)
+  local config = cfg
 
   return setmetatable({
     win = nil,
@@ -100,7 +99,7 @@ function T:open()
   end
 
   if not H.is_buf_valid(self.buf) then
-    return vim.notify_once('No previous task. Run a Sf command to initiate the terminal.', vim.log.levels.WARN)
+    return vim.notify_once('Sf: no previous task. Run a termnimal command to initiate the term.', vim.log.levels.WARN)
   end
 
   local win = self:create_and_open_win(self.buf)
@@ -174,27 +173,16 @@ function T:restore_cursor()
   return self
 end
 
+function T:get_config()
+  return self.config
+end
+
 function T:scroll_to_end()
   cmd('$')
   return self
 end
 
 -- helper -------------------
-
-H.defaults = {
-  ft = 'SFTerm',
-  blend = 10,
-  dimensions = {
-    height = 0.4,
-    width = 0.8,
-    x = 0.5,
-    y = 0.9,
-  },
-  border = 'single',
-  hl = 'Normal',
-  clear_env = false,
-  -- auto_close = false,
-}
 
 function H.is_win_valid(win)
   return win and vim.api.nvim_win_is_valid(win)
