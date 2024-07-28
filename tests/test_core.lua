@@ -56,6 +56,11 @@ end
 
 T['copy_apex_name()'] = new_set()
 
+T['tmp'] = function()
+  child.fn.setreg('*', 'Hello')
+  eq(child.fn.getreg('*'), 'Hello')
+end
+
 -- TODO: works only locally, fail in CI
 -- T['copy_apex_name()']['return apex name'] = function()
 --   local apex_name = 'SfProject'
