@@ -51,7 +51,7 @@ M.sub_cmd_tbl = {
   },
   mdtype = {
     funcs = {
-      retrieve = Sf.pull_md_type_json,
+      pull = Sf.pull_md_type_json,
       list = Sf.list_md_type_to_retrieve
     },
     impl = common_impl,
