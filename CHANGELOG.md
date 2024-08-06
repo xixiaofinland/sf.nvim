@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.3.1...v1.4.0) (2024-08-06)
+
+
+### Features
+
+* add GH action for publishing in luarocks ([95f8941](https://github.com/xixiaofinland/sf.nvim/commit/95f89418a19058142b821eeac1739bf5965c27ab))
+
 ## [1.3.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.3.0...v1.3.1) (2024-07-28)
 
 
