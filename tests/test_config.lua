@@ -50,7 +50,7 @@ end
 T['setup()']['has default config'] = function()
   eq(child.lua_get('type(vim.g.sf)'), 'table')
 
-  expect_config('enable_hotkeys', true)
+  expect_config('enable_hotkeys', false)
   expect_config('fetch_org_list_at_nvim_start', true)
   expect_config('hotkeys_in_filetypes', { "apex", "sosl", "soql", "javascript", "html" })
   expect_config('types_to_retrieve', { "ApexClass", "ApexTrigger", "StaticResource", "LightningComponentBundle" })
@@ -133,7 +133,22 @@ T['setup()']['has default code sign config'] = function()
   eq(vim.tbl_isempty(child.fn.sign_getdefined("sf_uncovered")), false)
 end
 
+T['setup()']['no user-keys by default'] = function()
+  child.open_in_sf_dir('test.txt')
+
+  -- global;
+  no_nmap('<leader>ss')
+  no_nmap('<leader>sf')
+  no_nmap('<leader>so')
+  no_nmap('<leader>ml')
+
+  -- file-level;
+  no_nmap('<leader>sp')
+  no_nmap('<leader>sr')
+end
+
 T['setup()']['no user-keys when non-sf-project dir'] = function()
+  child.sf_setup({ enable_hotkeys = true })
   child.open_in_non_sf_dir('NonsfProject.cls')
 
   -- global;
@@ -148,6 +163,7 @@ T['setup()']['no user-keys when non-sf-project dir'] = function()
 end
 
 T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys_in_filetypes"'] = function()
+  child.sf_setup({ enable_hotkeys = true })
   child.open_in_sf_dir('test.txt')
 
   -- global;
@@ -162,6 +178,7 @@ T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys
 end
 
 T['setup()']['has all user-keys when opening Apex in sf-project dir'] = function()
+  child.sf_setup({ enable_hotkeys = true })
   child.open_in_sf_dir('SfProject.cls')
 
   -- global;
