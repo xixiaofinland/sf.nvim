@@ -97,9 +97,11 @@ require('sf').setup({
   -- Unless you want to customize, no need to copy-paste any of these
   -- They are applied automatically
 
-  -- This plugin has both hotkeys and user commands supplied
-  -- This flag enable/disable hotkeys while user commands are always enabled
-  enable_hotkeys = true,
+  -- This plugin has many default hotkey mappings supplied
+  -- This flag enable/disable these hotkeys defined
+  -- It's highly recommended to set this to `false` and define your own key mappings
+  -- Set to `true` if you don't mind any potential key mapping conflicts with your own
+  enable_hotkeys = false,
 
   -- When Nvim is initiated, the sf org list is automatically fetched and target_org is set (if available) by `:SF org fetchList`
   -- You can set it to `false` and have a manual control
@@ -157,6 +159,8 @@ require('sf').setup({
 
 This plugin supplies both user commands (`:h user-commands`) and default hotkeys(`:h mapping`).
 
+Note! Default hotkeys are **disabled** by default in the config setting.
+
 ### 🖥️ User commands
 
 User commands are categories into two level subcommands (`:SF sub_cmd1 sub_cmd2`) to leverage the `tab`
@@ -178,10 +182,10 @@ category as screenshot 2
 ### ⌨️ Default hotkeys
 
 This plugin comes with many default hotkeys (all defined in [this file](./lua/sf/sub/config_user_key.lua)), which may conflict and overwrite your existing hotkeys.
-They are supplied to assist new users.
+Thus these hotkeys are **disabled** by default in the config setting.
 
-It is recommended to disable these keys and define the ones you use.
-They can be disabled in the configuration by setting `enable_hotkeys` to `false`.
+It is also recommended to disable them and define the ones as you wish.
+The toggling is in the configuration by setting the `enable_hotkeys` option.
 
 ### Often used default keys
 
@@ -207,7 +211,7 @@ All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiao
 Example:
 
 - If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, pressing `<leader>s` will hint to you what keys are enabled as
-  shown in the screenshot below. Remember that default hotkeys are enabled only inside a sf folder.
+  shown in the screenshot below. Remember that default hotkeys are **disabled by default.
 ![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
 <br>

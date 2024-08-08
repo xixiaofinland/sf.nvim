@@ -5,9 +5,11 @@ local default_cfg = {
   -- Unless you want to customize, no need to copy-paste any of these
   -- They are applied automatically
 
-  -- This plugin has both hotkeys and user commands supplied
-  -- This flag enable/disable hotkeys while user commands are always enabled
-  enable_hotkeys = true,
+  -- This plugin has many default hotkey mappings supplied
+  -- This flag enable/disable these hotkeys defined
+  -- It's highly recommended to set this to `false` and define your own key mappings
+  -- Set to `true` if you don't mind any potential key mapping conflicts with your own
+  enable_hotkeys = false,
 
   -- When Nvim is initiated, the sf org list is automatically fetched and target_org is set (if available) by `:SF org fetchList`
   -- You can set it to `false` and have a manual control
