@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.4.0...v1.5.0) (2024-08-08)
+
+
+### Features
+
+* disable default hotkeys in the default config setup ([e774165](https://github.com/xixiaofinland/sf.nvim/commit/e77416555de8796b72663524013c61f5b179a433))
+
 ## [1.4.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.3.1...v1.4.0) (2024-08-06)
 
 
