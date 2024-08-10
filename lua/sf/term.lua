@@ -1,4 +1,5 @@
 local U = require('sf.util')
+local B = require('sf.sub.cmd_builder')
 local Term = {}
 local H = {}
 local t
@@ -21,42 +22,50 @@ end
 function Term.save_and_push()
   -- vim.api.nvim_command('e') -- reload file to avoid invoking y/n pop-up in Ex
   vim.api.nvim_command('write!')
-  local cmd = vim.fn.expandcmd('sf project deploy start -d "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf project deploy start -d "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('project'):act('deploy start'):addParams('-d', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.push_delta()
-  local cmd = vim.fn.expandcmd('sf project deploy start -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf project deploy start -o ') .. U.get()
+  local cmd = B:new():cmd('project'):act('deploy start'):build()
   t:run(cmd)
 end
 
 function Term.retrieve()
-  local cmd = vim.fn.expandcmd('sf project retrieve start -d "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf project retrieve start -d "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-d', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.retrieve_delta()
-  local cmd = vim.fn.expandcmd('sf project retrieve start -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf project retrieve start -o ') .. U.get()
+  local cmd = B:new():cmd('project'):act('retrieve start'):build()
   t:run(cmd)
 end
 
 function Term.retrieve_package()
-  local cmd = vim.fn.expandcmd('sf project retrieve start -x "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf project retrieve start -x "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-x', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.run_anonymous()
-  local cmd = vim.fn.expandcmd('sf apex run -f "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf apex run -f "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('apex'):act('run'):addParams('-f', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.run_query()
-  local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('data'):act('query'):addParams('-w', 5):addParams('-f', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.run_tooling_query()
-  local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('data'):act('query'):addParams({ ['-w'] = 5, ['-f'] = '%:p', ['-t'] = '' }):build()
   t:run(cmd)
 end
 
@@ -71,7 +80,8 @@ function Term.run_highlighted_soql()
     vim.notify('Empty selection.', vim.log.levels.WARN);
   end
 
-  local raw_cmd = string.format('sf data query -q "%s" -o %s', selected_text, U.get())
+  -- local raw_cmd = string.format('sf data query -q "%s" -o %s', selected_text, U.get())
+  local raw_cmd = B:new():cmd('data'):act('query'):addParams('-q', selected_text):build()
   local cmd = string.gsub(raw_cmd, "'", "\'")
   t:run(cmd)
 end
@@ -86,8 +96,8 @@ function Term.go_to_sf_root()
   t:run('cd ' .. root)
 end
 
-function Term.run(c, cb)
-  local cmd = vim.fn.expandcmd(c)
+function Term.run(cmd, cb)
+  -- local cmd = vim.fn.expandcmd(c)
   t:run(cmd, cb)
 end
 

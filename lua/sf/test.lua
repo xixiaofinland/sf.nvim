@@ -1,4 +1,5 @@
 local T = require('sf.term')
+local B = require('sf.sub.cmd_builder')
 local TS = require('sf.ts')
 local U = require('sf.util')
 local S = require('sf.sub.test_sign')
@@ -23,47 +24,63 @@ Test.open = function()
 end
 
 Test.run_current_test_with_coverage = function()
-  Test.run_current_test('-c ', H.save_test_coverage_locally)
+  local test_class_name = H.validateInTestClass()
+  local test_name = H.validateInTestMethod()
+
+  local cmd = B:new():cmd('apex'):act('run test'):addParams({
+    ['-t'] = test_class_name .. '.' .. test_name,
+    ['-r'] = 'human',
+    ['-w'] = '5',
+    ['-c'] = '',
+  }):build()
+
+  U.last_tests = cmd
+  T.run(cmd, H.save_test_coverage_locally)
 end
 
----@param extraParams string
 ---@param cb function
 ---@return nil
-Test.run_current_test = function(extraParams, cb)
-  extraParams = extraParams or ''
+Test.run_current_test = function()
+  local test_class_name = H.validateInTestClass()
+  local test_name = H.validateInTestMethod()
 
-  local test_class_name = TS.get_test_class_name()
-  if U.is_empty_str(test_class_name) then
-    return U.show_warn('Not in a test class.')
-  end
-  local test_name = TS.get_current_test_method_name()
-  if U.is_empty_str(test_name) then
-    return U.show_warn('Cursor not in a test method.')
-  end
+  -- local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name, extraParams, U.get())
+  local cmd = B:new():cmd('apex'):act('run test'):addParams({
+    ['-t'] = test_class_name .. '.' .. test_name,
+    ['-r'] = 'human',
+    ['-w'] = '5',
+  }):build()
 
-  local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name,
-    extraParams, U.get())
   U.last_tests = cmd
-  T.run(cmd, cb)
+  T.run(cmd)
 end
 
 Test.run_all_tests_in_this_file_with_coverage = function()
-  Test.run_all_tests_in_this_file('-c ', H.save_test_coverage_locally)
+  local test_class_name = H.validateInTestClass()
+
+  local cmd = B:new():cmd('apex'):act('run test'):addParams({
+    ['-n'] = test_class_name,
+    ['-r'] = 'human',
+    ['-w'] = '5',
+    ['-c'] = '',
+  }):build()
+
+  U.last_tests = cmd
+  T.run(cmd, H.save_test_coverage_locally)
 end
 
----@param extraParams string
 ---@param cb function
 ---@return nil
-Test.run_all_tests_in_this_file = function(extraParams, cb)
-  extraParams = extraParams or ''
+Test.run_all_tests_in_this_file = function(cb)
+  local test_class_name = H.validateInTestClass()
 
-  local test_class_name = TS.get_test_class_name()
-  if U.is_empty_str(test_class_name) then
-    return U.show_warn('Not in a test class.')
-  end
+  -- local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams, U.get())
+  local cmd = B:new():cmd('apex'):act('run test'):addParams({
+    ['-n'] = test_class_name,
+    ['-r'] = 'human',
+    ['-w'] = '5',
+  }):build()
 
-  local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams,
-    U.get())
   U.last_tests = cmd
   T.run(cmd, cb)
 end
@@ -77,13 +94,37 @@ Test.repeat_last_tests = function()
 end
 
 Test.run_local_tests = function()
-  local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s",
-    U.get())
+  -- local cmd = string.format("sf apex run test --test-level RunLocalTests --code-coverage -r human --wait 180 -o %s", U.get())
+  local cmd = B:new():cmd('apex'):act('run test'):addParams({
+    ['-l'] = 'RunLocalTests',
+    ['-c'] = '',
+    ['-r'] = 'human',
+    ['-w'] = 180,
+  })
+
   U.last_tests = cmd
   T.run(cmd)
 end
 
 -- helper;
+
+H.validateInTestClass = function()
+  local test_class_name = TS.get_test_class_name()
+  if U.is_empty_str(test_class_name) then
+    U.notify_then_error('Not in a test class.')
+  end
+
+  return test_class_name
+end
+
+H.validateInTestMethod = function()
+  local test_name = TS.get_current_test_method_name()
+  if U.is_empty_str(test_name) then
+    U.notify_then_error('Cursor not in a test method.')
+  end
+
+  return test_name
+end
 
 ---@param lines table
 ---@return any
@@ -109,7 +150,9 @@ H.save_test_coverage_locally = function(self, cmd, exit_code)
   end
 
   local file_name = "test_result.json"
-  local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. U.get_plugin_folder_path() .. file_name
+  -- local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. U.get_plugin_folder_path() .. file_name
+  local cmd = B:new():cmd('apex'):act('get test'):addParams('-i', id):addParams('-c'):addParams('--json'):build()
+  cmd = cmd .. ' > ' .. U.get_plugin_folder_path() .. file_name
 
   U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed! " .. cmd, S.invalidate_cache_and_try_place)
 end
@@ -168,8 +211,26 @@ P.set_keys = function()
     P.toggle()
   end, { buffer = true, noremap = true })
 
+  local create_cmd = function(tbl)
+    local cmd_builder = B:new():cmd('apex'):act('run test'):addParams(tbl)
+
+    local test_params = ''
+    for _, test in ipairs(P.selected_tests) do
+      test_params = test_params .. ' -t ' .. test
+    end
+
+    local cmd = cmd_builder:addParamStr(test_params):build()
+
+    return cmd
+  end
+
   vim.keymap.set('n', 'cc', function()
-    local cmd = P.build_tests_cmd(U.cmd_params) .. ' -o ' .. U.get()
+    if vim.tbl_isempty(P.selected_tests) then
+      return U.show_err('No test is selected.')
+    end
+
+    local cmd = create_cmd({ ['-w'] = '5', ['-r'] = 'human' })
+
     P.close()
     T.run(cmd)
     U.last_tests = cmd
@@ -177,7 +238,12 @@ P.set_keys = function()
   end, { buffer = true, noremap = true })
 
   vim.keymap.set('n', 'CC', function()
-    local cmd = P.build_tests_cmd(U.cmd_coverage_params) .. ' -o ' .. U.get()
+    if vim.tbl_isempty(P.selected_tests) then
+      return U.show_err('No test is selected.')
+    end
+
+    local cmd = create_cmd({ ['-w'] = '5', ['-r'] = 'human', ['-c'] = '' })
+
     P.close()
     T.run(cmd, H.save_test_coverage_locally)
     U.last_tests = cmd
@@ -268,17 +334,9 @@ end
 ---@param param_str string
 ---@return nil
 P.build_tests_cmd = function(param_str)
-  if vim.tbl_isempty(P.selected_tests) then
-    return U.show_err('No test is selected.')
-  end
-
-  local t = ''
-  for _, test in ipairs(P.selected_tests) do
-    t = string.format('%s -t %s', t, test)
-  end
-
-  local cmd = string.format('sf apex run test%s %s', t, param_str)
-  return cmd
+  return t
+  --   local cmd = string.format('sf apex run test%s %s', t, param_str)
+  --   return cmd
 end
 
 P.close = function()
