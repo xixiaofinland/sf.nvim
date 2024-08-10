@@ -121,13 +121,13 @@ Run "sf config set target-org --global " command under the hood.
                                                          *Sf.diff_in_target_org*
                             `Sf.diff_in_target_org`
 Fetch the file in the current buffer from target_org and display in the Nvim diff mode.
-The left window displays the target_org verison, the right window displays the local verison.
+The left window displays the target_org verison, the right window displays the remote org verison
 
 ------------------------------------------------------------------------------
                                                                 *Sf.diff_in_org*
                                 `Sf.diff_in_org`
 Similar to |Sf.diff_in_target_org|, you can choose which org to diff with.
-The left window displays the org verison, the right window displays the local verison.
+The left window displays the local verison, the right window displays the remote org verison
 
 ------------------------------------------------------------------------------
                                                                    *Sf.org_open*

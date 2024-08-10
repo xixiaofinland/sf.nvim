@@ -80,6 +80,7 @@ local init = function()
       soql = 'soql',
       sosl = 'sosl',
       page = 'html',
+      log = 'sflog',
     }
   })
 
