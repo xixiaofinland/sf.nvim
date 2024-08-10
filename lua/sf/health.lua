@@ -35,7 +35,10 @@ H.check_tree_sitter = function()
   if parsers['sosl'] == nil then
     return vim.health.error("sosl parser not installed in nvim-treesitter!")
   end
-  vim.health.ok("parsers found in nvim-treesitter.")
+  if parsers['sflog'] == nil then
+    return vim.health.error("sflog parser not installed in nvim-treesitter!")
+  end
+  vim.health.ok("All Salesforce relevant parsers are installed in nvim-treesitter.")
 end
 
 H.check_nvim_version = function()
