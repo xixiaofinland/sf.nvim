@@ -1,8 +1,5 @@
 local M = {}
 
-M.cmd_params = '-w 5 -r human'
-M.cmd_coverage_params = '-w 5 -r human -c'
-
 M.last_tests = ''
 M.target_org = ''
 

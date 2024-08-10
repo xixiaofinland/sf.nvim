@@ -1,5 +1,6 @@
 local T = require('sf.term')
 local U = require('sf.util')
+local B = require('sf.sub.cmd_builder')
 local H = {}
 
 local Md = {}
@@ -58,7 +59,8 @@ H.retrieve_md = function(type, name, cb)
   end
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m \'%s:%s\' -o %s', type, name, U.target_org)
+  local type_name = string.format('\'%s:%s\'', type, name)
+  local cmd = B:new():cmd('project'):act('retrive start'):addParams('-m', type_name):build()
   T.run(cmd, cb)
 end
 
@@ -124,7 +126,8 @@ H.pull_metadata = function(type)
 
   local md_file = string.format('%s/%s_%s.json', U.get_plugin_folder_path(), type, U.target_org)
 
-  local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
+  -- local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
+  local cmd = B:new():cmd('org'):act('list metadata'):addParams({ ["-m"] = type, ["-f"] = md_file }):build()
   local msg = string.format('%s retrieved', type)
   local err_msg = string.format('%s retrieve failed: %s', type, md_file)
 
@@ -139,7 +142,8 @@ H.pull_md_type_json = function()
   U.create_plugin_folder_if_not_exist()
 
   local metadata_types_file = string.format('%s/%s.json', U.get_plugin_folder_path(), 'metadata-types')
-  local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
+  -- local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
+  local cmd = B:new():cmd('org'):act('list metadata-types'):addParams('-f', metadata_types_file):build()
   local msg = 'Metadata-type file retrieved'
   local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
 
@@ -180,14 +184,17 @@ H.retrieve_md_type = function(type)
 
   U.get_sf_root()
 
-  local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
+  -- local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
+  local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-m', type):build()
   T.run(cmd)
 end
 
 ---@param name string
 H.generate_class = function(name)
   local path = U.get_apex_folder_path()
-  local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
+  -- local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
+  local cmd = B:new():cmd('apex'):act('generate class'):addParams({ ["-d"] = path, ["-n"] = name }):build()
+
   U.job_call(
     cmd,
     nil,
@@ -206,8 +213,8 @@ end
 
 ---@param name string
 H.generate_aura = function(name)
-  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura",
-    U.get_default_dir_path() .. "/aura", name)
+  -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_default_dir_path() .. "/aura", name)
+  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. '/aura', ['-n'] = name, ['--type'] = 'aura' }):build()
   U.silent_job_call(
     cmd,
     nil,
@@ -225,8 +232,8 @@ end
 
 ---@param name string
 H.generate_lwc = function(name)
-  local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc",
-    U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
+  -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
+  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. '/lwc', ['-n'] = name, ['--type'] = 'lwc' })
   U.silent_job_call(
     cmd,
     nil,

@@ -8,13 +8,7 @@ local T = new_set({
     pre_case = function()
       child.setup()
       child.sf_setup()
-      child.lua([[Sf = require('sf')]])
-      child.lua([[Util = require('sf.util')]])
       child.lua([[Term = require('sf.term')]])
-      child.lua([[Md = require('sf.md')]])
-      child.lua([[Test = require('sf.test')]])
-      child.lua([[Ctags = require('sf.ctags')]])
-      child.lua([[Test_sign = require('sf.sub.test_sign')]])
     end,
     post_once = child.stop,
   },

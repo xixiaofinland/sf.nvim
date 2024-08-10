@@ -1,4 +1,5 @@
 local U = require('sf.util')
+local B = require('sf.sub.cmd_builder')
 
 local H = {}
 local Org = {}
@@ -24,13 +25,15 @@ function Org.diff_in_org()
 end
 
 function Org.open()
-  local cmd = 'sf org open -o ' .. U.get()
+  -- local cmd = 'sf org open -o ' .. U.get()
+  local cmd = B:new():cmd('org'):act('open'):build()
   local err_msg = 'Command failed: ' .. cmd
   U.silent_job_call(cmd, nil, err_msg)
 end
 
 function Org.open_current_file()
-  local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd('org'):act('open'):addParams('-f', '%:p'):build()
   local err_msg = 'Command failed: ' .. cmd
   U.silent_job_call(cmd, nil, err_msg)
 end
@@ -44,14 +47,8 @@ H.clean_org_cache = function()
 end
 
 H.open = function()
-  local cmd = 'sf org open -o ' .. U.get()
-  local err_msg = 'Command failed: ' .. cmd
-  U.silent_job_call(cmd, nil, err_msg)
-end
-
-H.open_current_file = function()
-  local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
-  print(cmd)
+  -- local cmd = 'sf org open -o ' .. U.get()
+  local cmd = B:new():cmd('org'):act('open'):build()
   local err_msg = 'Command failed: ' .. cmd
   U.silent_job_call(cmd, nil, err_msg)
 end
@@ -63,7 +60,8 @@ H.set_target_org = function()
   }, function(choice)
     if choice ~= nil then
       local org = string.gsub(choice, '%[S%] ', '')
-      local cmd = 'sf config set target-org ' .. org
+      -- local cmd = 'sf config set target-org ' .. org
+      local cmd = B:new():cmd('config'):act('set target-org'):build() .. ' ' .. org
       local err_msg = org .. ' - set target_org failed! Not in a sfdx project folder?'
       local cb = function()
         U.target_org = org
@@ -84,7 +82,8 @@ H.set_global_target_org = function()
   }, function(choice)
     if choice ~= nil then
       local org = string.gsub(choice, '%[S%] ', '')
-      local cmd = 'sf config set target-org --global ' .. org
+      -- local cmd = 'sf config set target-org --global ' .. org
+      local cmd = B:new():cmd('config'):act('set target-org'):addParams('--global'):build() .. ' ' .. org
       local msg = 'Global target_org set: ' .. org
       local err_msg = string.format('Global set target_org [%s] failed!', org)
       local cb = function()
@@ -166,13 +165,18 @@ H.diff_in = function(org)
   local file_name_no_ext = H.get_file_name_without_extension(file_name)
   local temp_path = vim.fn.tempname()
 
-  local cmd = string.format(
-    "sf project retrieve start -m %s:%s -r %s -o %s --json",
-    metadataType,
-    file_name_no_ext,
-    temp_path,
-    org
-  )
+  -- local cmd = string.format(
+  --   "sf project retrieve start -m %s:%s -r %s -o %s --json",
+  --   metadataType,
+  --   file_name_no_ext,
+  --   temp_path,
+  --   org
+  -- )
+  local cmd = B:new():cmd('project'):act('retrieve start'):addParams({
+    ['-m'] = metadataType .. ':' .. file_name_no_ext,
+    ['-r'] = temp_path,
+    ['--json'] = '',
+  }):set_org(org):build()
 
   local msg = 'Retrive success: ' .. org
   local err_msg = 'Retrive failed: ' .. org
