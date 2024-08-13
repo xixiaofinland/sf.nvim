@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.4.0...v1.5.0) (2024-08-13)
+
+
+### Features
+
+* add sflog parser support ([a042171](https://github.com/xixiaofinland/sf.nvim/commit/a042171a5963429249cafd2b7b6068425ded1a5d))
+* disable default hotkeys in the default config setup ([e774165](https://github.com/xixiaofinland/sf.nvim/commit/e77416555de8796b72663524013c61f5b179a433))
+
+
+### Bug Fixes
+
+* set target_org errored ([74f0d7e](https://github.com/xixiaofinland/sf.nvim/commit/74f0d7ecfd74ecb3dfdb4d8c994b2d794f634145))
+
 ## [1.4.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.3.1...v1.4.0) (2024-08-06)
 
 
