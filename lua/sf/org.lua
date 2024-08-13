@@ -60,8 +60,7 @@ H.set_target_org = function()
   }, function(choice)
     if choice ~= nil then
       local org = string.gsub(choice, '%[S%] ', '')
-      -- local cmd = 'sf config set target-org ' .. org
-      local cmd = B:new():cmd('config'):act('set target-org'):build() .. ' ' .. org
+      local cmd = 'sf config set target-org ' .. org
       local err_msg = org .. ' - set target_org failed! Not in a sfdx project folder?'
       local cb = function()
         U.target_org = org
