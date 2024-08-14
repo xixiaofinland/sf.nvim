@@ -132,8 +132,6 @@ M.create_user_commands = function()
     complete = function(arg_lead, cmdline, _)
       -- sub_cmd complete
       local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*SF[!]*%s(%S+)%s(.*)$")
-      print(cmdline)
-      print(arg_lead)
       if subcmd
           and subcmd_arg_lead
           and M.sub_cmd_tbl[subcmd]
@@ -144,7 +142,6 @@ M.create_user_commands = function()
 
       -- sub_cmd with args complete
       if cmdline:match("^['<,'>]*SF[!]*%s+%w*$") then
-        print(vim.inspect(M.sub_cmd_tbl))
         local sub_cmd_keys = vim.tbl_keys(M.sub_cmd_tbl)
         return vim.iter(sub_cmd_keys)
             :filter(function(key)
