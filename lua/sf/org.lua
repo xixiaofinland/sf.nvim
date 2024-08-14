@@ -28,14 +28,14 @@ function Org.open()
   -- local cmd = 'sf org open -o ' .. U.get()
   local cmd = B:new():cmd('org'):act('open'):build()
   local err_msg = 'Command failed: ' .. cmd
-  U.silent_job_call(cmd, nil, err_msg)
+  U.job_call(cmd, nil, err_msg)
 end
 
 function Org.open_current_file()
   -- local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
   local cmd = B:new():cmd('org'):act('open'):addParams('-f', '%:p'):build()
   local err_msg = 'Command failed: ' .. cmd
-  U.silent_job_call(cmd, nil, err_msg)
+  U.job_call(cmd, nil, err_msg)
 end
 
 -- helpers;
@@ -44,13 +44,6 @@ H.orgs = {}
 
 H.clean_org_cache = function()
   H.orgs = {}
-end
-
-H.open = function()
-  -- local cmd = 'sf org open -o ' .. U.get()
-  local cmd = B:new():cmd('org'):act('open'):build()
-  local err_msg = 'Command failed: ' .. cmd
-  U.silent_job_call(cmd, nil, err_msg)
 end
 
 H.set_target_org = function()
@@ -81,8 +74,7 @@ H.set_global_target_org = function()
   }, function(choice)
     if choice ~= nil then
       local org = string.gsub(choice, '%[S%] ', '')
-      -- local cmd = 'sf config set target-org --global ' .. org
-      local cmd = B:new():cmd('config'):act('set target-org'):addParams('--global'):build() .. ' ' .. org
+      local cmd = 'sf config set target-org --global ' .. org
       local msg = 'Global target_org set: ' .. org
       local err_msg = string.format('Global set target_org [%s] failed!', org)
       local cb = function()
