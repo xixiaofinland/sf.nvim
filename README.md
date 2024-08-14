@@ -79,11 +79,11 @@ return {
 🚨 **Notice:**
 
 The hotkeys are disabled by default!
-The user commands are **ONLY** enabled when you are in a sf project folder(i.e. has `.forceignore`
-or `sfdx-project.json` in the root path).
+The user commands are **ONLY** enabled when your current path (`:h cwd`) or the current opened file
+is inside a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path).
 
 Run `:lua require'sf.util'.get_sf_root()` to verify if the current opened file
-resides in sf project folder or not. If no error is printed it means "yes".
+resides in sf project folder. When no error is printed it means the file is in a sf project folder.
 
 <br>
 

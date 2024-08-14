@@ -39,6 +39,18 @@ Helpers.new_child_neovim = function()
     child.cmd(lua_cmd)
   end
 
+  child.go_to_sf_dir = function()
+    child.cmd('cd tests/dir/sf-project/')
+  end
+
+  child.go_to_non_sf_dir = function()
+    child.cmd('cd tests/dir/non-sf-project/')
+  end
+
+  child.go_to_sf_sub_dir = function()
+    child.cmd('cd tests/dir/sf-project/sf_cache/')
+  end
+
   child.open_in_non_sf_dir = function(file)
     local lua_cmd = string.format('edit tests/dir/non-sf-project/%s', file)
     child.cmd(lua_cmd)
