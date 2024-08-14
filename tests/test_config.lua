@@ -156,7 +156,7 @@ T['setup()']['no user-keys when non-sf-project dir'] = function()
   no_nmap('<leader>sr')
 end
 
-T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys_in_filetypes"'] = function()
+T['setup()']['only global user-keys when 1. in sf-project dir 2. opened file not in "hotkeys_in_filetypes"'] = function()
   child.sf_setup({ enable_hotkeys = true })
   child.open_in_sf_dir('test.txt')
 
@@ -171,7 +171,22 @@ T['setup()']['only global user-keys when sf-project dir but file not in "hotkeys
   no_nmap('<leader>sr')
 end
 
-T['setup()']['has all user-keys when opening Apex in sf-project dir'] = function()
+T['setup()']['only global user-keys when 0. enable_hotkeys 1. in sf-project sub-dir 2. opened file not in "hotkeys_in_filetypes"'] = function()
+  child.sf_setup({ enable_hotkeys = true })
+  child.go_to_sf_sub_dir()
+
+  -- global;
+  has_nmap('<leader>ss')
+  has_nmap('<leader>sf')
+  has_nmap('<leader>so')
+  has_nmap('<leader>ml')
+
+  -- file-level;
+  no_nmap('<leader>sp')
+  no_nmap('<leader>sr')
+end
+
+T['setup()']['has all user-keys when 0. enable_hotkeys 1. in sf-project sub-dir 2. opened file in "hotkeys_in_filetypes"'] = function()
   child.sf_setup({ enable_hotkeys = true })
   child.open_in_sf_dir('SfProject.cls')
 
@@ -186,7 +201,42 @@ T['setup()']['has all user-keys when opening Apex in sf-project dir'] = function
   has_nmap('<leader>sr')
 end
 
-T['setup()']['SFTerm filetype has its user-keys defined by autocmd despite of non-sf-project dir.'] = function()
+T['setup()']['global user-keys disabled -> enabled when 0. enable_hotkeys 1. switching files from non-sf-project to sf-project folder'] = function()
+  child.sf_setup({ enable_hotkeys = true })
+  child.open_in_non_sf_dir('test.txt')
+
+  no_nmap('<leader>ss')
+  no_nmap('<leader>sf')
+  no_nmap('<leader>so')
+  no_nmap('<leader>ml')
+
+  child.open_in_sf_dir('SfProject.cls')
+  has_nmap('<leader>ss')
+  has_nmap('<leader>sf')
+  has_nmap('<leader>so')
+  has_nmap('<leader>ml')
+
+end
+
+T['setup()']['global user-keys disabled -> enabled when 0. enable_hotkeys 1. switching path from non-sf-project to sf-project folder'] = function()
+  child.sf_setup({ enable_hotkeys = true })
+  local root_path = child.fn.getcwd()
+  child.go_to_non_sf_dir()
+
+  no_nmap('<leader>ss')
+  no_nmap('<leader>sf')
+  no_nmap('<leader>so')
+  no_nmap('<leader>ml')
+
+  child.cmd('cd ' .. root_path .. '/tests/dir/sf-project/sf_cache/')
+  has_nmap('<leader>ss')
+  has_nmap('<leader>sf')
+  has_nmap('<leader>so')
+  has_nmap('<leader>ml')
+
+end
+
+T['setup()']['SFTerm filetype has its user-keys always defined by autocmd despite of non-sf-project dir.'] = function()
   child.open_in_non_sf_dir('SFTerm')
   no_nmap('<leader><leader>')
   no_nmap('<C-c>')

@@ -10,7 +10,7 @@ M.set_auto_cmd_and_try_set_default_keys = function()
     pattern = { 'javascript, apex, html' },
     callback = function()
       if pcall(require('sf.util').get_sf_root) then
-        vim.bo.fixendofline = false -- TODO: it seems not set correctly. Check why.
+        vim.bo.fixendofline = false -- FIXME: it seems not set correctly. Check why.
       end
     end
   })
@@ -87,7 +87,7 @@ M.set_auto_cmd_and_try_set_default_keys = function()
   end
 
   -- Set hotkeys and user commands
-  vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType' }, {
+  vim.api.nvim_create_autocmd({ 'BufWinEnter', 'FileType', 'DirChanged' }, {
     group = sf_group,
     callback = try_set_keys_and_user_commands
   })
