@@ -58,10 +58,17 @@ end
 M.get_sf_root = function()
   local root_patterns = { ".forceignore", "sfdx-project.json" }
 
+  local start_path = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+
+  -- If start_path is '.', use the current working directory instead
+  if start_path == "." then
+    start_path = vim.fn.getcwd()
+  end
+
   local root = vim.fs.dirname(vim.fs.find(root_patterns, {
     upward = true,
     stop = vim.uv.os_homedir(),
-    path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+    path = start_path,
   })[1])
 
   if root == nil then
