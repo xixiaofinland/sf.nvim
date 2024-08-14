@@ -74,7 +74,6 @@ M.set_auto_cmd_and_try_set_default_keys = function()
 
   local function try_set_keys_and_user_commands()
     if not pcall(require('sf.util').get_sf_root) then
-      print("get_sf_root failed")
       return
     end
 
