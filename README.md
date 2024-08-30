@@ -24,6 +24,12 @@
 
 ## ✨ Features
 
+In a nutshell, All features are supplied via the list of `Sf.*` functionalities in
+[init.lua](./lua/sf/init.lua). You can surf the code comments as the manual or `:h
+sf.nvim`, which is auto-generated from those comments.
+
+All the features are categorized as:
+
 - 🔥 Apex/Lwc/Aura: push, retrieve, create
 - 💻 Integrated term
 - 😎 File diff: local v.s. org
@@ -32,6 +38,9 @@
 - 🤖 Quick apex test run
 - ✨ Test report and code coverage info
 - 🦘 Enhanced jump-to-definition (Apex)
+
+In addition to the features, user commands and default hotkeys are also supplied, see
+[Keys](#-keys).
 
 <br>
 
@@ -103,17 +112,18 @@ require('sf').setup({
   -- Set to `true` if you don't mind any potential key mapping conflicts with your own
   enable_hotkeys = false,
 
-  -- When Nvim is initiated, the sf org list is automatically fetched and target_org is set (if available) by `:SF org fetchList`
-  -- You can set it to `false` and have a manual control
-  fetch_org_list_at_nvim_start = true,
-
-  -- Some hotkeys are on "project level" thus always enabled. Examples: "set default org", "fetch org info".
+  -- this setting takes effect only when You have "enable_hotkeys = true"(i.e. use default supplied hotkeys).
+  -- In the default hotkeys, some hotkeys are on "project level" thus always enabled. Examples: "set default org", "fetch org info".
   -- Other hotkeys are enabled when only metadata filetypes are loaded in the current buffer. Example: "push/retrieve current metadata file"
   -- This list defines what metadata filetypes have the "other hotkeys" enabled.
   -- For example, if you want to push/retrieve css files, it needs to be added into this list.
   hotkeys_in_filetypes = {
     "apex", "sosl", "soql", "javascript", "html"
   },
+
+  -- When Nvim is initiated, the sf org list is automatically fetched and target_org is set (if available) by `:SF org fetchList`
+  -- You can set it to `false` and have a manual control
+  fetch_org_list_at_nvim_start = true,
 
   -- Define what metadata to be listed in `list_md_to_retrieve()` (<leader>ml)
   -- Salesforce has numerous metadata types. We narrow down the scope of `list_md_to_retrieve()`.
@@ -187,7 +197,28 @@ Thus these hotkeys are **disabled** by default in the config setting.
 It is also recommended to disable them and define the ones as you wish.
 The toggling is in the configuration by setting the `enable_hotkeys` option.
 
+For example,
+```
+return {
+    'xixiaofinland/sf.nvim',
+    dependencies = {
+        'nvim-treesitter/nvim-treesitter',
+        "ibhagwan/fzf-lua",
+    },
+    config = function()
+        require('sf').setup()
+
+        -- all your key definitions put below
+        local Sf = require('sf')
+        vim.keymap.set('n', '<leader>ss', Sf.set_target_org, { desc = "set local" })
+        vim.keymap.set('n', '<leader>sS', Sf.set_global_target_org, { desc = "set global" })
+    end
+}
+```
+
 ### Often used default keys
+
+In case you decide to go with the default hotkeys:
 
 | Default key       | function name           | Explain           |
 | ----------| ------------------| ------------------|
