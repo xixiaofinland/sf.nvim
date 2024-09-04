@@ -59,7 +59,7 @@ H.retrieve_md = function(type, name, cb)
   end
   U.get_sf_root()
 
-  local type_name = string.format('\'%s:%s\'', type, name)
+  local type_name = string.format('%s:%s', type, name)
   local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-m', type_name):build()
   T.run(cmd, cb)
 end
