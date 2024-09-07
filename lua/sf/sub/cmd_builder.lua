@@ -44,7 +44,7 @@ end
 
 ---Make the command local only
 ---@return CommandBuilder
-function CommandBuilder:makeLocal()
+function CommandBuilder:localOnly()
     self.require_org = false
     return self
 end
