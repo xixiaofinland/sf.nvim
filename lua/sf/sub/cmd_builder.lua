@@ -21,6 +21,7 @@ function CommandBuilder:new(base_command)
         params = {},
         param_str = "",
         org = U.target_org or nil,
+        require_org = true,
     }, CommandBuilder)
     return obj
 end
@@ -38,6 +39,13 @@ end
 ---@return CommandBuilder
 function CommandBuilder:act(action)
     self.action = action
+    return self
+end
+
+---Make the command local only
+---@return CommandBuilder
+function CommandBuilder:makeLocal()
+    self.require_org = false
     return self
 end
 
@@ -140,8 +148,10 @@ function CommandBuilder:build()
         cmd = cmd .. ' ' .. self.param_str
     end
 
-    local org_param = string.format('-o "%s"', self.org)
-    cmd = cmd .. " " .. org_param
+    if self.require_org then
+      local org_param = string.format('-o "%s"', self.org)
+      cmd = cmd .. " " .. org_param
+    end
 
     return cmd
 end
