@@ -233,7 +233,7 @@ end
 ---@param name string
 H.generate_lwc = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
-  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. '/lwc', ['-n'] = name, ['--type'] = 'lwc' })
+  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. 'lwc', ['-n'] = name, ['--type'] = 'lwc' }):makeLocal():build()
   U.silent_job_call(
     cmd,
     nil,
