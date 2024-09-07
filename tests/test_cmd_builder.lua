@@ -128,4 +128,11 @@ T['setup()']['org name with space is safely supported'] = function()
   eq(result, expected)
 end
 
+T['setup()']['localOnly() by-passes the org param'] = function()
+  local result = child.lua_get('B:new():cmd("lightning"):act("generate component"):localOnly():build()')
+  local expected = string.format('sf lightning generate component')
+
+  eq(result, expected)
+end
+
 return T
