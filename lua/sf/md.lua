@@ -193,7 +193,7 @@ end
 H.generate_class = function(name)
   local path = U.get_apex_folder_path()
   -- local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
-  local cmd = B:new():cmd('apex'):act('generate class'):addParams({ ["-d"] = path, ["-n"] = name }):build()
+  local cmd = B:new():cmd('apex'):act('generate class'):addParams({ ["-d"] = path, ["-n"] = name }):localOnly():build()
 
   U.job_call(
     cmd,
@@ -214,7 +214,7 @@ end
 ---@param name string
 H.generate_aura = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_default_dir_path() .. "/aura", name)
-  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. '/aura', ['-n'] = name, ['--type'] = 'aura' }):build()
+  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. '/aura', ['-n'] = name, ['--type'] = 'aura' }):localOnly():build()
   U.silent_job_call(
     cmd,
     nil,
