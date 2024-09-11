@@ -81,6 +81,7 @@ H.list_md_to_retrieve = function()
     local file = string.format('%s_%s.json', type, U.target_org)
     local md_tbl = U.read_file_json_to_tbl(file, U.get_plugin_folder_path())
 
+    if md_tbl ~= nil then
     for _, v in ipairs(md_tbl) do
       if v["manageableState"] == 'unmanaged' then
         md[v["fullName"]] = v
@@ -88,6 +89,7 @@ H.list_md_to_retrieve = function()
       end
     end
   end
+end
 
   require("fzf-lua").fzf_exec(md_names, {
     actions = {

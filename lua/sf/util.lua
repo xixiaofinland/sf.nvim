@@ -202,16 +202,30 @@ end
 ---@return table|nil
 M.read_file_json_to_tbl = function(name, path)
   local absolute_path = path .. name
-  local content = M.read_local_file(absolute_path)
+  local err_fn = function()
+    vim.notify_once('File not found: ' .. absolute_path, vim.log.levels.WARN)
+  end
+  local content = M.read_local_file(absolute_path, err_fn)
+  if content == nil then
+    return nil
+  end
+
   return M.parse_from_json_to_tbl(content)
 end
 
----@param absolute_path string
----@return string|nil
-M.read_local_file = function(absolute_path)
+--- Reads the content of a local file.
+--- @param absolute_path string The path to the file.
+--- @param err_fn function|nil Optional function to call in case of an error.
+--- @return string|nil The file content or nil if an error occurred.
+M.read_local_file = function(absolute_path, err_fn)
   local ok, content = pcall(vim.fn.readfile, absolute_path)
+
   if not ok then
-    M.notify_then_error('File not found: ' .. absolute_path)
+    if type(err_fn) == "function" then
+      return err_fn()
+    else
+      M.notify_then_error('File not found: ' .. absolute_path)
+    end
   end
 
   return content
