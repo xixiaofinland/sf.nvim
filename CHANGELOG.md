@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.6.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.5.0...v1.6.0) (2024-09-12)
+
+
+### Features
+
+* update readme ([a416bd6](https://github.com/xixiaofinland/sf.nvim/commit/a416bd6224c80fd2dd8efa6b3edd032e4323d0c6))
+
+
+### Bug Fixes
+
+* add async msg for async calls without original msg ([fc19528](https://github.com/xixiaofinland/sf.nvim/commit/fc1952894bef850badf5112914cbcf4a3f27eaba))
+* apex, aura creation command failure ([c7e79f3](https://github.com/xixiaofinland/sf.nvim/commit/c7e79f3a9f034df7b210323c3217ef52a15ef9da))
+* cmd wrong name ([72d62dc](https://github.com/xixiaofinland/sf.nvim/commit/72d62dcdb422f959e6db54f6624d4a54e9b4fb1c))
+* create lwc ([32cdb3b](https://github.com/xixiaofinland/sf.nvim/commit/32cdb3b16a1c329ef16445e3b5e8cfe6fd3275f2))
+* keys not enabled in sf project sub folder ([082a740](https://github.com/xixiaofinland/sf.nvim/commit/082a7402dfaed8a8cd0f12c25d498f0f4f58ab57))
+* keys not enabled in sf project sub folder ([1b27dee](https://github.com/xixiaofinland/sf.nvim/commit/1b27dee3db1bc762f8f1ef026936dda56e93c6ed))
+* metadata pull command ill-formatted ([ef04a37](https://github.com/xixiaofinland/sf.nvim/commit/ef04a379c5b33475c3b1ed4ce1482a756014d24c))
+* remove debug_print ([6aa7809](https://github.com/xixiaofinland/sf.nvim/commit/6aa780979d13a407c619cd3e9e9a7b5573f807fe))
+* show once warning when md file is not found locally ([291881b](https://github.com/xixiaofinland/sf.nvim/commit/291881b27bd6e2b93a2866b4b3d29d508f576706))
+
 ## [1.5.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.4.0...v1.5.0) (2024-08-13)
 
 
