@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/Made%20With%20Lua-2C2D72?logo=lua&logoColor=fff&style=for-the-badge" alt="made with lua" >
 </p>
 <h1 align="center">Sf.nvim</h1>
-<p align="center">📸 Offer common functionalities for Salesforce development</p>
+<p align="center">📸 A Neovim plugin for Salesforce development</p>
 
 # 📖 Table of Content
 
