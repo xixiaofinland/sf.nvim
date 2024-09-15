@@ -111,6 +111,9 @@ end
 end
 
 H.pull_md_json = function()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   local md_types = vim.g.sf.types_to_retrieve
   for _, type in pairs(md_types) do
     H.pull_metadata(type)
