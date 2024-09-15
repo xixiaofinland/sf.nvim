@@ -124,7 +124,7 @@ M.silent_job_call = function(cmd, msg, err_msg, cb)
     on_exit =
         function(_, code)
           if code == 0 and msg ~= nil then
-            print(msg)
+            vim.notify(msg, vim.log.levels.INFO)
           elseif code ~= 0 and err_msg ~= nil then
             vim.notify(err_msg, vim.log.levels.ERROR)
           end
