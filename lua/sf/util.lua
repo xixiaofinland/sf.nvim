@@ -34,7 +34,14 @@ M.get = function()
 end
 
 M.get_default_dir_path = function()
-  return M.get_sf_root() .. vim.g.sf.default_dir
+  local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
+    if (dir_path:sub(1,1) ~= "/") then
+        dir_path = "/" .. dir_path
+    end
+    if (dir_path:sub(-1) ~= "/") then
+        dir_path = dir_path .. "/"
+    end
+  return dir_path
 end
 
 M.get_apex_folder_path = function()
@@ -42,7 +49,14 @@ M.get_apex_folder_path = function()
 end
 
 M.get_plugin_folder_path = function()
-  return M.get_sf_root() .. vim.g.sf.plugin_folder_name
+    local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
+    if (folder_path:sub(1,1) ~= "/") then
+        folder_path = "/" .. folder_path
+    end
+    if (folder_path:sub(-1) ~= "/") then
+        folder_path = folder_path .. "/"
+    end
+  return folder_path
 end
 
 M.create_plugin_folder_if_not_exist = function()
