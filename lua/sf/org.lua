@@ -228,14 +228,17 @@ H.find_file = function(path, target)
   -- if scanner is nil, then path is not a valid dir
   if scanner then
     local file, type = vim.loop.fs_scandir_next(scanner)
+    if (path:sub(-1) ~= "/") then
+      path = path .. "/"
+    end
     while file do
       if type == "directory" then
-        local found = H.find_file(path .. "/" .. file, target)
+        local found = H.find_file(path .. file, target)
         if found then
           return found
         end
       elseif file == target then
-        return path .. "/" .. file
+        return path .. file
       end
       -- get the next file and type
       file, type = vim.loop.fs_scandir_next(scanner)
