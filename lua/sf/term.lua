@@ -20,6 +20,9 @@ function Term.open()
 end
 
 function Term.save_and_push()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- vim.api.nvim_command('e') -- reload file to avoid invoking y/n pop-up in Ex
   vim.api.nvim_command('write!')
   -- local cmd = vim.fn.expandcmd('sf project deploy start -d "%:p" -o ') .. U.get()
@@ -28,48 +31,72 @@ function Term.save_and_push()
 end
 
 function Term.push_delta()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf project deploy start -o ') .. U.get()
   local cmd = B:new():cmd('project'):act('deploy start'):build()
   t:run(cmd)
 end
 
 function Term.retrieve()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf project retrieve start -d "%:p" -o ') .. U.get()
   local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-d', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.retrieve_delta()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf project retrieve start -o ') .. U.get()
   local cmd = B:new():cmd('project'):act('retrieve start'):build()
   t:run(cmd)
 end
 
 function Term.retrieve_package()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf project retrieve start -x "%:p" -o ') .. U.get()
   local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-x', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.run_anonymous()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf apex run -f "%:p" -o ') .. U.get()
   local cmd = B:new():cmd('apex'):act('run'):addParams('-f', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.run_query()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
   local cmd = B:new():cmd('data'):act('query'):addParams('-w', 5):addParams('-f', '%:p'):build()
   t:run(cmd)
 end
 
 function Term.run_tooling_query()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   -- local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
   local cmd = B:new():cmd('data'):act('query'):addParams({ ['-w'] = 5, ['-f'] = '%:p', ['-t'] = '' }):build()
   t:run(cmd)
 end
 
 function Term.run_highlighted_soql()
+  if U.is_empty_str(U.target_org) then
+    return U.show_err('Target_org empty!')
+  end
   if vim.fn.mode() ~= 'v' then
     vim.notify('Not in normal visual mode per character.', vim.log.levels.WARN);
     return
