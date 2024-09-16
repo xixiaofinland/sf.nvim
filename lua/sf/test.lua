@@ -106,6 +106,18 @@ Test.run_local_tests = function()
   T.run(cmd)
 end
 
+Test.run_all_jests = function()
+    T.run('npm run test:unit:coverage')
+end
+
+Test.run_jest_file = function()
+    if vim.fn.expand('%'):match('(.*)%.test%.js$') == nil then
+        vim.notify('Not in a jest test file', vim.log.levels.ERROR)
+        return
+    end
+    T.run(string.format('npm run test:unit -- -- %s', vim.fn.expand('%')))
+end
+
 -- helper;
 
 H.validateInTestClass = function()

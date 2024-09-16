@@ -155,6 +155,12 @@ Sf.repeat_last_tests = Test.repeat_last_tests
 --- Run all local tests in target_org
 Sf.run_local_tests = Test.run_local_tests
 
+--- Run all jest tests in project
+Sf.run_all_jests = Test.run_all_jests
+
+--- Run all jest tests in current file
+Sf.run_jest_file = Test.run_jest_file
+
 --- show sign icons to indicates uncovered lines from the latest test running result.
 Sf.toggle_sign = Test.toggle_sign
 
