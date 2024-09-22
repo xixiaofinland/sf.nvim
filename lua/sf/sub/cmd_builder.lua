@@ -156,6 +156,32 @@ function CommandBuilder:build()
     return cmd
 end
 
+---Build the final command as a string table
+---@return table
+function CommandBuilder:buildAsTable()
+    self:validate()
+
+    local cmd_tbl = {self.base_cmd, self.command, self.action}
+
+    local sortedParams = self:sortParams()
+    if #sortedParams > 0 then
+        for _, param in ipairs(sortedParams) do
+            table.insert(cmd_tbl, param.flag)
+            if param.value ~= "" then
+                local expanded_value = string.format('"%s"', vim.fn.expandcmd(param.value))
+                table.insert(cmd_tbl, expanded_value)
+            end
+        end
+    end
+
+    if self.require_org then
+      table.insert(cmd_tbl, '-o')
+      table.insert(cmd_tbl, self.org)
+    end
+
+    return cmd_tbl
+end
+
 function CommandBuilder:t()
     local t = "%:p"
     return vim.fn.expandcmd(t)
