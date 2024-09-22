@@ -50,6 +50,46 @@ H.pull_logs = function()
     end
 
     U.show('Querying logs...')
+
+    local on_exit = function (obj)
+        if obj.code ~= 0 then
+            return U.show_err('Failed to get logs from org')
+        end
+
+        local ok, log_table = pcall(vim.json.decode, obj.stdout, {})
+        if not ok then
+            return U.show_err('Failed to parse log JSON!')
+        end
+
+        local logs = {}
+        local log_names = {}
+        for _, v in ipairs(log_table["result"]) do
+            local name = string.format('%s | %s | %s bytes | %s', v["LogUser"]["Name"], string.gsub(v["StartTime"], "T", " "), v["LogLength"], v["Status"])
+            table.insert(log_names, name)
+            v["User"] = v["LogUser"]["Name"]
+            v["attributes"] = nil
+            v["LogUser"] = nil
+            logs[name] = v
+        end
+
+        require('fzf-lua').fzf_exec(log_names, {fzf_opts = {
+            ['--preview-window'] = 'nohidden,down,50%',
+            ['--preview'] = function(items)
+                local contents = {}
+                local prepend_char = ""
+                vim.tbl_map(
+                    function(x)
+                        table.insert(contents, prepend_char .. U.table_to_string_lines(logs[x])) 
+                        prepend_char = "\n"
+                    end
+                , items)
+                return contents
+                end
+        }})
+    end
+
+    local cmd_tbl = B:new():cmd('apex'):act('list'):subact('log'):addParams('--json'):buildAsTable()
+    vim.system(cmd_tbl, {}, vim.schedule_wrap(on_exit))
 end
 
 H.orgs = {}
