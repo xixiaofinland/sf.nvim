@@ -195,7 +195,7 @@ function CommandBuilder:buildAsTable()
         for _, param in ipairs(sortedParams) do
             table.insert(cmd_tbl, param.flag)
             if param.value ~= "" then
-                local expanded_value = string.format('"%s"', vim.fn.expandcmd(param.value))
+                local expanded_value = string.format('%s', vim.fn.expandcmd(param.value))
                 table.insert(cmd_tbl, expanded_value)
             end
         end
