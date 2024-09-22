@@ -38,7 +38,19 @@ function Org.open_current_file()
   U.job_call(cmd, nil, err_msg)
 end
 
+function Org.pull_logs()
+    H.pull_logs()
+end
+
 -- helpers;
+
+H.pull_logs = function()
+    if U.is_empty_str(U.target_org) then
+        return U.show_err('Target_org empty!')
+    end
+
+    U.show('Querying logs...')
+end
 
 H.orgs = {}
 

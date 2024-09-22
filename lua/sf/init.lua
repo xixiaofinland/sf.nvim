@@ -102,6 +102,9 @@ Sf.org_open = Org.open
 --- Open the current file in the target_org in browser
 Sf.org_open_current_file = Org.open_current_file
 
+--- Get a list of logs from the org, and choose one to download and open
+Sf.pull_logs = Org.pull_logs
+
 -- From Metadata module ==========================================================
 
 --- Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
