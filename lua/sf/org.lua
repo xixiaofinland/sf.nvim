@@ -38,13 +38,13 @@ function Org.open_current_file()
   U.job_call(cmd, nil, err_msg)
 end
 
-function Org.pull_logs()
-    H.pull_logs()
+function Org.pull_log()
+    H.pull_log()
 end
 
 -- helpers;
 
-H.pull_logs = function()
+H.pull_log = function()
     if U.is_empty_str(U.target_org) then
         return U.show_err('Target_org empty!')
     end

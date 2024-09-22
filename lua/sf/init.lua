@@ -103,7 +103,7 @@ Sf.org_open = Org.open
 Sf.org_open_current_file = Org.open_current_file
 
 --- Get a list of logs from the org, and choose one to download and open
-Sf.pull_logs = Org.pull_logs
+Sf.pull_log = Org.pull_log
 
 -- From Metadata module ==========================================================
 
