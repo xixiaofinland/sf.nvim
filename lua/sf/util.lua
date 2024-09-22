@@ -35,7 +35,7 @@ end
 
 M.get_default_dir_path = function()
   local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
-    if (dir_path:sub(1,1) ~= "/") then
+    if (dir_path:sub(1,1) ~= "/" and dir_path:sub(1,1) ~= ".") then
         dir_path = "/" .. dir_path
     end
     if (dir_path:sub(-1) ~= "/") then
@@ -50,7 +50,7 @@ end
 
 M.get_plugin_folder_path = function()
     local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
-    if (folder_path:sub(1,1) ~= "/") then
+    if (folder_path:sub(1,1) ~= "/" and folder_path:sub(1,1) ~= ".") then
         folder_path = "/" .. folder_path
     end
     if (folder_path:sub(-1) ~= "/") then
@@ -87,6 +87,10 @@ M.get_sf_root = function()
 
   if root == nil then
     error('File not in a sf project folder')
+  end
+
+  if root:sub(-1) ~= "/" then
+    root = root .. "/"
   end
 
   return root
