@@ -74,6 +74,11 @@ H.pull_log = function()
 
         local logs = {}
         local log_names = {}
+
+        if #log_table["result"] == 0 then
+            return U.show_warn('No logs found in org')
+        end
+
         for _, v in ipairs(log_table["result"]) do
             local name = string.format('%s | %s | %s bytes | %s', v["LogUser"]["Name"], string.gsub(v["StartTime"], "T", " "), v["LogLength"], v["Status"])
             table.insert(log_names, name)
