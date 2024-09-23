@@ -1,6 +1,6 @@
-local T = require('sf.term')
-local U = require('sf.util')
-local B = require('sf.sub.cmd_builder')
+local T = require("sf.term")
+local U = require("sf.util")
+local B = require("sf.sub.cmd_builder")
 local H = {}
 
 local Md = {}
@@ -41,12 +41,14 @@ end
 
 ---@param name string
 H.open_apex = function(name)
-  U.try_open_file(U.get_apex_folder_path() .. name .. '.cls')
+  U.try_open_file(U.get_apex_folder_path() .. name .. ".cls")
 end
 
 H.retrieve_apex_under_cursor = function()
-  local current_word = vim.fn.expand('<cword>')
-  H.retrieve_md('ApexClass', current_word, function() H.open_apex(current_word) end)
+  local current_word = vim.fn.expand("<cword>")
+  H.retrieve_md("ApexClass", current_word, function()
+    H.open_apex(current_word)
+  end)
 end
 
 ---@param type string
@@ -55,22 +57,22 @@ end
 ---@return nil
 H.retrieve_md = function(type, name, cb)
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
   U.get_sf_root()
 
-  local type_name = string.format('%s:%s', type, name)
-  local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-m', type_name):build()
+  local type_name = string.format("%s:%s", type, name)
+  local cmd = B:new():cmd("project"):act("retrieve start"):addParams("-m", type_name):build()
   T.run(cmd, cb)
 end
 
 H.list_md_to_retrieve = function()
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
 
-  if not U.is_installed('fzf-lua') then
-    return U.show_err('fzf-lua is not installed. Need it to show the list.')
+  if not U.is_installed("fzf-lua") then
+    return U.show_err("fzf-lua is not installed. Need it to show the list.")
   end
 
   local md_types = vim.g.sf.types_to_retrieve
@@ -78,41 +80,43 @@ H.list_md_to_retrieve = function()
   local md_names = {}
 
   for _, type in pairs(md_types) do
-    local file = string.format('%s_%s.json', type, U.target_org)
+    local file = string.format("%s_%s.json", type, U.target_org)
     local md_tbl = U.read_file_json_to_tbl(file, U.get_plugin_folder_path())
 
     if md_tbl ~= nil then
-    for _, v in ipairs(md_tbl) do
-      if v["manageableState"] == 'unmanaged' then
-        md[v["fullName"]] = v
-        table.insert(md_names, v["fullName"])
+      for _, v in ipairs(md_tbl) do
+        if v["manageableState"] == "unmanaged" then
+          md[v["fullName"]] = v
+          table.insert(md_names, v["fullName"])
+        end
       end
     end
   end
-end
 
   require("fzf-lua").fzf_exec(md_names, {
     actions = {
-      ['default'] = function(selected)
-        H.retrieve_md(md[selected[1]]["type"], selected[1], function() H.open_apex(selected[1]) end)
-      end
+      ["default"] = function(selected)
+        H.retrieve_md(md[selected[1]]["type"], selected[1], function()
+          H.open_apex(selected[1])
+        end)
+      end,
     },
     fzf_opts = {
-      ['--preview-window'] = 'nohidden,down,50%',
-      ['--preview'] = function(items)
+      ["--preview-window"] = "nohidden,down,50%",
+      ["--preview"] = function(items)
         local contents = {}
         vim.tbl_map(function(x)
           table.insert(contents, "\n" .. U.table_to_string_lines(md[x]))
         end, items)
         return contents
-      end
+      end,
     },
   })
 end
 
 H.pull_md_json = function()
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
   local md_types = vim.g.sf.types_to_retrieve
   for _, type in pairs(md_types) do
@@ -124,44 +128,44 @@ end
 ---@return nil
 H.pull_metadata = function(type)
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
 
   U.create_plugin_folder_if_not_exist()
 
-  local md_file = string.format('%s%s_%s.json', U.get_plugin_folder_path(), type, U.target_org)
+  local md_file = string.format("%s%s_%s.json", U.get_plugin_folder_path(), type, U.target_org)
 
   -- local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
-  local cmd = B:new():cmd('org'):act('list metadata'):addParams({ ["-m"] = type, ["-f"] = md_file }):build()
-  local msg = string.format('%s retrieved', type)
-  local err_msg = string.format('%s retrieve failed: %s', type, md_file)
+  local cmd = B:new():cmd("org"):act("list metadata"):addParams({ ["-m"] = type, ["-f"] = md_file }):build()
+  local msg = string.format("%s retrieved", type)
+  local err_msg = string.format("%s retrieve failed: %s", type, md_file)
 
-  U.silent_job_call(cmd, msg, err_msg);
+  U.silent_job_call(cmd, msg, err_msg)
 end
 
 H.pull_md_type_json = function()
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
 
   U.create_plugin_folder_if_not_exist()
 
-  local metadata_types_file = string.format('%s%s.json', U.get_plugin_folder_path(), 'metadata-types')
+  local metadata_types_file = string.format("%s%s.json", U.get_plugin_folder_path(), "metadata-types")
   -- local cmd = string.format('sf org list metadata-types -o %s -f %s', U.target_org, metadata_types_file)
-  local cmd = B:new():cmd('org'):act('list metadata-types'):addParams('-f', metadata_types_file):build()
-  local msg = 'Metadata-type file retrieved'
-  local err_msg = string.format('Metadata-type retrieve failed: %s', metadata_types_file)
+  local cmd = B:new():cmd("org"):act("list metadata-types"):addParams("-f", metadata_types_file):build()
+  local msg = "Metadata-type file retrieved"
+  local err_msg = string.format("Metadata-type retrieve failed: %s", metadata_types_file)
 
-  U.silent_job_call(cmd, msg, err_msg);
+  U.silent_job_call(cmd, msg, err_msg)
 end
 
 H.list_md_type_to_retrieve = function()
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
 
-  if not U.is_installed('fzf-lua') then
-    return U.show_err('fzf-lua is not installed. Need it to show the list.')
+  if not U.is_installed("fzf-lua") then
+    return U.show_err("fzf-lua is not installed. Need it to show the list.")
   end
 
   local tbl = U.read_file_json_to_tbl("metadata-types.json", U.get_plugin_folder_path())
@@ -173,10 +177,10 @@ H.list_md_type_to_retrieve = function()
 
   require("fzf-lua").fzf_exec(md_types, {
     actions = {
-      ['default'] = function(selected)
+      ["default"] = function(selected)
         H.retrieve_md_type(selected[1])
-      end
-    }
+      end,
+    },
   })
 end
 
@@ -184,13 +188,13 @@ end
 ---@return nil
 H.retrieve_md_type = function(type)
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
 
   U.get_sf_root()
 
   -- local cmd = string.format('sf project retrieve start -m \'%s:*\' -o %s', type, U.target_org)
-  local cmd = B:new():cmd('project'):act('retrieve start'):addParams('-m', type):build()
+  local cmd = B:new():cmd("project"):act("retrieve start"):addParams("-m", type):build()
   T.run(cmd)
 end
 
@@ -198,17 +202,12 @@ end
 H.generate_class = function(name)
   local path = U.get_apex_folder_path()
   -- local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
-  local cmd = B:new():cmd('apex'):act('generate class'):addParams({ ["-d"] = path, ["-n"] = name }):localOnly():build()
+  local cmd = B:new():cmd("apex"):act("generate class"):addParams({ ["-d"] = path, ["-n"] = name }):localOnly():build()
 
-  U.job_call(
-    cmd,
-    nil,
-    "Something went wrong creating the class",
-    function()
-      local absolute_path = path .. name .. '.cls'
-      U.try_open_file(absolute_path)
-    end
-  )
+  U.job_call(cmd, nil, "Something went wrong creating the class", function()
+    local absolute_path = path .. name .. ".cls"
+    U.try_open_file(absolute_path)
+  end)
 end
 
 ---@param name string
@@ -219,15 +218,15 @@ end
 ---@param name string
 H.generate_aura = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_default_dir_path() .. "/aura", name)
-  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. 'aura', ['-n'] = name, ['--type'] = 'aura' }):localOnly():build()
-  U.silent_job_call(
-    cmd,
-    nil,
-    "Something went wrong creating the Aura bundle",
-    function()
-      U.try_open_file(U.get_default_dir_path() .. 'aura/' .. name .. '/' .. name .. '.cmp')
-    end
-  )
+  local cmd = B:new()
+    :cmd("lightning")
+    :act("generate component")
+    :addParams({ ["-d"] = U.get_default_dir_path() .. "aura", ["-n"] = name, ["--type"] = "aura" })
+    :localOnly()
+    :build()
+  U.silent_job_call(cmd, nil, "Something went wrong creating the Aura bundle", function()
+    U.try_open_file(U.get_default_dir_path() .. "aura/" .. name .. "/" .. name .. ".cmp")
+  end)
 end
 
 ---@param name string
@@ -238,15 +237,15 @@ end
 ---@param name string
 H.generate_lwc = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
-  local cmd = B:new():cmd('lightning'):act('generate component'):addParams({ ["-d"] = U.get_default_dir_path() .. 'lwc', ['-n'] = name, ['--type'] = 'lwc' }):localOnly():build()
-  U.silent_job_call(
-    cmd,
-    nil,
-    "Something went wrong creating the LWC bundle",
-    function()
-      U.try_open_file(U.get_default_dir_path() .. 'lwc/' .. name .. '/' .. name .. '.js')
-    end
-  )
+  local cmd = B:new()
+    :cmd("lightning")
+    :act("generate component")
+    :addParams({ ["-d"] = U.get_default_dir_path() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
+    :localOnly()
+    :build()
+  U.silent_job_call(cmd, nil, "Something went wrong creating the LWC bundle", function()
+    U.try_open_file(U.get_default_dir_path() .. "lwc/" .. name .. "/" .. name .. ".js")
+  end)
 end
 
 ---@param name string
