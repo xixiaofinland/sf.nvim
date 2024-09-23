@@ -24,8 +24,15 @@ Test.open = function()
 end
 
 Test.run_current_test_with_coverage = function()
-  local test_class_name = H.validateInTestClass()
-  local test_name = H.validateInTestMethod()
+  local ok_class, test_class_name = pcall(H.validateInTestClass)
+  if not ok_class then
+    return
+  end
+
+  local ok_method, test_name = pcall(H.validateInTestMethod)
+  if not ok_method then
+    return
+  end
 
   local cmd = B:new():cmd('apex'):act('run test'):addParams({
     ['-t'] = test_class_name .. '.' .. test_name,
@@ -41,8 +48,15 @@ end
 ---@param cb function
 ---@return nil
 Test.run_current_test = function()
-  local test_class_name = H.validateInTestClass()
-  local test_name = H.validateInTestMethod()
+  local ok_class, test_class_name = pcall(H.validateInTestClass)
+  if not ok_class then
+    return
+  end
+
+  local ok_method, test_name = pcall(H.validateInTestMethod)
+  if not ok_method then
+    return
+  end
 
   -- local cmd = string.format("sf apex run test --tests %s.%s -r human -w 5 %s-o %s", test_class_name, test_name, extraParams, U.get())
   local cmd = B:new():cmd('apex'):act('run test'):addParams({
@@ -56,7 +70,10 @@ Test.run_current_test = function()
 end
 
 Test.run_all_tests_in_this_file_with_coverage = function()
-  local test_class_name = H.validateInTestClass()
+  local ok_class, test_class_name = pcall(H.validateInTestClass)
+  if not ok_class then
+    return
+  end
 
   local cmd = B:new():cmd('apex'):act('run test'):addParams({
     ['-n'] = test_class_name,
@@ -72,7 +89,10 @@ end
 ---@param cb function
 ---@return nil
 Test.run_all_tests_in_this_file = function(cb)
-  local test_class_name = H.validateInTestClass()
+  local ok_class, test_class_name = pcall(H.validateInTestClass)
+  if not ok_class then
+    return
+  end
 
   -- local cmd = string.format("sf apex run test --class-names %s -r human -w 5 %s-o %s", test_class_name, extraParams, U.get())
   local cmd = B:new():cmd('apex'):act('run test'):addParams({
