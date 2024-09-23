@@ -1,4 +1,4 @@
-local helpers = dofile('tests/helpers.lua')
+local helpers = dofile("tests/helpers.lua")
 local child = helpers.new_child_neovim()
 local expect, eq = helpers.expect, helpers.expect.equality
 local new_set = MiniTest.new_set
@@ -20,41 +20,53 @@ local T = new_set({
   },
 })
 
-local has_cmd_pattern = function(cmd, pattern) return expect.match(child.cmd_capture(cmd), pattern) end
-local has_nmap = function(lhs) return has_cmd_pattern('nmap ' .. lhs, 'Sf') end
+local has_cmd_pattern = function(cmd, pattern)
+  return expect.match(child.cmd_capture(cmd), pattern)
+end
+local has_nmap = function(lhs)
+  return has_cmd_pattern("nmap " .. lhs, "Sf")
+end
 
-local no_cmd_pattern = function(cmd, pattern) return expect.no_match(child.cmd_capture(cmd), pattern) end
-local no_nmap = function(lhs) return no_cmd_pattern('nmap ' .. lhs, 'Sf') end
+local no_cmd_pattern = function(cmd, pattern)
+  return expect.no_match(child.cmd_capture(cmd), pattern)
+end
+local no_nmap = function(lhs)
+  return no_cmd_pattern("nmap " .. lhs, "Sf")
+end
 
-local expect_config = function(field, value) eq(child.lua_get('vim.g.sf.' .. field), value) end
+local expect_config = function(field, value)
+  eq(child.lua_get("vim.g.sf." .. field), value)
+end
 
-T['get_target_org()'] = new_set()
+T["get_target_org()"] = new_set()
 
-T['get_target_org()']['return target_org'] = function()
-  local value = 'sandbox1'
+T["get_target_org()"]["return target_org"] = function()
+  local value = "sandbox1"
   local lua_cmd = string.format('Util.target_org = "%s"', value)
 
   child.lua(lua_cmd)
-  eq(child.lua('return Sf.get_target_org()'), value)
+  eq(child.lua("return Sf.get_target_org()"), value)
 end
 
-T['get_target_org()']['throws when empty target_org'] = function()
-  local lua_cmd = string.format('Sf.get_target_org()')
+T["get_target_org()"]["throws when empty target_org"] = function()
+  local lua_cmd = string.format("Sf.get_target_org()")
 
-  expect.error(function() child.lua(lua_cmd) end)
+  expect.error(function()
+    child.lua(lua_cmd)
+  end)
 end
 
-T['covered_percent()'] = new_set()
+T["covered_percent()"] = new_set()
 
-T['covered_percent()']['return covered_percent from test_sign'] = function()
+T["covered_percent()"]["return covered_percent from test_sign"] = function()
   local value = "10"
   local lua_cmd = string.format('Test_sign.covered_percent = "%s"', value)
 
   child.lua(lua_cmd)
-  eq(child.lua('return Sf.covered_percent()'), value)
+  eq(child.lua("return Sf.covered_percent()"), value)
 end
 
-T['copy_apex_name()'] = new_set()
+T["copy_apex_name()"] = new_set()
 
 -- TODO: works only locally, fail in CI
 -- T['copy_apex_name()']['return apex name'] = function()
