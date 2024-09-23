@@ -100,7 +100,7 @@ Test.run_local_tests = function()
     ['-c'] = '',
     ['-r'] = 'human',
     ['-w'] = 180,
-  })
+  }):build()
 
   U.last_tests = cmd
   T.run(cmd)
