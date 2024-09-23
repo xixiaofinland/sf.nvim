@@ -1,10 +1,10 @@
 local M = {}
-local Sf = require('sf')
-local U = require('sf.util')
+local Sf = require("sf")
+local U = require("sf.util")
 
 local complete = function(supported_args, subcmd_arg_lead)
   local filtered_args = vim.tbl_filter(function(arg)
-    return arg:find('^' .. vim.pesc(subcmd_arg_lead)) ~= nil
+    return arg:find("^" .. vim.pesc(subcmd_arg_lead)) ~= nil
   end, supported_args)
 
   table.sort(filtered_args)
@@ -16,13 +16,12 @@ local common_complete = function(sub_cmd, subcmd_arg_lead)
 end
 
 local common_impl = function(sub_cmd, arg)
-  local func = vim.tbl_get(M.sub_cmd_tbl, sub_cmd, 'funcs', arg)
+  local func = vim.tbl_get(M.sub_cmd_tbl, sub_cmd, "funcs", arg)
   if not func then
     return U.show_err(string.format("'%s %s' is not a valid command", sub_cmd, arg))
   end
   func()
 end
-
 
 ---@type table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>
 M.sub_cmd_tbl = {
@@ -32,31 +31,31 @@ M.sub_cmd_tbl = {
       retrieve = Sf.retrieve,
       diff = Sf.diff_in_target_org,
       diffIn = Sf.diff_in_org,
-      RunAsAnonymous = Sf.run_anonymous
+      RunAsAnonymous = Sf.run_anonymous,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('currentFile', subcmd_arg_lead)
+      return common_complete("currentFile", subcmd_arg_lead)
     end,
   },
   md = {
     funcs = {
       pull = Sf.pull_md_json,
-      list = Sf.list_md_to_retrieve
+      list = Sf.list_md_to_retrieve,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('md', subcmd_arg_lead)
+      return common_complete("md", subcmd_arg_lead)
     end,
   },
   mdtype = {
     funcs = {
       pull = Sf.pull_md_type_json,
-      list = Sf.list_md_type_to_retrieve
+      list = Sf.list_md_type_to_retrieve,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('mdtype', subcmd_arg_lead)
+      return common_complete("mdtype", subcmd_arg_lead)
     end,
   },
   org = {
@@ -65,11 +64,11 @@ M.sub_cmd_tbl = {
       setGlobalTarget = Sf.set_global_target_org,
       fetchList = Sf.fetch_org_list,
       open = Sf.org_open,
-      openCurrentFile = Sf.org_open_current_file
+      openCurrentFile = Sf.org_open_current_file,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('org', subcmd_arg_lead)
+      return common_complete("org", subcmd_arg_lead)
     end,
   },
   term = {
@@ -79,7 +78,7 @@ M.sub_cmd_tbl = {
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('term', subcmd_arg_lead)
+      return common_complete("term", subcmd_arg_lead)
     end,
   },
   test = {
@@ -87,11 +86,11 @@ M.sub_cmd_tbl = {
       currentTest = Sf.run_current_test,
       allTestsInThisFile = Sf.run_all_tests_in_this_file,
       select = Sf.open_test_select,
-      allTestsInOrg = Sf.run_local_tests
+      allTestsInOrg = Sf.run_local_tests,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('test', subcmd_arg_lead)
+      return common_complete("test", subcmd_arg_lead)
     end,
   },
   create = {
@@ -104,7 +103,7 @@ M.sub_cmd_tbl = {
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
-      return common_complete('create', subcmd_arg_lead)
+      return common_complete("create", subcmd_arg_lead)
     end,
   },
 }
@@ -133,22 +132,19 @@ M.create_user_commands = function()
     complete = function(arg_lead, cmdline, _)
       -- sub_cmd complete
       local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*SF[!]*%s(%S+)%s(.*)$")
-      if subcmd
-          and subcmd_arg_lead
-          and M.sub_cmd_tbl[subcmd]
-          and M.sub_cmd_tbl[subcmd].complete
-      then
+      if subcmd and subcmd_arg_lead and M.sub_cmd_tbl[subcmd] and M.sub_cmd_tbl[subcmd].complete then
         return M.sub_cmd_tbl[subcmd].complete(subcmd_arg_lead)
       end
 
       -- sub_cmd with args complete
       if cmdline:match("^['<,'>]*SF[!]*%s+%w*$") then
         local sub_cmd_keys = vim.tbl_keys(M.sub_cmd_tbl)
-        return vim.iter(sub_cmd_keys)
-            :filter(function(key)
-              return key:find(arg_lead) ~= nil
-            end)
-            :totable()
+        return vim
+          .iter(sub_cmd_keys)
+          :filter(function(key)
+            return key:find(arg_lead) ~= nil
+          end)
+          :totable()
       end
     end,
   })
