@@ -87,6 +87,7 @@ M.sub_cmd_tbl = {
       currentTest = Sf.run_current_test,
       allTestsInThisFile = Sf.run_all_tests_in_this_file,
       select = Sf.open_test_select,
+      allTestsInOrg = Sf.run_local_tests
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
