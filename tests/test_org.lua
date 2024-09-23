@@ -1,4 +1,4 @@
-local helpers = dofile('tests/helpers.lua')
+local helpers = dofile("tests/helpers.lua")
 local child = helpers.new_child_neovim()
 local expect, eq = MiniTest.expect, MiniTest.expect.equality
 local new_set = MiniTest.new_set
@@ -6,7 +6,7 @@ local new_set = MiniTest.new_set
 -- helper
 
 local mock_test = function()
-  child.cmd('luafile tests/mock/mock.lua')
+  child.cmd("luafile tests/mock/mock.lua")
 end
 
 local T = new_set({
@@ -20,10 +20,10 @@ local T = new_set({
   },
 })
 
-T['fetch_org_list'] = new_set({ hooks = { pre_case = mock_test } })
+T["fetch_org_list"] = new_set({ hooks = { pre_case = mock_test } })
 
-T['fetch_org_list']['test1'] = function()
-  eq(child.lua_get([[vim.lsp.buf_get_clients()]]), {'mock client'})
+T["fetch_org_list"]["test1"] = function()
+  eq(child.lua_get([[vim.lsp.buf_get_clients()]]), { "mock client" })
 end
 --
 -- T['get()']['target_org empty then err'] = function()
