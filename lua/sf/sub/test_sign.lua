@@ -1,4 +1,4 @@
-local U = require('sf.util')
+local U = require("sf.util")
 local M = {}
 local H = {}
 local enabled = false
@@ -26,16 +26,16 @@ M.setup = function()
   H.highlight(covered_group, { fg = vim.g.sf.code_sign_highlight.covered.fg })
   H.highlight(uncovered_group, { fg = vim.g.sf.code_sign_highlight.uncovered.fg })
 
-  vim.fn.sign_define(covered_sign, { text = "▎", texthl = covered_group, })
-  vim.fn.sign_define(uncovered_sign, { text = "▎", texthl = uncovered_group, })
+  vim.fn.sign_define(covered_sign, { text = "▎", texthl = covered_group })
+  vim.fn.sign_define(uncovered_sign, { text = "▎", texthl = uncovered_group })
 end
 
 M.toggle = function()
   if enabled then
-    vim.notify('Sign disabled.', vim.log.levels.INFO)
+    vim.notify("Sign disabled.", vim.log.levels.INFO)
     H.unplace()
   else
-    vim.notify('Sign enabled.', vim.log.levels.INFO)
+    vim.notify("Sign enabled.", vim.log.levels.INFO)
     M.refresh_and_place()
   end
 end
@@ -75,7 +75,7 @@ M.refresh_current_file_covered_percent = function()
   local file_name = vim.fn.expand("%:t")
 
   for i, v in pairs(coverage) do
-    local apex_name = v["name"] .. '.cls'
+    local apex_name = v["name"] .. ".cls"
 
     if file_name == apex_name then
       M.covered_percent = v["coveredPercent"]
@@ -98,7 +98,7 @@ H.get_signs_from = function(coverage)
   local signs = {}
 
   for i, v in pairs(coverage) do
-    local apex_name = v["name"] .. '.cls'
+    local apex_name = v["name"] .. ".cls"
 
     if vim.fn.expand("%:t") == apex_name then
       M.covered_percent = v["coveredPercent"]
@@ -135,14 +135,14 @@ H.get_coverage = function()
     return coverage
   end
 
-  local tbl = U.read_file_in_plugin_folder('test_result.json')
+  local tbl = U.read_file_in_plugin_folder("test_result.json")
   if not tbl then
-    return vim.notify_once('Local test_result.json not found.', vim.log.levels.WARN)
+    return vim.notify_once("Local test_result.json not found.", vim.log.levels.WARN)
   end
 
   coverage = vim.tbl_get(tbl, "result", "coverage", "coverage")
   if coverage == nil then
-    return vim.notify_once('Local test_result.json has no coverage element.', vim.log.levels.WARN)
+    return vim.notify_once("Local test_result.json has no coverage element.", vim.log.levels.WARN)
   end
 
   cache = coverage
