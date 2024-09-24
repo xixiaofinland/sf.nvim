@@ -43,9 +43,13 @@ function Term.retrieve()
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
+  local filename = vim.fn.expandcmd("%:p")
+    local cb = function ()
+        U.try_open_file(filename)
+    end
   -- local cmd = vim.fn.expandcmd('sf project retrieve start -d "%:p" -o ') .. U.get()
-  local cmd = B:new():cmd("project"):act("retrieve start"):addParams("-d", "%:p"):build()
-  t:run(cmd)
+  local cmd = B:new():cmd("project"):act("retrieve start"):addParams("-d", filename):build()
+  t:run(cmd, cb)
 end
 
 function Term.retrieve_delta()
