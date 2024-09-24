@@ -280,7 +280,7 @@ end
 ---@param path string
 M.try_open_file = function(path)
   if M.file_readable(path) then
-    local open_new_file = string.format(":e %s", path)
+    local open_new_file = string.format(":e! %s", path)
     vim.cmd(open_new_file)
   end
 end
