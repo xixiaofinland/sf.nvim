@@ -65,6 +65,7 @@ M.sub_cmd_tbl = {
       fetchList = Sf.fetch_org_list,
       open = Sf.org_open,
       openCurrentFile = Sf.org_open_current_file,
+      pullLog = Sf.pull_log,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
