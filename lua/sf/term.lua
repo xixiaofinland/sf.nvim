@@ -109,7 +109,7 @@ function Term.run_highlighted_soql()
 
   -- local raw_cmd = string.format('sf data query -q "%s" -o %s', selected_text, U.get())
   local raw_cmd = B:new():cmd("data"):act("query"):addParams("-q", selected_text):build()
-  local cmd = string.gsub(raw_cmd, "'", "'")
+  local cmd = string.gsub(raw_cmd, "'", "\\'")
   t:run(cmd)
 end
 
