@@ -1,5 +1,5 @@
 local ts = vim.treesitter
-local parsers = require('nvim-treesitter.parsers')
+local parsers = require("nvim-treesitter.parsers")
 
 local M = {}
 local H = {}
@@ -67,7 +67,7 @@ M.get_current_test_method_name = function()
 
   local curr_node = ts.get_node()
   while curr_node ~= nil do
-    if curr_node:type() == 'method_declaration' then
+    if curr_node:type() == "method_declaration" then
       local names = H.get_matched_node_names(apex_test_meth_query, 2, curr_node)
       if names ~= nil then
         return names[1]

@@ -1,21 +1,21 @@
 local M = {}
 
-M.last_tests = ''
-M.target_org = ''
+M.last_tests = ""
+M.target_org = ""
 
 ---@param msg string
 M.show = function(msg)
-  vim.notify(msg, vim.log.levels.INFO, { title = 'sf.nvim' })
+  vim.notify(msg, vim.log.levels.INFO, { title = "sf.nvim" })
 end
 
 ---@param msg string
 M.show_err = function(msg)
-  vim.notify(msg, vim.log.levels.ERROR, { title = 'sf.nvim' })
+  vim.notify(msg, vim.log.levels.ERROR, { title = "sf.nvim" })
 end
 
 ---@param msg string
 M.show_warn = function(msg)
-  vim.notify(msg, vim.log.levels.WARN, { title = 'sf.nvim' })
+  vim.notify(msg, vim.log.levels.WARN, { title = "sf.nvim" })
 end
 
 ---@param msg string
@@ -27,7 +27,7 @@ end
 
 M.get = function()
   if M.is_empty_str(M.target_org) then
-    error('Sf: Target_org empty!')
+    error("Sf: Target_org empty!")
   end
 
   return M.target_org
@@ -35,27 +35,27 @@ end
 
 M.get_default_dir_path = function()
   local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
-    if (dir_path:sub(1,1) ~= "/") then
-        dir_path = "/" .. dir_path
-    end
-    if (dir_path:sub(-1) ~= "/") then
-        dir_path = dir_path .. "/"
-    end
+  if dir_path:sub(1, 1) ~= "/" and dir_path:sub(1, 1) ~= "." then
+    dir_path = "/" .. dir_path
+  end
+  if dir_path:sub(-1) ~= "/" then
+    dir_path = dir_path .. "/"
+  end
   return dir_path
 end
 
 M.get_apex_folder_path = function()
-  return M.get_default_dir_path() .. 'classes/'
+  return M.get_default_dir_path() .. "classes/"
 end
 
 M.get_plugin_folder_path = function()
-    local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
-    if (folder_path:sub(1,1) ~= "/") then
-        folder_path = "/" .. folder_path
-    end
-    if (folder_path:sub(-1) ~= "/") then
-        folder_path = folder_path .. "/"
-    end
+  local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
+  if folder_path:sub(1, 1) ~= "/" and folder_path:sub(1, 1) ~= "." then
+    folder_path = "/" .. folder_path
+  end
+  if folder_path:sub(-1) ~= "/" then
+    folder_path = folder_path .. "/"
+  end
   return folder_path
 end
 
@@ -64,7 +64,7 @@ M.create_plugin_folder_if_not_exist = function()
   if vim.fn.isdirectory(cache_folder) == 0 then
     local result = vim.fn.mkdir(cache_folder)
     if result == 0 then
-      return vim.notify('cache folder creation failed!', vim.log.levels.ERROR)
+      return vim.notify("cache folder creation failed!", vim.log.levels.ERROR)
     end
   end
 end
@@ -86,35 +86,39 @@ M.get_sf_root = function()
   })[1])
 
   if root == nil then
-    error('File not in a sf project folder')
+    error("File not in a sf project folder")
+  end
+
+  if root:sub(-1) ~= "/" then
+    root = root .. "/"
   end
 
   return root
 end
 
 M.is_sf_cmd_installed = function()
-  if vim.fn.executable('sf') ~= 1 then
-    M.notify_then_error('sf cli not found')
+  if vim.fn.executable("sf") ~= 1 then
+    M.notify_then_error("sf cli not found")
   end
 end
 
 M.is_ctags_installed = function()
-  if vim.fn.executable('ctags') ~= 1 then
-    M.notify_then_error('ctags cli not found')
+  if vim.fn.executable("ctags") ~= 1 then
+    M.notify_then_error("ctags cli not found")
   end
 end
 
 ---@param tbl table
 M.is_table_empty = function(tbl)
   if vim.tbl_isempty(tbl) then
-    M.notify_then_error('Empty table')
+    M.notify_then_error("Empty table")
   end
 end
 
 ---@param s string|nil
 ---@return boolean
 M.is_empty_str = function(s)
-  return s == nil or s == ''
+  return s == nil or s == ""
 end
 
 ---@param tbl table
@@ -135,18 +139,17 @@ end
 M.silent_job_call = function(cmd, msg, err_msg, cb)
   vim.fn.jobstart(cmd, {
     stdout_buffered = true,
-    on_exit =
-        function(_, code)
-          if code == 0 and msg ~= nil then
-            vim.notify(msg, vim.log.levels.INFO)
-          elseif code ~= 0 and err_msg ~= nil then
-            vim.notify(err_msg, vim.log.levels.ERROR)
-          end
+    on_exit = function(_, code)
+      if code == 0 and msg ~= nil then
+        vim.notify(msg, vim.log.levels.INFO)
+      elseif code ~= 0 and err_msg ~= nil then
+        vim.notify(err_msg, vim.log.levels.ERROR)
+      end
 
-          if code == 0 and cb ~= nil then
-            cb()
-          end
-        end,
+      if code == 0 and cb ~= nil then
+        cb()
+      end
+    end,
   })
 end
 
@@ -155,14 +158,14 @@ end
 ---@param err_msg string|nil
 ---@param cb function|nil
 M.job_call = function(cmd, msg, err_msg, cb)
-  vim.notify('| Async job starts...', vim.log.levels.INFO);
+  vim.notify("| Async job starts...", vim.log.levels.INFO)
   M.silent_job_call(cmd, msg, err_msg, cb)
 end
 
 -- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
 M.copy_apex_name = function()
   local file_name = vim.split(vim.fn.expand("%:t"), ".", { trimempty = true, plain = true })[1]
-  vim.fn.setreg('*', file_name)
+  vim.fn.setreg("*", file_name)
   vim.notify(string.format('"%s" copied.', file_name), vim.log.levels.INFO)
 end
 
@@ -173,16 +176,13 @@ M.run_cb_with_input = function(arg, prompt, cb)
   if arg ~= nil then
     cb(arg)
   else
-    vim.ui.input(
-      { prompt = prompt },
-      function(input)
-        if input ~= nil then
-          cb(input)
-        else
-          return
-        end
+    vim.ui.input({ prompt = prompt }, function(input)
+      if input ~= nil then
+        cb(input)
+      else
+        return
       end
-    )
+    end)
   end
 end
 
@@ -217,7 +217,7 @@ end
 M.read_file_json_to_tbl = function(name, path)
   local absolute_path = path .. name
   local err_fn = function()
-    vim.notify_once('File not found: ' .. absolute_path, vim.log.levels.WARN)
+    vim.notify_once("File not found: " .. absolute_path, vim.log.levels.WARN)
   end
   local content = M.read_local_file(absolute_path, err_fn)
   if content == nil then
@@ -238,7 +238,7 @@ M.read_local_file = function(absolute_path, err_fn)
     if type(err_fn) == "function" then
       return err_fn()
     else
-      M.notify_then_error('File not found: ' .. absolute_path)
+      M.notify_then_error("File not found: " .. absolute_path)
     end
   end
 
@@ -251,7 +251,7 @@ M.parse_from_json_to_tbl = function(content)
   local json = table.concat(content)
   local ok, tbl = pcall(vim.json.decode, json, {})
   if not ok then
-    M.notify_then_error('Parse file from json to tbl failed: ' .. absolute_path)
+    M.notify_then_error("Parse file from json to tbl failed: " .. absolute_path)
   end
 
   return tbl
@@ -302,12 +302,12 @@ end
 
 -- this func is supposed to be only manually called by the plugin developer to generate plugin help.txt
 M.gen_doc = function()
-  if not M.is_installed('mini.doc') then
-    M.notify_then_error('mini.doc not installed.')
+  if not M.is_installed("mini.doc") then
+    M.notify_then_error("mini.doc not installed.")
   end
 
-  require('mini.doc').generate({
-    'lua/sf/init.lua'
+  require("mini.doc").generate({
+    "lua/sf/init.lua",
   })
 end
 

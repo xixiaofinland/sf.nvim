@@ -17,10 +17,10 @@ end
 
 function T:setup(cfg)
   if not cfg then
-    return vim.notify('SFTerm: setup() is optional. Please remove it!', vim.log.levels.WARN)
+    return vim.notify("SFTerm: setup() is optional. Please remove it!", vim.log.levels.WARN)
   end
 
-  self.config = vim.tbl_deep_extend('force', self.config, cfg)
+  self.config = vim.tbl_deep_extend("force", self.config, cfg)
 
   return self
 end
@@ -34,7 +34,7 @@ end
 
 function T:run(cmd, cb)
   if self.is_running then
-    return vim.notify('Wait the current task to finish.', vim.log.levels.WARN)
+    return vim.notify("Wait the current task to finish.", vim.log.levels.WARN)
   end
 
   local running_buf = api.nvim_create_buf(false, true)
@@ -99,7 +99,7 @@ function T:open()
   end
 
   if not H.is_buf_valid(self.buf) then
-    return vim.notify_once('Sf: no previous task. Run a termnimal command to initiate the term.', vim.log.levels.WARN)
+    return vim.notify_once("Sf: no previous task. Run a termnimal command to initiate the term.", vim.log.levels.WARN)
   end
 
   local win = self:create_and_open_win(self.buf)
@@ -130,25 +130,25 @@ function T:create_and_open_win(buf)
 
   local win = api.nvim_open_win(buf, false, {
     border = cfg.border,
-    relative = 'editor',
-    style = 'minimal',
-    title = 'SFTerm',
-    title_pos = 'center',
+    relative = "editor",
+    style = "minimal",
+    title = "SFTerm",
+    title_pos = "center",
     width = dim.width,
     height = dim.height,
     col = dim.col,
     row = dim.row,
   })
 
-  api.nvim_win_set_option(win, 'winhl', ('Normal:%s'):format(cfg.hl))
-  api.nvim_win_set_option(win, 'winblend', cfg.blend)
+  api.nvim_win_set_option(win, "winhl", ("Normal:%s"):format(cfg.hl))
+  api.nvim_win_set_option(win, "winblend", cfg.blend)
 
   return win
 end
 
 function T:remember_cursor()
   self.last_win = api.nvim_get_current_win()
-  self.prev_win = vim.fn.winnr('#')
+  self.prev_win = vim.fn.winnr("#")
   self.last_pos = api.nvim_win_get_cursor(self.last_win)
 
   return self
@@ -157,7 +157,7 @@ end
 function T:restore_cursor()
   if self.last_win and self.last_pos ~= nil then
     if self.prev_win > 0 then
-      cmd(('silent! %s wincmd w'):format(self.prev_win))
+      cmd(("silent! %s wincmd w"):format(self.prev_win))
     end
 
     if H.is_win_valid(self.last_win) then
@@ -178,7 +178,7 @@ function T:get_config()
 end
 
 function T:scroll_to_end()
-  cmd('$')
+  cmd("$")
   return self
 end
 

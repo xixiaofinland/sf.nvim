@@ -1,5 +1,5 @@
-local U = require('sf.util')
-local B = require('sf.sub.cmd_builder')
+local U = require("sf.util")
+local B = require("sf.sub.cmd_builder")
 
 local H = {}
 local Org = {}
@@ -26,15 +26,15 @@ end
 
 function Org.open()
   -- local cmd = 'sf org open -o ' .. U.get()
-  local cmd = B:new():cmd('org'):act('open'):build()
-  local err_msg = 'Command failed: ' .. cmd
+  local cmd = B:new():cmd("org"):act("open"):build()
+  local err_msg = "Command failed: " .. cmd
   U.job_call(cmd, nil, err_msg)
 end
 
 function Org.open_current_file()
   -- local cmd = vim.fn.expandcmd('sf org open --source-file "%:p" -o ') .. U.get()
-  local cmd = B:new():cmd('org'):act('open'):addParams('-f', '%:p'):build()
-  local err_msg = 'Command failed: ' .. cmd
+  local cmd = B:new():cmd("org"):act("open"):addParams("-f", "%:p"):build()
+  local err_msg = "Command failed: " .. cmd
   U.job_call(cmd, nil, err_msg)
 end
 
@@ -127,12 +127,12 @@ end
 H.set_target_org = function()
   U.is_table_empty(H.orgs)
   vim.ui.select(H.orgs, {
-    prompt = 'Local target_org:'
+    prompt = "Local target_org:",
   }, function(choice)
     if choice ~= nil then
-      local org = string.gsub(choice, '%[S%] ', '')
-      local cmd = 'sf config set target-org ' .. org
-      local err_msg = org .. ' - set target_org failed! Not in a sfdx project folder?'
+      local org = string.gsub(choice, "%[S%] ", "")
+      local cmd = "sf config set target-org " .. org
+      local err_msg = org .. " - set target_org failed! Not in a sfdx project folder?"
       local cb = function()
         U.target_org = org
       end
@@ -144,17 +144,17 @@ end
 
 H.set_global_target_org = function()
   if U.is_empty_str(H.orgs) then
-    U.notify_then_error('Empty value')
+    U.notify_then_error("Empty value")
   end
 
   vim.ui.select(H.orgs, {
-    prompt = 'Global target_org:'
+    prompt = "Global target_org:",
   }, function(choice)
     if choice ~= nil then
-      local org = string.gsub(choice, '%[S%] ', '')
-      local cmd = 'sf config set target-org --global ' .. org
-      local msg = 'Global target_org set: ' .. org
-      local err_msg = string.format('Global set target_org [%s] failed!', org)
+      local org = string.gsub(choice, "%[S%] ", "")
+      local cmd = "sf config set target-org --global " .. org
+      local msg = "Global target_org set: " .. org
+      local err_msg = string.format("Global set target_org [%s] failed!", org)
       local cb = function()
         U.target_org = org
       end
@@ -167,7 +167,7 @@ end
 H.store_orgs = function(data)
   local s = ""
   for _, v in ipairs(data) do
-    s = s .. v;
+    s = s .. v
   end
 
   local org_data = vim.json.decode(s, {}).result.nonScratchOrgs
@@ -183,7 +183,7 @@ H.store_orgs = function(data)
       U.target_org = alias
     end
 
-    local org_entry = v.isScratch and '[S] ' .. alias or alias
+    local org_entry = v.isScratch and "[S] " .. alias or alias
     table.insert(H.orgs, org_entry)
   end
 
@@ -191,12 +191,11 @@ H.store_orgs = function(data)
 end
 
 H.fetch_and_store_orgs = function()
-  vim.fn.jobstart('sf org list --json', {
+  vim.fn.jobstart("sf org list --json", {
     stdout_buffered = true,
-    on_stdout =
-        function(_, data)
-          H.store_orgs(data)
-        end
+    on_stdout = function(_, data)
+      H.store_orgs(data)
+    end,
   })
 end
 
@@ -209,7 +208,7 @@ end
 
 H.diff_in_target_org = function()
   if U.is_empty_str(U.target_org) then
-    return U.show_err('Target_org empty!')
+    return U.show_err("Target_org empty!")
   end
 
   H.diff_in(U.target_org)
@@ -219,7 +218,7 @@ H.diff_in_org = function()
   U.is_table_empty(H.orgs)
 
   vim.ui.select(H.orgs, {
-    prompt = 'Select org to diff in:'
+    prompt = "Select org to diff in:",
   }, function(choice)
     if choice ~= nil then
       H.diff_in(choice)
@@ -241,14 +240,19 @@ H.diff_in = function(org)
   --   temp_path,
   --   org
   -- )
-  local cmd = B:new():cmd('project'):act('retrieve start'):addParams({
-    ['-m'] = metadataType .. ':' .. file_name_no_ext,
-    ['-r'] = temp_path,
-    ['--json'] = '',
-  }):set_org(org):build()
+  local cmd = B:new()
+    :cmd("project")
+    :act("retrieve start")
+    :addParams({
+      ["-m"] = metadataType .. ":" .. file_name_no_ext,
+      ["-r"] = temp_path,
+      ["--json"] = "",
+    })
+    :set_org(org)
+    :build()
 
-  local msg = 'Retrive success: ' .. org
-  local err_msg = 'Retrive failed: ' .. org
+  local msg = "Retrive success: " .. org
+  local err_msg = "Retrive failed: " .. org
   local cb = function()
     local temp_file = H.find_file(temp_path, file_name)
     vim.cmd("vert diffsplit " .. temp_file)
@@ -306,7 +310,7 @@ H.find_file = function(path, target)
   -- if scanner is nil, then path is not a valid dir
   if scanner then
     local file, type = vim.loop.fs_scandir_next(scanner)
-    if (path:sub(-1) ~= "/") then
+    if path:sub(-1) ~= "/" then
       path = path .. "/"
     end
     while file do
