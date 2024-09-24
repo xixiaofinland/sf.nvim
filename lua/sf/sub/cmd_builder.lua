@@ -167,7 +167,6 @@ function CommandBuilder:build()
     end
     cmd = cmd .. " " .. table.concat(param_strings, " ")
   end
-  cmd = cmd .. " " .. table.concat(param_strings, " ")
 
   if not U.is_empty_str(self.param_str) then
     cmd = cmd .. " " .. self.param_str
