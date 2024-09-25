@@ -15,6 +15,8 @@ Sf.list_md_to_retrieve	sf.txt	/*Sf.list_md_to_retrieve*
 Sf.list_md_type_to_retrieve	sf.txt	/*Sf.list_md_type_to_retrieve*
 Sf.open_test_select	sf.txt	/*Sf.open_test_select*
 Sf.org_open	sf.txt	/*Sf.org_open*
+Sf.org_open_current_file	sf.txt	/*Sf.org_open_current_file*
+Sf.pull_log	sf.txt	/*Sf.pull_log*
 Sf.pull_md_json	sf.txt	/*Sf.pull_md_json*
 Sf.pull_md_type_json	sf.txt	/*Sf.pull_md_type_json*
 Sf.push_delta	sf.txt	/*Sf.push_delta*
@@ -25,12 +27,14 @@ Sf.retrieve_apex_under_cursor	sf.txt	/*Sf.retrieve_apex_under_cursor*
 Sf.retrieve_delta	sf.txt	/*Sf.retrieve_delta*
 Sf.retrieve_package	sf.txt	/*Sf.retrieve_package*
 Sf.run	sf.txt	/*Sf.run*
+Sf.run_all_jests	sf.txt	/*Sf.run_all_jests*
 Sf.run_all_tests_in_this_file	sf.txt	/*Sf.run_all_tests_in_this_file*
 Sf.run_all_tests_in_this_file_with_coverage	sf.txt	/*Sf.run_all_tests_in_this_file_with_coverage*
 Sf.run_anonymous	sf.txt	/*Sf.run_anonymous*
 Sf.run_current_test	sf.txt	/*Sf.run_current_test*
 Sf.run_current_test_with_coverage	sf.txt	/*Sf.run_current_test_with_coverage*
 Sf.run_highlighted_soql	sf.txt	/*Sf.run_highlighted_soql*
+Sf.run_jest_file	sf.txt	/*Sf.run_jest_file*
 Sf.run_local_tests	sf.txt	/*Sf.run_local_tests*
 Sf.run_query	sf.txt	/*Sf.run_query*
 Sf.run_tooling_query	sf.txt	/*Sf.run_tooling_query*

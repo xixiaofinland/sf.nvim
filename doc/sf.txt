@@ -135,7 +135,14 @@ The left window displays the local verison, the right window displays the remote
 Open the target_org in browser
 
 ------------------------------------------------------------------------------
+                                                      *Sf.org_open_current_file*
+                           `Sf.org_open_current_file`
 Open the current file in the target_org in browser
+
+------------------------------------------------------------------------------
+                                                                   *Sf.pull_log*
+                                 `Sf.pull_log`
+Get a list of logs from the org, and choose one to download and open
 
 ------------------------------------------------------------------------------
                                                                *Sf.pull_md_json*
@@ -215,6 +222,16 @@ A convenient way to repeat the last executed Apex test command.
                                                             *Sf.run_local_tests*
                               `Sf.run_local_tests`
 Run all local tests in target_org
+
+------------------------------------------------------------------------------
+                                                              *Sf.run_all_jests*
+                               `Sf.run_all_jests`
+Run all jest tests in project
+
+------------------------------------------------------------------------------
+                                                              *Sf.run_jest_file*
+                               `Sf.run_jest_file`
+Run all jest tests in current file
 
 ------------------------------------------------------------------------------
                                                                 *Sf.toggle_sign*
