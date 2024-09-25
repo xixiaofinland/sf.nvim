@@ -4,6 +4,7 @@ local U = require("sf.util")
 ---@field base_cmd string
 ---@field command string
 ---@field action string
+---@field subactions table<string>
 ---@field params table<string, string>
 ---@field param_str string
 ---@field org string|nil
@@ -18,6 +19,7 @@ function CommandBuilder:new(base_command)
     base_cmd = base_command or "sf",
     command = "",
     action = "",
+    subactions = {},
     params = {},
     param_str = "",
     org = U.target_org or nil,
@@ -39,6 +41,14 @@ end
 ---@return CommandBuilder
 function CommandBuilder:act(action)
   self.action = action
+  return self
+end
+
+---Add a sub-action
+---@param subaction string
+---@return CommandBuilder
+function CommandBuilder:subact(subaction)
+  table.insert(self.subactions, subaction)
   return self
 end
 
@@ -133,6 +143,17 @@ function CommandBuilder:build()
 
   local cmd = string.format("%s %s %s", self.base_cmd, self.command, self.action)
 
+  if #self.subactions > 0 then
+    local subact_string = ""
+    for _, subaction in ipairs(self.subactions) do
+      subact_string = subact_string .. " " .. subaction
+    end
+
+    if subact_string ~= "" then
+      cmd = cmd .. " " .. subact_string
+    end
+  end
+
   local sortedParams = self:sortParams()
   if #sortedParams > 0 then
     local param_strings = {}
@@ -157,6 +178,38 @@ function CommandBuilder:build()
   end
 
   return cmd
+end
+
+---Build the final command as a string table
+---@return table
+function CommandBuilder:buildAsTable()
+  self:validate()
+
+  local cmd_tbl = { self.base_cmd, self.command, self.action }
+
+  if #self.subactions > 0 then
+    for _, subaction in ipairs(self.subactions) do
+      table.insert(cmd_tbl, subaction)
+    end
+  end
+
+  local sortedParams = self:sortParams()
+  if #sortedParams > 0 then
+    for _, param in ipairs(sortedParams) do
+      table.insert(cmd_tbl, param.flag)
+      if param.value ~= "" then
+        local expanded_value = vim.fn.expandcmd(param.value)
+        table.insert(cmd_tbl, expanded_value)
+      end
+    end
+  end
+
+  if self.require_org then
+    table.insert(cmd_tbl, "-o")
+    table.insert(cmd_tbl, self.org)
+  end
+
+  return cmd_tbl
 end
 
 function CommandBuilder:t()
