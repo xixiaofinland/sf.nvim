@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.7.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.6.0...v1.7.0) (2024-09-25)
+
+
+### Features
+
+* add buildAsTable to CommandBuilder ([58686b4](https://github.com/xixiaofinland/sf.nvim/commit/58686b4796d5027d70534f3c7e904adec4665040))
+* add cmd shortcut for run all tests ([e938fe7](https://github.com/xixiaofinland/sf.nvim/commit/e938fe798b8da22f9c2a8e4c22d47c07313f4023))
+* add download and open log file ([d90ac39](https://github.com/xixiaofinland/sf.nvim/commit/d90ac39976aebb27a2194a3c8d078d9eb7f51209))
+* add empty org guard to md pull ([2c13993](https://github.com/xixiaofinland/sf.nvim/commit/2c139932ea449e1c7288cb6910df556af0e7bce8))
+* add subactions to CommandBuilder ([b362541](https://github.com/xixiaofinland/sf.nvim/commit/b3625414c83533844a9c0f7c60528566f74a177d))
+* add support to run jest tests ([f581a42](https://github.com/xixiaofinland/sf.nvim/commit/f581a426d5c80968f450bedc0beaee15588dddb5))
+* add warning if no logs found ([74c93ba](https://github.com/xixiaofinland/sf.nvim/commit/74c93ba08a4afd9cfd0fec2f6d6198445c580c97))
+* change print to vim.notify ([1ce9069](https://github.com/xixiaofinland/sf.nvim/commit/1ce9069968abd04e17ef2aaf74587426d703bdb6))
+* change pull_logs to pull_log ([15d7d21](https://github.com/xixiaofinland/sf.nvim/commit/15d7d2107c6d3ba405cfe8c977711b991a89d84f))
+* create init hook for pull_logs ([d24c67f](https://github.com/xixiaofinland/sf.nvim/commit/d24c67f8ffa82f7241be23053f08c96923b72fc3))
+* fix open file in org command in help ([43a4426](https://github.com/xixiaofinland/sf.nvim/commit/43a4426df2474e64203dfeea20e88c2e1f62687d))
+* force open retrieved file ([7abcaa0](https://github.com/xixiaofinland/sf.nvim/commit/7abcaa04dd103a5f13169edf75d04b43b616c84f))
+* further sanitize paths ([71e44d8](https://github.com/xixiaofinland/sf.nvim/commit/71e44d8a1b790a614c93b49a8fd98ccadd2d31c1))
+* list logs in fzf-lua ([c10e0d4](https://github.com/xixiaofinland/sf.nvim/commit/c10e0d4bde5ca5e19ebbca8185bcc717a90ee6ea))
+* remove surrounding quotes from params in cmd table ([9a4bed3](https://github.com/xixiaofinland/sf.nvim/commit/9a4bed34f2cb2ee1c56563054c7ca4dc7fb465a6))
+
+
+### Bug Fixes
+
+* extra end in cmd_builder ([53ff298](https://github.com/xixiaofinland/sf.nvim/commit/53ff2986dcda54230eaf80aac9b9da65fb4f5899))
+* gsub ([a6e2c5c](https://github.com/xixiaofinland/sf.nvim/commit/a6e2c5c9a36131fc045cf3b4d27462097f657ec3))
+* remove extra line causing tests to fail ([947407e](https://github.com/xixiaofinland/sf.nvim/commit/947407e2c43b443657a3f33298808f156997fb7d))
+
 ## [1.6.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.5.0...v1.6.0) (2024-09-12)
 
 
