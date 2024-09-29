@@ -189,10 +189,13 @@ end
 ---@param tbl table
 ---@return string
 M.table_to_string_lines = function(tbl)
-  local result = ""
-  for key, value in pairs(tbl) do
-    result = result .. key .. ": " .. tostring(value) .. "\n"
-  end
+  local result = vim.inspect(tbl)
+  result = string.gsub(result, ".-\n%s+", "", 1) -- Remove the top opening brace line
+  result = string.gsub(result, "\n}", "") -- Remove the last closing brace line
+  result = string.gsub(result, "\n%s+", "\n") -- Remove indentation in table items
+  result = string.gsub(result, "%s=", ":") -- Replace = with : and remove space after key
+  result = string.gsub(result, ",\n", "\n") -- Remove end of line commas
+  result = string.gsub(result, "\"", "") -- Remove quotation marks around string values
   return result
 end
 
