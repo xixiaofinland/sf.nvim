@@ -37,6 +37,10 @@ function Md.create_lwc_bundle()
   H.create_lwc_bundle()
 end
 
+function Md.create_trigger()
+  H.create_trigger()
+end
+
 -- helper;
 
 ---@param name string
@@ -251,6 +255,26 @@ end
 ---@param name string
 H.create_lwc_bundle = function(name)
   U.run_cb_with_input(name, "Enter LWC bundle name: ", H.generate_lwc)
+end
+
+---@param name string
+H.generate_trigger = function(name)
+  local cmd = B:new()
+    :cmd("apex")
+    :act("generate")
+    :subact("trigger")
+    :addParams({ ["-d"] = U.get_default_dir_path() .. "triggers", ["-n"] = name })
+    :localOnly()
+    :buildAsTable()
+
+  U.silent_system_call(cmd, nil, "Something went wrong creating the trigger", function()
+    U.try_open_file(U.get_default_dir_path() .. "triggers/" .. name .. ".trigger")
+  end)
+end
+
+---@param name string
+H.create_trigger = function(name)
+  U.run_cb_with_input(name, "Enter Trigger name: ", H.generate_trigger)
 end
 
 return Md
