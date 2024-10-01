@@ -133,6 +133,9 @@ Sf.create_aura_bundle = Metadata.create_aura_bundle
 --- Creates a new LWC Bundle using an input name or prompting the user to enter one
 Sf.create_lwc_bundle = Metadata.create_lwc_bundle
 
+--- Creates an apex trigger using an input name or prompting the user to enter one
+Sf.create_trigger = Metadata.create_trigger
+
 -- From Test module ==========================================================
 
 --- Open a top-split window to display the Apex tests in the current file.

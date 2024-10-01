@@ -101,6 +101,7 @@ M.sub_cmd_tbl = {
       aura = Sf.create_aura_bundle,
       ctags = Sf.create_ctags,
       ctagsAndList = Sf.create_and_list_ctags,
+      trigger = Sf.create_trigger,
     },
     impl = common_impl,
     complete = function(subcmd_arg_lead)
