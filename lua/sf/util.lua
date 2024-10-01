@@ -162,6 +162,40 @@ M.job_call = function(cmd, msg, err_msg, cb)
   M.silent_job_call(cmd, msg, err_msg, cb)
 end
 
+---@param cmd table
+---@param msg string|nil
+---@param err_msg string|nil
+---@param cb function|nil
+M.silent_system_call = function(cmd, msg, err_msg, cb)
+  local system_callback = function(obj)
+    if obj.code ~= 0 then
+      if err_msg ~= nil then
+        M.show_err(err_msg)
+      end
+      return
+    end
+
+    if msg ~= nil then
+      M.show(msg)
+    end
+
+    if cb ~= nil then
+      cb(obj)
+    end
+  end
+
+  vim.system(cmd, {}, vim.schedule_wrap(system_callback))
+end
+
+---@param cmd table
+---@param msg string|nil
+---@param err_msg string|nil
+---@param cb function|nil
+M.system_call = function(cmd, msg, err_msg, cb)
+  M.show("| Async job starts...")
+  M.silent_system_call(cmd, msg, err_msg, cb)
+end
+
 -- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
 M.copy_apex_name = function()
   local file_name = vim.split(vim.fn.expand("%:t"), ".", { trimempty = true, plain = true })[1]
