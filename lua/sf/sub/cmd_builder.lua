@@ -98,8 +98,11 @@ function CommandBuilder:validate()
   local required_fields = {
     { field = "command", message = '"command" property not set' },
     { field = "action", message = '"action" property not set' },
-    { field = "org", message = "no given org value nor default target_org" },
   }
+
+  if self.require_org then
+    table.insert(required_fields, { field = "org", message = "no given org value nor default target_org" })
+  end
 
   for _, field in ipairs(required_fields) do
     if U.is_empty_str(self[field.field]) then
