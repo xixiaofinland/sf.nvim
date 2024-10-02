@@ -60,6 +60,7 @@ local default_cfg = {
 
   -- after the test running with code coverage completes, display uncovered line sign automatically.
   -- you can set it to `false`, then manually run toggle_sign command.
+  -- this also makes existing coverage signs enabled by default on nvim startup
   auto_display_code_sign = true,
 
   -- code coverage sign icon colors
