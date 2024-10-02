@@ -139,12 +139,14 @@ H.get_coverage = function()
 
   local tbl = U.read_file_in_plugin_folder("test_result.json")
   if not tbl then
-    return vim.notify_once("Local test_result.json not found.", vim.log.levels.WARN)
+    vim.notify_once("Local test_result.json not found.", vim.log.levels.WARN)
+    return nil
   end
 
   coverage = vim.tbl_get(tbl, "result", "coverage", "coverage")
   if coverage == nil then
-    return vim.notify_once("Local test_result.json has no coverage element.", vim.log.levels.WARN)
+    vim.notify_once("Local test_result.json has no coverage element.", vim.log.levels.WARN)
+    return nil
   end
 
   cache = coverage
