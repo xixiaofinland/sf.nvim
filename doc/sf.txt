@@ -43,21 +43,33 @@ Toggle the SFTerm float window.
                                                               *Sf.save_and_push*
                                `Sf.save_and_push`
 Save the file in the current buffer and push to target_org.
+Accepts one string parameter to add extra parameters.
+For example, to add `-c` parameter, you can define hotkey as:
+vim.keymap.set('n', '<leader>sg', require('sf').save_and_push('-c') end, { desc = 'custom key' })
 
 ------------------------------------------------------------------------------
                                                                  *Sf.push_delta*
                                 `Sf.push_delta`
 Run `sf project deploy start` against the target_org
+Accepts one string parameter to add extra parameters.
+For example, to add `-c` parameter, you can define hotkey as:
+vim.keymap.set('n', '<leader>sg', require('sf').push_delta('-c') end, { desc = 'custom key' })
 
 ------------------------------------------------------------------------------
                                                                    *Sf.retrieve*
                                  `Sf.retrieve`
 Retrieve the file in the current buffer from target_org.
+Accepts one string parameter to add extra parameters.
+For example, to add `-c` parameter, you can define hotkey as:
+vim.keymap.set('n', '<leader>sg', require('sf').retrieve('-c') end, { desc = 'custom key' })
 
 ------------------------------------------------------------------------------
                                                              *Sf.retrieve_delta*
                               `Sf.retrieve_delta`
 Run `sf project retrieve start` against the target_org
+Accepts one string parameter to add extra parameters.
+For example, to add `-c` parameter, you can define hotkey as:
+vim.keymap.set('n', '<leader>sg', require('sf').retrieve_delta('-c') end, { desc = 'custom key' })
 
 ------------------------------------------------------------------------------
                                                            *Sf.retrieve_package*
@@ -186,6 +198,11 @@ Creates a new Aura Bundle using an input name or prompting the user to enter one
                                                           *Sf.create_lwc_bundle*
                              `Sf.create_lwc_bundle`
 Creates a new LWC Bundle using an input name or prompting the user to enter one
+
+------------------------------------------------------------------------------
+                                                             *Sf.create_trigger*
+                              `Sf.create_trigger`
+Creates an apex trigger using an input name or prompting the user to enter one
 
 ------------------------------------------------------------------------------
                                                            *Sf.open_test_select*

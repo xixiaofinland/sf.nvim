@@ -38,15 +38,27 @@ Sf.refresh_current_file_covered_percent = Test.refresh_current_file_covered_perc
 Sf.toggle_term = Term.toggle
 
 --- Save the file in the current buffer and push to target_org.
+--- Accepts one string parameter to add extra parameters.
+--- For example, to add `-c` parameter, you can define hotkey as:
+--- vim.keymap.set('n', '<leader>sg', require('sf').save_and_push('-c') end, { desc = 'custom key' })
 Sf.save_and_push = Term.save_and_push
 
 --- Run `sf project deploy start` against the target_org
+--- Accepts one string parameter to add extra parameters.
+--- For example, to add `-c` parameter, you can define hotkey as:
+--- vim.keymap.set('n', '<leader>sg', require('sf').push_delta('-c') end, { desc = 'custom key' })
 Sf.push_delta = Term.push_delta
 
 --- Retrieve the file in the current buffer from target_org.
+--- Accepts one string parameter to add extra parameters.
+--- For example, to add `-c` parameter, you can define hotkey as:
+--- vim.keymap.set('n', '<leader>sg', require('sf').retrieve('-c') end, { desc = 'custom key' })
 Sf.retrieve = Term.retrieve
 
 --- Run `sf project retrieve start` against the target_org
+--- Accepts one string parameter to add extra parameters.
+--- For example, to add `-c` parameter, you can define hotkey as:
+--- vim.keymap.set('n', '<leader>sg', require('sf').retrieve_delta('-c') end, { desc = 'custom key' })
 Sf.retrieve_delta = Term.retrieve_delta
 
 --- Retrieve the file in the current buffer as a manifest from target_org
