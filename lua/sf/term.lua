@@ -19,45 +19,62 @@ function Term.open()
   t:open()
 end
 
-function Term.save_and_push()
+function Term.save_and_push(extra_params)
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
-  -- vim.api.nvim_command('e') -- reload file to avoid invoking y/n pop-up in Ex
+
   vim.api.nvim_command("write!")
-  -- local cmd = vim.fn.expandcmd('sf project deploy start -d "%:p" -o ') .. U.get()
-  local cmd = B:new():cmd("project"):act("deploy start"):addParams("-d", "%:p"):build()
+
+  local cmd_builder = B:new():cmd("project"):act("deploy start"):addParams("-d", "%:p")
+  if extra_params then
+    cmd_builder:addParamStr(extra_params)
+  end
+  local cmd = cmd_builder:build()
   t:run(cmd)
 end
 
-function Term.push_delta()
+function Term.push_delta(extra_params)
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
-  -- local cmd = vim.fn.expandcmd('sf project deploy start -o ') .. U.get()
-  local cmd = B:new():cmd("project"):act("deploy start"):build()
+
+  local cmd_builder = B:new():cmd("project"):act("deploy start")
+  if extra_params then
+    cmd_builder:addParamStr(extra_params)
+  end
+  local cmd = cmd_builder:build()
   t:run(cmd)
 end
 
-function Term.retrieve()
+function Term.retrieve(extra_params)
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
+
   local filename = vim.fn.expandcmd("%:p")
-    local cb = function ()
-        U.try_open_file(filename)
-    end
-  -- local cmd = vim.fn.expandcmd('sf project retrieve start -d "%:p" -o ') .. U.get()
-  local cmd = B:new():cmd("project"):act("retrieve start"):addParams("-d", filename):build()
+  local cb = function()
+    U.try_open_file(filename)
+  end
+
+  local cmd_builder = B:new():cmd("project"):act("retrieve start"):addParams("-d", filename)
+  if extra_params then
+    cmd_builder:addParamStr(extra_params)
+  end
+  local cmd = cmd_builder:build()
   t:run(cmd, cb)
 end
 
-function Term.retrieve_delta()
+function Term.retrieve_delta(extra_params)
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
-  -- local cmd = vim.fn.expandcmd('sf project retrieve start -o ') .. U.get()
-  local cmd = B:new():cmd("project"):act("retrieve start"):build()
+
+  local cmd_builder = B:new():cmd("project"):act("retrieve start")
+  if extra_params then
+    cmd_builder:addParamStr(extra_params)
+  end
+  local cmd = cmd_builder:build()
   t:run(cmd)
 end
 
