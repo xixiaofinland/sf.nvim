@@ -29,7 +29,8 @@ M.setup = function()
   vim.fn.sign_define(covered_sign, { text = "▎", texthl = covered_group })
   vim.fn.sign_define(uncovered_sign, { text = "▎", texthl = uncovered_group })
 
-  enabled = vim.g.sf.auto_display_code_sign or false
+  local in_project, _ = pcall(U.get_sf_root)
+  enabled = in_project and (vim.g.sf.auto_display_code_sign or false)
 end
 
 M.toggle = function()
