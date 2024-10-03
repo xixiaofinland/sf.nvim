@@ -191,8 +191,8 @@ end
 ---@param msg string|nil
 ---@param err_msg string|nil
 ---@param cb function|nil
-M.system_call = function(cmd, msg, err_msg, cb)
-  M.show("| Async job starts...")
+M.system_call = function(cmd, msg, err_msg, cb, pre_msg)
+  M.show(pre_msg or "| Async job starts...")
   M.silent_system_call(cmd, msg, err_msg, cb)
 end
 
