@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.8.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.7.0...v1.8.0) (2024-10-03)
+
+
+### Features
+
+* add create trigger methods to md ([78a2d9b](https://github.com/xixiaofinland/sf.nvim/commit/78a2d9b210aff302c8b429415c7e9278bed5c8ce))
+* add create_trigger to init and user_commands ([bd3ab9e](https://github.com/xixiaofinland/sf.nvim/commit/bd3ab9e12aaedebeaf70d8e702fd0952de7c0724))
+* allow extra params in several common functionalities ([#253](https://github.com/xixiaofinland/sf.nvim/issues/253)) ([479e083](https://github.com/xixiaofinland/sf.nvim/commit/479e0833b21ea44018a4501ddba6cc6f2fa9a846))
+* change how tables are converted to strings ([730d6ee](https://github.com/xixiaofinland/sf.nvim/commit/730d6eef6701eb288d60e99dd2e100384225383f))
+* create util methods for system calls ([219eefa](https://github.com/xixiaofinland/sf.nvim/commit/219eefa468232fddc16a200562b985e5833dffff))
+* make test signs enabled by default ([2d81c89](https://github.com/xixiaofinland/sf.nvim/commit/2d81c89cfef3b63245a10927472692eebb64b95e))
+* reduce from 6 regex to 4 ([4a923c7](https://github.com/xixiaofinland/sf.nvim/commit/4a923c7e71fdb8387e511dbded6f7a47d6a2a77d))
+
+
+### Bug Fixes
+
+* don't return boolean if there's no coverage ([f69f8e5](https://github.com/xixiaofinland/sf.nvim/commit/f69f8e5c1a164a845aa6f3f278ce5fce550b7a56))
+* dont fail validate cmd for local only ([969ef64](https://github.com/xixiaofinland/sf.nvim/commit/969ef6456d76c2a3f9d6af913a8888135c1c37f2))
+* only default enable code signs if in project ([1501684](https://github.com/xixiaofinland/sf.nvim/commit/1501684f3e4254178172d3aef3ffc0ca6319b6cd))
+
 ## [1.7.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.6.0...v1.7.0) (2024-09-25)
 
 
