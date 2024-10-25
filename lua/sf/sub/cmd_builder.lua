@@ -5,7 +5,7 @@ local U = require("sf.util")
 ---@field command string
 ---@field action string
 ---@field subactions table<string>
----@field params table<string, string>
+---@field params table<string, table<string, string|boolean>>
 ---@field param_str string
 ---@field org string|nil
 local CommandBuilder = {}
@@ -65,14 +65,18 @@ end
 function CommandBuilder:addParams(...)
   local args = { ... }
   if type(args[1]) == "table" then
-    -- If a table is passed, assume it's a list of flag-value pairs
+    -- If a table is passed, assume it's a list of flag-value pairs. If the value is also a table, it can contain its own value key, and an expand key indicating if the value should be expanded
     for flag, value in pairs(args[1]) do
-      self.params[flag] = value
+      if type(value) == "table" then
+        self.params[flag] = { value = value.value, expand = value.expand }
+      else
+        self.params[flag] = { value = value }
+      end
     end
   else
-    -- If individual arguments are passed, assume it's a single flag-value pair
-    local flag, value = args[1], args[2] or ""
-    self.params[flag] = value
+    -- If individual arguments are passed, assume it's a single flag-value pair, and optionally a third argument to indicate whether the param value should be expanded
+    local flag, value, expand = args[1], args[2] or "", (args[3] == nil and true) or args[3]
+    self.params[flag] = { value = value, expand = expand }
   end
   return self
 end
@@ -112,13 +116,13 @@ function CommandBuilder:validate()
 end
 
 ---Sort the params based on the specified rules
----@return table<integer, {flag: string, value: string}>
+---@return table<integer, {flag: string, value: table<string, string|boolean>}>
 function CommandBuilder:sortParams()
   local paramsWithValue = {}
   local paramsWithoutValue = {}
 
   for flag, value in pairs(self.params) do
-    if value ~= "" then
+    if value.value ~= "" then
       table.insert(paramsWithValue, { flag = flag, value = value })
     else
       table.insert(paramsWithoutValue, { flag = flag, value = value })
@@ -161,11 +165,16 @@ function CommandBuilder:build()
   if #sortedParams > 0 then
     local param_strings = {}
     for _, param in ipairs(sortedParams) do
-      if param.value == "" then
+      if param.value.value == "" then
         table.insert(param_strings, param.flag)
       else
-        local expanded_value = string.format('"%s"', vim.fn.expandcmd(param.value))
-        table.insert(param_strings, param.flag .. " " .. expanded_value)
+        local param_value
+        if param.value.expand then
+          param_value = string.format('"%s"', vim.fn.expandcmd(param.value.value))
+        else
+          param_value = string.format('"%s"', param.value.value)
+        end
+        table.insert(param_strings, param.flag .. " " .. param_value)
       end
     end
     cmd = cmd .. " " .. table.concat(param_strings, " ")
@@ -200,9 +209,13 @@ function CommandBuilder:buildAsTable()
   if #sortedParams > 0 then
     for _, param in ipairs(sortedParams) do
       table.insert(cmd_tbl, param.flag)
-      if param.value ~= "" then
-        local expanded_value = vim.fn.expandcmd(param.value)
-        table.insert(cmd_tbl, expanded_value)
+      if param.value.value ~= "" then
+        if param.value.expand then
+          local expanded_value = vim.fn.expandcmd(param.value.value)
+          table.insert(cmd_tbl, expanded_value)
+        else
+          table.insert(cmd_tbl, param.value.value)
+        end
       end
     end
   end
