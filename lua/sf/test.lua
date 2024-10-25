@@ -40,7 +40,7 @@ Test.run_current_test_with_coverage = function()
     :addParams({
       ["-t"] = test_class_name .. "." .. test_name,
       ["-r"] = "human",
-      ["-w"] = "5",
+      ["-w"] = vim.g.sf.sf_wait_time,
       ["-c"] = "",
     })
     :build()
@@ -69,7 +69,7 @@ Test.run_current_test = function()
     :addParams({
       ["-t"] = test_class_name .. "." .. test_name,
       ["-r"] = "human",
-      ["-w"] = "5",
+      ["-w"] = vim.g.sf.sf_wait_time,
     })
     :build()
 
@@ -89,7 +89,7 @@ Test.run_all_tests_in_this_file_with_coverage = function()
     :addParams({
       ["-n"] = test_class_name,
       ["-r"] = "human",
-      ["-w"] = "5",
+      ["-w"] = vim.g.sf.sf_wait_time,
       ["-c"] = "",
     })
     :build()
@@ -113,7 +113,7 @@ Test.run_all_tests_in_this_file = function(cb)
     :addParams({
       ["-n"] = test_class_name,
       ["-r"] = "human",
-      ["-w"] = "5",
+      ["-w"] = vim.g.sf.sf_wait_time,
     })
     :build()
 
@@ -281,7 +281,7 @@ P.set_keys = function()
       return U.show_err("No test is selected.")
     end
 
-    local cmd = create_cmd({ ["-w"] = "5", ["-r"] = "human" })
+    local cmd = create_cmd({ ["-w"] = vim.g.sf.sf_wait_time, ["-r"] = "human" })
 
     P.close()
     T.run(cmd)
@@ -294,7 +294,7 @@ P.set_keys = function()
       return U.show_err("No test is selected.")
     end
 
-    local cmd = create_cmd({ ["-w"] = "5", ["-r"] = "human", ["-c"] = "" })
+    local cmd = create_cmd({ ["-w"] = vim.g.sf.sf_wait_time, ["-r"] = "human", ["-c"] = "" })
 
     P.close()
     T.run(cmd, H.save_test_coverage_locally)
