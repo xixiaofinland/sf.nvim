@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.8.0...v1.9.0) (2024-10-31)
+
+
+### Features
+
+* add md type to table key ([1b9529a](https://github.com/xixiaofinland/sf.nvim/commit/1b9529a91df9c17df7ec774e4f511efe40cd0823))
+* make sf wait time configurable ([2eab01e](https://github.com/xixiaofinland/sf.nvim/commit/2eab01e4c862a6863651984cf7f76a6d82c25eca))
+
+
+### Bug Fixes
+
+* remove double slashes from dirs ([846a574](https://github.com/xixiaofinland/sf.nvim/commit/846a574de0b891f192597a9d18b30d27025f7e19))
+
 ## [1.8.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.7.0...v1.8.0) (2024-10-03)
 
 
