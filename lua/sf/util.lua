@@ -35,6 +35,7 @@ end
 
 M.get_default_dir_path = function()
   local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
+  dir_path = dir_path:gsub("//", "/")
   if dir_path:sub(1, 1) ~= "/" and dir_path:sub(1, 1) ~= "." then
     dir_path = "/" .. dir_path
   end
@@ -50,6 +51,7 @@ end
 
 M.get_plugin_folder_path = function()
   local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
+  folder_path = folder_path:gsub("//", "/")
   if folder_path:sub(1, 1) ~= "/" and folder_path:sub(1, 1) ~= "." then
     folder_path = "/" .. folder_path
   end
