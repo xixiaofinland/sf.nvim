@@ -72,6 +72,37 @@ T["setup()"]["can supply mutliple params in table in addParams()"] = function()
   eq(result, expected)
 end
 
+T["setup()"]["can supply flag:value string in addParamsNoExpand(), and will not be expanded"] = function()
+  child.open_in_sf_dir("test.txt")
+  local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand("-f", "%:p"):build()')
+  local expected = 'sf apex run -f "%:p" -o "t_org"'
+  eq(result, expected)
+end
+
+T["setup()"]["can supply flag:value string in more than one addParamsNoExpand, and none will be expanded()"] = function()
+  child.open_in_sf_dir("test.txt")
+  local result = child.lua_get(
+    'B:new():cmd("apex"):act("run"):addParamsNoExpand("-f", "%:p"):addParamsNoExpand("-c", "%:p"):build()'
+  )
+  local expected = 'sf apex run -c "%:p" -f "%:p" -o "t_org"'
+  eq(result, expected)
+end
+
+T["setup()"]["can supply table {flag = value} in addParamsNoExpand() and will not be expanded"] = function()
+  child.open_in_sf_dir("test.txt")
+  local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand({["-f"] = "%:p"}):build()')
+  local expected = 'sf apex run -f "%:p" -o "t_org"'
+  eq(result, expected)
+end
+
+T["setup()"]["can supply multiple params in table in addParamsNoExpand() and none will be expanded"] = function()
+  child.open_in_sf_dir("test.txt")
+  local result =
+    child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand({["-c"] = "%:p", ["-f"] = "%:p"}):build()')
+  local expected = 'sf apex run -c "%:p" -f "%:p" -o "t_org"'
+  eq(result, expected)
+end
+
 T["setup()"]["can sort params with value alphabetically"] = function()
   local result = child.lua_get(
     'B:new():cmd("apex"):act("run"):addParams({["-f"] = "/path/", ["-c"] = "test", ["-t"] = "" }):build()'
