@@ -65,18 +65,32 @@ end
 function CommandBuilder:addParams(...)
   local args = { ... }
   if type(args[1]) == "table" then
-    -- If a table is passed, assume it's a list of flag-value pairs. If the value is also a table, it can contain its own value key, and an expand key indicating if the value should be expanded
+    -- If a table is passed, assume it's a list of flag-value pairs
     for flag, value in pairs(args[1]) do
-      if type(value) == "table" then
-        self.params[flag] = { value = value.value, expand = value.expand }
-      else
-        self.params[flag] = { value = value }
-      end
+      self.params[flag] = { value = value, expand = true }
     end
   else
-    -- If individual arguments are passed, assume it's a single flag-value pair, and optionally a third argument to indicate whether the param value should be expanded
-    local flag, value, expand = args[1], args[2] or "", (args[3] == nil and true) or args[3]
-    self.params[flag] = { value = value, expand = expand }
+    -- If individual arguments are passed, assume it's a single flag-value pair
+    local flag, value = args[1], args[2] or ""
+    self.params[flag] = { value = value, expand = true }
+  end
+  return self
+end
+
+---Add one or more parameters, but don't expand the values
+---@param ... string|table Either a flag and value as separate arguments, or a table of flag-value pairs
+---@return CommandBuilder
+function CommandBuilder:addParamsNoExpand(...)
+  local args = { ... }
+  if type(args[1]) == "table" then
+    -- If a table is passed, assume it's a list of flag-value pairs
+    for flag, value in pairs(args[1]) do
+      self.params[flag] = { value = value, expand = false }
+    end
+  else
+    -- If individual arguments are passed, assume it's a single flag-value pair
+    local flag, value = args[1], args[2] or ""
+    self.params[flag] = { value = value, expand = false }
   end
   return self
 end
