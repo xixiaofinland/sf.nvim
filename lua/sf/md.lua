@@ -101,8 +101,8 @@ H.list_md_to_retrieve = function()
   require("fzf-lua").fzf_exec(md_names, {
     actions = {
       ["default"] = function(selected)
-        H.retrieve_md(md[selected[1]]["type"], selected[1], function()
-          H.open_apex(selected[1])
+        H.retrieve_md(md[selected[1]]["type"], md[selected[1]]["fullName"], function()
+          H.open_apex(md[selected[1]]["fullName"])
         end)
       end,
     },
