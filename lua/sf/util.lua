@@ -52,7 +52,10 @@ end
 M.get_plugin_folder_path = function()
   local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
   folder_path = folder_path:gsub("//", "/")
-  if folder_path:sub(1, 1) ~= "/" and folder_path:sub(1, 1) ~= "." then
+  if M.is_windows_os() then
+    folder_path = folder_path:gsub("\\", "/")
+  end
+  if folder_path:sub(1, 1) ~= "/" and folder_path:sub(1, 1) ~= "." and not M.is_windows_os() then
     folder_path = "/" .. folder_path
   end
   if folder_path:sub(-1) ~= "/" then
@@ -351,6 +354,13 @@ M.gen_doc = function()
   require("mini.doc").generate({
     "lua/sf/init.lua",
   })
+end
+
+M.is_windows_os = function()
+  if vim.fn.has("win32") or vim.fn.has("win64") then
+    return true
+  end
+  return false
 end
 
 return M
