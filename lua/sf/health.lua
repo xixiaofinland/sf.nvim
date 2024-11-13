@@ -7,6 +7,7 @@ M.check = function()
   H.check_tree_sitter()
   H.check_fzf_lua()
   H.check_ctag()
+  H.check_windows_os()
 end
 
 -- helper;
@@ -69,6 +70,14 @@ H.check_ctag = function()
   end
 
   vim.health.ok("ctags command found.")
+end
+
+H.check_windows_os = function()
+  if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+    return vim.health.warn(
+      "Windows OS detected. Functionality not guaranteed."
+    )
+  end
 end
 
 return M
