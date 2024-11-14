@@ -59,7 +59,15 @@ function T:run_after_setup(cmd, cb)
   api.nvim_set_current_win(self.win)
 
   local echo_msg = string.gsub(cmd, '"', '\\"')
-  local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
+  local cmd_with_echo = ''
+
+  if H.is_windows_os() then
+    local c27 = string.char(27)
+    cmd_with_echo = string.format('echo %s && %s', c27 .. '[0;35m' .. echo_msg .. c27 .. '[0m', cmd)
+  else
+    cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
+  end
+  -- local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
   vim.fn.termopen(cmd_with_echo, {
     clear_env = self.config.clear_env,
     env = self.config.env,
@@ -211,6 +219,13 @@ function H.get_dimension(opts)
     col = col,
     row = row,
   }
+end
+
+function H.is_windows_os()
+  if vim.fn.has("win32") then
+    return true
+  end
+  return false
 end
 
 return T
