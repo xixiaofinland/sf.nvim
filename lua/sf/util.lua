@@ -36,7 +36,10 @@ end
 M.get_default_dir_path = function()
   local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
   dir_path = dir_path:gsub("//", "/")
-  if dir_path:sub(1, 1) ~= "/" and dir_path:sub(1, 1) ~= "." then
+  if M.is_windows_os() then
+    dir_path = dir_path:gsub("\\", "/")
+  end
+  if dir_path:sub(1, 1) ~= "/" and dir_path:sub(1, 1) ~= "." and not M.is_windows_os() then
     dir_path = "/" .. dir_path
   end
   if dir_path:sub(-1) ~= "/" then
