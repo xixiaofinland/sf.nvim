@@ -89,7 +89,7 @@ H.list_md_to_retrieve = function()
 
     if md_tbl ~= nil then
       for _, v in ipairs(md_tbl) do
-        if v["manageableState"] == "unmanaged" then
+        if v["manageableState"] ~= "installed" then
           local md_key = v["type"] .. ": " .. v["fullName"]
           md[md_key] = v
           table.insert(md_names, md_key)
