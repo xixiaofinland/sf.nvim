@@ -360,7 +360,7 @@ M.gen_doc = function()
 end
 
 M.is_windows_os = function()
-  if vim.fn.has("win32") or vim.fn.has("win64") then
+  if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
     return true
   end
   return false
