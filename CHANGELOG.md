@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.9.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.8.0...v1.9.0) (2024-11-16)
+
+
+### Features
+
+* add md type to table key ([1b9529a](https://github.com/xixiaofinland/sf.nvim/commit/1b9529a91df9c17df7ec774e4f511efe40cd0823))
+* add tests for non-expanded params ([63cc48b](https://github.com/xixiaofinland/sf.nvim/commit/63cc48b72dbcc8b79b433d44bf8679c96e13b94f))
+* allow for some params to not be expanded ([6090f64](https://github.com/xixiaofinland/sf.nvim/commit/6090f64a91166813600125a79cc48d98969f6789))
+* don't ignore metadata that doesn't have unmanaged ([882efdd](https://github.com/xixiaofinland/sf.nvim/commit/882efdddef3db67d21ea2fdd63939b860eb6da4e))
+* make addParamsNoExpand method ([840136c](https://github.com/xixiaofinland/sf.nvim/commit/840136c00c1421105918d6eb630e39db6ef5647a))
+* make sf wait time configurable ([2eab01e](https://github.com/xixiaofinland/sf.nvim/commit/2eab01e4c862a6863651984cf7f76a6d82c25eca))
+
+
+### Bug Fixes
+
+* pulling was adding type to name ([d694f29](https://github.com/xixiaofinland/sf.nvim/commit/d694f2933898a1e76691ebd9854f849e7d4560e2))
+* remove double slashes from dirs ([846a574](https://github.com/xixiaofinland/sf.nvim/commit/846a574de0b891f192597a9d18b30d27025f7e19))
+* windows check always returns true ([d47fc7f](https://github.com/xixiaofinland/sf.nvim/commit/d47fc7ffcf815d6dc9a6ff9565432347c1b4bf9d))
+* Windows OS cmd with echo ([99462a5](https://github.com/xixiaofinland/sf.nvim/commit/99462a5bba9380d21e2b97a2e025568d28db7dbc))
+* Windows root path formatting ([51ead9a](https://github.com/xixiaofinland/sf.nvim/commit/51ead9a68ff91d3620787e1f5863eb65b1cebaa8))
+
 ## [1.8.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.7.0...v1.8.0) (2024-10-03)
 
 
