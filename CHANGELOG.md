@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.0...v1.9.1) (2024-12-12)
+
+
+### Bug Fixes
+
+* wrap target org in quotes for aliases with spaces ([38d625c](https://github.com/xixiaofinland/sf.nvim/commit/38d625c72f44fbba86ec8b93c2093911822fa127))
+
 ## [1.9.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.8.0...v1.9.0) (2024-11-16)
 
 
