@@ -70,9 +70,10 @@ end
 M.create_plugin_folder_if_not_exist = function()
   local cache_folder = M.get_plugin_folder_path()
   if vim.fn.isdirectory(cache_folder) == 0 then
-    local result = vim.fn.mkdir(cache_folder)
-    if result == 0 then
-      return vim.notify("cache folder creation failed!", vim.log.levels.ERROR)
+    local ok, result = pcall(vim.fn.mkdir, cache_folder, "-p")
+    if not ok then
+      M.show_err("cache folder creation failed!")
+      M.show_err("error: " .. result)
     end
   end
 end
