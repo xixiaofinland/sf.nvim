@@ -191,7 +191,7 @@ H.store_orgs = function(data)
 end
 
 H.fetch_and_store_orgs = function()
-  vim.fn.jobstart("sf org list --json", {
+  vim.fn.jobstart("sf org list --json --skip-connection-status", {
     stdout_buffered = true,
     on_stdout = function(_, data)
       H.store_orgs(data)
