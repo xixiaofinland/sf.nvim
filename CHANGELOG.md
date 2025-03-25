@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.1...v1.9.2) (2025-03-25)
+
+
+### Bug Fixes
+
+* the test_result.json not found message shows in first time open cls ([16282d4](https://github.com/xixiaofinland/sf.nvim/commit/16282d4981e1443bc25bd521cd9339ea9369d627))
+
 ## [1.9.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.0...v1.9.1) (2025-02-03)
 
 
