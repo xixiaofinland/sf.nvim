@@ -88,9 +88,23 @@ end
 
 H.get_matched_node_names = function(query, anno_index, node)
   local names = {}
-  for _, matches, _ in query:iter_matches(node, 0) do
-    local name = ts.get_node_text(matches[anno_index], 0)
-    table.insert(names, name)
+  for _, match, _ in query:iter_matches(node, 0) do
+    local raw_node = match[anno_index]
+    local target_node = raw_node
+    -- https://github.com/xixiaofinland/sf.nvim/issues/281
+    -- in Nvim 0.11, the query capture match is wrapped into a table
+    -- Checking the types to support older versions too
+    if type(raw_node) == "table" and raw_node.id == nil and raw_node[1] ~= nil then
+      target_node = raw_node[1]
+    end
+
+    if not target_node then
+      print("match[" .. anno_index .. "] is nil")
+    else
+      local ok, text = pcall(ts.get_node_text, target_node, 0)
+      print(ok and "Text: " .. text or ("get_node_text() failed: " .. text))
+      if ok then table.insert(names, text) end
+    end
   end
   return names
 end
