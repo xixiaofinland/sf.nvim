@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.3](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.2...v1.9.3) (2025-04-03)
+
+
+### Bug Fixes
+
+* ts query capture update need in v0.11 [#281](https://github.com/xixiaofinland/sf.nvim/issues/281) ([cc7947e](https://github.com/xixiaofinland/sf.nvim/commit/cc7947eeacfc005b25c6adef58088b42d613dd68))
+
 ## [1.9.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.1...v1.9.2) (2025-03-25)
 
 
