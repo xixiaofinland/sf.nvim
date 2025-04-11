@@ -7,6 +7,7 @@ M.check = function()
   H.check_tree_sitter()
   H.check_fzf_lua()
   H.check_ctag()
+  H.check_overseer()
   H.check_windows_os()
 end
 
@@ -72,11 +73,16 @@ H.check_ctag = function()
   vim.health.ok("ctags command found.")
 end
 
+H.check_overseer = function()
+  if not pcall(require, "overseer") then
+    return vim.health.warn("Optional: overseer not found. ")
+  end
+  vim.health.ok("overseer plugin found.")
+end
+
 H.check_windows_os = function()
   if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-    return vim.health.warn(
-      "Windows OS detected. Functionality not guaranteed."
-    )
+    return vim.health.warn("Windows OS detected. Functionality not guaranteed.")
   end
 end
 
