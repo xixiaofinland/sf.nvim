@@ -61,6 +61,8 @@ In addition to the features, user commands and default hotkeys are also supplied
 - 🔍 (Optional) fzf-lua plugin for executing `:SF md list` and `SFListMdTypeToRetrieve` (Why not
   telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
+- 🔍 (Optional) [overseer.nvim](https://github/com/stevearc/overseer) if you'd like to use the overseer integration
+
 
 ![Image 019](https://github.com/user-attachments/assets/aad0ac11-f980-423b-8332-a2b4359fb4ae)
 
@@ -134,6 +136,11 @@ require('sf').setup({
     "LightningComponentBundle"
   },
 
+  -- The terminal strategy to use for running tasks.
+  -- "integrated" - use the integrated terminal.
+  -- "overseer" - use overseer.nvim to run terminal tasks. (requires overseer.nvim as a dependency).
+  terminal = "integrated",
+  
   -- Configuration for the integrated terminal
   term_config = {
     blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
@@ -364,7 +371,9 @@ You can
 
 <br>
 
-## 🖥️ Integrated terminal
+## 🖥️ Terminal
+
+### Integrated terminal
 
 ![Image 022](https://github.com/user-attachments/assets/bd61e9fc-fa0d-4782-8f2d-68e90dcb0d10)
 
@@ -378,6 +387,31 @@ The integrated terminal is designed to
 
 You can pass any shell command into `run()` method to execute it in the integrated
 terminal. For instance, `require('sf').run('ls -la')`.
+
+### Overseer.nvim 
+
+As an alternative to the integrated terminal, [overseer.nvim](https://github.com/stevearc/overseer.nvim) can be used to execute terminal commands. 
+
+Once enabled
+
+- commands executed by Sf.nvim will be created in overseer as tasks
+- the overseer task list can be show or hidden via `:OverseerToggle` 
+
+To enable, ensure overseer.nvim is a dependency and set the appropriate flag in your configuration:
+
+```
+return {
+    'xixiaofinland/sf.nvim',
+    dependencies = {
+        'nvim-treesitter/nvim-treesitter',
+        'stevearc/overseer.nvim',   
+        "ibhagwan/fzf-lua",
+    },
+    config = function()
+        require('sf').setup({ terminal = 'overseer' })
+    end
+}
+```
 
 <br>
 

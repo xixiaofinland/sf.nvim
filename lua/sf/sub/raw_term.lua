@@ -107,7 +107,7 @@ function T:open()
   end
 
   if not H.is_buf_valid(self.buf) then
-    return vim.notify_once("Sf: no previous task. Run a termnimal command to initiate the term.", vim.log.levels.WARN)
+    return vim.notify_once("Sf: no previous task. Run a terminal command to initiate the term.", vim.log.levels.WARN)
   end
 
   local win = self:create_and_open_win(self.buf)
@@ -129,6 +129,11 @@ function T:close()
   api.nvim_win_close(self.win, false)
 
   return self
+end
+
+function T:cancel()
+  self.is_running = false -- set the flag to stop the running task
+  self:run("\3")
 end
 
 function T:create_and_open_win(buf)

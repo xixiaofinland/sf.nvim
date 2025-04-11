@@ -4,11 +4,17 @@ local Term = {}
 local H = {}
 local t
 
--- this function is called in config.lua
+-- this function is called in config.lua if terminal type is set to 'integrated'
 -- it's meant to delay the raw term initialization so the term_cfg is ready after user's setup() call
 ---@param term_cfg table
-function Term.setup(term_cfg)
+function Term.integrated_setup(term_cfg)
   t = require("sf.sub.raw_term"):new(term_cfg)
+end
+
+-- this function is called in config.lua if terminal type is set to 'overseer'
+---@param overseer_cfg table
+function Term.overseer_setup(overseer_cfg)
+  t = require("sf.sub.overseer_term"):new(overseer_cfg)
 end
 
 function Term.toggle()
@@ -135,8 +141,7 @@ function Term.run_highlighted_soql()
 end
 
 function Term.cancel()
-  t.is_running = false -- set the flag to stop the running task
-  t:run("\3")
+  t:cancel()
 end
 
 function Term.go_to_sf_root()
