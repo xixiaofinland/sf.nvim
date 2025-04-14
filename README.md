@@ -18,7 +18,7 @@
 - [List/retrieve metadata](#-feature-listretrieve-metadata-and-metadata-types)
 - [Apex test](#apex-test)
 - [Display target org and code coverage](#-display-target_org-and-code-coverage)
-- [Integrated term](#%EF%B8%8F-integrated-terminal)
+- [Terminal](#%EF%B8%8F-terminal)
 - [Apex jump](#-enhanced-jump-to-definition-apex)
 - [Contributions](#-contributions)
 
@@ -31,7 +31,7 @@ sf.nvim`, which is auto-generated from those comments.
 All the features are categorized as:
 
 - 🔥 Apex/Lwc/Aura: push, retrieve, create
-- 💻 Integrated term
+- 💻 Integrated term or overseer.nvim
 - 😎 File diff: local v.s. org
 - 🤩 Target-org icon
 - 👏 Org Metadata browsing
@@ -140,7 +140,7 @@ require('sf').setup({
   -- "integrated" - use the integrated terminal.
   -- "overseer" - use overseer.nvim to run terminal tasks. (requires overseer.nvim as a dependency).
   terminal = "integrated",
-  
+
   -- Configuration for the integrated terminal
   term_config = {
     blend = 10,     -- background transparency: 0 is fully opaque; 100 is fully transparent
@@ -388,14 +388,14 @@ The integrated terminal is designed to
 You can pass any shell command into `run()` method to execute it in the integrated
 terminal. For instance, `require('sf').run('ls -la')`.
 
-### Overseer.nvim 
+### Overseer.nvim
 
-As an alternative to the integrated terminal, [overseer.nvim](https://github.com/stevearc/overseer.nvim) can be used to execute terminal commands. 
+As an alternative to the integrated terminal, [overseer.nvim](https://github.com/stevearc/overseer.nvim) can be used to execute terminal commands.
 
 Once enabled
 
 - commands executed by Sf.nvim will be created in overseer as tasks
-- the overseer task list can be show or hidden via `:OverseerToggle` 
+- the overseer task list can be show or hidden via `:OverseerToggle`
 
 To enable, ensure overseer.nvim is a dependency and set the appropriate flag in your configuration:
 
@@ -404,7 +404,7 @@ return {
     'xixiaofinland/sf.nvim',
     dependencies = {
         'nvim-treesitter/nvim-treesitter',
-        'stevearc/overseer.nvim',   
+        'stevearc/overseer.nvim',
         "ibhagwan/fzf-lua",
     },
     config = function()
@@ -457,16 +457,6 @@ The `help.txt` file is auto-generated from the comments with the `---` suffix
 before each function in [init.lua](https://github.com/xixiaofinland/sf.nvim/blob/dev/lua/sf/init.lua). The plugin
 uses `mini.doc` to automatically generate `help.txt` from these `---` suffixed comments. Therefore,
 add your doc content in `init.lua` without touching `help.txt` is sufficient.
-
-<br>
-
-### 🤝 Contributors
-
-Thanks to the following people for contributing to this project:
-
-- [@ognjen-vuceljic](https://github.com/ognjen-vuceljic)
-- ![GitHub Profile Image](https://github.com/waltonzt.png?size=50) [@waltonzt](https://github.com/waltonzt)
-- ![GitHub Profile Image](https://github.com/FedeAbella.png?size=50) [@FedeAbella](https://github.com/FedeAbella)
 
 <br>
 

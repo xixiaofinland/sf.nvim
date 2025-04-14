@@ -277,4 +277,504 @@ Create tags file in the root path and list them by fzf plugin.
 When fzf is not found, the command exists with an error msg.
 
 
+==============================================================================
+------------------------------------------------------------------------------
+                                                                 *H.open_apex()*
+                             `H.open_apex`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                               *H.retrieve_md()*
+                     `H.retrieve_md`({type}, {name}, {cb})
+Parameters ~
+{type} `(string)`
+{name} `(string)`
+{cb} `(function)`
+Return ~
+`(nil)`
+
+------------------------------------------------------------------------------
+                                                             *H.pull_metadata()*
+                           `H.pull_metadata`({type})
+Parameters ~
+{type} `(string)`
+Return ~
+`(nil)`
+
+------------------------------------------------------------------------------
+                                                          *H.retrieve_md_type()*
+                          `H.retrieve_md_type`({type})
+Parameters ~
+{type} `(string)`
+Return ~
+`(nil)`
+
+------------------------------------------------------------------------------
+                                                            *H.generate_class()*
+                           `H.generate_class`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                         *H.create_apex_class()*
+                         `H.create_apex_class`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                             *H.generate_aura()*
+                           `H.generate_aura`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                        *H.create_aura_bundle()*
+                         `H.create_aura_bundle`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                              *H.generate_lwc()*
+                            `H.generate_lwc`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                         *H.create_lwc_bundle()*
+                         `H.create_lwc_bundle`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                          *H.generate_trigger()*
+                          `H.generate_trigger`({name})
+Parameters ~
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                            *H.create_trigger()*
+                           `H.create_trigger`({name})
+Parameters ~
+{name} `(string)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                *H.store_orgs()*
+                             `H.store_orgs`({data})
+Parameters ~
+{data} `(string)`
+
+------------------------------------------------------------------------------
+                                                                   *H.diff_in()*
+                               `H.diff_in`({org})
+Parameters ~
+{org} `(string)`
+
+------------------------------------------------------------------------------
+                                           *H.get_file_name_without_extension()*
+                `H.get_file_name_without_extension`({fileName})
+Parameters ~
+{fileName} `(string)`
+Return ~
+`(any)`
+
+------------------------------------------------------------------------------
+                                                         *H.get_metadata_type()*
+                       `H.get_metadata_type`({filePath})
+Parameters ~
+{filePath} `(string)`
+Return ~
+`(string | nil)`
+
+------------------------------------------------------------------------------
+                                                                 *H.find_file()*
+                        `H.find_file`({path}, {target})
+Parameters ~
+{path} `(string)`
+{target} `(string)`
+Return ~
+`(string)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                       *Term.integrated_setup()*
+                      `Term.integrated_setup`({term_cfg})
+Parameters ~
+{term_cfg} `(table)`
+
+------------------------------------------------------------------------------
+                                                         *Term.overseer_setup()*
+                     `Term.overseer_setup`({overseer_cfg})
+Parameters ~
+{overseer_cfg} `(table)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                       *Test.run_current_test()*
+                           `Test.run_current_test`()
+Parameters ~
+{cb} `(function)`
+Return ~
+`(nil)`
+
+------------------------------------------------------------------------------
+                                             *Test.run_all_tests_in_this_file()*
+                    `Test.run_all_tests_in_this_file`({cb})
+Parameters ~
+{cb} `(function)`
+Return ~
+`(nil)`
+
+------------------------------------------------------------------------------
+                                                       *H.extract_test_run_id()*
+                        `H.extract_test_run_id`({lines})
+Parameters ~
+{lines} `(table)`
+Return ~
+`(any)`
+
+------------------------------------------------------------------------------
+                                                *H.save_test_coverage_locally()*
+           `H.save_test_coverage_locally`({self}, {cmd}, {exit_code})
+Parameters ~
+{self} `(table)`
+{cmd} `(string)`
+{exit_code} `(number)`
+
+------------------------------------------------------------------------------
+                                                           *P.build_tests_cmd()*
+                        `P.build_tests_cmd`({param_str})
+Parameters ~
+{param_str} `(string)`
+Return ~
+`(nil)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *M.show()*
+                                `M.show`({msg})
+Parameters ~
+{msg} `(string)`
+
+------------------------------------------------------------------------------
+                                                                  *M.show_err()*
+                              `M.show_err`({msg})
+Parameters ~
+{msg} `(string)`
+
+------------------------------------------------------------------------------
+                                                                 *M.show_warn()*
+                              `M.show_warn`({msg})
+Parameters ~
+{msg} `(string)`
+
+------------------------------------------------------------------------------
+                                                         *M.notify_then_error()*
+                          `M.notify_then_error`({msg})
+Parameters ~
+{msg} `(string)`
+
+------------------------------------------------------------------------------
+                                                            *M.is_table_empty()*
+                           `M.is_table_empty`({tbl})
+Parameters ~
+{tbl} `(table)`
+
+------------------------------------------------------------------------------
+                                                              *M.is_empty_str()*
+                             `M.is_empty_str`({s})
+Parameters ~
+{s} `(string|nil)`
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                                 *M.list_find()*
+                         `M.list_find`({tbl}, {value})
+Parameters ~
+{tbl} `(table)`
+{value} `(string)`
+Return ~
+`(number|nil)`
+
+------------------------------------------------------------------------------
+                                                           *M.silent_job_call()*
+               `M.silent_job_call`({cmd}, {msg}, {err_msg}, {cb})
+Parameters ~
+{cmd} `(string)`
+{msg} `(string|nil)`
+{err_msg} `(string|nil)`
+{cb} `(function|nil)`
+
+------------------------------------------------------------------------------
+                                                                  *M.job_call()*
+                  `M.job_call`({cmd}, {msg}, {err_msg}, {cb})
+Parameters ~
+{cmd} `(string)`
+{msg} `(string|nil)`
+{err_msg} `(string|nil)`
+{cb} `(function|nil)`
+
+------------------------------------------------------------------------------
+                                                        *M.silent_system_call()*
+             `M.silent_system_call`({cmd}, {msg}, {err_msg}, {cb})
+Parameters ~
+{cmd} `(table)`
+{msg} `(string|nil)`
+{err_msg} `(string|nil)`
+{cb} `(function|nil)`
+
+------------------------------------------------------------------------------
+                                                               *M.system_call()*
+           `M.system_call`({cmd}, {msg}, {err_msg}, {cb}, {pre_msg})
+Parameters ~
+{cmd} `(table)`
+{msg} `(string|nil)`
+{err_msg} `(string|nil)`
+{cb} `(function|nil)`
+
+------------------------------------------------------------------------------
+                                                         *M.run_cb_with_input()*
+                  `M.run_cb_with_input`({arg}, {prompt}, {cb})
+Parameters ~
+{arg} `(string|nil)`
+{prompt} `(string)`
+{cb} `(function)`
+
+------------------------------------------------------------------------------
+                                                     *M.table_to_string_lines()*
+                        `M.table_to_string_lines`({tbl})
+Parameters ~
+{tbl} `(table)`
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                              *M.is_installed()*
+                        `M.is_installed`({plugin_name})
+Parameters ~
+{plugin_name} `(string)`
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                *M.read_file_in_plugin_folder()*
+                     `M.read_file_in_plugin_folder`({name})
+Parameters ~
+{name} `(string)`
+Return ~
+`(table|nil)`
+
+------------------------------------------------------------------------------
+                                                     *M.read_file_json_to_tbl()*
+                   `M.read_file_json_to_tbl`({name}, {path})
+Parameters ~
+{name} `(string)`
+{path} `(string)`
+Return ~
+`(table|nil)`
+
+------------------------------------------------------------------------------
+                                                           *M.read_local_file()*
+                 `M.read_local_file`({absolute_path}, {err_fn})
+Reads the content of a local file.
+@param absolute_path string The path to the file.
+@param err_fn function|nil Optional function to call in case of an error.
+@return string|nil The file content or nil if an error occurred.
+
+------------------------------------------------------------------------------
+                                                    *M.parse_from_json_to_tbl()*
+                     `M.parse_from_json_to_tbl`({content})
+Parameters ~
+{content} `(string)`
+Return ~
+`(table|nil)`
+
+------------------------------------------------------------------------------
+                                                     *M.is_apex_loaded_in_buf()*
+                       `M.is_apex_loaded_in_buf`({name})
+Parameters ~
+{name} `(string)`
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                          *M.get_apex_buf_num()*
+                          `M.get_apex_buf_num`({name})
+Parameters ~
+{name} `(string)`
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                               *M.get_buf_num()*
+                            `M.get_buf_num`({path})
+Parameters ~
+{path} `(string)`
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                             *M.try_open_file()*
+                           `M.try_open_file`({path})
+Parameters ~
+{path} `(string)`
+
+------------------------------------------------------------------------------
+                                                             *M.file_readable()*
+                           `M.file_readable`({path})
+Parameters ~
+{path} `(string)`
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                               *M.is_function()*
+                            `M.is_function`({param})
+Parameters ~
+{param} `(any)`
+Return ~
+`(boolean)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                *CommandBuilder*
+                                `CommandBuilder`
+Class ~
+{CommandBuilder}
+Fields ~
+{base_cmd} `(string)`
+{command} `(string)`
+{action} `(string)`
+{subactions} `(table<string>)`
+{params} `(table<string, table<string, string|boolean>>)`
+{param_str} `(string)`
+{org} `(string|nil)`
+
+------------------------------------------------------------------------------
+                                                          *CommandBuilder:new()*
+                      `CommandBuilder:new`({base_command})
+a new CommandBuilder instance
+Parameters ~
+{base_command} `(string|nil)`
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                          *CommandBuilder:cmd()*
+                          `CommandBuilder:cmd`({cmd})
+the command
+Parameters ~
+{cmd} `(string)`
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                          *CommandBuilder:act()*
+                         `CommandBuilder:act`({action})
+the action
+Parameters ~
+{action} `(string)`
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                       *CommandBuilder:subact()*
+                      `CommandBuilder:subact`({subaction})
+a sub-action
+Parameters ~
+{subaction} `(string)`
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                    *CommandBuilder:localOnly()*
+                          `CommandBuilder:localOnly`()
+the command local only
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                    *CommandBuilder:addParams()*
+                       `CommandBuilder:addParams`({...})
+one or more parameters
+Parameters ~
+{...} `(string|table)` Either a flag and value as separate arguments, or a table of flag-value pairs
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                            *CommandBuilder:addParamsNoExpand()*
+                   `CommandBuilder:addParamsNoExpand`({...})
+one or more parameters, but don't expand the values
+Parameters ~
+{...} `(string|table)` Either a flag and value as separate arguments, or a table of flag-value pairs
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                  *CommandBuilder:addParamStr()*
+                   `CommandBuilder:addParamStr`({param_str})
+the param str. When params are given as string or the flag is the same for multiple params
+Parameters ~
+{param_str} `(string)`
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                      *CommandBuilder:set_org()*
+                        `CommandBuilder:set_org`({org})
+the org property
+Parameters ~
+{org} `(string)`
+Return ~
+`(CommandBuilder)`
+
+------------------------------------------------------------------------------
+                                                     *CommandBuilder:validate()*
+                          `CommandBuilder:validate`()
+the command
+
+------------------------------------------------------------------------------
+                                                   *CommandBuilder:sortParams()*
+                         `CommandBuilder:sortParams`()
+the params based on the specified rules
+Return ~
+`(table<integer, {flag: string, value: table<string, string|boolean>}>)`
+
+------------------------------------------------------------------------------
+                                                        *CommandBuilder:build()*
+                            `CommandBuilder:build`()
+the final command string
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                 *CommandBuilder:buildAsTable()*
+                        `CommandBuilder:buildAsTable`()
+the final command as a string table
+Return ~
+`(table)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                 *M.sub_cmd_tbl*
+                                `M.sub_cmd_tbl`
+Type ~
+`(table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>)`
+
+------------------------------------------------------------------------------
+                                                               *create_sf_cmd()*
+                            `create_sf_cmd`({opts})
+Parameters ~
+{opts} `(table)`
+
+
  vim:tw=78:ts=8:noet:ft=help:norl:
