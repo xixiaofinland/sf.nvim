@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.10.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.2...v1.10.0) (2025-04-14)
+
+
+### Features
+
+* Add overseer.nvim integration ([b7201f9](https://github.com/xixiaofinland/sf.nvim/commit/b7201f9640137702f7232ddadc579cbc923370fe))
+
+
+### Bug Fixes
+
+* ts query capture update need in v0.11 [#281](https://github.com/xixiaofinland/sf.nvim/issues/281) ([cc7947e](https://github.com/xixiaofinland/sf.nvim/commit/cc7947eeacfc005b25c6adef58088b42d613dd68))
+
 ## [1.9.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.1...v1.9.2) (2025-03-25)
 
 
