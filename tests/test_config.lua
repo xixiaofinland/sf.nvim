@@ -71,7 +71,7 @@ T["setup()"]["has default config"] = function()
     hl = "Normal",
     clear_env = false,
   })
-  expect_config("terminal", "internal")
+  expect_config("terminal", "integrated")
   expect_config("default_dir", "/force-app/main/default/")
   expect_config("plugin_folder_name", "/sf_cache/")
   expect_config("auto_display_code_sign", true)
