@@ -14,6 +14,7 @@ local T = new_set({
       child.lua([[Md = require('sf.md')]])
       child.lua([[Test = require('sf.test')]])
       child.lua([[Ctags = require('sf.ctags')]])
+      child.lua([[Project = require('sf.project')]])
       child.lua([[Test_sign = require('sf.sub.test_sign')]])
     end,
     post_once = child.stop,
@@ -77,5 +78,12 @@ T["copy_apex_name()"] = new_set()
 --   -- eq(child.fn.getreg("*"), apex_name)
 --   eq(child.lua_get('vim.fn.getreg("*")'), apex_name)
 -- end
+
+T["normalize_path"] = new_set()
+T["normalize_path"]["can normalize a path"] = function()
+  local package = "/home/user/dev/.//projects/myproject//./../project2/package1"
+  local expected = "/home/user/dev/projects/project2/package1/"
+  eq(child.lua("return Util.normalize_path('" .. package .. "', true)"), expected)
+end
 
 return T

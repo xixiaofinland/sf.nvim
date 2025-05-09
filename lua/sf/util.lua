@@ -33,38 +33,39 @@ M.get = function()
   return M.target_org
 end
 
-M.get_default_dir_path = function()
-  local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
-  dir_path = dir_path:gsub("//", "/")
-  if M.is_windows_os() then
-    dir_path = dir_path:gsub("\\", "/")
-  end
-  if dir_path:sub(1, 1) ~= "/" and dir_path:sub(1, 1) ~= "." and not M.is_windows_os() then
-    dir_path = "/" .. dir_path
-  end
-  if dir_path:sub(-1) ~= "/" then
-    dir_path = dir_path .. "/"
-  end
-  return dir_path
+M.str_ends_with = function(str, ending)
+  return ending == "" or str:sub(-#ending) == ending
 end
 
-M.get_apex_folder_path = function()
-  return M.get_default_dir_path() .. "classes/"
+M.combine_path = function(path1, path2)
+  return path1 .. "/" .. path2
+end
+
+--- Returns a normalized path, optionally with a trailing separator
+-- @param path string The path to normalize
+-- @param trailing_slash boolean Whether to ensure trailing slash (default: false)
+-- @return string Normalized path
+M.normalize_path = function(path, trailing_slash)
+  local normalized = vim.fs.normalize(path)
+
+  -- Add trailing slash if requested and not already present
+  if trailing_slash and normalized:sub(-1) ~= "/" then
+    normalized = normalized .. "/"
+  end
+
+  return normalized
+end
+
+--- Returns the normalized default directory path
+-- @return string Normalized path with trailing separator
+M.get_default_dir_path = function()
+  local dir_path = M.combine_path(M.get_sf_root(), vim.g.sf.default_dir)
+  return M.normalize_path(dir_path, true)
 end
 
 M.get_plugin_folder_path = function()
-  local folder_path = M.get_sf_root() .. vim.g.sf.plugin_folder_name
-  folder_path = folder_path:gsub("//", "/")
-  if M.is_windows_os() then
-    folder_path = folder_path:gsub("\\", "/")
-  end
-  if folder_path:sub(1, 1) ~= "/" and folder_path:sub(1, 1) ~= "." and not M.is_windows_os() then
-    folder_path = "/" .. folder_path
-  end
-  if folder_path:sub(-1) ~= "/" then
-    folder_path = folder_path .. "/"
-  end
-  return folder_path
+  local folder_path = M.combine_path(M.get_sf_root(), vim.g.sf.plugin_folder_name)
+  return M.normalize_path(folder_path, true)
 end
 
 M.create_plugin_folder_if_not_exist = function()

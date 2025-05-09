@@ -57,7 +57,8 @@ local default_cfg = {
   -- "overseer" - use overseer.nvim to run terminal tasks. requires overseer.nvim as a dependency.
   terminal = "integrated",
 
-  -- the sf project metadata folder, update this in case you diverged from the default sf folder structure
+  -- the fallback sf project metadata folder, update this in case you diverged from the default sf folder structure and you
+  -- don't have a default package specified in sfdx-project.json.
   default_dir = "/force-app/main/default/",
 
   -- the folder this plugin uses to store intermediate data. It's under the sf project root directory.
