@@ -36,8 +36,9 @@ Helpers.new_child_neovim = function()
     child.lua(req_cmd, { config })
   end
 
-  child.open_in_sf_dir = function(file)
-    local lua_cmd = string.format("edit tests/dir/sf-project/%s", file)
+  child.open_in_sf_dir = function(file, project)
+    project = project or "sf-project"
+    local lua_cmd = string.format("edit tests/dir/%s/%s", project, file)
     child.cmd(lua_cmd)
   end
 
