@@ -14,6 +14,7 @@ local T = new_set({
       child.lua([[Md = require('sf.md')]])
       child.lua([[Test = require('sf.test')]])
       child.lua([[Ctags = require('sf.ctags')]])
+      child.lua([[Project = require('sf.project')]])
       child.lua([[Test_sign = require('sf.sub.test_sign')]])
     end,
     post_once = child.stop,

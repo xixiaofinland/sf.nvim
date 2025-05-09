@@ -1,5 +1,6 @@
 local T = require("sf.term")
 local U = require("sf.util")
+local P = require("sf.project")
 local B = require("sf.sub.cmd_builder")
 local H = {}
 
@@ -45,7 +46,7 @@ end
 
 ---@param name string
 H.open_apex = function(name)
-  U.try_open_file(U.get_apex_folder_path() .. name .. ".cls")
+  U.try_open_file(P.get_apex_folder_path() .. name .. ".cls")
 end
 
 H.retrieve_apex_under_cursor = function()
@@ -205,7 +206,7 @@ end
 
 ---@param name string
 H.generate_class = function(name)
-  local path = U.get_apex_folder_path()
+  local path = P.get_apex_folder_path()
   -- local cmd = string.format("sf apex generate class --output-dir %s --name %s", path, name)
   local cmd = B:new():cmd("apex"):act("generate class"):addParams({ ["-d"] = path, ["-n"] = name }):localOnly():build()
 
@@ -226,11 +227,11 @@ H.generate_aura = function(name)
   local cmd = B:new()
     :cmd("lightning")
     :act("generate component")
-    :addParams({ ["-d"] = U.get_default_dir_path() .. "aura", ["-n"] = name, ["--type"] = "aura" })
+    :addParams({ ["-d"] = P.get_current_package_dir() .. "aura", ["-n"] = name, ["--type"] = "aura" })
     :localOnly()
     :build()
   U.silent_job_call(cmd, nil, "Something went wrong creating the Aura bundle", function()
-    U.try_open_file(U.get_default_dir_path() .. "aura/" .. name .. "/" .. name .. ".cmp")
+    U.try_open_file(P.get_current_package_dir() .. "aura/" .. name .. "/" .. name .. ".cmp")
   end)
 end
 
@@ -245,11 +246,11 @@ H.generate_lwc = function(name)
   local cmd = B:new()
     :cmd("lightning")
     :act("generate component")
-    :addParams({ ["-d"] = U.get_default_dir_path() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
+    :addParams({ ["-d"] = P.get_current_package_dir() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
     :localOnly()
     :build()
   U.silent_job_call(cmd, nil, "Something went wrong creating the LWC bundle", function()
-    U.try_open_file(U.get_default_dir_path() .. "lwc/" .. name .. "/" .. name .. ".js")
+    U.try_open_file(P.get_current_package_dir() .. "lwc/" .. name .. "/" .. name .. ".js")
   end)
 end
 
@@ -264,12 +265,12 @@ H.generate_trigger = function(name)
     :cmd("apex")
     :act("generate")
     :subact("trigger")
-    :addParams({ ["-d"] = U.get_default_dir_path() .. "triggers", ["-n"] = name })
+    :addParams({ ["-d"] = P.get_current_package_dir() .. "triggers", ["-n"] = name })
     :localOnly()
     :buildAsTable()
 
   U.silent_system_call(cmd, nil, "Something went wrong creating the trigger", function()
-    U.try_open_file(U.get_default_dir_path() .. "triggers/" .. name .. ".trigger")
+    U.try_open_file(P.get_current_package_dir() .. "triggers/" .. name .. ".trigger")
   end)
 end
 

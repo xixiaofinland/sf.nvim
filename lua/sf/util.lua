@@ -33,6 +33,10 @@ M.get = function()
   return M.target_org
 end
 
+M.str_ends_with = function(str, ending)
+  return ending == "" or str:sub(-#ending) == ending
+end
+
 M.get_default_dir_path = function()
   local dir_path = M.get_sf_root() .. vim.g.sf.default_dir
   dir_path = dir_path:gsub("//", "/")
@@ -46,10 +50,6 @@ M.get_default_dir_path = function()
     dir_path = dir_path .. "/"
   end
   return dir_path
-end
-
-M.get_apex_folder_path = function()
-  return M.get_default_dir_path() .. "classes/"
 end
 
 M.get_plugin_folder_path = function()

@@ -10,6 +10,7 @@ local Org = require("sf.org")
 local Metadata = require("sf.md")
 local Test = require("sf.test")
 local Ctags = require("sf.ctags")
+local Project = require("sf.project")
 local Sf = {}
 
 --- Before using this plugin, it's mandatory to invoke this function by "require'sf'.setup()".
@@ -115,6 +116,20 @@ Sf.org_open_current_file = Org.open_current_file
 
 --- Get a list of logs from the org, and choose one to download and open
 Sf.pull_log = Org.pull_log
+
+-- From Project module ==========================================================
+
+--- Returns the current package directory. By default, the plugin uses the default package from sfdx-project.json.
+--- If no packages are found, falls back to the value specified in 'default_dir'. If multiple packages are available,
+--- you can override the current working package using |Sf.set_current_package|
+Sf.get_current_package_dir = Project.get_current_package_dir
+
+--- Set the current package directory.
+Sf.set_current_package_dir = Project.set_current_package_dir
+
+--- Prompts the user for a package to use for the project. Only useful if you have multiple package directories in your
+--- sfdx-project.json file.
+Sf.set_current_package = Project.set_current_package
 
 -- From Metadata module ==========================================================
 
