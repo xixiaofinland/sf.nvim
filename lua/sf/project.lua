@@ -1,11 +1,10 @@
 local U = require("sf.util")
 
-local M = {}
 local Project = {}
 
 local current_package_dir = nil
 
-M.get_project_file_content = function()
+Project.get_project_file_content = function()
   local root = U.get_sf_root()
 
   local project_file_path = root .. "/sfdx-project.json"
@@ -25,7 +24,7 @@ M.get_project_file_content = function()
   return parsed
 end
 
-M.get_current_package_dir = function()
+Project.get_current_package_dir = function()
   -- return the user nominated current package
   if current_package_dir ~= nil then
     return current_package_dir
@@ -33,7 +32,7 @@ M.get_current_package_dir = function()
 
   -- otherwise, return the default package from sfdx-project.json if it exists
   local root = U.get_sf_root()
-  local project = M.get_project_file_content()
+  local project = Project.get_project_file_content()
   if project and project["packageDirectories"] then
     for _, dir in pairs(project["packageDirectories"]) do
       if dir["default"] then
@@ -47,7 +46,7 @@ M.get_current_package_dir = function()
   return U.get_default_dir_path()
 end
 
-M.set_current_package_dir = function(package_name)
+Project.set_current_package_dir = function(package_name)
   local root = U.get_sf_root()
 
   if not U.str_ends_with(package_name, "/main/default") and not U.str_ends_with(package_name, "/main/default/") then
@@ -57,8 +56,8 @@ M.set_current_package_dir = function(package_name)
   current_package_dir = U.normalize_path(root .. package_name, true)
 end
 
-M.set_current_package = function()
-  local project = M.get_project_file_content()
+Project.set_current_package = function()
+  local project = Project.get_project_file_content()
 
   local packages = {}
 
@@ -76,17 +75,13 @@ M.set_current_package = function()
     prompt = "Current package:",
   }, function(choice)
     if choice ~= nil then
-      M.set_current_package_dir(choice)
+      Project.set_current_package_dir(choice)
     end
   end)
 end
 
 Project.get_apex_folder_path = function()
-  return M.get_current_package_dir() .. "classes/"
+  return Project.get_current_package_dir() .. "classes/"
 end
-
-Project.set_current_package = M.set_current_package
-Project.set_current_package_dir = M.set_current_package_dir
-Project.get_current_package_dir = M.get_current_package_dir
 
 return Project
