@@ -152,7 +152,9 @@ require('sf').setup({
     },
   },
 
-  -- the sf project metadata folder, update this in case you diverged from the default sf folder structure
+  -- By default, the plugin uses the default package from sfdx-project.json.
+  -- If no packages are found, falls back to the value specified in 'default_dir'. If multiple packages are available,
+  -- you can override the current working package using |Sf.set_current_package|
   default_dir = '/force-app/main/default/',
 
   -- the folder this plugin uses to store intermediate data. It's under the sf project root directory.

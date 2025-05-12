@@ -157,6 +157,24 @@ Open the current file in the target_org in browser
 Get a list of logs from the org, and choose one to download and open
 
 ------------------------------------------------------------------------------
+                                                    *Sf.get_current_package_dir*
+                          `Sf.get_current_package_dir`
+Returns the current package directory. By default, the plugin uses the default package from sfdx-project.json.
+If no packages are found, falls back to the value specified in 'default_dir'. If multiple packages are available,
+you can override the current working package using |Sf.set_current_package|
+
+------------------------------------------------------------------------------
+                                                    *Sf.set_current_package_dir*
+                          `Sf.set_current_package_dir`
+Set the current package directory.
+
+------------------------------------------------------------------------------
+                                                        *Sf.set_current_package*
+                            `Sf.set_current_package`
+Prompts the user for a package to use for the project. Only useful if you have multiple package directories in your
+sfdx-project.json file.
+
+------------------------------------------------------------------------------
                                                                *Sf.pull_md_json*
                                `Sf.pull_md_json`
 Download metadata name list, e.g. Apex names, LWC names, StaticResource names, etc. as Json files into the the project root path "md" folder.
@@ -478,6 +496,12 @@ Parameters ~
                           `M.notify_then_error`({msg})
 Parameters ~
 {msg} `(string)`
+
+------------------------------------------------------------------------------
+Returns a normalized path, optionally with a trailing separator
+
+------------------------------------------------------------------------------
+Returns the normalized default directory path
 
 ------------------------------------------------------------------------------
                                                             *M.is_table_empty()*
