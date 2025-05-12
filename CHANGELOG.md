@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.10.0...v1.11.0) (2025-05-12)
+
+
+### Features
+
+* read default package directory from sfdx-project.json ([9568f3f](https://github.com/xixiaofinland/sf.nvim/commit/9568f3f4507477dbe7ccd42215cf9fea4eb67272))
+
 ## [1.10.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.9.2...v1.10.0) (2025-04-14)
 
 
