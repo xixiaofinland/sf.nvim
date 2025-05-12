@@ -69,6 +69,7 @@ Sf.create_trigger	sf.txt	/*Sf.create_trigger*
 Sf.diff_in_org	sf.txt	/*Sf.diff_in_org*
 Sf.diff_in_target_org	sf.txt	/*Sf.diff_in_target_org*
 Sf.fetch_org_list	sf.txt	/*Sf.fetch_org_list*
+Sf.get_current_package_dir	sf.txt	/*Sf.get_current_package_dir*
 Sf.get_target_org	sf.txt	/*Sf.get_target_org*
 Sf.go_to_sf_root	sf.txt	/*Sf.go_to_sf_root*
 Sf.list_md_to_retrieve	sf.txt	/*Sf.list_md_to_retrieve*
@@ -99,6 +100,8 @@ Sf.run_local_tests	sf.txt	/*Sf.run_local_tests*
 Sf.run_query	sf.txt	/*Sf.run_query*
 Sf.run_tooling_query	sf.txt	/*Sf.run_tooling_query*
 Sf.save_and_push	sf.txt	/*Sf.save_and_push*
+Sf.set_current_package	sf.txt	/*Sf.set_current_package*
+Sf.set_current_package_dir	sf.txt	/*Sf.set_current_package_dir*
 Sf.set_global_target_org	sf.txt	/*Sf.set_global_target_org*
 Sf.set_target_org	sf.txt	/*Sf.set_target_org*
 Sf.setup()	sf.txt	/*Sf.setup()*
