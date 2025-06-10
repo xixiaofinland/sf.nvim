@@ -61,7 +61,7 @@ In addition to the features, user commands and default hotkeys are also supplied
 - 🔍 (Optional) fzf-lua plugin for executing `:SF md list` and `SFListMdTypeToRetrieve` (Why not
   telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
-- 🔍 (Optional) [overseer.nvim](https://github/com/stevearc/overseer) if you'd like to use the overseer integration
+- 🔍 (Optional) [overseer.nvim](https://github.com/stevearc/overseer.nvim) if you'd like to use the overseer integration
 
 
 ![Image 019](https://github.com/user-attachments/assets/aad0ac11-f980-423b-8332-a2b4359fb4ae)
