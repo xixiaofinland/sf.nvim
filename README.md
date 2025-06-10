@@ -14,12 +14,12 @@
 - [Installation](#%EF%B8%8F--installation)
 - [Configuration](#%EF%B8%8F-configuration)
 - [Keys](#-keys)
-- [Full doc](#-full-document)
 - [List/retrieve metadata](#-feature-listretrieve-metadata-and-metadata-types)
 - [Apex test](#apex-test)
 - [Display target org and code coverage](#-display-target_org-and-code-coverage)
 - [Terminal](#%EF%B8%8F-terminal)
 - [Apex jump](#-enhanced-jump-to-definition-apex)
+- [Read More](#-read-more)
 - [Contributions](#-contributions)
 
 ## ✨ Features
@@ -267,12 +267,6 @@ vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true,
 ```
 <br>
 
-## 📚 Full Document
-
-Checking all features via `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
-
-<br>
-
 ## 🚀 Feature: List/retrieve metadata and metadata types
 
 Sometimes you don't know what metadata the target org contains, and you want to
@@ -438,6 +432,12 @@ ctags](https://github.com/universal-ctags/ctags). So you need to install it to u
 Using the `<C-]>` key for jump-to-definition will automatically use both LSP and ctags in order.
 `:SF create ctagsAndList` or `require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in  `fzf-lua`
 plugin.
+
+<br>
+
+## 📚 Read More
+
+Full documentation can be accessed via `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
 <br>
 
