@@ -244,7 +244,7 @@ In case you decide to go with the default hotkeys:
 | `<leader>sq`     | run_highlighted_soql |Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
 |`\s`|toggle_sign |Show/hide line coverage sign icon|
 |`]v`|uncovered_jump_forward |jump to next test uncovered hunk|
-|`[v`|`uncovered_jump_backward |jump to last test uncovered hunk|
+|`[v`|uncovered_jump_backward |jump to last test uncovered hunk|
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
 
