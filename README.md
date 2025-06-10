@@ -6,7 +6,7 @@
 <h1 align="center">Sf.nvim</h1>
 <p align="center">📸 A Neovim plugin for Salesforce development</p>
 
-# 📖 Table of Content
+# 📖 Table of Contents
 
 - [Features](#-features)
 - [Intro video](#-intro-video-6min)
