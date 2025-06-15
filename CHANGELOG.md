@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.11.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.11.0...v1.11.1) (2025-06-15)
+
+
+### Bug Fixes
+
+* overseer URL ([70d35b0](https://github.com/xixiaofinland/sf.nvim/commit/70d35b0931208882cc3a2d59ee9eacdee9af1837))
+* replace Full Docs with Read More and move to bottom ([1e710a2](https://github.com/xixiaofinland/sf.nvim/commit/1e710a294972eb7c65fda34454626791b540d67e))
+* stray ` in table ([8b7b835](https://github.com/xixiaofinland/sf.nvim/commit/8b7b835da2f215629c47b030b69a7b1ab45cb423))
+* typo Table of Contents ([71adff5](https://github.com/xixiaofinland/sf.nvim/commit/71adff540fb071b892adef6a8dbf1cbdad4e3e6a))
+
 ## [1.11.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.10.0...v1.11.0) (2025-05-12)
 
 
