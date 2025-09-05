@@ -107,16 +107,20 @@ H.list_md_to_retrieve = function()
         end)
       end,
     },
-    fzf_opts = {
-      ["--preview-window"] = "nohidden,down,50%",
-      ["--preview"] = function(items)
-        local contents = {}
-        vim.tbl_map(function(x)
-          table.insert(contents, "\n" .. U.table_to_string_lines(md[x]))
-        end, items)
-        return contents
-      end,
+    winopts = {
+      preview = {
+        layout = "vertical",
+        hidden = false,
+        vertical = "down:50%",
+      },
     },
+    preview = function(items)
+      local contents = {}
+      vim.tbl_map(function(x)
+        table.insert(contents, "\n" .. U.table_to_string_lines(md[x]))
+      end, items)
+      return contents
+    end,
   })
 end
 
