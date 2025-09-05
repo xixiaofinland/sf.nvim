@@ -83,18 +83,22 @@ H.pull_log = function()
     end
 
     require("fzf-lua").fzf_exec(log_names, {
-      fzf_opts = {
-        ["--preview-window"] = "nohidden,down,50%",
-        ["--preview"] = function(items)
-          local contents = {}
-          local prepend_char = ""
-          vim.tbl_map(function(x)
-            table.insert(contents, prepend_char .. U.table_to_string_lines(logs[x]))
-            prepend_char = "\n"
-          end, items)
-          return contents
-        end,
+      winopts = {
+        preview = {
+          layout = "vertical",
+          hidden = false,
+          vertical = "down:50%",
+        },
       },
+      preview = function(items)
+        local contents = {}
+        local prepend_char = ""
+        vim.tbl_map(function(x)
+          table.insert(contents, prepend_char .. U.table_to_string_lines(logs[x]))
+          prepend_char = "\n"
+        end, items)
+        return contents
+      end,
       actions = {
         ["default"] = function(selected)
           log_id = logs[selected[1]]["Id"]
@@ -131,7 +135,7 @@ H.set_target_org = function()
   }, function(choice)
     if choice ~= nil then
       local org = string.gsub(choice, "%[S%] ", "")
-      local cmd = "sf config set target-org \"" .. org .. "\""
+      local cmd = 'sf config set target-org "' .. org .. '"'
       local err_msg = org .. " - set target_org failed! Not in a sfdx project folder?"
       local cb = function()
         U.target_org = org
