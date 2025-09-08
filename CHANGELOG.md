@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.11.1...v1.12.0) (2025-09-08)
+
+
+### Features
+
+* update fzf_opts to table params ([81496e8](https://github.com/xixiaofinland/sf.nvim/commit/81496e88f6cf29adca8d5b00ad4b009d3ed6b4aa))
+
 ## [1.11.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.11.0...v1.11.1) (2025-06-15)
 
 
