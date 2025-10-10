@@ -34,7 +34,7 @@ M.get = function()
 end
 
 M.str_ends_with = function(str, ending)
-  return ending == "" or str:sub(-#ending) == ending
+  return ending == "" or str:sub(- #ending) == ending
 end
 
 M.combine_path = function(path1, path2)
@@ -206,9 +206,13 @@ M.system_call = function(cmd, msg, err_msg, cb, pre_msg)
   M.silent_system_call(cmd, msg, err_msg, cb)
 end
 
+M.get_apex_name = function()
+  return vim.split(vim.fn.expand("%:t"), ".", { trimempty = true, plain = true })[1]
+end
+
 -- Copy current file name without dot-after, e.g. copy "Hello" from "Hello.cls"
 M.copy_apex_name = function()
-  local file_name = vim.split(vim.fn.expand("%:t"), ".", { trimempty = true, plain = true })[1]
+  local file_name = M.get_apex_name()
   vim.fn.setreg("*", file_name)
   vim.notify(string.format('"%s" copied.', file_name), vim.log.levels.INFO)
 end
@@ -240,9 +244,9 @@ M.table_to_string_lines = function(tbl)
 
   local result = vim.inspect(tbl, inspect_opts)
   result = string.gsub(result, "^{(.*)}$", "%1") -- Remove surrounding braces
-  result = string.gsub(result, "%s*=%s*", ": ") -- Change " = " between key and value to ": "
-  result = string.gsub(result, ",%s*", "\n") -- Add newlines after each key=val pair, and remove commas
-  result = string.gsub(result, '"', "") -- Remove quotation marks around string values
+  result = string.gsub(result, "%s*=%s*", ": ")  -- Change " = " between key and value to ": "
+  result = string.gsub(result, ",%s*", "\n")     -- Add newlines after each key=val pair, and remove commas
+  result = string.gsub(result, '"', "")          -- Remove quotation marks around string values
   return result
 end
 

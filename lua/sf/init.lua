@@ -154,6 +154,9 @@ Sf.retrieve_apex_under_cursor = Metadata.retrieve_apex_under_cursor
 --- Creates a new Apex Class using an input name or prompting the user to enter one
 Sf.create_apex_class = Metadata.create_apex_class
 
+--- Delete the apex opened in the current buffer from both the org and local
+Sf.delete_current_apex_remote_and_local = Metadata.delete_current_apex_remote_and_local
+
 --- Creates a new Aura Bundle using an input name or prompting the user to enter one
 Sf.create_aura_bundle = Metadata.create_aura_bundle
 

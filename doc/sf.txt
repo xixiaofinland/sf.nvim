@@ -208,6 +208,11 @@ A convenient way to quickly pull Apex into local.
 Creates a new Apex Class using an input name or prompting the user to enter one
 
 ------------------------------------------------------------------------------
+                                       *Sf.delete_current_apex_remote_and_local*
+                   `Sf.delete_current_apex_remote_and_local`
+Delete the apex opened in the current buffer from both the org and local
+
+------------------------------------------------------------------------------
                                                          *Sf.create_aura_bundle*
                             `Sf.create_aura_bundle`
 Creates a new Aura Bundle using an input name or prompting the user to enter one
