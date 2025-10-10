@@ -42,6 +42,10 @@ function Md.create_trigger()
   H.create_trigger()
 end
 
+function Md.delete_current_apex_remote_and_local()
+  H.delete_current_apex_remote_and_local()
+end
+
 -- helper;
 
 ---@param name string
@@ -229,11 +233,11 @@ end
 H.generate_aura = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_default_dir_path() .. "/aura", name)
   local cmd = B:new()
-    :cmd("lightning")
-    :act("generate component")
-    :addParams({ ["-d"] = P.get_current_package_dir() .. "aura", ["-n"] = name, ["--type"] = "aura" })
-    :localOnly()
-    :build()
+      :cmd("lightning")
+      :act("generate component")
+      :addParams({ ["-d"] = P.get_current_package_dir() .. "aura", ["-n"] = name, ["--type"] = "aura" })
+      :localOnly()
+      :build()
   U.silent_job_call(cmd, nil, "Something went wrong creating the Aura bundle", function()
     U.try_open_file(P.get_current_package_dir() .. "aura/" .. name .. "/" .. name .. ".cmp")
   end)
@@ -248,11 +252,11 @@ end
 H.generate_lwc = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
   local cmd = B:new()
-    :cmd("lightning")
-    :act("generate component")
-    :addParams({ ["-d"] = P.get_current_package_dir() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
-    :localOnly()
-    :build()
+      :cmd("lightning")
+      :act("generate component")
+      :addParams({ ["-d"] = P.get_current_package_dir() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
+      :localOnly()
+      :build()
   U.silent_job_call(cmd, nil, "Something went wrong creating the LWC bundle", function()
     U.try_open_file(P.get_current_package_dir() .. "lwc/" .. name .. "/" .. name .. ".js")
   end)
@@ -266,12 +270,12 @@ end
 ---@param name string
 H.generate_trigger = function(name)
   local cmd = B:new()
-    :cmd("apex")
-    :act("generate")
-    :subact("trigger")
-    :addParams({ ["-d"] = P.get_current_package_dir() .. "triggers", ["-n"] = name })
-    :localOnly()
-    :buildAsTable()
+      :cmd("apex")
+      :act("generate")
+      :subact("trigger")
+      :addParams({ ["-d"] = P.get_current_package_dir() .. "triggers", ["-n"] = name })
+      :localOnly()
+      :buildAsTable()
 
   U.silent_system_call(cmd, nil, "Something went wrong creating the trigger", function()
     U.try_open_file(P.get_current_package_dir() .. "triggers/" .. name .. ".trigger")
@@ -281,6 +285,46 @@ end
 ---@param name string
 H.create_trigger = function(name)
   U.run_cb_with_input(name, "Enter Trigger name: ", H.generate_trigger)
+end
+
+H.delete_current_apex_remote_and_local = function()
+  local current_file = vim.api.nvim_buf_get_name(0)
+  local filetype = vim.bo.filetype
+
+  if filetype ~= "apex" and not current_file:match("%.cls$") then
+    return U.show_warn("Current buffer is not an Apex file")
+  end
+
+  if U.is_empty_str(U.target_org) then
+    return U.show_err("Target_org empty!")
+  end
+
+  U.get_sf_root()
+
+  local class_name = U.get_apex_name()
+
+  local confirm_msg = string.format(
+    "Delete '%s' from both org '%s' and local? (y/N): ",
+    class_name,
+    U.target_org
+  )
+
+  vim.ui.input({ prompt = confirm_msg }, function(input)
+    if input ~= "y" and input ~= "Y" then
+      U.show("Deletion cancelled")
+      return
+    end
+
+    local type_name = string.format("ApexClass:%s", class_name)
+    local cmd = B:new()
+        :cmd("project")
+        :act("delete source")
+        :addParamsNoExpand("-m", type_name)
+        :addParams("-r")
+        :build()
+
+    T.run(cmd)
+  end)
 end
 
 return Md

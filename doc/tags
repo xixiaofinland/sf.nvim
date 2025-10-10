@@ -66,6 +66,7 @@ Sf.create_aura_bundle	sf.txt	/*Sf.create_aura_bundle*
 Sf.create_ctags	sf.txt	/*Sf.create_ctags*
 Sf.create_lwc_bundle	sf.txt	/*Sf.create_lwc_bundle*
 Sf.create_trigger	sf.txt	/*Sf.create_trigger*
+Sf.delete_current_apex_remote_and_local	sf.txt	/*Sf.delete_current_apex_remote_and_local*
 Sf.diff_in_org	sf.txt	/*Sf.diff_in_org*
 Sf.diff_in_target_org	sf.txt	/*Sf.diff_in_target_org*
 Sf.fetch_org_list	sf.txt	/*Sf.fetch_org_list*
