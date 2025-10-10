@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.12.0...v1.13.0) (2025-10-10)
+
+
+### Features
+
+* add delete_current_apex_remote_and_local() ([a5d3a45](https://github.com/xixiaofinland/sf.nvim/commit/a5d3a45e5914ba4094709a6b2eb4a975de3e614d))
+
 ## [1.12.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.11.1...v1.12.0) (2025-09-08)
 
 
