@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.13.0...v1.14.0) (2025-10-11)
+
+
+### Features
+
+* close current buf after apex is deleted by delete_current_apex_remote_and_local() ([04affc2](https://github.com/xixiaofinland/sf.nvim/commit/04affc267dc75f2564c701a46e6edc449c0b4b3b))
+
 ## [1.13.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.12.0...v1.13.0) (2025-10-10)
 
 
