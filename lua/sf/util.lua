@@ -372,4 +372,31 @@ M.is_windows_os = function()
   return false
 end
 
+M.close_buf_if_file_gone = function(file_path)
+  if M.file_readable(file_path) then
+    M.show_err(string.format("File still exists: %s", file_path))
+    return false
+  end
+
+  local buf_num = vim.fn.bufnr(file_path)
+  if buf_num ~= -1 and vim.api.nvim_buf_is_valid(buf_num) then
+    vim.api.nvim_buf_delete(buf_num, { force = true })
+    return true
+  end
+
+  return false
+end
+
+---Check if local apex class files (.cls and .cls-meta.xml) were deleted
+---@param cls_file string The path to the .cls file
+---@return boolean, boolean cls_deleted, meta_deleted - true if file is gone
+M.check_apex_files_deleted = function(cls_file)
+  local meta_file = cls_file .. "-meta.xml"
+
+  local cls_deleted = not M.file_readable(cls_file)
+  local meta_deleted = not M.file_readable(meta_file)
+
+  return cls_deleted, meta_deleted
+end
+
 return M

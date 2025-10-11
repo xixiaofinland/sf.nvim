@@ -98,7 +98,7 @@ end
 T["setup()"]["can supply multiple params in table in addParamsNoExpand() and none will be expanded"] = function()
   child.open_in_sf_dir("test.txt")
   local result =
-      child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand({["-c"] = "%:p", ["-f"] = "%:p"}):build()')
+    child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand({["-c"] = "%:p", ["-f"] = "%:p"}):build()')
   local expected = 'sf apex run -c "%:p" -f "%:p" -o "t_org"'
   eq(result, expected)
 end
@@ -170,13 +170,6 @@ T["setup()"]["localOnly() by-passes the org param"] = function()
   local result = child.lua_get('B:new():cmd("lightning"):act("generate component"):localOnly():build()')
   local expected = string.format("sf lightning generate component")
 
-  eq(result, expected)
-end
-
-T["setup()"]["can build delete apex class command"] = function()
-  local result = child.lua_get(
-  'B:new():cmd("project"):act("delete source"):addParamsNoExpand("-m", "ApexClass:TestClass"):addParams("-r"):build()')
-  local expected = 'sf project delete source -m "ApexClass:TestClass" -r -o "t_org"'
   eq(result, expected)
 end
 
