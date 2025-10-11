@@ -324,22 +324,20 @@ H.delete_current_apex_remote_and_local = function()
         :build()
 
     local function handle_post_deletion()
-      vim.schedule(function()
-        if not U.close_buf_if_file_gone(current_file) then
-          U.show_err(string.format("Remote deletion of '%s' may have failed - file still exists", class_name))
-          return
-        end
+      if not U.close_buf_if_file_gone(current_file) then
+        U.show_err(string.format("Remote deletion of '%s' may have failed - file still exists", class_name))
+        return
+      end
 
-        local cls_deleted, meta_deleted = U.check_apex_files_deleted(current_file)
+      local cls_deleted, meta_deleted = U.check_apex_files_deleted(current_file)
 
-        if cls_deleted and meta_deleted then
-          U.show(string.format("Apex '%s' deleted from org and local", class_name))
-        elseif cls_deleted then
-          U.show_warn(string.format("Apex '%s' deleted, but .cls-meta.xml deletion failed", class_name))
-        else
-          U.show_warn(string.format("Apex '%s' persists locally", class_name))
-        end
-      end)
+      if cls_deleted and meta_deleted then
+        U.show(string.format("Apex '%s' deleted from org and local", class_name))
+      elseif cls_deleted then
+        U.show_warn(string.format("Apex '%s' deleted, but .cls-meta.xml deletion failed", class_name))
+      else
+        U.show_warn(string.format("Apex '%s' persists locally", class_name))
+      end
     end
 
     T.run(cmd, handle_post_deletion)
