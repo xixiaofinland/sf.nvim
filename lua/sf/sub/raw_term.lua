@@ -12,6 +12,7 @@ function T:new(cfg)
     buf = nil,
     is_running = false,
     config = config,
+    last_exit_code = nil,
   }, { __index = self })
 end
 
@@ -67,11 +68,12 @@ function T:run_after_setup(cmd, cb)
   else
     cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
   end
-  -- local cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
+
   vim.fn.termopen(cmd_with_echo, {
     clear_env = self.config.clear_env,
     env = self.config.env,
     on_exit = function(job_id, exit_code, event_name)
+      self.last_exit_code = exit_code
       self.is_running = false
       self:close() -- hack way to scroll to end
       self:open()
@@ -188,6 +190,10 @@ end
 
 function T:get_config()
   return self.config
+end
+
+function T:get_last_exit_code()
+  return self.last_exit_code
 end
 
 function T:scroll_to_end()

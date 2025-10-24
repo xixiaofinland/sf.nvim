@@ -399,4 +399,33 @@ M.check_apex_files_deleted = function(cls_file)
   return cls_deleted, meta_deleted
 end
 
+--- Validate that current buffer is an Apex file and target org is set
+--- Also sets up sf root
+--- @return string|nil file_path of current buffer, or nil if validation fails
+--- @return string|nil class_name of current file, or nil if validation fails
+M.validate_apex_and_org = function()
+  local current_file = vim.api.nvim_buf_get_name(0)
+  local filetype = vim.bo.filetype
+
+  -- Check if file is apex (includes .cls and .trigger)
+  if filetype ~= "apex" and not current_file:match("%.cls$") and not current_file:match("%.trigger$") then
+    M.show_warn("Current buffer is not an Apex file (.cls or .trigger)")
+    return nil, nil
+  end
+
+  -- Check if target org is set
+  if M.is_empty_str(M.target_org) then
+    M.show_err("Target_org empty!")
+    return nil, nil
+  end
+
+  -- Set up sf root
+  M.get_sf_root()
+
+  -- Get class/trigger name
+  local class_name = M.get_apex_name()
+
+  return current_file, class_name
+end
+
 return M
