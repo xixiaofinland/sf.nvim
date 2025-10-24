@@ -157,6 +157,15 @@ Sf.create_apex_class = Metadata.create_apex_class
 --- Delete the apex opened in the current buffer from both the org and local
 Sf.delete_current_apex_remote_and_local = Metadata.delete_current_apex_remote_and_local
 
+--- Try steps:
+--- 1. create Apex with given new name
+--- 2. copy content from old to new Apex
+--- 3. update class name and constructor names
+--- 4, push new Apex into the target org
+--- 5. delete old Apex locally and remotely in the target org
+--- when error occurs the steps stop.
+Sf.rename_apex_class_remote_and_local = Metadata.rename_apex_class_remote_and_local
+
 --- Creates a new Aura Bundle using an input name or prompting the user to enter one
 Sf.create_aura_bundle = Metadata.create_aura_bundle
 

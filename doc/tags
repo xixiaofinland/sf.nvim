@@ -31,6 +31,7 @@ H.retrieve_md()	sf.txt	/*H.retrieve_md()*
 H.retrieve_md_type()	sf.txt	/*H.retrieve_md_type()*
 H.save_test_coverage_locally()	sf.txt	/*H.save_test_coverage_locally()*
 H.store_orgs()	sf.txt	/*H.store_orgs()*
+M.check_apex_files_deleted()	sf.txt	/*M.check_apex_files_deleted()*
 M.file_readable()	sf.txt	/*M.file_readable()*
 M.get_apex_buf_num()	sf.txt	/*M.get_apex_buf_num()*
 M.get_buf_num()	sf.txt	/*M.get_buf_num()*
@@ -56,6 +57,7 @@ M.sub_cmd_tbl	sf.txt	/*M.sub_cmd_tbl*
 M.system_call()	sf.txt	/*M.system_call()*
 M.table_to_string_lines()	sf.txt	/*M.table_to_string_lines()*
 M.try_open_file()	sf.txt	/*M.try_open_file()*
+M.validate_apex_and_org()	sf.txt	/*M.validate_apex_and_org()*
 P.build_tests_cmd()	sf.txt	/*P.build_tests_cmd()*
 Sf.cancel	sf.txt	/*Sf.cancel*
 Sf.copy_apex_name	sf.txt	/*Sf.copy_apex_name*
@@ -83,6 +85,7 @@ Sf.pull_md_json	sf.txt	/*Sf.pull_md_json*
 Sf.pull_md_type_json	sf.txt	/*Sf.pull_md_type_json*
 Sf.push_delta	sf.txt	/*Sf.push_delta*
 Sf.refresh_current_file_covered_percent	sf.txt	/*Sf.refresh_current_file_covered_percent*
+Sf.rename_apex_class_remote_and_local	sf.txt	/*Sf.rename_apex_class_remote_and_local*
 Sf.repeat_last_tests	sf.txt	/*Sf.repeat_last_tests*
 Sf.retrieve	sf.txt	/*Sf.retrieve*
 Sf.retrieve_apex_under_cursor	sf.txt	/*Sf.retrieve_apex_under_cursor*

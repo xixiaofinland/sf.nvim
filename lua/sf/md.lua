@@ -46,6 +46,10 @@ function Md.delete_current_apex_remote_and_local()
   H.delete_current_apex_remote_and_local()
 end
 
+function Md.rename_apex_class_remote_and_local()
+  H.rename_apex_class_remote_and_local()
+end
+
 -- helper;
 
 ---@param name string
@@ -288,20 +292,10 @@ H.create_trigger = function(name)
 end
 
 H.delete_current_apex_remote_and_local = function()
-  local current_file = vim.api.nvim_buf_get_name(0)
-  local filetype = vim.bo.filetype
-
-  if filetype ~= "apex" and not current_file:match("%.cls$") then
-    return U.show_warn("Current buffer is not an Apex file")
+  local current_file, class_name = U.validate_apex_and_org()
+  if not current_file then
+    return
   end
-
-  if U.is_empty_str(U.target_org) then
-    return U.show_err("Target_org empty!")
-  end
-
-  U.get_sf_root()
-
-  local class_name = U.get_apex_name()
 
   local confirm_msg = string.format(
     "Delete '%s' from both org '%s' and local? (y/N): ",
@@ -315,6 +309,7 @@ H.delete_current_apex_remote_and_local = function()
       return
     end
 
+    U.show("Deleting '" .. class_name .. "'...")
     local type_name = string.format("ApexClass:%s", class_name)
     local cmd = B:new()
         :cmd("project")
@@ -323,25 +318,106 @@ H.delete_current_apex_remote_and_local = function()
         :addParams("-r")
         :build()
 
-    local function handle_post_deletion()
-      if not U.close_buf_if_file_gone(current_file) then
-        U.show_err(string.format("Remote deletion of '%s' may have failed - file still exists", class_name))
+    T.run(cmd, function(_, _, exit_code)
+      if exit_code ~= 0 then
+        U.show_err("Failed to delete class '" .. class_name .. "'")
         return
       end
 
-      local cls_deleted, meta_deleted = U.check_apex_files_deleted(current_file)
+      U.close_buf_if_file_gone(current_file)
+      U.show("Apex '" .. class_name .. "' deleted from org and local")
+    end)
+  end)
+end
 
-      if cls_deleted and meta_deleted then
-        U.show(string.format("Apex '%s' deleted from org and local", class_name))
-      elseif cls_deleted then
-        U.show_warn(string.format("Apex '%s' deleted, but .cls-meta.xml deletion failed", class_name))
-      else
-        U.show_warn(string.format("Apex '%s' persists locally", class_name))
-      end
+H.rename_apex_class_remote_and_local = function()
+  local current_file, current_name = U.validate_apex_and_org()
+  if not current_file then
+    return
+  end
+
+  vim.ui.input({ prompt = "Enter new class name: " }, function(new_name)
+    if U.is_empty_str(new_name) then
+      U.show("Rename cancelled")
+      return
     end
 
-    T.run(cmd, handle_post_deletion)
+    H.rename_apex_impl(current_file, current_name, new_name)
   end)
+end
+
+H.rename_apex_impl = function(old_file_path, old_name, new_name)
+  -- Step 1: Read old file content
+  local old_content = U.read_local_file(old_file_path, function()
+    U.show_err("Failed to read old class file: " .. old_file_path)
+  end)
+
+  if old_content == nil then
+    return
+  end
+
+  -- Step 2: Parse and replace class name and constructor using regex
+  local content_str = table.concat(old_content, "\n")
+
+  -- Replace class declaration: public class OldName
+  content_str = content_str:gsub("class%s+" .. old_name .. "%s", "class " .. new_name .. " ")
+
+  -- Replace constructor: public OldName()
+  content_str = content_str:gsub("([%s(])" .. old_name .. "%s*%(", "%1" .. new_name .. "(")
+
+  -- Step 3: Create new apex class (background)
+  local path = P.get_apex_folder_path()
+  local cmd = B:new()
+      :cmd("apex")
+      :act("generate class")
+      :addParams({ ["-d"] = path, ["-n"] = new_name })
+      :localOnly()
+      :build()
+
+  U.silent_job_call(cmd, nil, "Failed to create new apex class '" .. new_name .. "'", function()
+    local new_file_path = path .. new_name .. ".cls"
+
+    -- Step 4: Update the created file with old content
+    local ok, err = pcall(vim.fn.writefile, vim.split(content_str, "\n"), new_file_path)
+    if not ok then
+      U.show_err("Failed to write content to new class file: " .. err)
+      return
+    end
+
+    U.try_open_file(new_file_path)
+
+    -- Step 5: Deploy new class to org via terminal
+    local type_name = string.format("ApexClass:%s", new_name)
+    local deploy_cmd = B:new()
+        :cmd("project")
+        :act("deploy start")
+        :addParamsNoExpand("-m", type_name)
+        :build()
+
+    T.run(deploy_cmd, function(_, _, exit_code)
+      if exit_code ~= 0 then
+        U.show_err("Deployment failed with exit code: " .. exit_code)
+        return
+      end
+
+      U.show("Deleting old class '" .. old_name .. "'...")
+      H.delete_old_class_after_rename(old_name)
+    end)
+  end)
+end
+
+
+H.delete_old_class_after_rename = function(old_name)
+  local type_name = string.format("ApexClass:%s", old_name)
+  local cmd = B:new()
+      :cmd("project")
+      :act("delete source")
+      :addParamsNoExpand("-m", type_name)
+      :addParams("-r")
+      :build()
+
+  U.silent_job_call(cmd, "Old class '" .. old_name .. "' deleted from org and local!",
+    "Failed to delete old class: " .. old_name)
 end
 
 return Md

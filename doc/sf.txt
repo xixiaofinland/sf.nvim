@@ -213,6 +213,17 @@ Creates a new Apex Class using an input name or prompting the user to enter one
 Delete the apex opened in the current buffer from both the org and local
 
 ------------------------------------------------------------------------------
+                                         *Sf.rename_apex_class_remote_and_local*
+                    `Sf.rename_apex_class_remote_and_local`
+Try steps:
+1. create Apex with given new name
+2. copy content from old to new Apex
+3. update class name and constructor names
+4, push new Apex into the target org
+5. delete old Apex locally and remotely in the target org
+when error occurs the steps stop.
+
+------------------------------------------------------------------------------
                                                          *Sf.create_aura_bundle*
                             `Sf.create_aura_bundle`
 Creates a new Aura Bundle using an input name or prompting the user to enter one
@@ -669,6 +680,23 @@ Parameters ~
 {param} `(any)`
 Return ~
 `(boolean)`
+
+------------------------------------------------------------------------------
+                                                  *M.check_apex_files_deleted()*
+                    `M.check_apex_files_deleted`({cls_file})
+if local apex class files (.cls and .cls-meta.xml) were deleted
+Parameters ~
+{cls_file} `(string)` The path to the .cls file
+Return ~
+`(boolean)`, boolean cls_deleted, meta_deleted - true if file is gone
+
+------------------------------------------------------------------------------
+                                                     *M.validate_apex_and_org()*
+                          `M.validate_apex_and_org`()
+Validate that current buffer is an Apex file and target org is set
+Also sets up sf root
+@return string|nil file_path of current buffer, or nil if validation fails
+@return string|nil class_name of current file, or nil if validation fails
 
 
 ==============================================================================
