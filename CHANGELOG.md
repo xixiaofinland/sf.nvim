@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.14.0...v1.15.0) (2025-10-25)
+
+
+### Features
+
+* rename apex file and sync with target org ([73e13c6](https://github.com/xixiaofinland/sf.nvim/commit/73e13c65f4faa57328844ccc269eaa4925cb6a5c))
+
 ## [1.14.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.13.0...v1.14.0) (2025-10-11)
 
 
