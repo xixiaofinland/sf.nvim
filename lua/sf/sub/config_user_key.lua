@@ -23,6 +23,13 @@ M.set_default_hotkeys = function()
   nmap("<leader>ft", Sf.create_and_list_ctags, "fzf list updated ctags")
   nmap("<leader>so", Sf.org_open, "open target_org")
 
+
+  vim.keymap.set("v", "<leader>sa", function()
+    Sf.run_anonymous_stdin(true)
+  end, { buffer = true, desc = "run selected content anonymously" })
+  nmap("<leader>sa", function() Sf.run_anonymous_stdin(false) end, "run this buffer anonymously")
+  nmap("<leader>sA", Sf.run_anonymous, "run this file anonymously")
+
   -- Hotkeys for metadata files only;
   if vim.tbl_contains(vim.g.sf.hotkeys_in_filetypes, vim.bo.filetype) then
     nmap("<leader>sO", Sf.org_open_current_file, "open file in target_org")
@@ -33,7 +40,6 @@ M.set_default_hotkeys = function()
     nmap("<leader>sr", Sf.retrieve, "retrieve current file")
     nmap("<leader>sR", Sf.rename_apex_class_remote_and_local, "rename current apex from org and local")
     nmap("<leader>sX", Sf.delete_current_apex_remote_and_local, "delete current apex from org and local")
-    nmap("<leader>sa", Sf.run_anonymous, "run this file anonymously")
 
     vim.keymap.set("x", "<leader>sq", Sf.run_highlighted_soql, { buffer = true, desc = "SOQL run highlighted text" })
 
