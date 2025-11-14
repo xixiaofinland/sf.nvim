@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.15.0...v1.16.0) (2025-11-14)
+
+
+### Features
+
+* add default hotkey for anonymous run current file ([b3388be](https://github.com/xixiaofinland/sf.nvim/commit/b3388be33e99238a88f2e4e6b079dd82313be912))
+
 ## [1.15.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.14.0...v1.15.0) (2025-10-25)
 
 
