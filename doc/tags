@@ -96,6 +96,7 @@ Sf.run_all_jests	sf.txt	/*Sf.run_all_jests*
 Sf.run_all_tests_in_this_file	sf.txt	/*Sf.run_all_tests_in_this_file*
 Sf.run_all_tests_in_this_file_with_coverage	sf.txt	/*Sf.run_all_tests_in_this_file_with_coverage*
 Sf.run_anonymous	sf.txt	/*Sf.run_anonymous*
+Sf.run_anonymous_stdin	sf.txt	/*Sf.run_anonymous_stdin*
 Sf.run_current_test	sf.txt	/*Sf.run_current_test*
 Sf.run_current_test_with_coverage	sf.txt	/*Sf.run_current_test_with_coverage*
 Sf.run_highlighted_soql	sf.txt	/*Sf.run_highlighted_soql*

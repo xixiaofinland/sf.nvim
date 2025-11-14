@@ -65,6 +65,9 @@ Sf.retrieve_delta = Term.retrieve_delta
 --- Retrieve the file in the current buffer as a manifest from target_org
 Sf.retrieve_package = Term.retrieve_package
 
+--- Run the buffer content (without saving locally) as anonymous apex in target_org
+Sf.run_anonymous_stdin = Term.run_anonymous_stdin
+
 --- Run the file in the current buffer as anonymous apex in target_org
 Sf.run_anonymous = Term.run_anonymous
 

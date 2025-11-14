@@ -93,6 +93,33 @@ function Term.retrieve_package()
   t:run(cmd)
 end
 
+function Term.run_anonymous_stdin(use_selection)
+  if U.is_empty_str(U.target_org) then
+    return U.show_err("Target_org empty!")
+  end
+
+  local text
+  if use_selection then
+    text = H.get_visual_selection()
+    if U.is_empty_str(text) then
+      vim.notify("Empty selection. Abort action.", vim.log.levels.WARN)
+      return
+    end
+  else
+    -- Use entire buffer content
+    text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+  end
+
+  if U.is_empty_str(text) then
+    vim.notify("Empty buffer.", vim.log.levels.WARN)
+    return
+  end
+
+  local base_cmd = B:new():cmd("apex"):act("run"):build()
+  local cmd = string.format("echo %s | %s", vim.fn.shellescape(text), base_cmd)
+  t:run(cmd)
+end
+
 function Term.run_anonymous()
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
@@ -117,7 +144,7 @@ function Term.run_tooling_query()
   end
   -- local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
   local cmd =
-    B:new():cmd("data"):act("query"):addParams({ ["-w"] = vim.g.sf.sf_wait_time, ["-f"] = "%:p", ["-t"] = "" }):build()
+      B:new():cmd("data"):act("query"):addParams({ ["-w"] = vim.g.sf.sf_wait_time, ["-f"] = "%:p", ["-t"] = "" }):build()
   t:run(cmd)
 end
 

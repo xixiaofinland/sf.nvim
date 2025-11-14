@@ -1,5 +1,3 @@
-==============================================================================
-------------------------------------------------------------------------------
 *sf.nvim* Salesforce development plugin
 *SfNvim*
 
@@ -75,6 +73,11 @@ vim.keymap.set('n', '<leader>sg', require('sf').retrieve_delta('-c') end, { desc
                                                            *Sf.retrieve_package*
                              `Sf.retrieve_package`
 Retrieve the file in the current buffer as a manifest from target_org
+
+------------------------------------------------------------------------------
+                                                        *Sf.run_anonymous_stdin*
+                            `Sf.run_anonymous_stdin`
+Run the buffer content (without saving locally) as anonymous apex in target_org
 
 ------------------------------------------------------------------------------
                                                               *Sf.run_anonymous*
