@@ -33,6 +33,7 @@ M.set_default_hotkeys = function()
     nmap("<leader>sr", Sf.retrieve, "retrieve current file")
     nmap("<leader>sR", Sf.rename_apex_class_remote_and_local, "rename current apex from org and local")
     nmap("<leader>sX", Sf.delete_current_apex_remote_and_local, "delete current apex from org and local")
+    nmap("<leader>sa", Sf.run_anonymous, "run this file anonymously")
 
     vim.keymap.set("x", "<leader>sq", Sf.run_highlighted_soql, { buffer = true, desc = "SOQL run highlighted text" })
 
