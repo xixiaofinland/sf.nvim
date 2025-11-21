@@ -1,3 +1,4 @@
+local U = require("sf.util")
 local M = {}
 
 M.set_auto_cmd_and_try_set_default_keys = function()
@@ -90,6 +91,14 @@ M.set_auto_cmd_and_try_set_default_keys = function()
   vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType", "DirChanged" }, {
     group = sf_group,
     callback = try_set_keys_and_user_commands,
+  })
+
+  -- clear diff files retrieved locally when Nvim exists
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    callback = function()
+      local diff_folder = U.get_plugin_folder_path() .. "diffs/"
+      vim.fn.delete(diff_folder, "rf")
+    end,
   })
 end
 
