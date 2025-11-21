@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.0...v1.16.1) (2025-11-21)
+
+
+### Bug Fixes
+
+* diff feature generates error since sf cli v2 ([813af52](https://github.com/xixiaofinland/sf.nvim/commit/813af5225544489310013325a05dde0c20eed2de))
+
 ## [1.16.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.15.0...v1.16.0) (2025-11-15)
 
 
