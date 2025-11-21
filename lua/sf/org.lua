@@ -104,12 +104,12 @@ H.pull_log = function()
           log_id = logs[selected[1]]["Id"]
           U.show("Downloading log...")
           local get_cmd = B:new()
-            :cmd("apex")
-            :act("get")
-            :subact("log")
-            :addParams("-i", log_id)
-            :addParams("-d", U.get_plugin_folder_path() .. "logs/")
-            :buildAsTable()
+              :cmd("apex")
+              :act("get")
+              :subact("log")
+              :addParams("-i", log_id)
+              :addParams("-d", U.get_plugin_folder_path() .. "logs/")
+              :buildAsTable()
           U.silent_system_call(get_cmd, nil, "Failed to get logs from org", function()
             U.try_open_file(U.get_plugin_folder_path() .. "logs/" .. log_id .. ".log")
           end)
@@ -235,25 +235,23 @@ H.diff_in = function(org)
   local file_name = vim.fn.expand("%:t")
   local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
   local file_name_no_ext = H.get_file_name_without_extension(file_name)
-  local temp_path = vim.fn.tempname()
+  local temp_path = U.get_plugin_folder_path() .. "diffs/"
 
-  -- local cmd = string.format(
-  --   "sf project retrieve start -m %s:%s -r %s -o %s --json",
-  --   metadataType,
-  --   file_name_no_ext,
-  --   temp_path,
-  --   org
-  -- )
+  -- Create diffs folder if it doesn't exist
+  if vim.fn.isdirectory(temp_path) == 0 then
+    vim.fn.mkdir(temp_path, "p")
+  end
+
   local cmd = B:new()
-    :cmd("project")
-    :act("retrieve start")
-    :addParams({
-      ["-m"] = metadataType .. ":" .. file_name_no_ext,
-      ["-r"] = temp_path,
-      ["--json"] = "",
-    })
-    :set_org(org)
-    :build()
+      :cmd("project")
+      :act("retrieve start")
+      :addParams({
+        ["-m"] = metadataType .. ":" .. file_name_no_ext,
+        ["-r"] = temp_path,
+        ["--json"] = "",
+      })
+      :set_org(org)
+      :build()
 
   local msg = "Retrive success: " .. org
   local err_msg = "Retrive failed: " .. org
