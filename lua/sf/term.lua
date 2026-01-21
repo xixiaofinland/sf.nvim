@@ -133,8 +133,8 @@ function Term.run_query()
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
-  -- local cmd = vim.fn.expandcmd('sf data query -w 5 -f "%:p" -o ') .. U.get()
-  local cmd = B:new():cmd("data"):act("query"):addParams("-w", vim.g.sf.sf_wait_time):addParams("-f", "%:p"):build()
+  -- local cmd = vim.fn.expandcmd('sf data query -f "%:p" -o ') .. U.get()
+  local cmd = B:new():cmd("data"):act("query"):addParams("-f", "%:p"):build()
   t:run(cmd)
 end
 
@@ -142,9 +142,9 @@ function Term.run_tooling_query()
   if U.is_empty_str(U.target_org) then
     return U.show_err("Target_org empty!")
   end
-  -- local cmd = vim.fn.expandcmd('sf data query -t -w 5 -f "%:p" -o ') .. U.get()
+  -- local cmd = vim.fn.expandcmd('sf data query -t -f "%:p" -o ') .. U.get()
   local cmd =
-      B:new():cmd("data"):act("query"):addParams({ ["-w"] = vim.g.sf.sf_wait_time, ["-f"] = "%:p", ["-t"] = "" }):build()
+      B:new():cmd("data"):act("query"):addParams({ ["-f"] = "%:p", ["-t"] = "" }):build()
   t:run(cmd)
 end
 
