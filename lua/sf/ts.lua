@@ -102,7 +102,6 @@ H.get_matched_node_names = function(query, anno_index, node)
       print("match[" .. anno_index .. "] is nil")
     else
       local ok, text = pcall(ts.get_node_text, target_node, 0)
-      print(ok and "Text: " .. text or ("get_node_text() failed: " .. text))
       if ok then table.insert(names, text) end
     end
   end
