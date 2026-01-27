@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.1...v1.16.2) (2026-01-27)
+
+
+### Bug Fixes
+
+* remove -w wait flag from data query command ([a9cf6be](https://github.com/xixiaofinland/sf.nvim/commit/a9cf6be35f080e074bf083cd2f8eccc75335c85d)), closes [#311](https://github.com/xixiaofinland/sf.nvim/issues/311)
+* remove a dubug print msg ([2fdd53a](https://github.com/xixiaofinland/sf.nvim/commit/2fdd53aeeb4de7536a39bae9fe5b9dcd666883d2))
+
 ## [1.16.1](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.0...v1.16.1) (2025-11-21)
 
 
