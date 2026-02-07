@@ -246,7 +246,7 @@ In case you decide to go with the default hotkeys:
 |`]v`|uncovered_jump_forward |jump to next test uncovered hunk|
 |`[v`|uncovered_jump_backward |jump to last test uncovered hunk|
 
-All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/dev/doc/sf.txt).
+All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/main/doc/sf.txt).
 
 Example:
 
