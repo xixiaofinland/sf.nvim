@@ -27,17 +27,21 @@ H.check_tree_sitter = function()
   end
   vim.health.ok("nvim-treesitter plugin found.")
 
-  local parsers = require("nvim-treesitter.parsers").get_parser_configs()
-  if parsers["apex"] == nil then
+  local function has_parser(lang)
+    local ok, is_installed = pcall(vim.treesitter.language.add, lang)
+    return ok and is_installed == true
+  end
+
+  if not has_parser("apex") then
     return vim.health.error("apex parser not installed in nvim-treesitter!")
   end
-  if parsers["soql"] == nil then
+  if not has_parser("soql") then
     return vim.health.error("soql parser not installed in nvim-treesitter!")
   end
-  if parsers["sosl"] == nil then
+  if not has_parser("sosl") then
     return vim.health.error("sosl parser not installed in nvim-treesitter!")
   end
-  if parsers["sflog"] == nil then
+  if not has_parser("sflog") then
     return vim.health.error("sflog parser not installed in nvim-treesitter!")
   end
   vim.health.ok("All Salesforce relevant parsers are installed in nvim-treesitter.")
@@ -47,8 +51,8 @@ H.check_nvim_version = function()
   local v = vim.version()
   local v_in_str = string.format("v%s.%s", v.major, v.minor)
 
-  if v.major == 0 and v.minor < 10 then
-    return vim.health.error("installed Nvim version: " .. v_in_str .. ", plugin demands 0.10 or higher!")
+  if v.major == 0 and v.minor < 11 then
+    return vim.health.error("installed Nvim version: " .. v_in_str .. ", plugin demands 0.11 or higher!")
   else
     vim.health.ok("nvim version ok: " .. v_in_str)
   end

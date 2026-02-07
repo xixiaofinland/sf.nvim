@@ -56,8 +56,8 @@ In addition to the features, user commands and default hotkeys are also supplied
 💡 Plugin comes with a health check feature. Run `:check sf` to auto-check prerequiste statistics.
 
 - 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
-- 🐢 Nvim v0.10 or newer ([why must > 0.10?](https://github.com/xixiaofinland/sf.nvim/issues/73))
-- 📦 Salesforce relevant parsers (i.e. "apex", "soql", "sosl", and "sflog") in Nvim-treesitter. Install them like [in my settings](https://github.com/xixiaofinland/dotfiles-nix/blob/55081dd2394030cc418778b311ba3fd7fb3ff6c8/dotfiles/nvim_config/lua/plugins/nvim-tree-sitter.lua#L28)
+- 🐢 Nvim v0.11 or newer
+- 📦 Salesforce relevant parsers (i.e. "apex", "soql", "sosl", and "sflog") in Nvim-treesitter (main branch). Install them like [in my settings](https://github.com/xixiaofinland/dotfiles-nix/blob/55081dd2394030cc418778b311ba3fd7fb3ff6c8/dotfiles/nvim_config/lua/plugins/nvim-tree-sitter.lua#L28)
 - 🔍 (Optional) fzf-lua plugin for executing `:SF md list` and `SFListMdTypeToRetrieve` (Why not
   telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
