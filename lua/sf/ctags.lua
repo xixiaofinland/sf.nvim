@@ -3,9 +3,9 @@ local M = {}
 
 M.create = function()
   U.is_ctags_installed()
-  local cmd =
-    string.format("ctags --extras=+q --langmap=java:.cls.trigger -f ./tags -R **%sclasses/**", vim.g.sf.default_dir)
-  U.silent_job_call(cmd, "Tags updated successfully.", "Error updating tags.")
+  local classes_dir = U.get_default_dir_path() .. "classes"
+  local cmd = { "ctags", "--extras=+q", "--langmap=Java:+.cls.trigger", "-f", "./tags", "-R", classes_dir }
+  U.silent_system_call(cmd, "Tags updated successfully.", "Error updating tags.")
 end
 
 M.create_and_list = function()

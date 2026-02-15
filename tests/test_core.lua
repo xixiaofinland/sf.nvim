@@ -86,4 +86,33 @@ T["normalize_path"]["can normalize a path"] = function()
   eq(child.lua("return Util.normalize_path('" .. package .. "', true)"), expected)
 end
 
+T["create_ctags"] = new_set()
+T["create_ctags"]["uses classes dir path and argv call"] = function()
+  child.open_in_sf_dir("test.txt")
+  child.lua([[
+    local captured
+    local original_check = Util.is_ctags_installed
+    local original_call = Util.silent_system_call
+    Util.is_ctags_installed = function() end
+    Util.silent_system_call = function(cmd)
+      captured = cmd
+    end
+    Ctags.create()
+    Util.is_ctags_installed = original_check
+    Util.silent_system_call = original_call
+    _G._captured_ctags_cmd = captured
+  ]])
+
+  local expected_classes_dir = child.lua_get([[Util.get_default_dir_path() .. "classes"]])
+  local cmd = child.lua_get([[_G._captured_ctags_cmd]])
+
+  eq(cmd[1], "ctags")
+  eq(cmd[2], "--extras=+q")
+  eq(cmd[3], "--langmap=Java:+.cls.trigger")
+  eq(cmd[4], "-f")
+  eq(cmd[5], "./tags")
+  eq(cmd[6], "-R")
+  eq(cmd[7], expected_classes_dir)
+end
+
 return T
