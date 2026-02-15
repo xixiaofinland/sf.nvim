@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.17.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.2...v1.17.0) (2026-02-15)
+
+
+### Features
+
+* target nvim-treesitter main api ([aa2228d](https://github.com/xixiaofinland/sf.nvim/commit/aa2228d086a6511761263e7e6335fc316fd3be5f))
+
+
+### Bug Fixes
+
+* **ctags:** make tag generation path cross-platform ([70304d8](https://github.com/xixiaofinland/sf.nvim/commit/70304d889999f8bf880180be885d6218782ce63a))
+
 ## [1.16.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.1...v1.16.2) (2026-01-27)
 
 
