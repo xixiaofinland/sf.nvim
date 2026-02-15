@@ -11,7 +11,7 @@ deps: deps/mini.nvim deps/nvim-treesitter
 
 deps/mini.nvim:
 	@mkdir -p deps
-	git clone --filter=blob:none https://github.com/echasnovski/mini.nvim $@
+	git clone --filter=blob:none https://github.com/nvim-mini/mini.nvim $@
 
 deps/nvim-treesitter:
 	@mkdir -p deps
