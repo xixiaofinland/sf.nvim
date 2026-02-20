@@ -104,12 +104,12 @@ H.pull_log = function()
           log_id = logs[selected[1]]["Id"]
           U.show("Downloading log...")
           local get_cmd = B:new()
-              :cmd("apex")
-              :act("get")
-              :subact("log")
-              :addParams("-i", log_id)
-              :addParams("-d", U.get_plugin_folder_path() .. "logs/")
-              :buildAsTable()
+            :cmd("apex")
+            :act("get")
+            :subact("log")
+            :addParams("-i", log_id)
+            :addParams("-d", U.get_plugin_folder_path() .. "logs/")
+            :buildAsTable()
           U.silent_system_call(get_cmd, nil, "Failed to get logs from org", function()
             U.try_open_file(U.get_plugin_folder_path() .. "logs/" .. log_id .. ".log")
           end)
@@ -195,12 +195,15 @@ H.store_orgs = function(data)
 end
 
 H.fetch_and_store_orgs = function()
-  vim.fn.jobstart("sf org list --json --skip-connection-status", {
-    stdout_buffered = true,
-    on_stdout = function(_, data)
-      H.store_orgs(data)
-    end,
-  })
+  vim.fn.jobstart(
+    "sf org list --json --skip-connection-status | sed -r 's/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g'",
+    {
+      stdout_buffered = true,
+      on_stdout = function(_, data)
+        H.store_orgs(data)
+      end,
+    }
+  )
 end
 
 H.fetch_org_list = function()
@@ -243,15 +246,15 @@ H.diff_in = function(org)
   end
 
   local cmd = B:new()
-      :cmd("project")
-      :act("retrieve start")
-      :addParams({
-        ["-m"] = metadataType .. ":" .. file_name_no_ext,
-        ["-r"] = temp_path,
-        ["--json"] = "",
-      })
-      :set_org(org)
-      :build()
+    :cmd("project")
+    :act("retrieve start")
+    :addParams({
+      ["-m"] = metadataType .. ":" .. file_name_no_ext,
+      ["-r"] = temp_path,
+      ["--json"] = "",
+    })
+    :set_org(org)
+    :build()
 
   local msg = "Retrive success: " .. org
   local err_msg = "Retrive failed: " .. org

@@ -26,15 +26,15 @@ M.notify_then_error = function(msg)
 end
 
 M.get = function()
-  if M.is_empty_str(M.target_org) then
-    error("Sf: Target_org empty!")
-  end
+  -- if M.is_empty_str(M.target_org) then
+  --   error("Sf: Target_org empty!")
+  -- end
 
   return M.target_org
 end
 
 M.str_ends_with = function(str, ending)
-  return ending == "" or str:sub(- #ending) == ending
+  return ending == "" or str:sub(-#ending) == ending
 end
 
 M.combine_path = function(path1, path2)
@@ -96,7 +96,8 @@ M.get_sf_root = function()
   })[1])
 
   if root == nil then
-    error("File not in a sf project folder")
+    -- error("File not in a sf project folder")
+    return ""
   end
 
   if root:sub(-1) ~= "/" then
@@ -244,9 +245,9 @@ M.table_to_string_lines = function(tbl)
 
   local result = vim.inspect(tbl, inspect_opts)
   result = string.gsub(result, "^{(.*)}$", "%1") -- Remove surrounding braces
-  result = string.gsub(result, "%s*=%s*", ": ")  -- Change " = " between key and value to ": "
-  result = string.gsub(result, ",%s*", "\n")     -- Add newlines after each key=val pair, and remove commas
-  result = string.gsub(result, '"', "")          -- Remove quotation marks around string values
+  result = string.gsub(result, "%s*=%s*", ": ") -- Change " = " between key and value to ": "
+  result = string.gsub(result, ",%s*", "\n") -- Add newlines after each key=val pair, and remove commas
+  result = string.gsub(result, '"', "") -- Remove quotation marks around string values
   return result
 end
 
