@@ -95,9 +95,14 @@ M.set_auto_cmd_and_try_set_default_keys = function()
 
   -- clear diff files retrieved locally when Nvim exists
   vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = sf_group,
     callback = function()
-      local diff_folder = U.get_plugin_folder_path() .. "diffs/"
-      vim.fn.delete(diff_folder, "rf")
+      local ok, diff_folder = pcall(function()
+        return U.get_plugin_folder_path() .. "diffs/"
+      end)
+      if ok then
+        vim.fn.delete(diff_folder, "rf")
+      end
     end,
   })
 end
