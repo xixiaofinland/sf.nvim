@@ -30,4 +30,12 @@ end
 --   expect.error(function() child.lua([[M.get()]]) end)
 -- end
 
+T["set_global_target_org"] = new_set()
+
+T["set_global_target_org"]["errors when org list is empty"] = function()
+  expect.error(function()
+    child.lua([[M.set_global_target_org()]])
+  end)
+end
+
 return T
