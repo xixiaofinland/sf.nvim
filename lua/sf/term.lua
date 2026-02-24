@@ -158,8 +158,9 @@ function Term.run_highlighted_soql()
   end
 
   local selected_text = H.get_visual_selection()
-  if not selected_text then
+  if U.is_empty_str(selected_text) then
     vim.notify("Empty selection.", vim.log.levels.WARN)
+    return
   end
 
   -- local raw_cmd = string.format('sf data query -q "%s" -o %s', selected_text, U.get())
