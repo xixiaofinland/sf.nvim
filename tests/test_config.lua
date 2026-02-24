@@ -51,6 +51,18 @@ T["setup()"]["has filetypes defined"] = function()
   eq(child.lua_get("vim.bo.filetype"), "html")
 end
 
+T["setup()"]["sets fixendofline=false for javascript files in sf project"] = function()
+  child.open_in_sf_dir("hello.js")
+  eq(child.lua_get("vim.bo.filetype"), "javascript")
+  eq(child.lua_get("vim.bo.fixendofline"), false)
+end
+
+T["setup()"]["sets fixendofline=false for html files in sf project"] = function()
+  child.open_in_sf_dir("page.html")
+  eq(child.lua_get("vim.bo.filetype"), "html")
+  eq(child.lua_get("vim.bo.fixendofline"), false)
+end
+
 T["setup()"]["has default config"] = function()
   eq(child.lua_get("type(vim.g.sf)"), "table")
 
