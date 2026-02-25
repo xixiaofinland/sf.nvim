@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.17.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.2...v1.17.0) (2026-02-25)
+
+
+### Features
+
+* target nvim-treesitter main api ([aa2228d](https://github.com/xixiaofinland/sf.nvim/commit/aa2228d086a6511761263e7e6335fc316fd3be5f))
+
+
+### Bug Fixes
+
+* add missing return after empty selection check in run_highlighted_soql ([59c4ac6](https://github.com/xixiaofinland/sf.nvim/commit/59c4ac6d4888b6d520a3af9a0325ce8b8130e981))
+* corrected pattern in nivm_create_autocmd. removed FIXME comment. Added test for this ([4a6eaf9](https://github.com/xixiaofinland/sf.nvim/commit/4a6eaf90e8a6670369810822864a3a09fddafa5b))
+* **ctags:** make tag generation path cross-platform ([70304d8](https://github.com/xixiaofinland/sf.nvim/commit/70304d889999f8bf880180be885d6218782ce63a))
+* handle non-sf-project error in VimLeavePre autocmd ([b317007](https://github.com/xixiaofinland/sf.nvim/commit/b3170073a542f32efaadb5e283ab256b59eab482))
+* use is_table_empty instead of is_empty_str for H.orgs check in set_global_target_org ([c62a06c](https://github.com/xixiaofinland/sf.nvim/commit/c62a06cb5a780daec5f0650fe0eea5760ba0b0fe))
+
 ## [1.16.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.1...v1.16.2) (2026-01-27)
 
 
