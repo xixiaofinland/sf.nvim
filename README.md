@@ -169,6 +169,9 @@ require('sf').setup({
     covered = { fg = "#b7f071" }, -- set `fg = ""` to disable this sign icon
     uncovered = { fg = "#f07178" }, -- set `fg = ""` to disable this sign icon
   },
+
+  run_concise_tests = false, -- set to true to append --concise flag to test runs
+
 })
 ```
 

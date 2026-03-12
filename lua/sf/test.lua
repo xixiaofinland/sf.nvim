@@ -43,6 +43,7 @@ Test.run_current_test_with_coverage = function()
       ["-w"] = vim.g.sf.sf_wait_time,
       ["-c"] = "",
     })
+    :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
 
   U.last_tests = cmd
@@ -71,6 +72,7 @@ Test.run_current_test = function()
       ["-r"] = "human",
       ["-w"] = vim.g.sf.sf_wait_time,
     })
+    :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
 
   U.last_tests = cmd
@@ -92,6 +94,7 @@ Test.run_all_tests_in_this_file_with_coverage = function()
       ["-w"] = vim.g.sf.sf_wait_time,
       ["-c"] = "",
     })
+    :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
 
   U.last_tests = cmd
@@ -115,6 +118,7 @@ Test.run_all_tests_in_this_file = function(cb)
       ["-r"] = "human",
       ["-w"] = vim.g.sf.sf_wait_time,
     })
+    :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
 
   U.last_tests = cmd
@@ -140,6 +144,7 @@ Test.run_local_tests = function()
       ["-r"] = "human",
       ["-w"] = 180,
     })
+    :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
 
   U.last_tests = cmd
@@ -271,7 +276,7 @@ P.set_keys = function()
       test_params = test_params .. " -t " .. test
     end
 
-    local cmd = cmd_builder:addParamStr(test_params):build()
+    local cmd = cmd_builder:addParamStr(test_params):addParamIf(vim.g.sf.run_concise_tests, "--concise"):build()
 
     return cmd
   end
