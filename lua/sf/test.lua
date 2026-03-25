@@ -71,6 +71,7 @@ Test.run_current_test = function()
       ["-t"] = test_class_name .. "." .. test_name,
       ["-r"] = "human",
       ["-w"] = vim.g.sf.sf_wait_time,
+      ["--concise"] = "",
     })
     :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
@@ -117,6 +118,7 @@ Test.run_all_tests_in_this_file = function(cb)
       ["-n"] = test_class_name,
       ["-r"] = "human",
       ["-w"] = vim.g.sf.sf_wait_time,
+      ["--concise"] = "",
     })
     :addParamIf(vim.g.sf.run_concise_tests, "--concise")
     :build()
