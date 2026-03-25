@@ -79,8 +79,6 @@ local default_cfg = {
   -- running all local tests still defaults to 180 mins, as it is a costly operation
   sf_wait_time = 5,
 
-  -- run tests with concise flag
-  run_concise_tests = false,
 }
 
 local apply_config = function(opt)

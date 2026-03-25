@@ -173,16 +173,5 @@ T["setup()"]["localOnly() by-passes the org param"] = function()
   eq(result, expected)
 end
 
-T["setup()"]["addParamIf() adds param when condition is true"] = function()
-  local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamIf(true, "--concise"):build()')
-  local expected = 'sf apex run --concise -o "t_org"'
-  eq(result, expected)
-end
-
-T["setup()"]["addParamIf() skips param when condition is false"] = function()
-  local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamIf(false, "--concise"):build()')
-  local expected = 'sf apex run -o "t_org"'
-  eq(result, expected)
-end
 
 return T

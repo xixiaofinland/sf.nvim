@@ -77,14 +77,6 @@ function CommandBuilder:addParams(...)
   return self
 end
 
----Conditionally add a parameter
----@param cond boolean
----@param ... string|table
----@return CommandBuilder
-function CommandBuilder:addParamIf(cond, ...)
-  if cond then return self:addParams(...) end
-  return self
-end
 
 ---Add one or more parameters, but don't expand the values
 ---@param ... string|table Either a flag and value as separate arguments, or a table of flag-value pairs
