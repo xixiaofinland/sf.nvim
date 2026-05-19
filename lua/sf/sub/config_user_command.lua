@@ -23,6 +23,23 @@ local common_impl = function(sub_cmd, arg)
   func()
 end
 
+local SOBJECT_CATEGORIES = { "ALL", "STANDARD", "CUSTOM" }
+
+local sobject_impl = function(sub_cmd, arg, extra)
+  local func = vim.tbl_get(M.sub_cmd_tbl, sub_cmd, "funcs", arg)
+  if not func then
+    return U.show_err(string.format("'%s %s' is not a valid command", sub_cmd, arg))
+  end
+  if arg == "refresh" then
+    local category = extra and extra:upper() or "ALL"
+    if not vim.tbl_contains(SOBJECT_CATEGORIES, category) then
+      return U.show_err("Invalid category: " .. category .. ". Use ALL, STANDARD, or CUSTOM.")
+    end
+    return func({ category = category })
+  end
+  func()
+end
+
 ---@type table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>
 M.sub_cmd_tbl = {
   currentFile = {
@@ -108,13 +125,26 @@ M.sub_cmd_tbl = {
       return common_complete("create", subcmd_arg_lead)
     end,
   },
+  sobject = {
+    funcs = {
+      refresh = Sf.refresh_sobjects,
+    },
+    impl = sobject_impl,
+    complete = function(subcmd_arg_lead)
+      local action, cat_lead = subcmd_arg_lead:match("^(%S+)%s+(.*)$")
+      if action == "refresh" then
+        return complete(SOBJECT_CATEGORIES, cat_lead or "")
+      end
+      return common_complete("sobject", subcmd_arg_lead)
+    end,
+  },
 }
 
 ---@param opts table
 local create_sf_cmd = function(opts)
   local fargs = opts.fargs
-  if #fargs ~= 2 then
-    return U.show_err("Command must supply two and only two arguments")
+  if #fargs < 2 then
+    return U.show_err("Command must supply at least two arguments")
   end
 
   local sub_cmd = fargs[1]
@@ -123,7 +153,7 @@ local create_sf_cmd = function(opts)
     return U.show_err("unknown command: " .. sub_cmd)
   end
 
-  matched_sub_cmd.impl(fargs[1], fargs[2])
+  matched_sub_cmd.impl(fargs[1], fargs[2], fargs[3])
 end
 
 M.create_user_commands = function()

@@ -242,6 +242,22 @@ Creates a new LWC Bundle using an input name or prompting the user to enter one
 Creates an apex trigger using an input name or prompting the user to enter one
 
 ------------------------------------------------------------------------------
+                                                          *Sf.refresh_sobjects*
+                              `Sf.refresh_sobjects`({opts})
+Refresh the faux Apex SObject definitions under .sfdx/tools/sobjects so the
+Apex language server can offer completion for standard and custom objects.
+Mirrors VSCode's "SFDX: Refresh SObject Definitions" command.
+Parameters ~
+{opts} `(table|nil)` Optional table with these fields:
+    - {category} `("ALL"|"STANDARD"|"CUSTOM")` Default `"ALL"`.
+    - {restart_lsp} `(boolean)` Default `true`. Restart attached apex_ls
+      clients once writing completes so the new stubs are picked up.
+    - {org} `(string)` Defaults to the current `target_org`.
+    - {on_done} `(fun(sobjects_dir: string))` Called after writing finishes.
+
+User command: `:SF sobject refresh [ALL|STANDARD|CUSTOM]`
+
+------------------------------------------------------------------------------
                                                            *Sf.open_test_select*
                              `Sf.open_test_select`
 Open a top-split window to display the Apex tests in the current file.
