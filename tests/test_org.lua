@@ -32,10 +32,11 @@ end
 
 T["set_global_target_org"] = new_set()
 
-T["set_global_target_org"]["errors when org list is empty"] = function()
-  expect.error(function()
-    child.lua([[M.set_global_target_org()]])
-  end)
+T["set_global_target_org"]["does not open selector when org list is empty"] = function()
+  child.lua([[
+    vim.ui.select = function() error("must not be called") end
+    M.set_global_target_org()
+  ]])
 end
 
 return T
