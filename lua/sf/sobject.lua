@@ -317,7 +317,7 @@ end
 ---@param org_info table
 ---@param api_version string
 ---@param names string[]
----@param cb fun(describes: table[]|nil, err: string|nil)
+---@param cb fun(describes: table[]|nil, err: string|nil, failed_count: integer|nil)
 local function describe_batch(org_info, api_version, names, cb)
   local batch_requests = {}
   for _, n in ipairs(names) do
@@ -349,12 +349,15 @@ local function describe_batch(org_info, api_version, names, cb)
       return cb(nil, "Failed to parse composite/batch response.")
     end
     local describes = {}
+    local failed = 0
     for _, res in ipairs(parsed.results) do
       if res.statusCode == 200 and type(res.result) == "table" then
         table.insert(describes, res.result)
+      else
+        failed = failed + 1
       end
     end
-    cb(describes)
+    cb(describes, nil, failed > 0 and failed or nil)
   end)
 end
 
@@ -390,11 +393,7 @@ local function restart_apex_ls()
         table.insert(attached, bufnr)
       end
     end
-    local client_id = client.id
     client:stop()
-    vim.wait(5000, function()
-      return vim.lsp.get_client_by_id(client_id) == nil
-    end, 50)
     local new_id = vim.lsp.start(config, { attach = false })
     if new_id then
       for _, b in ipairs(attached) do
@@ -469,7 +468,7 @@ function Sobject.refresh(opts)
           elseif category == "STANDARD" and custom then
             include = false
           end
-          if include then
+          if include and required_sobject(name) then
             table.insert(names, name)
           end
         end
@@ -479,10 +478,14 @@ function Sobject.refresh(opts)
         return U.show_warn("No sObjects matched category " .. category .. ".")
       end
 
-      vim.fn.delete(standard_dir, "rf")
-      vim.fn.delete(custom_dir, "rf")
-      vim.fn.mkdir(standard_dir, "p")
-      vim.fn.mkdir(custom_dir, "p")
+      if category ~= "CUSTOM" then
+        vim.fn.delete(standard_dir, "rf")
+        vim.fn.mkdir(standard_dir, "p")
+      end
+      if category ~= "STANDARD" then
+        vim.fn.delete(custom_dir, "rf")
+        vim.fn.mkdir(custom_dir, "p")
+      end
 
       local batches = {}
       for i = 1, #names, BATCH_SIZE do
@@ -525,16 +528,22 @@ function Sobject.refresh(opts)
           local idx = next_batch
           next_batch = next_batch + 1
           in_flight = in_flight + 1
-          describe_batch(org_info, api_version, batches[idx], function(describes, batch_err)
+          describe_batch(org_info, api_version, batches[idx], function(describes, batch_err, failed_count)
             in_flight = in_flight - 1
             if batch_err then
               errors = errors + 1
               table.insert(batch_errors, "batch " .. idx .. ": " .. batch_err)
-            elseif describes then
-              for _, desc in ipairs(describes) do
-                write_faux_class(sobjects_dir, desc)
+            else
+              if failed_count then
+                errors = errors + failed_count
+                table.insert(batch_errors, failed_count .. " item(s) in batch " .. idx .. " failed")
               end
-              completed = completed + #describes
+              if describes then
+                for _, desc in ipairs(describes) do
+                  write_faux_class(sobjects_dir, desc)
+                end
+                completed = completed + #describes
+              end
             end
             if next_batch <= #batches then
               launch_next()
