@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.17.0](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.2...v1.17.0) (2026-05-23)
+
+
+### Features
+
+* add sobject refresh command for apex_ls completion ([#340](https://github.com/xixiaofinland/sf.nvim/issues/340)) ([2113296](https://github.com/xixiaofinland/sf.nvim/commit/21132963e47cee66579a7dcdf24a714bac0000e8))
+* target nvim-treesitter main api ([aa2228d](https://github.com/xixiaofinland/sf.nvim/commit/aa2228d086a6511761263e7e6335fc316fd3be5f))
+
+
+### Bug Fixes
+
+* add missing return after empty selection check in run_highlighted_soql ([59c4ac6](https://github.com/xixiaofinland/sf.nvim/commit/59c4ac6d4888b6d520a3af9a0325ce8b8130e981))
+* automatically run concise tests for test execution done without coverage ([5989f94](https://github.com/xixiaofinland/sf.nvim/commit/5989f94647c7a48d13b08b47df8bf8e54c2100b4))
+* corrected pattern in nivm_create_autocmd. removed FIXME comment. Added test for this ([4a6eaf9](https://github.com/xixiaofinland/sf.nvim/commit/4a6eaf90e8a6670369810822864a3a09fddafa5b))
+* **ctags:** make tag generation path cross-platform ([70304d8](https://github.com/xixiaofinland/sf.nvim/commit/70304d889999f8bf880180be885d6218782ce63a))
+* handle empty org list gracefully in diff_in_org ([949a1dd](https://github.com/xixiaofinland/sf.nvim/commit/949a1dd2053c76137a3012ee28ed081603bb5045))
+* handle empty org list gracefully in headless mode ([#337](https://github.com/xixiaofinland/sf.nvim/issues/337)) ([c5c25ef](https://github.com/xixiaofinland/sf.nvim/commit/c5c25ef22a338e003cf31b7ab290b999f18a352d))
+* handle non-sf-project error in VimLeavePre autocmd ([b317007](https://github.com/xixiaofinland/sf.nvim/commit/b3170073a542f32efaadb5e283ab256b59eab482))
+* show actual sf CLI error when diff retrieve fails ([e8a33e8](https://github.com/xixiaofinland/sf.nvim/commit/e8a33e8359c8f6d2dae8998a96f20405e48b81ef))
+* update stale set_global_target_org test assertion ([#341](https://github.com/xixiaofinland/sf.nvim/issues/341)) ([d484070](https://github.com/xixiaofinland/sf.nvim/commit/d484070c2c0a92e4133d2e5edbdedb95981728d5))
+* use is_table_empty instead of is_empty_str for H.orgs check in set_global_target_org ([c62a06c](https://github.com/xixiaofinland/sf.nvim/commit/c62a06cb5a780daec5f0650fe0eea5760ba0b0fe))
+
 ## [1.16.2](https://github.com/xixiaofinland/sf.nvim/compare/v1.16.1...v1.16.2) (2026-01-27)
 
 
