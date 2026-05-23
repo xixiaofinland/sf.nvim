@@ -11,6 +11,7 @@ local Metadata = require("sf.md")
 local Test = require("sf.test")
 local Ctags = require("sf.ctags")
 local Project = require("sf.project")
+local Sobject = require("sf.sobject")
 local Sf = {}
 
 --- Before using this plugin, it's mandatory to invoke this function by "require'sf'.setup()".
@@ -177,6 +178,20 @@ Sf.create_lwc_bundle = Metadata.create_lwc_bundle
 
 --- Creates an apex trigger using an input name or prompting the user to enter one
 Sf.create_trigger = Metadata.create_trigger
+
+-- From Sobject module ======================================================
+
+--- Refresh the faux Apex SObject definitions under .sfdx/tools/sobjects so
+--- the Apex language server can offer completion for standard and custom
+--- objects. Mirrors VSCode's "SFDX: Refresh SObject Definitions" command.
+--- Accepts an optional table:
+---   { category = "ALL"|"STANDARD"|"CUSTOM",  -- defaults to "ALL"
+---     restart_lsp = boolean,                  -- defaults to true
+---     org = string,                           -- defaults to target_org
+---     on_done = fun(sobjects_dir) }
+--- Restarts attached apex_ls clients once writing completes so the new
+--- stubs are picked up without an explicit |:LspRestart|.
+Sf.refresh_sobjects = Sobject.refresh
 
 -- From Test module ==========================================================
 

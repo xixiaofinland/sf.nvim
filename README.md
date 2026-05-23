@@ -38,6 +38,7 @@ All the features are categorized as:
 - 🤖 Quick apex test run
 - ✨ Test report and code coverage info
 - 🦘 Enhanced jump-to-definition (Apex)
+- 🗂️ Refresh sObject definitions for `apex_ls`
 
 In addition to the features, user commands and default hotkeys are also supplied, see
 [Keys](#-keys).
@@ -285,6 +286,36 @@ LWC, Aura, etc.). You can list them and fetch all of a specific type. Steps:
 2. Run `:SF mdtype list` (or `require('sf').list_md_type_to_retrieve()`) to show the
    list in a pop-up (requires the fzf-lua plugin) and select one to
    download all metadata of this type to local.
+
+<br>
+
+## 🗂️ Feature: Refresh sObject Definitions
+
+Mirrors VSCode's "SFDX: Refresh SObject Definitions". Generates faux Apex
+classes under `.sfdx/tools/sobjects/{standardObjects,customObjects}/` so the
+Apex language server (`apex_ls`) can offer completion and signature help for
+every sObject in the target org — including custom fields and child
+relationships.
+
+Run it as:
+
+- `:SF sobject refresh` — refresh every sObject (default).
+- `:SF sobject refresh STANDARD` — only standard objects.
+- `:SF sobject refresh CUSTOM` — only custom objects.
+
+Or programmatically:
+
+```lua
+require('sf').refresh_sobjects({ category = "ALL" })
+```
+
+Once writing completes, any attached `apex_ls` clients are restarted in
+place (their buffers re-attach automatically) so the new stubs are picked up
+without an explicit `:LspRestart`. Pass `restart_lsp = false` to opt out.
+
+Requires `curl` on PATH. The work runs asynchronously and parallelizes
+describes across up to 15 in-flight composite/batch requests, so a
+~1500-object org typically finishes in well under a minute.
 
 <br>
 
