@@ -1,4 +1,5 @@
 ![Image](https://github.com/xixiaofinland/sf.nvim/assets/13655323/454d4a3d-d455-43f6-b44b-506862106b66)
+
 <p align="center">
 <img src="https://img.shields.io/badge/Neovim-57A143?logo=neovim&logoColor=fff&style=for-the-badge" alt="Neovim" />
 <img src="https://img.shields.io/badge/Made%20With%20Lua-2C2D72?logo=lua&logoColor=fff&style=for-the-badge" alt="made with lua" >
@@ -45,7 +46,6 @@ In addition to the features, user commands and default hotkeys are also supplied
 
 <br>
 
-
 ## 🎦 Intro video (6min)
 
 [![Feature Intro (6 min)](https://img.youtube.com/vi/MdqPgHIb1pw/0.jpg)](https://www.youtube.com/watch?v=MdqPgHIb1pw)
@@ -64,12 +64,11 @@ In addition to the features, user commands and default hotkeys are also supplied
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
 - 🔍 (Optional) [overseer.nvim](https://github.com/stevearc/overseer.nvim) if you'd like to use the overseer integration
 
-
 ![Image 019](https://github.com/user-attachments/assets/aad0ac11-f980-423b-8332-a2b4359fb4ae)
 
 <br>
 
-## ⚙️  Installation
+## ⚙️ Installation
 
 Install using Lazy.nvim by adding the following configuration to your setup:
 
@@ -191,14 +190,12 @@ For example,
 
 1. type `:SF<space>` and hit `tab` to list available categories(i.e. `sub_cmd1`) as screenshot 1.
 2. Then select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
-category as screenshot 2
+   category as screenshot 2
 3. Finally choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
 
 ![Image 020](https://github.com/user-attachments/assets/725e5d6a-843e-4434-a0c9-a9e72dcb1528)
 
 ![Image 021](https://github.com/user-attachments/assets/ab78ef40-6606-4575-b664-a1f905092dc4)
-
-
 
 ### ⌨️ Default hotkeys
 
@@ -209,6 +206,7 @@ It is also recommended to disable them and define the ones as you wish.
 The toggling is in the configuration by setting the `enable_hotkeys` option.
 
 For example,
+
 ```
 return {
     'xixiaofinland/sf.nvim',
@@ -231,30 +229,30 @@ return {
 
 In case you decide to go with the default hotkeys:
 
-| Default key       | function name           | Explain           |
-| ----------| ------------------| ------------------|
-| `<leader>ss`     | set_target_org           | set target_org |
-| `<leader>sf`     | fetch_org_list              |fetch/refresh orgs info|
-| `<leader><leader>`     |toggle_term|terminal toggle|
-| `<leader>sp`     |save_and_push|push current file|
-| `<leader>sr`     |retrieve|retrieve current file|
-| `<leader>ta`     |run_all_tests_in_this_file|run all Apex tests in current file|
-| `<leader>tt`     |run_current_test|test this under cursor|
-| `<leader>tr`     |repeat_last_tests|repeat the last test|
-| `<leader>to`     |open_test_select|open a buffer to select tests|
-| `<leader>ct`     |create_ctags |create ctags file|
-| `<leader>sq`     | run_highlighted_soql |Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term|
-|`\s`|toggle_sign |Show/hide line coverage sign icon|
-|`]v`|uncovered_jump_forward |jump to next test uncovered hunk|
-|`[v`|uncovered_jump_backward |jump to last test uncovered hunk|
+| Default key        | function name              | Explain                                                                                             |
+| ------------------ | -------------------------- | --------------------------------------------------------------------------------------------------- |
+| `<leader>ss`       | set_target_org             | set target_org                                                                                      |
+| `<leader>sf`       | fetch_org_list             | fetch/refresh orgs info                                                                             |
+| `<leader><leader>` | toggle_term                | terminal toggle                                                                                     |
+| `<leader>sp`       | save_and_push              | push current file                                                                                   |
+| `<leader>sr`       | retrieve                   | retrieve current file                                                                               |
+| `<leader>ta`       | run_all_tests_in_this_file | run all Apex tests in current file                                                                  |
+| `<leader>tt`       | run_current_test           | test this under cursor                                                                              |
+| `<leader>tr`       | repeat_last_tests          | repeat the last test                                                                                |
+| `<leader>to`       | open_test_select           | open a buffer to select tests                                                                       |
+| `<leader>ct`       | create_ctags               | create ctags file                                                                                   |
+| `<leader>sq`       | run_highlighted_soql       | Deault key is only enabled in visual model. Highlight selected text will be run as SOQL in the term |
+| `\s`               | toggle_sign                | Show/hide line coverage sign icon                                                                   |
+| `]v`               | uncovered_jump_forward     | jump to next test uncovered hunk                                                                    |
+| `[v`               | uncovered_jump_backward    | jump to last test uncovered hunk                                                                    |
 
 All keys are listed in `:h sf.nvim` or [help.txt file](https://github.com/xixiaofinland/sf.nvim/blob/main/doc/sf.txt).
 
 Example:
 
 - If you have [which-key](https://github.com/folke/which-key.nvim) or a similar plugin installed, pressing `<leader>s` will hint to you what keys are enabled as
-  shown in the screenshot below. Remember that default hotkeys are **disabled by default.
-![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
+  shown in the screenshot below. Remember that default hotkeys are \*\*disabled by default.
+  ![Image 003](https://github.com/xixiaofinland/sf.nvim/assets/13655323/85faa8cb-b1df-40dd-a1bf-323f94bbf13c)
 
 <br>
 
@@ -267,6 +265,7 @@ as your key:
 ```lua
 vim.keymap.set('n', '<leader>sk', require('sf').run('ls -la'), { noremap = true, silent = true, desc = 'run ls -la in the terminal' })
 ```
+
 <br>
 
 ## 🚀 Feature: List/retrieve metadata and metadata types
@@ -312,6 +311,12 @@ require('sf').refresh_sobjects({ category = "ALL" })
 Once writing completes, any attached `apex_ls` clients are restarted in
 place (their buffers re-attach automatically) so the new stubs are picked up
 without an explicit `:LspRestart`. Pass `restart_lsp = false` to opt out.
+
+No default hotkey is provided for this feature. Add one yourself if needed, e.g.:
+
+```lua
+vim.keymap.set("n", "<leader>sb", "<cmd>SF sobject refresh ALL<cr>")
+```
 
 Requires `curl` on PATH. The work runs asynchronously and parallelizes
 describes across up to 15 in-flight composite/batch requests, so a
@@ -393,7 +398,7 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 
 `require('sf').covered_percent()` has the current Apex file code coverage information.
 You can
-  display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
+display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
 
 ![Image 015](https://github.com/user-attachments/assets/3b1ba158-dbcb-4516-a53c-61a824772933)
 
@@ -452,6 +457,7 @@ address this, the LSP jump-to-definition is enhanced by ctags.
 If you don't yet know what ctags is, it's wise to google "ctags in vim" to prepare a bit more.
 
 Ctags is ideal in this scenario because:
+
 - It is natively supported by Nvim/Vim, although you need to install `ctags` yourself
 - The default `<C-]>` key in Nvim will first attempt to jump with LSP and fall back to ctags if LSP fails
 
@@ -462,7 +468,7 @@ ctags](https://github.com/universal-ctags/ctags). So you need to install it to u
 
 `:SF create ctags` or `require('sf').create_ctags()` generates the ctags file in the project root.
 Using the `<C-]>` key for jump-to-definition will automatically use both LSP and ctags in order.
-`:SF create ctagsAndList` or `require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in  `fzf-lua`
+`:SF create ctagsAndList` or `require('sf').create_and_list_ctags()` will update ctags and list the tags symbols in `fzf-lua`
 plugin.
 
 <br>
@@ -495,4 +501,5 @@ add your doc content in `init.lua` without touching `help.txt` is sufficient.
 <br>
 
 ## 📜 License
+
 MIT.
