@@ -58,7 +58,32 @@ In addition to the features, user commands and default hotkeys are also supplied
 
 - 🌐 [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
 - 🐢 Nvim v0.11 or newer
-- 📦 Salesforce relevant parsers (i.e. "apex", "soql", "sosl", and "sflog") in Nvim-treesitter (main branch). Install them like [in my settings](https://github.com/xixiaofinland/dotfiles-nix/blob/55081dd2394030cc418778b311ba3fd7fb3ff6c8/dotfiles/nvim_config/lua/plugins/nvim-tree-sitter.lua#L28)
+- 📦 Salesforce relevant parsers (i.e. "apex", "soql", "sosl", and "sflog") in Nvim-treesitter (main branch)
+
+  <details>
+  <summary>Example nvim-treesitter setup (lazy.nvim)</summary>
+
+  ```lua
+  {
+    'nvim-treesitter/nvim-treesitter',
+    lazy = false, -- explicitly disallowed by the new plugin
+    build = ':TSUpdate',
+    config = function()
+      require('nvim-treesitter').setup {}
+
+      -- Install parsers on startup; no-op if already up to date.
+      require('nvim-treesitter').install({
+        "apex", "soql", "sosl", "sflog",
+      })
+    end,
+  }
+  ```
+
+  On the `main` branch highlighting is no longer auto-enabled; each filetype
+  starts it via `vim.treesitter.start()` in an ftplugin file or a `FileType`
+  autocmd.
+
+  </details>
 - 🔍 (Optional) fzf-lua plugin for executing `:SF md list` and `SFListMdTypeToRetrieve` (Why not
   telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
@@ -398,7 +423,31 @@ Example configuration using lualine.nvim with target_org(`xixiao100`):
 
 `require('sf').covered_percent()` has the current Apex file code coverage information.
 You can
-display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim [here](https://github.com/xixiaofinland/dotfiles-nix/blob/644b5d0791d40afa1bd37b5c97e269629a2ca817/dotfiles/nvim/lua/plugins/lualine.lua#L21)
+display it as you want. For example, I display it (`92`) in my status line next to target_org (`devhub`), configured in lualine.nvim like below.
+
+<details>
+<summary>Example lualine.nvim setup</summary>
+
+```lua
+{
+  'nvim-lualine/lualine.nvim',
+  config = function()
+    local function sf_status()
+      local target_org = require('sf').get_target_org()
+      local covered_percent = require('sf').covered_percent()
+      return target_org .. "(" .. covered_percent .. ")"
+    end
+
+    require('lualine').setup {
+      sections = {
+        lualine_c = { 'filename', sf_status },
+      },
+    }
+  end
+}
+```
+
+</details>
 
 ![Image 015](https://github.com/user-attachments/assets/3b1ba158-dbcb-4516-a53c-61a824772933)
 
