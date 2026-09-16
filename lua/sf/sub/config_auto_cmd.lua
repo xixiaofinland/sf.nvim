@@ -73,6 +73,9 @@ M.set_auto_cmd_and_try_set_default_keys = function()
     })
   end
 
+  -- Placeholder so an early `:SF` reports why it is unavailable rather than E492
+  require("sf.sub.config_user_command").create_placeholder_command()
+
   local function try_set_keys_and_user_commands()
     if not pcall(require("sf.util").get_sf_root) then
       return

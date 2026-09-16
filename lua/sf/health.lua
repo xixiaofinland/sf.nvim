@@ -9,6 +9,7 @@ M.check = function()
   H.check_ctag()
   H.check_overseer()
   H.check_windows_os()
+  H.check_sf_project()
 end
 
 -- helper;
@@ -45,6 +46,30 @@ H.check_tree_sitter = function()
     return vim.health.error("sflog parser not installed in nvim-treesitter!")
   end
   vim.health.ok("All Salesforce relevant parsers are installed in nvim-treesitter.")
+end
+
+-- Checked against cwd rather than the current buffer: during :checkhealth the
+-- active buffer is `health://`, which never resolves to a project root.
+H.check_sf_project = function()
+  local cwd = vim.fn.getcwd()
+  local root = vim.fs.find({ ".forceignore", "sfdx-project.json" }, {
+    upward = true,
+    stop = vim.uv.os_homedir(),
+    path = cwd,
+  })[1]
+
+  if root == nil then
+    return vim.health.warn(
+      "cwd is not inside a Salesforce project, so `:SF` and the hotkeys are not registered.",
+      {
+        "cwd: " .. cwd,
+        "A project root is a folder containing `sfdx-project.json` or `.forceignore`.",
+        "`:cd` into a project (or open a file inside one) and they register automatically.",
+      }
+    )
+  end
+
+  vim.health.ok("sf project detected: " .. vim.fs.dirname(root))
 end
 
 H.check_nvim_version = function()

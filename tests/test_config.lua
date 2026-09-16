@@ -277,16 +277,37 @@ T["setup()"]["the VimEnter event can be disabled by custom config"] = function()
   eq(#child.api.nvim_get_autocmds({ event = "VimEnter", group = "SF" }), 0)
 end
 
-T["setup()"]["no user commands in non-sf-project dir"] = function()
+T["setup()"]["only the placeholder command in non-sf-project dir"] = function()
   child.open_in_non_sf_dir("test.txt")
 
-  eq(child.api.nvim_get_commands({})["SF"], nil)
+  -- `:SF` exists but is the self-explaining placeholder, not the real command.
+  -- Distinguished by nargs, not `definition`: nightly reports an empty
+  -- `definition` for Lua-callback commands while stable reports the desc.
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "*")
+end
+
+T["setup()"]["placeholder command reports why it is unavailable"] = function()
+  child.open_in_non_sf_dir("test.txt")
+
+  local err = child.lua_get([[
+    (function()
+      local msg
+      vim.notify = function(m) msg = m end
+      vim.cmd("SF org fetchList")
+      return msg
+    end)()
+  ]])
+
+  eq(type(err), "string")
+  eq(err:find("not inside a Salesforce project", 1, true) ~= nil, true)
 end
 
 T["setup()"]["has user commands in sf-project dir"] = function()
   child.open_in_sf_dir("text.txt")
 
   eq(child.api.nvim_get_commands({})["SF"].name, "SF")
+  -- the real command, not the placeholder, which takes "*"
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
 end
 
 return T

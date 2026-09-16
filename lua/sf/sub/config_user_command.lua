@@ -156,6 +156,24 @@ local create_sf_cmd = function(opts)
   matched_sub_cmd.impl(fargs[1], fargs[2], fargs[3])
 end
 
+-- Registered at setup() so `:SF` outside a Salesforce project explains itself
+-- instead of failing with a bare E492. Overwritten by create_user_commands()
+-- as soon as a project root is detected.
+M.create_placeholder_command = function()
+  vim.api.nvim_create_user_command("SF", function()
+    U.show_err(
+      "Sf.nvim commands are unavailable: the current file and cwd are not inside a Salesforce project.\n"
+        .. "A project root is a folder containing `sfdx-project.json` or `.forceignore`.\n"
+        .. "cwd: "
+        .. vim.fn.getcwd()
+        .. "\nOpen a file inside a project, or `:cd` into one, and the commands register automatically."
+    )
+  end, {
+    nargs = "*",
+    desc = "Sf commands (unavailable outside a Salesforce project)",
+  })
+end
+
 M.create_user_commands = function()
   vim.api.nvim_create_user_command("SF", create_sf_cmd, {
     nargs = "+",
