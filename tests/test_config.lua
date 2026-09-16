@@ -280,8 +280,10 @@ end
 T["setup()"]["only the placeholder command in non-sf-project dir"] = function()
   child.open_in_non_sf_dir("test.txt")
 
-  -- `:SF` exists but is the self-explaining placeholder, not the real command
-  eq(child.api.nvim_get_commands({})["SF"].definition, "Sf commands (unavailable outside a Salesforce project)")
+  -- `:SF` exists but is the self-explaining placeholder, not the real command.
+  -- Distinguished by nargs, not `definition`: nightly reports an empty
+  -- `definition` for Lua-callback commands while stable reports the desc.
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "*")
 end
 
 T["setup()"]["placeholder command reports why it is unavailable"] = function()
@@ -304,7 +306,8 @@ T["setup()"]["has user commands in sf-project dir"] = function()
   child.open_in_sf_dir("text.txt")
 
   eq(child.api.nvim_get_commands({})["SF"].name, "SF")
-  eq(child.api.nvim_get_commands({})["SF"].definition, "Sf commands")
+  -- the real command, not the placeholder, which takes "*"
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
 end
 
 return T
