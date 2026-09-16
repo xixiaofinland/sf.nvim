@@ -95,7 +95,30 @@ In addition to the features, user commands and default hotkeys are also supplied
 
 ## ⚙️ Installation
 
-Install using Lazy.nvim by adding the following configuration to your setup:
+🚨 **Read this first — it explains the most common "the plugin doesn't work" report:**
+
+Sf.nvim registers its user commands **lazily**. `:SF` exists **only** when your current
+path (`:h cwd`) or the currently opened file is inside a Salesforce project folder, i.e.
+one with `.forceignore` or `sfdx-project.json` at its root.
+
+So if you install the plugin and try `:SF` while editing your `init.lua`, you will get
+`E492: Not an editor command` — that is expected, not a broken install. Open a file
+inside a Salesforce project and the commands appear automatically.
+
+Verify with:
+
+```vim
+:lua print(pcall(require'sf.util'.get_sf_root))
+```
+
+`true` plus a path means you are in a project. `false` means you are not, and `:SF` will
+tell you so when invoked.
+
+Note also that **hotkeys are disabled by default** — see [Configuration](#️-configuration).
+
+<br>
+
+### Using lazy.nvim
 
 ```lua
 return {
@@ -112,14 +135,19 @@ return {
 }
 ```
 
-🚨 **Notice:**
+### Using vim.pack (built-in, Nvim 0.12+)
 
-The hotkeys are disabled by default!
-The user commands are **ONLY** enabled when your current path (`:h cwd`) or the current opened file
-is inside a sf project folder (i.e. has `.forceignore` or `sfdx-project.json` in the root path).
+```lua
+vim.pack.add({
+  'https://github.com/ibhagwan/fzf-lua', -- no need if you don't use listing metadata feature
+  'https://github.com/xixiaofinland/sf.nvim',
+  { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
+})
 
-Run `:lua require'sf.util'.get_sf_root()` to verify if the current opened file
-resides in sf project folder. When no error is printed it means the file is in a sf project folder.
+require('fzf-lua').setup()
+require('nvim-treesitter').setup()
+require('sf').setup() -- Important to call setup() to initialize the plugin!
+```
 
 <br>
 
