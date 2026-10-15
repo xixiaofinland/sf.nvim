@@ -85,6 +85,16 @@ T["list_md_type_to_retrieve()"]["reports a malformed cache file"] = function()
   expect.match(msgs, "Parse file from json to tbl failed: .*sf_cache/metadata%-types%.json")
 end
 
+T["list_md_type_to_retrieve()"]["reports a cache file without metadataObjects"] = function()
+  local root = make_project()
+  write_cache_file(root, "metadata-types.json", { '{"status": 1}' })
+
+  child.lua([[Sf.list_md_type_to_retrieve()]])
+
+  eq(child.lua_get("_G.fzf_items"), vim.NIL)
+  expect.match(notified_msgs(), "No metadataObjects in .*metadata%-types%.json")
+end
+
 T["list_md_type_to_retrieve()"]["tells how to fetch a missing cache file"] = function()
   make_project()
 

@@ -195,9 +195,12 @@ H.list_md_type_to_retrieve = function()
   if tbl == nil then
     return
   end
+  if type(tbl["metadataObjects"]) ~= "table" then
+    return U.show_err("No metadataObjects in " .. folder .. "metadata-types.json, run `:SF mdtype pull` again.")
+  end
   local md_types = {}
 
-  for _, obj in pairs(tbl["metadataObjects"] or {}) do
+  for _, obj in pairs(tbl["metadataObjects"]) do
     table.insert(md_types, obj["xmlName"])
   end
 
