@@ -847,7 +847,7 @@ Return ~
                                                                  *M.sub_cmd_tbl*
                                 `M.sub_cmd_tbl`
 Type ~
-`(table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>)`
+`(table<string, SfSubCmd>)`
 
 ------------------------------------------------------------------------------
                                                                *create_sf_cmd()*
