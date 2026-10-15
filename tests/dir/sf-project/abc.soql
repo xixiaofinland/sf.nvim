@@ -1,0 +1,1 @@
+SELECT Id, Name FROM Account LIMIT 10

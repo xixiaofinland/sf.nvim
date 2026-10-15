@@ -1,6 +1,6 @@
 # sf.nvim
 
-Neovim plugin wrapping the Salesforce `sf` CLI. Lua, tested with mini.test: run `make test` (or `make test_file FILE=tests/test_x.lua`) before opening a PR. Test dependencies (`deps/`) are pinned by the `*_REV` variables in the `Makefile`; bump one by editing its rev, and `make test` moves existing clones to it.
+Neovim plugin wrapping the Salesforce `sf` CLI. Lua, tested with mini.test: run `make test` (or `make test_file FILE=tests/test_x.lua`) before opening a PR. Test dependencies (`deps/`) are pinned by the `*_REV` variables in the `Makefile`; bump one by editing its rev, and `make test` moves existing clones to it. Tests never run a real `sf`: fake it with `child.sf_fake` and the fixtures in `tests/fixtures/sf/`, as described at the top of `tests/helpers.lua`.
 
 ## Branches
 

@@ -204,14 +204,11 @@ end
 
 T["test method under cursor"]["running it from a helper method warns instead of erroring"] = function()
   child.lua([[require('sf').setup({})]])
-  child.lua([[
-    _G.notified = {}
-    vim.notify = function(msg) table.insert(_G.notified, msg) end
-  ]])
+  child.capture_notify()
   cursor_on("helperCount")
 
   eq(child.lua_get([[(pcall(require('sf').run_current_test))]]), true)
-  eq(child.lua_get("_G.notified"), { "Sf: Cursor not in a test method." })
+  eq(child.notified(), { { msg = "Sf: Cursor not in a test method.", level = child.lua_get("vim.log.levels.WARN") } })
 end
 
 return T

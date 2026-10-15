@@ -1,0 +1,1 @@
+A plain text file outside any Salesforce project.
