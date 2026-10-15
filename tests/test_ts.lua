@@ -103,6 +103,8 @@ T["test class"]["legacy testMethod keyword without a class annotation"] = functi
   eq(test_method_names(), { "createsAccount" })
 end
 
+-- `sf apex run test` runs top-level classes only, so inner classes never
+-- count as test classes, whatever they are annotated with.
 T["test class"]["inner test class in a non-test outer class"] = function()
   set_apex({
     "public class Outer {",
@@ -114,8 +116,26 @@ T["test class"]["inner test class in a non-test outer class"] = function()
     "  }",
     "}",
   })
-  eq(test_class_name(), "InnerTest")
-  eq(test_method_names(), { "works" })
+  eq(test_class_name(), vim.NIL)
+  eq(test_method_names(), {})
+end
+
+T["test class"]["inner class of a test class"] = function()
+  set_apex({
+    "@IsTest",
+    "private class AccountTest {",
+    "  @IsTest",
+    "  static void createsAccount() {}",
+    "  class Fixture {",
+    "    @IsTest",
+    "    static void build() {}",
+    "  }",
+    "}",
+  })
+  eq(test_class_name(), "AccountTest")
+  eq(test_method_names(), { "createsAccount" })
+  cursor_on("build")
+  eq(current_test_method_name(), vim.NIL)
 end
 
 T["test class"]["two top-level classes"] = function()

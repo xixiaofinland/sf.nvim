@@ -9,20 +9,15 @@ M.get_class_name = function()
 end
 
 M.get_test_class_name = function()
-  for _, class in ipairs(H.find_nodes("class_declaration")) do
-    if H.is_test_class(class) then
-      return H.name_of(class)
-    end
-  end
-  return nil
+  local class = H.find_test_class()
+  return class and H.name_of(class) or nil
 end
 
 M.get_test_method_names_in_curr_file = function()
+  local class = H.find_test_class()
   local names = {}
-  for _, method in ipairs(H.find_nodes("method_declaration")) do
-    if H.is_test(method) then
-      table.insert(names, H.name_of(method))
-    end
+  for _, method in ipairs(class and H.test_methods_of(class) or {}) do
+    table.insert(names, H.name_of(method))
   end
   return names
 end
@@ -33,7 +28,9 @@ M.get_current_test_method_name = function()
     -- The innermost method decides: a helper method is not a test even when
     -- it sits in a test class.
     if node:type() == "method_declaration" then
-      return H.is_test(node) and H.name_of(node) or nil
+      local class = node:parent() and node:parent():parent()
+      local runnable = H.is_test(node) and class ~= nil and H.is_top_level(class)
+      return runnable and H.name_of(node) or nil
     end
     node = node:parent()
   end
@@ -79,19 +76,37 @@ end
 -- methods. Only its own methods count, so an inner test class doesn't make
 -- its outer class one.
 H.is_test_class = function(class)
-  if H.is_test(class) then
-    return true
+  return H.is_test(class) or not vim.tbl_isempty(H.test_methods_of(class))
+end
+
+-- `sf apex run test` runs top-level classes only; inner classes are never
+-- test classes, whatever they are annotated with.
+H.find_test_class = function()
+  for _, class in ipairs(H.find_nodes("class_declaration")) do
+    if H.is_top_level(class) and H.is_test_class(class) then
+      return class
+    end
   end
+  return nil
+end
+
+H.is_top_level = function(class)
+  return class:type() == "class_declaration" and class:parent() ~= nil and class:parent():parent() == nil
+end
+
+-- Only the class's own methods, not those of its inner classes.
+H.test_methods_of = function(class)
+  local methods = {}
   local body = class:field("body")[1]
   if body == nil then
-    return false
+    return methods
   end
   for member in body:iter_children() do
     if member:type() == "method_declaration" and H.is_test(member) then
-      return true
+      table.insert(methods, member)
     end
   end
-  return false
+  return methods
 end
 
 -- Matches on the modifiers' text rather than their node shapes, so the
