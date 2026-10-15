@@ -8,6 +8,11 @@ function Org.fetch_org_list()
   H.fetch_org_list()
 end
 
+--- Refetch the org list when the cwd moves to another sf project
+function Org.on_dir_changed()
+  H.on_dir_changed()
+end
+
 function Org.set_target_org()
   H.set_target_org()
 end
@@ -124,8 +129,14 @@ end
 
 H.orgs = {}
 
-H.clean_org_cache = function()
-  H.orgs = {}
+-- Bumped by each fetch, so only the latest of overlapping fetches is stored
+H.fetch_id = 0
+
+-- Org entries mark scratch orgs for display; sf wants the bare name
+---@param entry string
+---@return string
+H.org_name = function(entry)
+  return (entry:gsub("^%[S%] ", ""))
 end
 
 H.set_target_org = function()
@@ -136,7 +147,7 @@ H.set_target_org = function()
     prompt = "Local target_org:",
   }, function(choice)
     if choice ~= nil then
-      local org = string.gsub(choice, "%[S%] ", "")
+      local org = H.org_name(choice)
       local cmd = 'sf config set target-org "' .. org .. '"'
       local err_msg = org .. " - set target_org failed! Not in a sfdx project folder?"
       local cb = function()
@@ -157,7 +168,7 @@ H.set_global_target_org = function()
     prompt = "Global target_org:",
   }, function(choice)
     if choice ~= nil then
-      local org = string.gsub(choice, "%[S%] ", "")
+      local org = H.org_name(choice)
       local cmd = "sf config set target-org --global " .. org
       local msg = "Global target_org set: " .. org
       local err_msg = string.format("Global set target_org [%s] failed!", org)
@@ -169,45 +180,93 @@ H.set_global_target_org = function()
   end)
 end
 
----@param data string
-H.store_orgs = function(data)
-  local s = ""
-  for _, v in ipairs(data) do
-    s = s .. v
-  end
+-- Replaces the org list and target_org. A list without a default org clears
+-- target_org, so one left over from another project isn't used.
+---@param result { nonScratchOrgs: table[]|nil, scratchOrgs: table[]|nil }
+H.store_orgs = function(result)
+  local orgs = {}
+  local target_org = ""
 
-  local org_data = vim.json.decode(s, {}).result.nonScratchOrgs
-  local scratch_org_data = vim.json.decode(s, {}).result.scratchOrgs
-
-  for i = 1, #scratch_org_data do
-    org_data[#org_data + 1] = scratch_org_data[i]
-  end
-
-  for _, v in pairs(org_data) do
+  local org_data = vim.list_extend(vim.list_extend({}, result.nonScratchOrgs or {}), result.scratchOrgs or {})
+  for _, v in ipairs(org_data) do
     local alias = v.alias or v.username
     if v.isDefaultUsername then
-      U.target_org = alias
+      target_org = alias
     end
 
     local org_entry = v.isScratch and "[S] " .. alias or alias
-    table.insert(H.orgs, org_entry)
+    table.insert(orgs, org_entry)
   end
+
+  H.orgs = orgs
+  U.target_org = target_org
 end
 
-H.fetch_and_store_orgs = function()
-  vim.fn.jobstart("sf org list --json --skip-connection-status", {
-    stdout_buffered = true,
-    on_stdout = function(_, data)
-      H.store_orgs(data)
-    end,
-  })
+---@param obj vim.SystemCompleted
+H.on_org_list = function(obj)
+  if obj.code ~= 0 then
+    local err = vim.trim(obj.stderr or "")
+    return U.show_err("Failed to list orgs: " .. (err ~= "" and err or "sf exited with code " .. obj.code))
+  end
+
+  local ok, parsed = pcall(vim.json.decode, obj.stdout or "", { luanil = { object = true, array = true } })
+  if not ok or type(parsed) ~= "table" or type(parsed.result) ~= "table" then
+    return U.show_err("Failed to list orgs: sf output is not JSON")
+  end
+
+  H.store_orgs(parsed.result)
+end
+
+-- The sf project of the cwd, "" outside one. sf runs in the cwd, so its
+-- project's local config decides the default org.
+---@return string
+H.cwd_project = function()
+  local found = vim.fs.find({ ".forceignore", "sfdx-project.json" }, {
+    upward = true,
+    stop = vim.uv.os_homedir(),
+    path = vim.fn.getcwd(),
+  })[1]
+  return found and vim.fs.dirname(found) or ""
+end
+
+-- Project whose orgs were last fetched; nil until the first fetch
+H.fetched_project = nil
+
+H.on_dir_changed = function()
+  -- Never fetched: no target_org to go stale, and no sf call the user didn't ask for
+  if H.fetched_project == nil then
+    return
+  end
+
+  local project = H.cwd_project()
+  if project == H.fetched_project then
+    return
+  end
+
+  -- Cleared first, so nothing runs against the old project's org meanwhile
+  H.orgs = {}
+  U.target_org = ""
+  H.fetched_project = project
+  if vim.fn.executable("sf") == 1 then
+    H.fetch_org_list()
+  end
 end
 
 H.fetch_org_list = function()
   U.is_sf_cmd_installed()
 
-  H.clean_org_cache()
-  H.fetch_and_store_orgs()
+  H.fetched_project = H.cwd_project()
+  H.fetch_id = H.fetch_id + 1
+  local fetch_id = H.fetch_id
+  vim.system(
+    { "sf", "org", "list", "--json", "--skip-connection-status" },
+    { text = true },
+    vim.schedule_wrap(function(obj)
+      if fetch_id == H.fetch_id then
+        H.on_org_list(obj)
+      end
+    end)
+  )
 end
 
 H.diff_in_target_org = function()
@@ -215,7 +274,10 @@ H.diff_in_target_org = function()
     return U.show_err("Target_org empty!")
   end
 
-  H.diff_in(U.target_org)
+  local metadataType = H.get_current_metadata_type()
+  if metadataType then
+    H.diff_in(U.target_org, metadataType)
+  end
 end
 
 H.diff_in_org = function()
@@ -223,19 +285,34 @@ H.diff_in_org = function()
     return U.show_err("No orgs available. Run :SF org list first.")
   end
 
+  -- Checked before the prompt, so the user doesn't pick an org for nothing
+  local metadataType = H.get_current_metadata_type()
+  if not metadataType then
+    return
+  end
+
   vim.ui.select(H.orgs, {
     prompt = "Select org to diff in:",
   }, function(choice)
     if choice ~= nil then
-      H.diff_in(choice)
+      H.diff_in(H.org_name(choice), metadataType)
     end
   end)
 end
 
----@param org string
-H.diff_in = function(org)
-  local file_name = vim.fn.expand("%:t")
+---@return string|nil
+H.get_current_metadata_type = function()
   local metadataType = H.get_metadata_type(vim.fn.expand("%:p"))
+  if metadataType == nil then
+    U.show_err(string.format("Cannot diff %s: its metadata type is unknown", vim.fn.expand("%:t")))
+  end
+  return metadataType
+end
+
+---@param org string
+---@param metadataType string
+H.diff_in = function(org, metadataType)
+  local file_name = vim.fn.expand("%:t")
   local file_name_no_ext = H.get_file_name_without_extension(file_name)
   local temp_path = U.get_plugin_folder_path() .. "diffs/"
 
@@ -328,12 +405,22 @@ H.metadata_types = {
   ["queues"] = "Queue",
 }
 
+-- The type comes from the first folder, below the project root, named after
+-- one: a substring match would read "lwc/groupsList/" as a Group.
 ---@param filePath string
 ---@return string | nil
 H.get_metadata_type = function(filePath)
-  for key, metadataType in pairs(H.metadata_types) do
-    if filePath:find(key) then
-      return metadataType
+  filePath = vim.fs.normalize(filePath)
+  local ok, root = pcall(U.get_sf_root)
+  root = ok and vim.fs.normalize(root) .. "/"
+  if root and vim.startswith(filePath, root) then
+    filePath = filePath:sub(#root + 1)
+  end
+
+  local folders = vim.split(vim.fs.dirname(filePath), "/", { trimempty = true })
+  for _, folder in ipairs(folders) do
+    if H.metadata_types[folder] then
+      return H.metadata_types[folder]
     end
   end
   return nil
