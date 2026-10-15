@@ -34,7 +34,7 @@ M.get = function()
 end
 
 M.str_ends_with = function(str, ending)
-  return ending == "" or str:sub(- #ending) == ending
+  return ending == "" or str:sub(-#ending) == ending
 end
 
 M.combine_path = function(path1, path2)
@@ -244,9 +244,9 @@ M.table_to_string_lines = function(tbl)
 
   local result = vim.inspect(tbl, inspect_opts)
   result = string.gsub(result, "^{(.*)}$", "%1") -- Remove surrounding braces
-  result = string.gsub(result, "%s*=%s*", ": ")  -- Change " = " between key and value to ": "
-  result = string.gsub(result, ",%s*", "\n")     -- Add newlines after each key=val pair, and remove commas
-  result = string.gsub(result, '"', "")          -- Remove quotation marks around string values
+  result = string.gsub(result, "%s*=%s*", ": ") -- Change " = " between key and value to ": "
+  result = string.gsub(result, ",%s*", "\n") -- Add newlines after each key=val pair, and remove commas
+  result = string.gsub(result, '"', "") -- Remove quotation marks around string values
   return result
 end
 

@@ -77,7 +77,6 @@ function CommandBuilder:addParams(...)
   return self
 end
 
-
 ---Add one or more parameters, but don't expand the values
 ---@param ... string|table Either a flag and value as separate arguments, or a table of flag-value pairs
 ---@return CommandBuilder

@@ -42,11 +42,24 @@ jobs:
       - name: Run tests
         run: make test
 
+  fmt:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Same stylua as the nvim devshell, so local `make fmt` and CI agree.
+      - uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: 2.5.2
+          args: --check lua tests scripts
+
   test:
     # One check with a fixed name whatever the matrix: issue-loop's TEST_CHECK.
     name: test
     if: always()
-    needs: build
+    needs: [build, fmt]
     runs-on: ubuntu-latest
     steps:
       - run: test "${{ needs.build.result }}" = success
+      - run: test "${{ needs.fmt.result }}" = success

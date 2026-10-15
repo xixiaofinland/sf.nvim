@@ -237,11 +237,11 @@ end
 H.generate_aura = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type aura", U.get_default_dir_path() .. "/aura", name)
   local cmd = B:new()
-      :cmd("lightning")
-      :act("generate component")
-      :addParams({ ["-d"] = P.get_current_package_dir() .. "aura", ["-n"] = name, ["--type"] = "aura" })
-      :localOnly()
-      :build()
+    :cmd("lightning")
+    :act("generate component")
+    :addParams({ ["-d"] = P.get_current_package_dir() .. "aura", ["-n"] = name, ["--type"] = "aura" })
+    :localOnly()
+    :build()
   U.silent_job_call(cmd, nil, "Something went wrong creating the Aura bundle", function()
     U.try_open_file(P.get_current_package_dir() .. "aura/" .. name .. "/" .. name .. ".cmp")
   end)
@@ -256,11 +256,11 @@ end
 H.generate_lwc = function(name)
   -- local cmd = string.format("sf lightning generate component --output-dir %s --name %s --type lwc", U.get_sf_root() .. vim.g.sf.default_dir .. "/lwc", name)
   local cmd = B:new()
-      :cmd("lightning")
-      :act("generate component")
-      :addParams({ ["-d"] = P.get_current_package_dir() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
-      :localOnly()
-      :build()
+    :cmd("lightning")
+    :act("generate component")
+    :addParams({ ["-d"] = P.get_current_package_dir() .. "lwc", ["-n"] = name, ["--type"] = "lwc" })
+    :localOnly()
+    :build()
   U.silent_job_call(cmd, nil, "Something went wrong creating the LWC bundle", function()
     U.try_open_file(P.get_current_package_dir() .. "lwc/" .. name .. "/" .. name .. ".js")
   end)
@@ -274,12 +274,12 @@ end
 ---@param name string
 H.generate_trigger = function(name)
   local cmd = B:new()
-      :cmd("apex")
-      :act("generate")
-      :subact("trigger")
-      :addParams({ ["-d"] = P.get_current_package_dir() .. "triggers", ["-n"] = name })
-      :localOnly()
-      :buildAsTable()
+    :cmd("apex")
+    :act("generate")
+    :subact("trigger")
+    :addParams({ ["-d"] = P.get_current_package_dir() .. "triggers", ["-n"] = name })
+    :localOnly()
+    :buildAsTable()
 
   U.silent_system_call(cmd, nil, "Something went wrong creating the trigger", function()
     U.try_open_file(P.get_current_package_dir() .. "triggers/" .. name .. ".trigger")
@@ -297,11 +297,7 @@ H.delete_current_apex_remote_and_local = function()
     return
   end
 
-  local confirm_msg = string.format(
-    "Delete '%s' from both org '%s' and local? (y/N): ",
-    class_name,
-    U.target_org
-  )
+  local confirm_msg = string.format("Delete '%s' from both org '%s' and local? (y/N): ", class_name, U.target_org)
 
   vim.ui.input({ prompt = confirm_msg }, function(input)
     if input ~= "y" and input ~= "Y" then
@@ -311,12 +307,7 @@ H.delete_current_apex_remote_and_local = function()
 
     U.show("Deleting '" .. class_name .. "'...")
     local type_name = string.format("ApexClass:%s", class_name)
-    local cmd = B:new()
-        :cmd("project")
-        :act("delete source")
-        :addParamsNoExpand("-m", type_name)
-        :addParams("-r")
-        :build()
+    local cmd = B:new():cmd("project"):act("delete source"):addParamsNoExpand("-m", type_name):addParams("-r"):build()
 
     T.run(cmd, function(_, _, exit_code)
       if exit_code ~= 0 then
@@ -367,12 +358,8 @@ H.rename_apex_impl = function(old_file_path, old_name, new_name)
 
   -- Step 3: Create new apex class (background)
   local path = P.get_apex_folder_path()
-  local cmd = B:new()
-      :cmd("apex")
-      :act("generate class")
-      :addParams({ ["-d"] = path, ["-n"] = new_name })
-      :localOnly()
-      :build()
+  local cmd =
+    B:new():cmd("apex"):act("generate class"):addParams({ ["-d"] = path, ["-n"] = new_name }):localOnly():build()
 
   U.silent_job_call(cmd, nil, "Failed to create new apex class '" .. new_name .. "'", function()
     local new_file_path = path .. new_name .. ".cls"
@@ -388,11 +375,7 @@ H.rename_apex_impl = function(old_file_path, old_name, new_name)
 
     -- Step 5: Deploy new class to org via terminal
     local type_name = string.format("ApexClass:%s", new_name)
-    local deploy_cmd = B:new()
-        :cmd("project")
-        :act("deploy start")
-        :addParamsNoExpand("-m", type_name)
-        :build()
+    local deploy_cmd = B:new():cmd("project"):act("deploy start"):addParamsNoExpand("-m", type_name):build()
 
     T.run(deploy_cmd, function(_, _, exit_code)
       if exit_code ~= 0 then
@@ -406,18 +389,15 @@ H.rename_apex_impl = function(old_file_path, old_name, new_name)
   end)
 end
 
-
 H.delete_old_class_after_rename = function(old_name)
   local type_name = string.format("ApexClass:%s", old_name)
-  local cmd = B:new()
-      :cmd("project")
-      :act("delete source")
-      :addParamsNoExpand("-m", type_name)
-      :addParams("-r")
-      :build()
+  local cmd = B:new():cmd("project"):act("delete source"):addParamsNoExpand("-m", type_name):addParams("-r"):build()
 
-  U.silent_job_call(cmd, "Old class '" .. old_name .. "' deleted from org and local!",
-    "Failed to delete old class: " .. old_name)
+  U.silent_job_call(
+    cmd,
+    "Old class '" .. old_name .. "' deleted from org and local!",
+    "Failed to delete old class: " .. old_name
+  )
 end
 
 return Md

@@ -18,8 +18,18 @@ local T = new_set({
 T["type_mapping"] = new_set()
 
 T["type_mapping"]["maps known string-like types to String"] = function()
-  for _, t in ipairs({ "string", "email", "phone", "url", "picklist", "multipicklist", "textarea", "encryptedstring", "combobox" }) do
-    eq(child.lua_get(string.format('H._field_to_apex_type({ type = %q })', t)), "String")
+  for _, t in ipairs({
+    "string",
+    "email",
+    "phone",
+    "url",
+    "picklist",
+    "multipicklist",
+    "textarea",
+    "encryptedstring",
+    "combobox",
+  }) do
+    eq(child.lua_get(string.format("H._field_to_apex_type({ type = %q })", t)), "String")
   end
 end
 
@@ -248,11 +258,11 @@ T["format_api_version"]["adds v prefix when missing"] = function()
 end
 
 T["format_api_version"]["formats numbers"] = function()
-  eq(child.lua_get('H._format_api_version(60)'), "v60.0")
+  eq(child.lua_get("H._format_api_version(60)"), "v60.0")
 end
 
 T["format_api_version"]["falls back to v60.0 on nil"] = function()
-  eq(child.lua_get('H._format_api_version(nil)'), "v60.0")
+  eq(child.lua_get("H._format_api_version(nil)"), "v60.0")
 end
 
 return T
