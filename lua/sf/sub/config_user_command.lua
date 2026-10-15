@@ -27,42 +27,43 @@ local action_list = function(sub_cmd)
   return table.concat(actions, ", ")
 end
 
--- Passes the arguments after `<group> <action>` on as one string, the way
--- the actions in `takes_args` take extra `sf` flags.
+-- Only the actions in `takes_args` accept a string of extra `sf` flags; the
+-- rest take no parameter or a non-string one (a callback), so extra
+-- arguments to them are refused rather than passed on.
 ---@param sub_cmd string
 ---@param arg string
----@param extra string[]
+---@param extra string
 local common_impl = function(sub_cmd, arg, extra)
   local func = M.sub_cmd_tbl[sub_cmd].funcs[arg]
-  if #extra == 0 then
+  if extra == "" then
     return func()
   end
   if not vim.tbl_get(M.sub_cmd_tbl[sub_cmd], "takes_args", arg) then
-    return U.show_err(string.format("'%s %s' takes no arguments, got: %s", sub_cmd, arg, table.concat(extra, " ")))
+    return U.show_err(string.format("'%s %s' takes no arguments, got: %s", sub_cmd, arg, extra))
   end
-  func(table.concat(extra, " "))
+  func(extra)
 end
 
 local SOBJECT_CATEGORIES = { "ALL", "STANDARD", "CUSTOM" }
 
 ---@param sub_cmd string
 ---@param arg string
----@param extra string[]
+---@param extra string
 local sobject_impl = function(sub_cmd, arg, extra)
   if arg ~= "refresh" then
     return common_impl(sub_cmd, arg, extra)
   end
-  if #extra > 1 then
+  if extra:find("%s") then
     return U.show_err("'sobject refresh' takes at most one category: ALL, STANDARD, or CUSTOM.")
   end
-  local category = extra[1] and extra[1]:upper() or "ALL"
+  local category = extra == "" and "ALL" or extra:upper()
   if not vim.tbl_contains(SOBJECT_CATEGORIES, category) then
-    return U.show_err("Invalid category: " .. extra[1] .. ". Use ALL, STANDARD, or CUSTOM.")
+    return U.show_err("Invalid category: " .. extra .. ". Use ALL, STANDARD, or CUSTOM.")
   end
   M.sub_cmd_tbl[sub_cmd].funcs[arg]({ category = category })
 end
 
----@alias SfSubCmd {impl: fun(sub_cmd: string, arg: string, extra: string[]), funcs: table<string, fun(...): any>, takes_args: table<string, boolean>|nil, complete_arg: (fun(action: string, lead: string): string[])|nil}
+---@alias SfSubCmd {impl: fun(sub_cmd: string, arg: string, extra: string), funcs: table<string, fun(...): any>, takes_args: table<string, boolean>|nil, complete_arg: (fun(action: string, lead: string): string[])|nil}
 ---@type table<string, SfSubCmd>
 M.sub_cmd_tbl = {
   currentFile = {
@@ -146,7 +147,9 @@ M.sub_cmd_tbl = {
 ---@param opts table
 local create_sf_cmd = function(opts)
   local sub_cmd, arg = opts.fargs[1], opts.fargs[2]
-  local extra = vim.list_slice(opts.fargs, 3)
+  -- The raw text, not the rest of fargs: rejoining fargs would drop the
+  -- quotes around a flag value with spaces before it reaches the shell
+  local extra = opts.args:match("^%s*%S+%s+%S+%s+(.-)%s*$") or ""
 
   local matched_sub_cmd = M.sub_cmd_tbl[sub_cmd]
   if not matched_sub_cmd then
@@ -169,7 +172,7 @@ end
 ---@param cmdline string
 ---@return string[]
 local complete_sf_cmd = function(cmdline)
-  local args_str = cmdline:match("SF!?%s+(.*)$")
+  local args_str = cmdline:match("%f[%w]SF!?%s+(.*)$")
   if not args_str then
     return {}
   end

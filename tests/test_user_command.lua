@@ -91,6 +91,14 @@ T["execution"]["forwards every extra argument to push"] = function()
   expect.match(cmds[1], "%-%-ignore%-conflicts %-%-dry%-run")
 end
 
+T["execution"]["keeps the quotes in forwarded arguments"] = function()
+  stub_action("currentFile", "push")
+
+  child.cmd([[SF currentFile push --metadata "Apex Class"]])
+
+  eq(stub_calls(), { { [[--metadata "Apex Class"]] } })
+end
+
 T["execution"]["calls an action without extra arguments with none"] = function()
   stub_action("term", "toggle")
 
