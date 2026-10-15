@@ -180,6 +180,7 @@ Helpers.new_child_neovim = function()
     local resolved = {}
     for _, rule in ipairs(rules) do
       local r = rule.fixture and vim.tbl_extend("force", Helpers.sf_fixture(rule.fixture), rule) or vim.deepcopy(rule)
+      -- Only the response fields matter to the child
       r.fixture, r.recorded = nil, nil
       table.insert(resolved, r)
     end

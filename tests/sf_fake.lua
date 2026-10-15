@@ -179,11 +179,6 @@ function Fake.install(rules, opts)
   vim.fn.executable = fake_executable
 end
 
----@param rule SfFakeRule
-function Fake.add(rule)
-  table.insert(Fake.rules, rule)
-end
-
 -- Waits until every faked process has delivered its callbacks, including the
 -- callbacks those deferred again with `vim.schedule`/`vim.schedule_wrap`.
 ---@param timeout integer|nil Milliseconds
