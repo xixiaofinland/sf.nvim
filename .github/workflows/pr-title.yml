@@ -1,6 +1,6 @@
 name: Lint PR Title
-# Squash merges use the PR title as the commit on main, which release-please
-# parses; individual branch commits are free-form.
+# Squash merges use the PR title as the commit message, so it must be a
+# conventional commit; individual branch commits are free-form.
 on:
   pull_request_target:
     types: [opened, edited, synchronize, reopened]
