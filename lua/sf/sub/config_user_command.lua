@@ -2,45 +2,69 @@ local M = {}
 local Sf = require("sf")
 local U = require("sf.util")
 
-local complete = function(supported_args, subcmd_arg_lead)
-  local filtered_args = vim.tbl_filter(function(arg)
-    return arg:find("^" .. vim.pesc(subcmd_arg_lead)) ~= nil
-  end, supported_args)
-
-  table.sort(filtered_args)
-  return filtered_args
-end
-
-local common_complete = function(sub_cmd, subcmd_arg_lead)
-  return complete(vim.tbl_keys(M.sub_cmd_tbl[sub_cmd].funcs), subcmd_arg_lead)
-end
-
-local common_impl = function(sub_cmd, arg)
-  local func = vim.tbl_get(M.sub_cmd_tbl, sub_cmd, "funcs", arg)
-  if not func then
-    return U.show_err(string.format("'%s %s' is not a valid command", sub_cmd, arg))
+---@param candidates string[]
+---@param lead string
+---@param ignore_case boolean|nil
+---@return string[]
+local complete = function(candidates, lead, ignore_case)
+  local fold = ignore_case and string.upper or function(s)
+    return s
   end
-  func()
+  -- Plain find, not a pattern: the lead is whatever the user typed
+  local filtered = vim.tbl_filter(function(c)
+    return fold(c):find(fold(lead), 1, true) == 1
+  end, candidates)
+
+  table.sort(filtered)
+  return filtered
+end
+
+---@param sub_cmd string
+---@return string
+local action_list = function(sub_cmd)
+  local actions = vim.tbl_keys(M.sub_cmd_tbl[sub_cmd].funcs)
+  table.sort(actions)
+  return table.concat(actions, ", ")
+end
+
+-- Only the actions in `takes_args` accept a string of extra `sf` flags; the
+-- rest take no parameter or a non-string one (a callback), so extra
+-- arguments to them are refused rather than passed on.
+---@param sub_cmd string
+---@param arg string
+---@param extra string
+local common_impl = function(sub_cmd, arg, extra)
+  local func = M.sub_cmd_tbl[sub_cmd].funcs[arg]
+  if extra == "" then
+    return func()
+  end
+  if not vim.tbl_get(M.sub_cmd_tbl[sub_cmd], "takes_args", arg) then
+    return U.show_err(string.format("'%s %s' takes no arguments, got: %s", sub_cmd, arg, extra))
+  end
+  func(extra)
 end
 
 local SOBJECT_CATEGORIES = { "ALL", "STANDARD", "CUSTOM" }
 
+---@param sub_cmd string
+---@param arg string
+---@param extra string
 local sobject_impl = function(sub_cmd, arg, extra)
-  local func = vim.tbl_get(M.sub_cmd_tbl, sub_cmd, "funcs", arg)
-  if not func then
-    return U.show_err(string.format("'%s %s' is not a valid command", sub_cmd, arg))
+  if arg ~= "refresh" then
+    return common_impl(sub_cmd, arg, extra)
   end
-  if arg == "refresh" then
-    local category = extra and extra:upper() or "ALL"
-    if not vim.tbl_contains(SOBJECT_CATEGORIES, category) then
-      return U.show_err("Invalid category: " .. category .. ". Use ALL, STANDARD, or CUSTOM.")
-    end
-    return func({ category = category })
+  if extra:find("%s") then
+    return U.show_err("'sobject refresh' takes at most one category: ALL, STANDARD, or CUSTOM.")
   end
-  func()
+  local category = extra == "" and "ALL" or extra:upper()
+  if not vim.tbl_contains(SOBJECT_CATEGORIES, category) then
+    return U.show_err("Invalid category: " .. extra .. ". Use ALL, STANDARD, or CUSTOM.")
+  end
+  M.sub_cmd_tbl[sub_cmd].funcs[arg]({ category = category })
 end
 
----@type table<string, {impl: fun(sub_cmd: string, arg: string): any, complete: fun(subcmd_arg_lead: string): string[], funcs: table<string, fun(...): any>}>
+---@alias SfSubCmd {impl: fun(sub_cmd: string, arg: string, extra: string), funcs: table<string, fun(...): any>, takes_args: table<string, boolean>|nil, complete_arg: (fun(action: string, lead: string): string[])|nil}
+---@type table<string, SfSubCmd>
 M.sub_cmd_tbl = {
   currentFile = {
     funcs = {
@@ -50,10 +74,8 @@ M.sub_cmd_tbl = {
       diffIn = Sf.diff_in_org,
       RunAsAnonymous = Sf.run_anonymous,
     },
+    takes_args = { push = true, retrieve = true },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("currentFile", subcmd_arg_lead)
-    end,
   },
   md = {
     funcs = {
@@ -61,9 +83,6 @@ M.sub_cmd_tbl = {
       list = Sf.list_md_to_retrieve,
     },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("md", subcmd_arg_lead)
-    end,
   },
   mdtype = {
     funcs = {
@@ -71,9 +90,6 @@ M.sub_cmd_tbl = {
       list = Sf.list_md_type_to_retrieve,
     },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("mdtype", subcmd_arg_lead)
-    end,
   },
   org = {
     funcs = {
@@ -85,9 +101,6 @@ M.sub_cmd_tbl = {
       pullLog = Sf.pull_log,
     },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("org", subcmd_arg_lead)
-    end,
   },
   term = {
     funcs = {
@@ -95,9 +108,6 @@ M.sub_cmd_tbl = {
       cancel = Sf.cancel,
     },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("term", subcmd_arg_lead)
-    end,
   },
   test = {
     funcs = {
@@ -107,9 +117,6 @@ M.sub_cmd_tbl = {
       allTestsInOrg = Sf.run_local_tests,
     },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("test", subcmd_arg_lead)
-    end,
   },
   create = {
     funcs = {
@@ -121,39 +128,76 @@ M.sub_cmd_tbl = {
       trigger = Sf.create_trigger,
     },
     impl = common_impl,
-    complete = function(subcmd_arg_lead)
-      return common_complete("create", subcmd_arg_lead)
-    end,
   },
   sobject = {
     funcs = {
       refresh = Sf.refresh_sobjects,
     },
     impl = sobject_impl,
-    complete = function(subcmd_arg_lead)
-      local action, cat_lead = subcmd_arg_lead:match("^(%S+)%s+(.*)$")
+    complete_arg = function(action, lead)
       if action == "refresh" then
-        return complete(SOBJECT_CATEGORIES, cat_lead or "")
+        -- Execution upper-cases the category, so match it case-insensitively too
+        return complete(SOBJECT_CATEGORIES, lead, true)
       end
-      return common_complete("sobject", subcmd_arg_lead)
+      return {}
     end,
   },
 }
 
 ---@param opts table
 local create_sf_cmd = function(opts)
-  local fargs = opts.fargs
-  if #fargs < 2 then
-    return U.show_err("Command must supply at least two arguments")
-  end
+  local sub_cmd, arg = opts.fargs[1], opts.fargs[2]
+  -- The raw text, not the rest of fargs: rejoining fargs would drop the
+  -- quotes around a flag value with spaces before it reaches the shell
+  local extra = opts.args:match("^%s*%S+%s+%S+%s+(.-)%s*$") or ""
 
-  local sub_cmd = fargs[1]
   local matched_sub_cmd = M.sub_cmd_tbl[sub_cmd]
   if not matched_sub_cmd then
-    return U.show_err("unknown command: " .. sub_cmd)
+    local groups = vim.tbl_keys(M.sub_cmd_tbl)
+    table.sort(groups)
+    return U.show_err(string.format("Unknown group '%s'. Valid groups: %s", sub_cmd, table.concat(groups, ", ")))
+  end
+  if not arg then
+    return U.show_err(string.format("Missing action for '%s'. Valid actions: %s", sub_cmd, action_list(sub_cmd)))
+  end
+  if not matched_sub_cmd.funcs[arg] then
+    return U.show_err(
+      string.format("Unknown action '%s' for '%s'. Valid actions: %s", arg, sub_cmd, action_list(sub_cmd))
+    )
   end
 
-  matched_sub_cmd.impl(fargs[1], fargs[2], fargs[3])
+  matched_sub_cmd.impl(sub_cmd, arg, extra)
+end
+
+---@param cmdline string
+---@return string[]
+local complete_sf_cmd = function(cmdline)
+  local args_str = cmdline:match("%f[%w]SF!?%s+(.*)$")
+  if not args_str then
+    return {}
+  end
+  local words = vim.split(args_str, "%s+", { trimempty = true })
+  -- The word being completed is empty right after a space
+  if args_str == "" or args_str:match("%s$") then
+    table.insert(words, "")
+  end
+
+  local lead = words[#words]
+  if #words == 1 then
+    return complete(vim.tbl_keys(M.sub_cmd_tbl), lead)
+  end
+
+  local sub_cmd = M.sub_cmd_tbl[words[1]]
+  if not sub_cmd then
+    return {}
+  end
+  if #words == 2 then
+    return complete(vim.tbl_keys(sub_cmd.funcs), lead)
+  end
+  if #words == 3 and sub_cmd.complete_arg then
+    return sub_cmd.complete_arg(words[2], lead)
+  end
+  return {}
 end
 
 -- Registered at setup() so `:SF` outside a Salesforce project explains itself
@@ -179,23 +223,8 @@ M.create_user_commands = function()
     nargs = "+",
     desc = "Sf commands",
     bang = false, -- TODO: should we support it?
-    complete = function(arg_lead, cmdline, _)
-      -- sub_cmd complete
-      local subcmd, subcmd_arg_lead = cmdline:match("^['<,'>]*SF[!]*%s(%S+)%s(.*)$")
-      if subcmd and subcmd_arg_lead and M.sub_cmd_tbl[subcmd] and M.sub_cmd_tbl[subcmd].complete then
-        return M.sub_cmd_tbl[subcmd].complete(subcmd_arg_lead)
-      end
-
-      -- sub_cmd with args complete
-      if cmdline:match("^['<,'>]*SF[!]*%s+%w*$") then
-        local sub_cmd_keys = vim.tbl_keys(M.sub_cmd_tbl)
-        return vim
-          .iter(sub_cmd_keys)
-          :filter(function(key)
-            return key:find(arg_lead) ~= nil
-          end)
-          :totable()
-      end
+    complete = function(_, cmdline, _)
+      return complete_sf_cmd(cmdline)
     end,
   })
 end

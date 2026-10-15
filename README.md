@@ -84,6 +84,7 @@ In addition to the features, user commands and default hotkeys are also supplied
   autocmd.
 
   </details>
+
 - 🔍 (Optional) fzf-lua plugin for executing `:SF md list` and `SFListMdTypeToRetrieve` (Why not
   telescope.nvim? Because its UI is slow)
 - 🔍 (Optional) [universal ctags](https://github.com/universal-ctags/ctags) is used to enhance [Apex jump](#-enhanced-jump-to-definition-apex)
@@ -245,6 +246,9 @@ For example,
 2. Then select `test<space>` and hit `tab` again to list the available `sub_cmd2` options in `test`
    category as screenshot 2
 3. Finally choose `:SF test allTestsInThisFile` and hit `<enter>` to run all Apex tests in the current file.
+
+`:SF currentFile push` and `:SF currentFile retrieve` pass any further arguments on to `sf`, e.g.
+`:SF currentFile push --ignore-conflicts`. Other commands take no further arguments.
 
 ![Image 020](https://github.com/user-attachments/assets/725e5d6a-843e-4434-a0c9-a9e72dcb1528)
 
