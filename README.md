@@ -361,7 +361,7 @@ Or programmatically:
 require('sf').refresh_sobjects({ category = "ALL" })
 ```
 
-Once writing completes, any attached `apex_ls` clients are restarted in
+Once a refresh succeeds, any attached `apex_ls` clients are restarted in
 place (their buffers re-attach automatically) so the new stubs are picked up
 without an explicit `:LspRestart`. Pass `restart_lsp = false` to opt out.
 
@@ -371,9 +371,12 @@ No default hotkey is provided for this feature. Add one yourself if needed, e.g.
 vim.keymap.set("n", "<leader>sb", "<cmd>SF sobject refresh ALL<cr>")
 ```
 
-Requires `curl` on PATH. The work runs asynchronously and parallelizes
-describes across up to 15 in-flight composite/batch requests, so a
-~1500-object org typically finishes in well under a minute.
+The work runs asynchronously: describes go out as composite/batch requests
+through `sf api request rest`, up to 4 at a time, so the sf CLI handles
+authentication. New definitions are written aside and replace the old ones
+only when every batch succeeds; if any batch fails, the existing definitions
+are kept and `apex_ls` is not restarted. An sObject the org lists but cannot
+describe keeps its previous definition, and the notification names it.
 
 <br>
 

@@ -17,6 +17,7 @@ local original = {
 
 ---@class SfFakeRule
 ---@field cmd string Plain substring the command line must contain
+---@field times integer|nil Match at most this many commands, then let later rules answer
 ---@field stdout string|nil
 ---@field stderr string|nil
 ---@field code integer|nil Exit code, 0 by default
@@ -48,7 +49,10 @@ end
 ---@return SfFakeRule
 local function match(cmd_line)
   for _, rule in ipairs(Fake.rules) do
-    if cmd_line:find(rule.cmd, 1, true) then
+    if cmd_line:find(rule.cmd, 1, true) and (rule.times == nil or rule.times > 0) then
+      if rule.times then
+        rule.times = rule.times - 1
+      end
       return rule
     end
   end
