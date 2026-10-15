@@ -137,6 +137,26 @@ T["a test class with no test methods shows a message and opens no picker"] = fun
   eq(child.notified(), { { msg = "No Apex test method in this file.", level = child.lua_get("vim.log.levels.WARN") } })
 end
 
+T["a class with no test methods closes the picker left open for another class"] = function()
+  edit_test_class("ATest", { "a1" })
+  open_picker()
+  leave_picker()
+
+  edit_test_class("EmptyTest", {})
+  open_picker()
+
+  eq(#child.api.nvim_list_wins(), 1)
+end
+
+T["x on the title line leaves the picker read-only"] = function()
+  edit_test_class("ATest", { "a1" })
+  open_picker()
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+  child.type_keys("x")
+
+  eq(child.bo.modifiable, false)
+end
+
 ---@param n integer
 ---@return string[]
 local numbered_methods = function(n)

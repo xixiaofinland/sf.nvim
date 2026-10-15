@@ -232,6 +232,8 @@ P.open = function()
 
   local tests = TS.get_test_method_names_in_curr_file()
   if vim.tbl_isempty(tests) then
+    -- A picker still open for another class would let `cc` run that class.
+    P.close()
     return U.show_warn("No Apex test method in this file.")
   end
 
@@ -351,12 +353,12 @@ P.toggle = function()
     return U.show_err("file-type must be: " .. filetype)
   end
 
-  vim.bo[0].modifiable = true
-
   local r, _ = unpack(vim.api.nvim_win_get_cursor(0))
   if r == 1 then -- 1st row is title
     return
   end
+
+  vim.bo[0].modifiable = true
 
   local row_index = r - 1
 
