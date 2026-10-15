@@ -278,7 +278,7 @@ M.read_file_json_to_tbl = function(name, path)
     return nil
   end
 
-  return M.parse_from_json_to_tbl(content)
+  return M.parse_from_json_to_tbl(content, absolute_path)
 end
 
 --- Reads the content of a local file.
@@ -299,13 +299,15 @@ M.read_local_file = function(absolute_path, err_fn)
   return content
 end
 
----@param content string
+---@param content string[]
+---@param absolute_path string Named in the message when parsing fails
 ---@return table|nil
-M.parse_from_json_to_tbl = function(content)
+M.parse_from_json_to_tbl = function(content, absolute_path)
   local json = table.concat(content)
   local ok, tbl = pcall(vim.json.decode, json, {})
   if not ok then
-    M.notify_then_error("Parse file from json to tbl failed: " .. absolute_path)
+    M.show_err(string.format("Parse file from json to tbl failed: %s\n%s", absolute_path, tbl))
+    return nil
   end
 
   return tbl
@@ -334,8 +336,8 @@ end
 ---@param path string
 M.try_open_file = function(path)
   if M.file_readable(path) then
-    local open_new_file = string.format(":e! %s", path)
-    vim.cmd(open_new_file)
+    -- Escaped, or a space splits the path and `%`/`#` expand to buffer names
+    vim.cmd("edit! " .. vim.fn.fnameescape(path))
   end
 end
 

@@ -114,7 +114,6 @@ end
 
 local init = function()
   -- Define Salesforce related filetypes
-  vim.filetype = on
   vim.filetype.add({ extension = sf_filetypes })
 
   AutoCmd.set_auto_cmd_and_try_set_default_keys()
