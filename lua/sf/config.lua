@@ -97,6 +97,8 @@ local sf_filetypes = {
 -- Buffers opened before setup() (lazy loading) were detected without the
 -- Salesforce filetypes, e.g. a .cls file as "st". Setting the filetype again
 -- fires FileType, so those buffers get the same autocmds as new ones.
+-- Not limited to Salesforce projects: vim.filetype.add() maps new files
+-- everywhere, so open buffers end up as they would had setup() run first.
 local redetect_open_buffers = function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     local ext = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":e")
