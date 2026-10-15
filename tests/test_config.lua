@@ -296,24 +296,31 @@ T["setup() after a buffer is open"]["gives the real command and default keys in 
   child.open_in_sf_dir("SfProject.cls")
   child.sf_setup({ enable_hotkeys = true })
 
+  -- Detected as "st" before setup(), so the file-level keys need the redetect
+  eq(child.lua_get("vim.bo.filetype"), "apex")
   eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
   child.has_nmap("<leader>ss")
   child.has_nmap("<leader>sp")
 end
 
 T["setup() after a buffer is open"]["called twice keeps the real command"] = function()
+  child.sf_setup({ enable_hotkeys = true })
   child.open_in_sf_dir("SfProject.cls")
-  child.sf_setup()
+  child.sf_setup({ enable_hotkeys = true })
 
   eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
+  child.has_nmap("<leader>ss")
 end
 
 T["setup() after a buffer is open"]["keeps the placeholder outside a project"] = function()
   child.setup()
   child.open_in_non_sf_dir("test.txt")
   child.sf_setup({ enable_hotkeys = true })
+  child.capture_notify()
 
-  eq(child.api.nvim_get_commands({})["SF"].nargs, "*")
+  child.cmd("SF org fetchList")
+
+  expect.match(child.notified()[1].msg, "not inside a Salesforce project")
   child.no_nmap("<leader>ss")
 end
 
