@@ -12,6 +12,7 @@ local original = {
   system = vim.system,
   jobstart = vim.fn.jobstart,
   termopen = vim.fn.termopen,
+  jobstop = vim.fn.jobstop,
   executable = vim.fn.executable,
 }
 
@@ -21,11 +22,15 @@ local original = {
 ---@field stdout string|nil
 ---@field stderr string|nil
 ---@field code integer|nil Exit code, 0 by default
+---@field hold boolean|nil The job keeps running until `jobstop()` or `Fake.exit()` ends it
+---@field spawn_fails boolean|nil `jobstart`/`termopen` return -1, as when the shell isn't executable
 
 ---@type SfFakeRule[]
 Fake.rules = {}
 -- Every command received, in order: { cmd = string, argv = table|nil, via = string, stdin = string|nil }
 Fake.calls = {}
+-- Held jobs still running, by job id: { opts = table, rule = SfFakeRule }
+Fake.running = {}
 -- Commands no rule matched; `wait()` reports them even when the error was
 -- raised in a scheduled callback, where it would not reach the test.
 Fake.unmatched = {}
@@ -122,9 +127,23 @@ local function fake_system(cmd, opts, on_exit)
   }
 end
 
+---@param job_id integer
+---@param opts table
+---@param code integer
+local function deliver_exit(job_id, opts, code)
+  deliver(function()
+    if opts.on_exit then
+      opts.on_exit(job_id, code, "exit")
+    end
+  end)
+end
+
 local function run_job(cmd, opts, via)
   opts = opts or {}
   local rule = record_and_match(cmd, via)
+  if rule.spawn_fails then
+    return -1
+  end
   next_job_id = next_job_id + 1
   local job_id = next_job_id
   -- A terminal job writes to the buffer that was current when it started.
@@ -140,12 +159,37 @@ local function run_job(cmd, opts, via)
     if opts.on_stderr then
       opts.on_stderr(job_id, to_lines(rule.stderr), "stderr")
     end
-    if opts.on_exit then
-      opts.on_exit(job_id, rule.code or 0, "exit")
-    end
   end)
 
+  if rule.hold then
+    Fake.running[job_id] = { opts = opts, rule = rule }
+  else
+    deliver_exit(job_id, opts, rule.code or 0)
+  end
+
   return job_id
+end
+
+-- Ends a held job with `code` (the rule's code by default), as if it exited by itself.
+---@param job_id integer
+---@param code integer|nil
+function Fake.exit(job_id, code)
+  local job = Fake.running[job_id]
+  if not job then
+    error("sf fake: no held job " .. tostring(job_id), 0)
+  end
+  Fake.running[job_id] = nil
+  deliver_exit(job_id, job.opts, code or job.rule.code or 0)
+end
+
+-- Stopping a job ends it with 143, the exit code SIGTERM gives a shell. Like
+-- the real `jobstop()`, the exit arrives on a later tick.
+local function fake_jobstop(job_id)
+  if not Fake.running[job_id] then
+    return 0
+  end
+  Fake.exit(job_id, 143)
+  return 1
 end
 
 local function fake_jobstart(cmd, opts)
@@ -174,12 +218,14 @@ function Fake.install(rules, opts)
   Fake.rules = rules or {}
   Fake.calls = {}
   Fake.unmatched = {}
+  Fake.running = {}
   Fake.pending = 0
   Fake.mode = (opts and opts.mode) or "schedule"
 
   vim.system = fake_system
   vim.fn.jobstart = fake_jobstart
   vim.fn.termopen = fake_termopen
+  vim.fn.jobstop = fake_jobstop
   vim.fn.executable = fake_executable
 end
 

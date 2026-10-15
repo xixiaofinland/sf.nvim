@@ -10,7 +10,8 @@ function T:new(cfg)
   return setmetatable({
     win = nil,
     buf = nil,
-    is_running = false,
+    -- The run the terminal is busy with, `{ job_id = integer }`, or nil when idle
+    running = nil,
     config = config,
     last_exit_code = nil,
   }, { __index = self })
@@ -34,7 +35,7 @@ function T:store(win, buf)
 end
 
 function T:run(cmd, cb)
-  if self.is_running then
+  if self.running then
     return vim.notify("Wait the current task to finish.", vim.log.levels.WARN)
   end
 
@@ -69,22 +70,41 @@ function T:run_after_setup(cmd, cb)
     cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
   end
 
-  vim.fn.termopen(cmd_with_echo, {
+  local run = {}
+  self.running = run
+
+  local ok, job_id = pcall(vim.fn.termopen, cmd_with_echo, {
     clear_env = self.config.clear_env,
     env = self.config.env,
-    on_exit = function(job_id, exit_code, event_name)
+    on_exit = function(_, exit_code)
+      -- A cancelled run's job can exit after a newer run has started; the
+      -- terminal belongs to that newer run now.
+      if self.running ~= run then
+        return
+      end
+      self.running = nil
       self.last_exit_code = exit_code
-      self.is_running = false
       self:close() -- hack way to scroll to end
       self:open()
 
       if cb ~= nil then
-        cb(self, cmd, exit_code)
+        local cb_ok, err = pcall(cb, self, cmd, exit_code)
+        if not cb_ok then
+          vim.notify("SFTerm: callback failed: " .. tostring(err), vim.log.levels.ERROR)
+        end
       end
     end,
   })
 
-  self.is_running = true
+  if ok and job_id > 0 then
+    run.job_id = job_id
+  else
+    if self.running == run then
+      self.running = nil
+    end
+    local reason = ok and ("job id " .. job_id) or tostring(job_id)
+    vim.notify(string.format("SFTerm: failed to start `%s` (%s).", cmd, reason), vim.log.levels.ERROR)
+  end
 
   vim.bo[self.buf].filetype = self.config.ft -- force filetype
 
@@ -133,9 +153,18 @@ function T:close()
   return self
 end
 
+-- Stops the running job and frees the terminal at once; the job's exit, when
+-- it arrives, is ignored, so a cancelled run's callback never fires.
 function T:cancel()
-  self.is_running = false -- set the flag to stop the running task
-  self:run("\3")
+  local run = self.running
+  if not run then
+    return vim.notify("No running task to cancel.", vim.log.levels.INFO)
+  end
+
+  self.running = nil
+  if run.job_id then
+    vim.fn.jobstop(run.job_id)
+  end
 end
 
 function T:create_and_open_win(buf)
