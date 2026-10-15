@@ -96,6 +96,10 @@ M.set_auto_cmd_and_try_set_default_keys = function()
     callback = try_set_keys_and_user_commands,
   })
 
+  -- When setup() runs late (lazy loading), the current buffer's events have
+  -- already fired, so register for it now rather than waiting for the next one
+  try_set_keys_and_user_commands()
+
   -- clear diff files retrieved locally when Nvim exists
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = sf_group,

@@ -288,4 +288,33 @@ T["setup()"]["has user commands in sf-project dir"] = function()
   eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
 end
 
+T["setup() after a buffer is open"] = new_set()
+
+T["setup() after a buffer is open"]["gives the real command and default keys in a project buffer"] = function()
+  -- Lazy loading: the Apex file is open before setup() runs
+  child.setup()
+  child.open_in_sf_dir("SfProject.cls")
+  child.sf_setup({ enable_hotkeys = true })
+
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
+  child.has_nmap("<leader>ss")
+  child.has_nmap("<leader>sp")
+end
+
+T["setup() after a buffer is open"]["called twice keeps the real command"] = function()
+  child.open_in_sf_dir("SfProject.cls")
+  child.sf_setup()
+
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "+")
+end
+
+T["setup() after a buffer is open"]["keeps the placeholder outside a project"] = function()
+  child.setup()
+  child.open_in_non_sf_dir("test.txt")
+  child.sf_setup({ enable_hotkeys = true })
+
+  eq(child.api.nvim_get_commands({})["SF"].nargs, "*")
+  child.no_nmap("<leader>ss")
+end
+
 return T
