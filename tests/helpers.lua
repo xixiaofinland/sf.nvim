@@ -82,8 +82,20 @@ Helpers.new_child_neovim = function()
   local child = MiniTest.new_child_neovim()
   local eq = Helpers.expect.equality
 
+  -- A child that can't be reached once (e.g. a sandbox blocking its socket)
+  -- won't be reached by the next case either. Failing the rest at once saves
+  -- mini.test's 5 s connection wait per case, which adds up to minutes a file.
+  local unreachable
+
   child.setup = function()
-    child.restart({ "-u", "scripts/minimal_init.lua" })
+    if unreachable then
+      error("child Neovim unreachable, see the first failure in this file: " .. unreachable, 0)
+    end
+    local ok, err = pcall(child.restart, { "-u", "scripts/minimal_init.lua" })
+    if not ok then
+      unreachable = tostring(err):match("[^\n]*\n?[^\n]*")
+      error(err, 0)
+    end
     child.bo.readonly = false
   end
 
