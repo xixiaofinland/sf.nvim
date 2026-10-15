@@ -2,8 +2,8 @@
 --
 -- SYNTHETIC: not captured from a real org. Shaped after `OrgDisplayReturn` in
 -- salesforcecli/plugin-org src/shared/orgTypes.ts, as returned by
--- src/commands/org/display.ts. Replace with a real, scrubbed capture and set
--- `recorded = true`.
+-- src/commands/org/display.ts. Replace it with a real, scrubbed capture by
+-- running `make record-fixture ORG=<alias>` against a throwaway org.
 return {
   recorded = false,
   code = 0,
