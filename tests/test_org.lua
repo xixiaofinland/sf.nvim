@@ -70,7 +70,10 @@ T["set_target_org()"]["keeps target_org when sf config set fails"] = function()
 
   eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
   eq(child.notified(), {
-    { msg = "uat - set target_org failed! Not in a sfdx project folder?", level = child.lua_get("vim.log.levels.ERROR") },
+    {
+      msg = "uat - set target_org failed! Not in a sfdx project folder?",
+      level = child.lua_get("vim.log.levels.ERROR"),
+    },
   })
 end
 
@@ -110,7 +113,10 @@ T["sf fake"]["wait() reports a command no rule matched in a scheduled callback"]
 end
 
 T["sf fake"]["answers vim.system, jobstart and termopen with the rule's output"] = function()
-  child.sf_fake.install({ { cmd = "sf version", stdout = "line1\nline2", stderr = "warn", code = 3 } }, { mode = "sync" })
+  child.sf_fake.install(
+    { { cmd = "sf version", stdout = "line1\nline2", stderr = "warn", code = 3 } },
+    { mode = "sync" }
+  )
 
   local system = child.lua_get([[vim.system({ "sf", "version" }, { stdin = "in" }):wait()]])
   eq({ system.code, system.stdout, system.stderr }, { 3, "line1\nline2", "warn" })

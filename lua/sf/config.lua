@@ -78,7 +78,6 @@ local default_cfg = {
   -- wait time for sf commands (in minutes)
   -- running all local tests still defaults to 180 mins, as it is a costly operation
   sf_wait_time = 5,
-
 }
 
 local apply_config = function(opt)

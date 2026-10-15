@@ -143,8 +143,7 @@ function Term.run_tooling_query()
     return U.show_err("Target_org empty!")
   end
   -- local cmd = vim.fn.expandcmd('sf data query -t -f "%:p" -o ') .. U.get()
-  local cmd =
-      B:new():cmd("data"):act("query"):addParams({ ["-f"] = "%:p", ["-t"] = "" }):build()
+  local cmd = B:new():cmd("data"):act("query"):addParams({ ["-f"] = "%:p", ["-t"] = "" }):build()
   t:run(cmd)
 end
 

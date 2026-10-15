@@ -20,6 +20,15 @@ test: deps
 test_file: deps
 	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run_file('$(FILE)')"
 
+# Lua formatting, per .stylua.toml; CI runs fmt-check.
+STYLUA_PATHS := lua tests scripts
+
+fmt:
+	stylua $(STYLUA_PATHS)
+
+fmt-check:
+	stylua --check $(STYLUA_PATHS)
+
 # Clone a dependency into $(1) from $(2) if missing, then check out commit $(3),
 # fetching it only when the clone doesn't have it yet.
 define pin
@@ -48,4 +57,4 @@ deps/parsers/parser/%.so: deps/tree-sitter-sfapex/%/src/parser.c
 	@mkdir -p $(@D)
 	cc -shared -fPIC -O2 -I$(<D) $< $(wildcard $(<D)/scanner.c) -o $@
 
-.PHONY: test test_file deps parsers
+.PHONY: test test_file fmt fmt-check deps parsers

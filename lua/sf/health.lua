@@ -59,14 +59,11 @@ H.check_sf_project = function()
   })[1]
 
   if root == nil then
-    return vim.health.warn(
-      "cwd is not inside a Salesforce project, so `:SF` and the hotkeys are not registered.",
-      {
-        "cwd: " .. cwd,
-        "A project root is a folder containing `sfdx-project.json` or `.forceignore`.",
-        "`:cd` into a project (or open a file inside one) and they register automatically.",
-      }
-    )
+    return vim.health.warn("cwd is not inside a Salesforce project, so `:SF` and the hotkeys are not registered.", {
+      "cwd: " .. cwd,
+      "A project root is a folder containing `sfdx-project.json` or `.forceignore`.",
+      "`:cd` into a project (or open a file inside one) and they register automatically.",
+    })
   end
 
   vim.health.ok("sf project detected: " .. vim.fs.dirname(root))

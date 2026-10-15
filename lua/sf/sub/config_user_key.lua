@@ -23,11 +23,12 @@ M.set_default_hotkeys = function()
   nmap("<leader>ft", Sf.create_and_list_ctags, "fzf list updated ctags")
   nmap("<leader>so", Sf.org_open, "open target_org")
 
-
   vim.keymap.set("v", "<leader>sa", function()
     Sf.run_anonymous_stdin(true)
   end, { buffer = true, desc = "run selected content anonymously" })
-  nmap("<leader>sa", function() Sf.run_anonymous_stdin(false) end, "run this buffer anonymously")
+  nmap("<leader>sa", function()
+    Sf.run_anonymous_stdin(false)
+  end, "run this buffer anonymously")
   nmap("<leader>sA", Sf.run_anonymous, "run this file anonymously")
 
   -- Hotkeys for metadata files only;
