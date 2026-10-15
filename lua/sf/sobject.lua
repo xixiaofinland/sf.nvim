@@ -552,183 +552,219 @@ function Sobject.refresh(opts)
     notify(msg)
   end
 
-  U.show("Refreshing sObject definitions...")
-  get_org_info(org, function(org_info, err)
-    if err or not org_info then
-      return finish(U.show_err, err or "Org info missing.")
+  -- Runs the async steps of this refresh. An error in one ends the refresh
+  -- with a message instead of leaving `refreshing` set for the session, and
+  -- makes the callbacks of batches still in flight do nothing.
+  local aborted = false
+  ---@param fn function
+  ---@return function
+  local guard = function(fn)
+    return function(...)
+      if aborted then
+        return
+      end
+      local ok, err = pcall(fn, ...)
+      if ok then
+        return
+      end
+      if not refreshing then
+        -- Already finished: the error came from apex_ls or opts.on_done.
+        error(err, 0)
+      end
+      aborted = true
+      pcall(vim.fn.delete, staging_dir, "rf")
+      finish(U.show_err, "sObject refresh failed: " .. tostring(err) .. ". Kept the existing definitions.")
     end
+  end
 
-    local api_version = format_api_version(org_info.apiVersion)
-    list_sobjects(org, function(sobject_entries, list_err)
-      if list_err then
-        return finish(U.show_err, "SObject list error: " .. list_err)
-      end
-      if not sobject_entries or #sobject_entries == 0 then
-        return finish(U.show_warn, "No sObjects found in org.")
+  U.show("Refreshing sObject definitions...")
+  get_org_info(
+    org,
+    guard(function(org_info, err)
+      if err or not org_info then
+        return finish(U.show_err, err or "Org info missing.")
       end
 
-      -- The sf CLI returns a list of names (strings). We don't get the
-      -- custom flag here, so categorization comes from the per-object
-      -- describe.custom flag downstream. For STANDARD/CUSTOM category
-      -- filtering we use the name suffix heuristic just to skip the
-      -- describe call; the describe result is still the source of truth
-      -- for which subdir to write into.
-      local names = {}
-      for _, entry in ipairs(sobject_entries) do
-        local name = type(entry) == "string" and entry or entry.name
-        if type(name) == "string" then
-          local custom = is_custom({ name = name })
-          local include = true
-          if category == "CUSTOM" and not custom then
-            include = false
-          elseif category == "STANDARD" and custom then
-            include = false
+      local api_version = format_api_version(org_info.apiVersion)
+      list_sobjects(
+        org,
+        guard(function(sobject_entries, list_err)
+          if list_err then
+            return finish(U.show_err, "SObject list error: " .. list_err)
           end
-          if include and required_sobject(name) then
-            table.insert(names, name)
+          if not sobject_entries or #sobject_entries == 0 then
+            return finish(U.show_warn, "No sObjects found in org.")
           end
-        end
-      end
 
-      if #names == 0 then
-        return finish(U.show_warn, "No sObjects matched category " .. category .. ".")
-      end
-
-      -- Only the refreshed categories are swapped in, but both exist in
-      -- staging so a describe whose custom flag disagrees with the name
-      -- heuristic still has somewhere to be written.
-      local subdirs = {}
-      if category ~= "CUSTOM" then
-        table.insert(subdirs, "standardObjects")
-      end
-      if category ~= "STANDARD" then
-        table.insert(subdirs, "customObjects")
-      end
-      vim.fn.delete(staging_dir, "rf")
-      vim.fn.mkdir(staging_dir .. "/standardObjects", "p")
-      vim.fn.mkdir(staging_dir .. "/customObjects", "p")
-
-      local batches = {}
-      for i = 1, #names, BATCH_SIZE do
-        local batch = {}
-        for j = i, math.min(i + BATCH_SIZE - 1, #names) do
-          table.insert(batch, names[j])
-        end
-        table.insert(batches, batch)
-      end
-
-      local completed = 0
-      local in_flight = 0
-      local next_batch = 1
-      local batch_errors = {}
-      local write_errors = {}
-      local failed_names = {}
-
-      local on_batches_done = function()
-        if #batch_errors > 0 or #write_errors > 0 then
-          vim.fn.delete(staging_dir, "rf")
-          local reasons = {}
-          if #batch_errors > 0 then
-            table.insert(
-              reasons,
-              string.format(
-                "%d of %d describe batch(es) failed (%s)",
-                #batch_errors,
-                #batches,
-                table.concat(batch_errors, "; ")
-              )
-            )
-          end
-          if #write_errors > 0 then
-            table.insert(reasons, table.concat(write_errors, "; "))
-          end
-          return finish(
-            U.show_err,
-            "sObject refresh failed: " .. table.concat(reasons, "; ") .. ". Kept the existing definitions."
-          )
-        end
-
-        -- An sObject the org listed but would not describe keeps its
-        -- previous definition rather than disappearing.
-        for _, name in ipairs(failed_names) do
-          for _, sub in ipairs(subdirs) do
-            local old = sobjects_dir .. "/" .. sub .. "/" .. name .. ".cls"
-            local new = staging_dir .. "/" .. sub .. "/" .. name .. ".cls"
-            if vim.uv.fs_stat(old) and not vim.uv.fs_stat(new) then
-              vim.uv.fs_copyfile(old, new)
+          -- The sf CLI returns a list of names (strings). We don't get the
+          -- custom flag here, so categorization comes from the per-object
+          -- describe.custom flag downstream. For STANDARD/CUSTOM category
+          -- filtering we use the name suffix heuristic just to skip the
+          -- describe call; the describe result is still the source of truth
+          -- for which subdir to write into.
+          local names = {}
+          for _, entry in ipairs(sobject_entries) do
+            local name = type(entry) == "string" and entry or entry.name
+            if type(name) == "string" then
+              local custom = is_custom({ name = name })
+              local include = true
+              if category == "CUSTOM" and not custom then
+                include = false
+              elseif category == "STANDARD" and custom then
+                include = false
+              end
+              if include and required_sobject(name) then
+                table.insert(names, name)
+              end
             end
           end
-        end
 
-        local swapped, swap_err = swap_in(staging_dir, sobjects_dir, subdirs)
-        if not swapped then
-          return finish(
-            U.show_err,
-            string.format(
-              "sObject refresh failed to move the new definitions from %s into %s: %s",
-              staging_dir,
-              sobjects_dir,
-              swap_err or "unknown error"
-            )
-          )
-        end
+          if #names == 0 then
+            return finish(U.show_warn, "No sObjects matched category " .. category .. ".")
+          end
 
-        if #failed_names > 0 then
-          finish(
-            U.show_warn,
-            string.format(
-              "sObject definitions refreshed (%d objects); %d sObject(s) could not be described "
-                .. "and kept their previous definitions: %s",
-              completed,
-              #failed_names,
-              format_names(failed_names)
-            )
-          )
-        else
-          finish(U.show, string.format("sObject definitions refreshed (%d objects).", completed))
-        end
-        if opts.restart_lsp ~= false then
-          restart_apex_ls()
-        end
-        if type(opts.on_done) == "function" then
-          opts.on_done(sobjects_dir)
-        end
-      end
+          -- Only the refreshed categories are swapped in, but both exist in
+          -- staging so a describe whose custom flag disagrees with the name
+          -- heuristic still has somewhere to be written.
+          local subdirs = {}
+          if category ~= "CUSTOM" then
+            table.insert(subdirs, "standardObjects")
+          end
+          if category ~= "STANDARD" then
+            table.insert(subdirs, "customObjects")
+          end
+          vim.fn.delete(staging_dir, "rf")
+          vim.fn.mkdir(staging_dir .. "/standardObjects", "p")
+          vim.fn.mkdir(staging_dir .. "/customObjects", "p")
 
-      local launch_next
-      launch_next = function()
-        while in_flight < BATCH_CONCURRENCY and next_batch <= #batches do
-          local idx = next_batch
-          next_batch = next_batch + 1
-          in_flight = in_flight + 1
-          describe_batch(org, api_version, batches[idx], function(describes, batch_err, batch_failed_names)
-            in_flight = in_flight - 1
-            if batch_err then
-              table.insert(batch_errors, "batch " .. idx .. ": " .. batch_err)
-            else
-              vim.list_extend(failed_names, batch_failed_names or {})
-              for _, desc in ipairs(describes or {}) do
-                if desc.name then
-                  local write_err = write_faux_class(staging_dir, desc)
-                  if write_err then
-                    table.insert(write_errors, write_err)
-                  else
-                    completed = completed + 1
-                  end
+          local batches = {}
+          for i = 1, #names, BATCH_SIZE do
+            local batch = {}
+            for j = i, math.min(i + BATCH_SIZE - 1, #names) do
+              table.insert(batch, names[j])
+            end
+            table.insert(batches, batch)
+          end
+
+          local completed = 0
+          local in_flight = 0
+          local next_batch = 1
+          local batch_errors = {}
+          local write_errors = {}
+          local failed_names = {}
+
+          local on_batches_done = function()
+            if #batch_errors > 0 or #write_errors > 0 then
+              vim.fn.delete(staging_dir, "rf")
+              local reasons = {}
+              if #batch_errors > 0 then
+                table.insert(
+                  reasons,
+                  string.format(
+                    "%d of %d describe batch(es) failed (%s)",
+                    #batch_errors,
+                    #batches,
+                    table.concat(batch_errors, "; ")
+                  )
+                )
+              end
+              if #write_errors > 0 then
+                table.insert(reasons, table.concat(write_errors, "; "))
+              end
+              return finish(
+                U.show_err,
+                "sObject refresh failed: " .. table.concat(reasons, "; ") .. ". Kept the existing definitions."
+              )
+            end
+
+            -- An sObject the org listed but would not describe keeps its
+            -- previous definition rather than disappearing.
+            for _, name in ipairs(failed_names) do
+              for _, sub in ipairs(subdirs) do
+                local old = sobjects_dir .. "/" .. sub .. "/" .. name .. ".cls"
+                local new = staging_dir .. "/" .. sub .. "/" .. name .. ".cls"
+                if vim.uv.fs_stat(old) and not vim.uv.fs_stat(new) then
+                  vim.uv.fs_copyfile(old, new)
                 end
               end
             end
-            if next_batch <= #batches then
-              launch_next()
-            elseif in_flight == 0 then
-              on_batches_done()
+
+            local swapped, swap_err = swap_in(staging_dir, sobjects_dir, subdirs)
+            if not swapped then
+              return finish(
+                U.show_err,
+                string.format(
+                  "sObject refresh failed to move the new definitions from %s into %s: %s",
+                  staging_dir,
+                  sobjects_dir,
+                  swap_err or "unknown error"
+                )
+              )
             end
-          end)
-        end
-      end
-      launch_next()
+
+            if #failed_names > 0 then
+              finish(
+                U.show_warn,
+                string.format(
+                  "sObject definitions refreshed (%d objects); %d sObject(s) could not be described "
+                    .. "and kept their previous definitions: %s",
+                  completed,
+                  #failed_names,
+                  format_names(failed_names)
+                )
+              )
+            else
+              finish(U.show, string.format("sObject definitions refreshed (%d objects).", completed))
+            end
+            if opts.restart_lsp ~= false then
+              restart_apex_ls()
+            end
+            if type(opts.on_done) == "function" then
+              opts.on_done(sobjects_dir)
+            end
+          end
+
+          local launch_next
+          launch_next = function()
+            while in_flight < BATCH_CONCURRENCY and next_batch <= #batches do
+              local idx = next_batch
+              next_batch = next_batch + 1
+              in_flight = in_flight + 1
+              describe_batch(
+                org,
+                api_version,
+                batches[idx],
+                guard(function(describes, batch_err, batch_failed_names)
+                  in_flight = in_flight - 1
+                  if batch_err then
+                    table.insert(batch_errors, "batch " .. idx .. ": " .. batch_err)
+                  else
+                    vim.list_extend(failed_names, batch_failed_names or {})
+                    for _, desc in ipairs(describes or {}) do
+                      if desc.name then
+                        local write_err = write_faux_class(staging_dir, desc)
+                        if write_err then
+                          table.insert(write_errors, write_err)
+                        else
+                          completed = completed + 1
+                        end
+                      end
+                    end
+                  end
+                  if next_batch <= #batches then
+                    launch_next()
+                  elseif in_flight == 0 then
+                    on_batches_done()
+                  end
+                end)
+              )
+            end
+          end
+          launch_next()
+        end)
+      )
     end)
-  end)
+  )
 end
 
 return Sobject

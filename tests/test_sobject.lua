@@ -346,6 +346,27 @@ T["refresh"]["keeps existing definitions when the describes fail"] = function()
   eq(child.lua_get("_G.lsp_restarts"), 0)
 end
 
+T["refresh"]["reports an error on the way and still accepts the next refresh"] = function()
+  child.sf_fake.install({
+    { cmd = "sf org display", fixture = "org_display" },
+    { cmd = "sf sobject list", fixture = "sobject_list" },
+    { cmd = DESCRIBE_CMD, fixture = "api_request_rest_composite_batch" },
+  })
+  -- The staging directory can't be created in a read-only .sfdx/tools.
+  child.lua([[vim.fn.setfperm(_G.tools_dir, "r-xr-xr-x")]])
+
+  refresh()
+
+  child.lua([[vim.fn.setfperm(_G.tools_dir, "rwxr-xr-x")]])
+  eq(tools_files(), OLD_FILES)
+  expect.match(last_notified("ERROR"), "^sObject refresh failed: ")
+  eq(child.lua_get("_G.lsp_restarts"), 0)
+
+  refresh()
+
+  expect.match(last_notified("WARN"), "refreshed %(3 objects%)")
+end
+
 T["refresh"]["keeps existing definitions when some describe batches fail"] = function()
   -- 30 names make two batches of at most 25; the first one is rejected.
   local names = {}
