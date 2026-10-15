@@ -100,6 +100,15 @@ local T = new_set({
 
 T["signs"] = new_set()
 
+T["signs"]["opening a class before any coverage run says nothing"] = function()
+  setup()
+
+  edit("SfProject.cls")
+
+  eq(child.notified(), {})
+  eq(signs(), {})
+end
+
 T["signs"]["with covered signs hidden, only uncovered lines get signs"] = function()
   save_result()
   setup({ code_sign_highlight = { covered = { fg = "" } } })
@@ -203,7 +212,7 @@ T["saving"]["writes the result under a project path with spaces and places signs
   eq(read_result(), coverage_json())
   local get_test = child.sf_fake.calls()[2]
   eq(get_test.argv, { "sf", "apex", "get", "test", "-i", "7070000000FAKE1", "--json", "-c", "-o", "myorg" })
-  eq(errors(), {})
+  eq(child.notified(), { { msg = "Code coverage saved.", level = child.lua_get("vim.log.levels.INFO") } })
 
   edit("SfProject.cls")
   eq(#signs(), 4)

@@ -133,9 +133,13 @@ H.get_coverage = function()
     return coverage
   end
 
+  -- No result yet means no coverage run so far, not an error: entering a class says nothing.
+  if vim.fn.filereadable(U.get_plugin_folder_path() .. "test_result.json") == 0 then
+    return nil
+  end
+
   local tbl = U.read_file_in_plugin_folder("test_result.json")
   if not tbl then
-    -- vim.notify_once("Local test_result.json not found.", vim.log.levels.WARN)
     return nil
   end
 
