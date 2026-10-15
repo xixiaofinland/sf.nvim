@@ -441,6 +441,9 @@ Upon starting Nvim, Sf.nvim executes `:SF org fetchList` to fetch and save
 authenticated org names. Display the target_org in your status line to
 facilitate command execution against the target org.
 
+Once orgs have been fetched, changing the working directory to another sf
+project fetches them again, so target_org follows that project's default org.
+
 If you don't have a default target_org, then this value is empty. You can use `<leader>ss` to set it.
 
 Example configuration using lualine.nvim with target_org(`xixiao100`):

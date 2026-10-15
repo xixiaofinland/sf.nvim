@@ -8,6 +8,11 @@ function Org.fetch_org_list()
   H.fetch_org_list()
 end
 
+--- Refetch the org list when the cwd moves to another sf project
+function Org.on_dir_changed()
+  H.on_dir_changed()
+end
+
 function Org.set_target_org()
   H.set_target_org()
 end
@@ -212,9 +217,45 @@ H.on_org_list = function(obj)
   H.store_orgs(parsed.result)
 end
 
+-- The sf project of the cwd, "" outside one. sf runs in the cwd, so its
+-- project's local config decides the default org.
+---@return string
+H.cwd_project = function()
+  local found = vim.fs.find({ ".forceignore", "sfdx-project.json" }, {
+    upward = true,
+    stop = vim.uv.os_homedir(),
+    path = vim.fn.getcwd(),
+  })[1]
+  return found and vim.fs.dirname(found) or ""
+end
+
+-- Project whose orgs were last fetched; nil until the first fetch
+H.fetched_project = nil
+
+H.on_dir_changed = function()
+  -- Never fetched: no target_org to go stale, and no sf call the user didn't ask for
+  if H.fetched_project == nil then
+    return
+  end
+
+  local project = H.cwd_project()
+  if project == H.fetched_project then
+    return
+  end
+
+  -- Cleared first, so nothing runs against the old project's org meanwhile
+  H.orgs = {}
+  U.target_org = ""
+  H.fetched_project = project
+  if vim.fn.executable("sf") == 1 then
+    H.fetch_org_list()
+  end
+end
+
 H.fetch_org_list = function()
   U.is_sf_cmd_installed()
 
+  H.fetched_project = H.cwd_project()
   H.fetch_id = H.fetch_id + 1
   local fetch_id = H.fetch_id
   vim.system(

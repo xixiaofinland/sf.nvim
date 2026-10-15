@@ -66,6 +66,45 @@ T["fetch_org_list()"]["clears target_org when the refreshed list has no default 
   eq(child.lua_get([[require('sf.util').target_org]]), "")
 end
 
+T["fetch_org_list()"]["refetches when the cwd moves to a project without a default org"] = function()
+  child.sf_fake.install({
+    { cmd = "sf org list", fixture = "org_list", times = 1 },
+    {
+      cmd = "sf org list",
+      stdout = [[{"status":0,"result":{"nonScratchOrgs":[{"alias":"uat","username":"u@x.com"}],"scratchOrgs":[]}}]],
+    },
+  })
+  fetch_orgs()
+  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+
+  child.go_to_sf_dir()
+  child.sf_fake.wait()
+
+  eq(#child.sf_fake.cmds(), 2)
+  eq(child.lua_get([[require('sf.util').target_org]]), "")
+end
+
+T["fetch_org_list()"]["does not refetch when the cwd stays in the same project"] = function()
+  child.sf_fake.install({ { cmd = "sf org list", fixture = "org_list" } })
+  child.go_to_sf_dir()
+  fetch_orgs()
+
+  child.cmd("cd force-app/main/default/classes")
+  child.sf_fake.wait()
+
+  eq(#child.sf_fake.cmds(), 1)
+  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+end
+
+T["fetch_org_list()"]["does not fetch on a cwd change before any fetch"] = function()
+  child.sf_fake.install({ { cmd = "sf org list", fixture = "org_list" } })
+
+  child.go_to_sf_dir()
+  child.sf_fake.wait()
+
+  eq(child.sf_fake.cmds(), {})
+end
+
 T["fetch_org_list()"]["shows an error when sf fails"] = function()
   child.sf_fake.install({ { cmd = "sf org list", code = 1, stderr = "Error (1): fake failure" } })
   child.capture_notify()

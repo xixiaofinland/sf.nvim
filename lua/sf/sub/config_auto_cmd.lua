@@ -73,6 +73,15 @@ M.set_auto_cmd_and_try_set_default_keys = function()
     })
   end
 
+  -- The default org depends on the project, so another project needs its own
+  vim.api.nvim_create_autocmd({ "DirChanged" }, {
+    group = sf_group,
+    desc = "Refetch org info when the cwd moves to another sf project",
+    callback = function()
+      require("sf.org").on_dir_changed()
+    end,
+  })
+
   -- Placeholder so an early `:SF` reports why it is unavailable rather than E492
   require("sf.sub.config_user_command").create_placeholder_command()
 
