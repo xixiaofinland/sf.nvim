@@ -15,12 +15,8 @@ local T = new_set({
   },
 })
 
--- Only errors: a sandboxed child also warns that its log file isn't writable
-local notified_errors = function()
-  return child.lua_get([[vim.tbl_map(
-    function(n) return n.msg end,
-    vim.tbl_filter(function(n) return n.level == vim.log.levels.ERROR end, _G.notified)
-  )]])
+local only_error = function(msg)
+  return { { msg = msg, level = child.lua_get("vim.log.levels.ERROR") } }
 end
 
 local fetch_orgs = function()
@@ -111,7 +107,7 @@ T["fetch_org_list()"]["shows an error when sf fails"] = function()
 
   fetch_orgs()
 
-  eq(notified_errors(), { "Failed to list orgs: Error (1): fake failure" })
+  eq(child.notified(), only_error("Failed to list orgs: Error (1): fake failure"))
 end
 
 T["fetch_org_list()"]["shows an error when sf prints something other than JSON"] = function()
@@ -120,7 +116,7 @@ T["fetch_org_list()"]["shows an error when sf prints something other than JSON"]
 
   fetch_orgs()
 
-  eq(notified_errors(), { "Failed to list orgs: sf output is not JSON" })
+  eq(child.notified(), only_error("Failed to list orgs: sf output is not JSON"))
 end
 
 T["diff_in_org()"] = new_set()
@@ -160,7 +156,7 @@ T["diff_in_org()"]["shows a message when the file's metadata type is unknown"] =
 
   eq(cmd, nil)
   eq(child.select_calls(), {})
-  eq(notified_errors(), { "Cannot diff SfProject.cls: its metadata type is unknown" })
+  eq(child.notified(), only_error("Cannot diff SfProject.cls: its metadata type is unknown"))
 end
 
 T["set_target_org()"] = new_set()
