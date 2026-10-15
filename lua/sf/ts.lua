@@ -4,86 +4,43 @@ local M = {}
 local H = {}
 
 M.get_class_name = function()
-  local class_name = [[
-    (class_declaration
-      name: (identifier) @class_name
-    )
-  ]]
-  local class_name_query = H.build_query(class_name)
-  local root = H.get_parser():parse()[1]:root()
-
-  local result = H.get_matched_node_names(class_name_query, 1, root)
-  if not next(result) then
-    return nil
-  end
-  return result[1]
+  local class = H.find_nodes("class_declaration")[1]
+  return class and H.name_of(class) or nil
 end
 
 M.get_test_class_name = function()
-  local test_class_name = [[
-    (class_declaration
-      (modifiers
-        (annotation
-          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
-      name: (identifier) @class_name
-    )
-  ]]
-  local test_class_name_query = H.build_query(test_class_name)
-  local root = H.get_parser():parse()[1]:root()
-
-  local result = H.get_matched_node_names(test_class_name_query, 2, root)
-  if vim.tbl_isempty(result) then
-    return nil
+  for _, class in ipairs(H.find_nodes("class_declaration")) do
+    if H.is_test_class(class) then
+      return H.name_of(class)
+    end
   end
-  return result[1]
+  return nil
 end
 
 M.get_test_method_names_in_curr_file = function()
-  local test_annotation = [[
-    (method_declaration
-      (modifiers
-        (annotation
-          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
-      name: (identifier) @meth_name
-    )
-  ]]
-  local apex_test_meth_query = H.build_query(test_annotation)
-  local root = H.get_parser():parse()[1]:root()
-
-  return H.get_matched_node_names(apex_test_meth_query, 2, root)
+  local names = {}
+  for _, method in ipairs(H.find_nodes("method_declaration")) do
+    if H.is_test(method) then
+      table.insert(names, H.name_of(method))
+    end
+  end
+  return names
 end
 
 M.get_current_test_method_name = function()
-  local test_annotation = [[
-    (method_declaration
-      (modifiers
-        (annotation
-          (identifier) @anno (#match? @anno "^[iI][sS][tT][eE][sS][tT]$" )))
-      name: (identifier) @meth_name
-    )
-  ]]
-  local apex_test_meth_query = H.build_query(test_annotation)
-
-  local curr_node = ts.get_node()
-  while curr_node ~= nil do
-    if curr_node:type() == "method_declaration" then
-      local names = H.get_matched_node_names(apex_test_meth_query, 2, curr_node)
-      if names ~= nil then
-        return names[1]
-      end
+  local node = H.get_node_at_cursor()
+  while node ~= nil do
+    -- The innermost method decides: a helper method is not a test even when
+    -- it sits in a test class.
+    if node:type() == "method_declaration" then
+      return H.is_test(node) and H.name_of(node) or nil
     end
-    curr_node = curr_node:parent()
+    node = node:parent()
   end
   return nil
 end
 
 -- Helper ------------------------------
-
-H.build_query = function(query_str)
-  local parser = H.get_parser()
-  local lang = parser:lang()
-  return ts.query.parse(lang, query_str)
-end
 
 H.get_parser = function()
   local ok, parser = pcall(ts.get_parser, 0)
@@ -93,26 +50,62 @@ H.get_parser = function()
   return parser
 end
 
-H.get_matched_node_names = function(query, anno_index, node)
-  local names = {}
-  for _, match, _ in query:iter_matches(node, 0) do
-    local raw_node = match[anno_index]
-    local target_node = raw_node
-    -- https://github.com/xixiaofinland/sf.nvim/issues/281
-    -- in Nvim 0.11, the query capture match is wrapped into a table
-    -- Checking the types to support older versions too
-    if type(raw_node) == "table" and raw_node.id == nil and raw_node[1] ~= nil then
-      target_node = raw_node[1]
-    end
+H.get_root = function()
+  return H.get_parser():parse()[1]:root()
+end
 
-    if not target_node then
-      print("match[" .. anno_index .. "] is nil")
-    else
-      local ok, text = pcall(ts.get_node_text, target_node, 0)
-      if ok then table.insert(names, text) end
+---@param node_type string
+---@return TSNode[]
+H.find_nodes = function(node_type)
+  local query = ts.query.parse(H.get_parser():lang(), "(" .. node_type .. ") @node")
+  local nodes = {}
+  for _, node in query:iter_captures(H.get_root(), 0) do
+    table.insert(nodes, node)
+  end
+  return nodes
+end
+
+H.get_node_at_cursor = function()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return H.get_root():named_descendant_for_range(row - 1, col, row - 1, col)
+end
+
+H.name_of = function(declaration)
+  local name = declaration:field("name")[1]
+  return name and ts.get_node_text(name, 0) or nil
+end
+
+-- Before `@IsTest` existed, a class was a test class by holding `testMethod`
+-- methods. Only its own methods count, so an inner test class doesn't make
+-- its outer class one.
+H.is_test_class = function(class)
+  if H.is_test(class) then
+    return true
+  end
+  local body = class:field("body")[1]
+  if body == nil then
+    return false
+  end
+  for member in body:iter_children() do
+    if member:type() == "method_declaration" and H.is_test(member) then
+      return true
     end
   end
-  return names
+  return false
+end
+
+-- Matches on the modifiers' text rather than their node shapes, so the
+-- annotation (any casing, with or without arguments such as
+-- `@IsTest(SeeAllData=true)`) and the legacy `testMethod` keyword are found
+-- the same way.
+H.is_test = function(declaration)
+  for child in declaration:iter_children() do
+    if child:type() == "modifiers" then
+      local text = ts.get_node_text(child, 0):lower()
+      return text:find("@%s*istest%f[^%w_]") ~= nil or text:find("%f[%w_]testmethod%f[^%w_]") ~= nil
+    end
+  end
+  return false
 end
 
 return M

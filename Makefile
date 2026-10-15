@@ -6,6 +6,11 @@ MINI_NVIM_URL := https://github.com/nvim-mini/mini.nvim
 MINI_NVIM_REV := e3f2349a65143ff062f0b70ee9d68d8ce35c7059
 NVIM_TREESITTER_URL := https://github.com/nvim-treesitter/nvim-treesitter.git
 NVIM_TREESITTER_REV := ca581c3436fc2b236847f5b739ebc263739e5ca6
+# Keep in step with the apex/soql/sosl revision in nvim-treesitter's
+# lua/nvim-treesitter/parsers.lua, so tests parse what users get.
+SFAPEX_URL := https://github.com/aheber/tree-sitter-sfapex
+SFAPEX_REV := da568eee10ce4724a40f368b2b7e795dacb4f1ba
+PARSERS := apex soql sosl
 
 # Run all test files
 test: deps
@@ -29,5 +34,18 @@ deps:
 	@mkdir -p deps
 	$(call pin,deps/mini.nvim,$(MINI_NVIM_URL),$(MINI_NVIM_REV))
 	$(call pin,deps/nvim-treesitter,$(NVIM_TREESITTER_URL),$(NVIM_TREESITTER_REV))
+	$(call pin,deps/tree-sitter-sfapex,$(SFAPEX_URL),$(SFAPEX_REV))
+	@$(MAKE) --no-print-directory parsers
 
-.PHONY: test test_file deps
+# Compiled straight from the grammar's generated C, which needs only a C
+# compiler: nvim-treesitter's installer requires Neovim 0.12, and CI also
+# tests 0.11. A run in a fresh make sees the sources the pin above checked out;
+# a rev bump rewrites them, so the parsers rebuild.
+parsers: $(PARSERS:%=deps/parsers/parser/%.so)
+
+# scanner.c is optional; none of the three grammars has one today.
+deps/parsers/parser/%.so: deps/tree-sitter-sfapex/%/src/parser.c
+	@mkdir -p $(@D)
+	cc -shared -fPIC -O2 -I$(<D) $< $(wildcard $(<D)/scanner.c) -o $@
+
+.PHONY: test test_file deps parsers
