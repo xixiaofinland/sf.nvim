@@ -84,20 +84,38 @@ local apply_config = function(opt)
   vim.g.sf = vim.tbl_deep_extend("force", default_cfg, opt)
 end
 
+local sf_filetypes = {
+  cls = "apex",
+  apex = "apex",
+  trigger = "apex",
+  soql = "soql",
+  sosl = "sosl",
+  page = "html",
+  log = "sflog",
+}
+
+-- Buffers opened before setup() (lazy loading) were detected without the
+-- Salesforce filetypes, e.g. a .cls file as "st". Setting the filetype again
+-- fires FileType, so those buffers get the same autocmds as new ones.
+-- Not limited to Salesforce projects: vim.filetype.add() maps new files
+-- everywhere, so open buffers end up as they would had setup() run first.
+local redetect_open_buffers = function()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    local ext = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":e")
+    local ft = sf_filetypes[ext]
+    if vim.api.nvim_buf_is_loaded(buf) and ft and vim.bo[buf].filetype ~= ft then
+      -- Run in the buffer: the FileType autocmds set buffer-local keymaps
+      vim.api.nvim_buf_call(buf, function()
+        vim.bo.filetype = ft
+      end)
+    end
+  end
+end
+
 local init = function()
   -- Define Salesforce related filetypes
   vim.filetype = on
-  vim.filetype.add({
-    extension = {
-      cls = "apex",
-      apex = "apex",
-      trigger = "apex",
-      soql = "soql",
-      sosl = "sosl",
-      page = "html",
-      log = "sflog",
-    },
-  })
+  vim.filetype.add({ extension = sf_filetypes })
 
   AutoCmd.set_auto_cmd_and_try_set_default_keys()
 
@@ -115,6 +133,8 @@ local init = function()
   end
 
   require("sf.test").setup_sign()
+
+  redetect_open_buffers()
 end
 
 Cfg.setup = function(opt)
