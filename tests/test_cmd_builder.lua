@@ -20,13 +20,13 @@ T["setup()"] = new_set()
 
 T["setup()"]["can set root command in new()"] = function()
   local result = child.lua_get('B:new("root"):cmd("org"):act("create shape"):build()')
-  local expected = 'root org create shape -o "t_org"'
+  local expected = "root org create shape -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]['when both "cmd, act" are given then command building success'] = function()
   local result = child.lua_get('B:new():cmd("org"):act("create shape"):build()')
-  local expected = 'sf org create shape -o "t_org"'
+  local expected = "sf org create shape -o 't_org'"
   eq(result, expected)
 end
 
@@ -44,38 +44,38 @@ end
 
 T["setup()"]["can supply flag:value string in addParams()"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParams("-f", "/path/"):build()')
-  local expected = 'sf apex run -f "/path/" -o "t_org"'
+  local expected = "sf apex run -f '/path/' -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["can supply flag:value string in more than one addParams()"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParams("-f", "/path/"):addParams("-c", "cc"):build()')
-  local expected = 'sf apex run -c "cc" -f "/path/" -o "t_org"'
+  local expected = "sf apex run -c 'cc' -f '/path/' -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["when supply number param value it turns into string type in cmd"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParams("-c", 5):build()')
-  local expected = 'sf apex run -c "5" -o "t_org"'
+  local expected = "sf apex run -c '5' -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["can supply table {flag = value} in addParams()"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParams({["-f"] = "/path/"}):build()')
-  local expected = 'sf apex run -f "/path/" -o "t_org"'
+  local expected = "sf apex run -f '/path/' -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["can supply mutliple params in table in addParams()"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParams({["-c"] = "test", ["-f"] = "/path/"}):build()')
-  local expected = 'sf apex run -c "test" -f "/path/" -o "t_org"'
+  local expected = "sf apex run -c 'test' -f '/path/' -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["can supply flag:value string in addParamsNoExpand(), and will not be expanded"] = function()
   child.open_in_sf_dir("test.txt")
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand("-f", "%:p"):build()')
-  local expected = 'sf apex run -f "%:p" -o "t_org"'
+  local expected = "sf apex run -f '%:p' -o 't_org'"
   eq(result, expected)
 end
 
@@ -84,14 +84,14 @@ T["setup()"]["can supply flag:value string in more than one addParamsNoExpand, a
   local result = child.lua_get(
     'B:new():cmd("apex"):act("run"):addParamsNoExpand("-f", "%:p"):addParamsNoExpand("-c", "%:p"):build()'
   )
-  local expected = 'sf apex run -c "%:p" -f "%:p" -o "t_org"'
+  local expected = "sf apex run -c '%:p' -f '%:p' -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["can supply table {flag = value} in addParamsNoExpand() and will not be expanded"] = function()
   child.open_in_sf_dir("test.txt")
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand({["-f"] = "%:p"}):build()')
-  local expected = 'sf apex run -f "%:p" -o "t_org"'
+  local expected = "sf apex run -f '%:p' -o 't_org'"
   eq(result, expected)
 end
 
@@ -99,7 +99,7 @@ T["setup()"]["can supply multiple params in table in addParamsNoExpand() and non
   child.open_in_sf_dir("test.txt")
   local result =
     child.lua_get('B:new():cmd("apex"):act("run"):addParamsNoExpand({["-c"] = "%:p", ["-f"] = "%:p"}):build()')
-  local expected = 'sf apex run -c "%:p" -f "%:p" -o "t_org"'
+  local expected = "sf apex run -c '%:p' -f '%:p' -o 't_org'"
   eq(result, expected)
 end
 
@@ -107,13 +107,13 @@ T["setup()"]["can sort params with value alphabetically"] = function()
   local result = child.lua_get(
     'B:new():cmd("apex"):act("run"):addParams({["-f"] = "/path/", ["-c"] = "test", ["-t"] = "" }):build()'
   )
-  local expected = 'sf apex run -c "test" -f "/path/" -t -o "t_org"'
+  local expected = "sf apex run -c 'test' -f '/path/' -t -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["params without value are put to the end of built command"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParams({["-z"] = "", ["-c"] = "test"}):build()')
-  local expected = 'sf apex run -c "test" -z -o "t_org"'
+  local expected = "sf apex run -c 'test' -z -o 't_org'"
   eq(result, expected)
 end
 
@@ -121,13 +121,13 @@ T["setup()"]["sorted params with value, then sorted params without value"] = fun
   local result = child.lua_get(
     'B:new():cmd("apex"):act("run"):addParams({["-f"] = "/path/", ["-c"] = "test", ["-z"] = "", ["-t"] = "" }):build()'
   )
-  local expected = 'sf apex run -c "test" -f "/path/" -t -z -o "t_org"'
+  local expected = "sf apex run -c 'test' -f '/path/' -t -z -o 't_org'"
   eq(result, expected)
 end
 
 T["setup()"]["can overwrite with new org value"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):set_org("new_org"):build()')
-  local expected = 'sf apex run -o "new_org"'
+  local expected = "sf apex run -o 'new_org'"
   eq(result, expected)
 end
 
@@ -140,7 +140,7 @@ end
 
 T["setup()"]['when no "org" property then use the default targe"t_org"'] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):build()')
-  local expected = 'sf apex run -o "t_org"'
+  local expected = "sf apex run -o 't_org'"
   eq(result, expected)
 end
 
@@ -148,21 +148,46 @@ T["setup()"]["%:p for file_path in param value is expanded"] = function()
   child.open_in_sf_dir("test.txt")
   local file_path = child.lua_get('vim.fn.expandcmd("%:p")')
   local result = child.lua_get([[B:new():cmd("apex"):act("run"):addParams("-f", '%:p'):build()]])
-  local expected = string.format('sf apex run -f "%s" -o "t_org"', file_path)
+  local expected = string.format("sf apex run -f '%s' -o 't_org'", file_path)
   eq(result, expected)
 end
 
 T["setup()"]["param_str are attached preceding org"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):addParamStr("-b bb"):addParams("-c"):build()')
-  local expected = 'sf apex run -c -b bb -o "t_org"'
+  local expected = "sf apex run -c -b bb -o 't_org'"
 
   eq(result, expected)
 end
 
 T["setup()"]["org name with space is safely supported"] = function()
   local result = child.lua_get('B:new():cmd("apex"):act("run"):set_org("target org"):build()')
-  local expected = 'sf apex run -o "target org"'
+  local expected = "sf apex run -o 'target org'"
 
+  eq(result, expected)
+end
+
+local metachars = [[a $HOME $(id) `id` " \ 'q']]
+
+for _, add in ipairs({ "addParams", "addParamsNoExpand" }) do
+  T["setup()"][add .. "() values with shell metacharacters are quoted for the shell"] = function()
+    child.o.shell = "sh"
+    local result =
+      child.lua_get(string.format('B:new():cmd("apex"):act("run"):%s("-n", ...):build()', add), { metachars })
+    local expected = [[sf apex run -n 'a $HOME $(id) `id` " \ '\''q'\''' -o 't_org']]
+    eq(result, expected)
+  end
+
+  T["setup()"][add .. "() values with shell metacharacters are passed through unchanged as a table"] = function()
+    local result =
+      child.lua_get(string.format('B:new():cmd("apex"):act("run"):%s("-n", ...):buildAsTable()', add), { metachars })
+    eq(result, { "sf", "apex", "run", "-n", metachars, "-o", "t_org" })
+  end
+end
+
+T["setup()"]["org with shell metacharacters is quoted for the shell"] = function()
+  child.o.shell = "sh"
+  local result = child.lua_get('B:new():cmd("apex"):act("run"):set_org(...):build()', { "$(id)'x" })
+  local expected = [[sf apex run -o '$(id)'\''x']]
   eq(result, expected)
 end
 

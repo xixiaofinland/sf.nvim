@@ -158,4 +158,105 @@ T["cancel()"]["says so when nothing is running"] = function()
   eq(child.notified(), { { msg = "No running task to cancel.", level = levels().INFO } })
 end
 
+-- ── Shell metacharacters
+--
+-- The fake terminal records the command line; these tests then run it through
+-- a real shell with a stub `sf` that prints its arguments and stdin, to see
+-- what the shell made of it. The stub is plain sh, so this never reaches a
+-- real sf.
+
+local stub_dir = vim.fn.tempname()
+vim.fn.mkdir(stub_dir, "p")
+local marker = stub_dir .. "/expanded"
+vim.fn.writefile({
+  "#!/bin/sh",
+  [[for a in "$@"; do printf 'arg:%s\n' "$a"; done]],
+  [[printf 'stdin:'; cat]],
+}, stub_dir .. "/sf")
+vim.fn.setfperm(stub_dir .. "/sf", "rwxr-xr-x")
+
+-- None of these may run or change: a command substitution that would leave a
+-- marker file, a variable, backticks, a double quote and backslashes (fish
+-- reads `\\` and `\'` even inside single quotes).
+local nasty = string.format([[$(touch %s) $HOME `touch %s` " \ \n \\ \']], marker, marker)
+
+local ESC = string.char(27)
+
+---@param shell string
+local run_in_shell = function(shell)
+  local term_cmd = child.sf_fake.calls()[1].cmd
+  local out = child.lua_get(
+    [[(function(shell, cmd, dir)
+      vim.o.shell = shell
+      local path = vim.env.PATH
+      vim.env.PATH = dir .. ":" .. path
+      local out = vim.fn.system(cmd, "")
+      vim.env.PATH = path
+      return out
+    end)(...)]],
+    { shell, term_cmd, stub_dir }
+  )
+  -- The banner spans several lines when the command does; the stub's output
+  -- starts at its first argument.
+  local split = assert(out:find("\narg:", 1, true), out)
+  return {
+    term_cmd = term_cmd,
+    -- With its color codes and padding taken off
+    banner = vim.trim((out:sub(1, split - 1):gsub(ESC .. "%[[%d;]*m", ""))),
+    rest = out:sub(split + 1),
+  }
+end
+
+---@param result { term_cmd: string, banner: string }
+local expect_banner_shows_command = function(result)
+  -- The banner shows exactly the command that runs after it.
+  helpers.expect.ends_with(result.term_cmd, result.banner)
+  helpers.expect.match(result.banner, "sf ")
+end
+
+T["shell metacharacters"] = new_set({
+  parametrize = { { "sh" }, { "bash" }, { "zsh" }, { "fish" } },
+  hooks = {
+    pre_case = function()
+      vim.fn.delete(marker)
+      child.lua([[require('sf.util').target_org = "t_org"]])
+    end,
+  },
+})
+
+T["shell metacharacters"]["anonymous Apex reaches sf unchanged"] = function(shell)
+  if vim.fn.executable(shell) == 0 then
+    MiniTest.skip(shell .. " is not installed")
+  end
+  child.o.shell = shell
+  child.sf_fake.install({ { cmd = "sf apex run" } })
+  local apex = { "System.debug('" .. nasty .. "');", "Integer i = 1;" }
+  child.api.nvim_buf_set_lines(0, 0, -1, false, apex)
+
+  child.lua("Term.run_anonymous_stdin(false)")
+
+  local result = run_in_shell(shell)
+  expect_banner_shows_command(result)
+  eq(result.rest, "arg:apex\narg:run\narg:-o\narg:t_org\nstdin:" .. table.concat(apex, "\n") .. "\n")
+  eq(vim.fn.filereadable(marker), 0)
+end
+
+T["shell metacharacters"]["highlighted SOQL reaches sf unchanged"] = function(shell)
+  if vim.fn.executable(shell) == 0 then
+    MiniTest.skip(shell .. " is not installed")
+  end
+  child.o.shell = shell
+  child.sf_fake.install({ { cmd = "sf data query" } })
+  local soql = "SELECT Id FROM Account WHERE Name = '" .. nasty .. "'"
+  child.api.nvim_buf_set_lines(0, 0, -1, false, { soql })
+  child.type_keys("0vg_")
+
+  child.lua("Term.run_highlighted_soql()")
+
+  local result = run_in_shell(shell)
+  expect_banner_shows_command(result)
+  eq(result.rest, "arg:data\narg:query\narg:-q\narg:" .. soql .. "\narg:-o\narg:t_org\nstdin:")
+  eq(vim.fn.filereadable(marker), 0)
+end
+
 return T

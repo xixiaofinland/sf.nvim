@@ -10,6 +10,7 @@ local U = require("sf.util")
 ---@field org string|nil
 local CommandBuilder = {}
 CommandBuilder.__index = CommandBuilder
+local H = {}
 
 ---Create a new CommandBuilder instance
 ---@param base_command string|nil
@@ -182,13 +183,7 @@ function CommandBuilder:build()
       if param.value.value == "" then
         table.insert(param_strings, param.flag)
       else
-        local param_value
-        if param.value.expand then
-          param_value = string.format('"%s"', vim.fn.expandcmd(param.value.value))
-        else
-          param_value = string.format('"%s"', param.value.value)
-        end
-        table.insert(param_strings, param.flag .. " " .. param_value)
+        table.insert(param_strings, param.flag .. " " .. vim.fn.shellescape(H.value_of(param.value)))
       end
     end
     cmd = cmd .. " " .. table.concat(param_strings, " ")
@@ -199,8 +194,7 @@ function CommandBuilder:build()
   end
 
   if self.require_org then
-    local org_param = string.format('-o "%s"', self.org)
-    cmd = cmd .. " " .. org_param
+    cmd = cmd .. " -o " .. vim.fn.shellescape(self.org)
   end
 
   return cmd
@@ -224,12 +218,7 @@ function CommandBuilder:buildAsTable()
     for _, param in ipairs(sortedParams) do
       table.insert(cmd_tbl, param.flag)
       if param.value.value ~= "" then
-        if param.value.expand then
-          local expanded_value = vim.fn.expandcmd(param.value.value)
-          table.insert(cmd_tbl, expanded_value)
-        else
-          table.insert(cmd_tbl, param.value.value)
-        end
+        table.insert(cmd_tbl, H.value_of(param.value))
       end
     end
   end
@@ -245,6 +234,19 @@ end
 function CommandBuilder:t()
   local t = "%:p"
   return vim.fn.expandcmd(t)
+end
+
+-- Only a value that starts with a Vim filename keyword (`%`, `#`, `<cfile>`, ...) is
+-- expanded: `expandcmd()` would also replace `$VAR` anywhere in the value, and
+-- a value such as a test name or a SOQL query must reach sf as written.
+---@param param { value: string|number, expand: boolean }
+---@return string
+function H.value_of(param)
+  local value = tostring(param.value)
+  if param.expand and value:match("^[%%#<]") then
+    return vim.fn.expandcmd(value)
+  end
+  return value
 end
 
 return CommandBuilder
