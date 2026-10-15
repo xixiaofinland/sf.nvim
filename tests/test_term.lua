@@ -176,8 +176,9 @@ vim.fn.writefile({
 vim.fn.setfperm(stub_dir .. "/sf", "rwxr-xr-x")
 
 -- None of these may run or change: a command substitution that would leave a
--- marker file, a variable, backticks, a double quote and a backslash.
-local nasty = string.format([[$(touch %s) $HOME `touch %s` " \ \n]], marker, marker)
+-- marker file, a variable, backticks, a double quote and backslashes (fish
+-- reads `\\` and `\'` even inside single quotes).
+local nasty = string.format([[$(touch %s) $HOME `touch %s` " \ \n \\ \']], marker, marker)
 
 local ESC = string.char(27)
 
