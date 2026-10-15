@@ -18,7 +18,7 @@ test_file: deps
 # Clone a dependency into $(1) from $(2) if missing, then check out commit $(3),
 # fetching it only when the clone doesn't have it yet.
 define pin
-	@[ -d $(1) ] || git clone --filter=blob:none --no-checkout $(2) $(1)
+	@[ -d $(1) ] || git clone --filter=blob:none $(2) $(1)
 	@[ "$$(git -C $(1) rev-parse HEAD 2>/dev/null)" = "$(3)" ] || { \
 		git -C $(1) cat-file -e $(3)^{commit} 2>/dev/null || git -C $(1) fetch --filter=blob:none origin $(3); \
 		git -C $(1) -c advice.detachedHead=false checkout --detach $(3); \
