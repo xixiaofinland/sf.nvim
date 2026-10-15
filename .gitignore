@@ -2,3 +2,4 @@
 deps/
 .DS_Store
 .claude/
+nvim.log
