@@ -186,10 +186,18 @@ H.list_md_type_to_retrieve = function()
     return U.show_err("fzf-lua is not installed. Need it to show the list.")
   end
 
-  local tbl = U.read_file_json_to_tbl("metadata-types.json", U.get_plugin_folder_path())
+  local folder = U.get_plugin_folder_path()
+  if not U.file_readable(folder .. "metadata-types.json") then
+    return U.show_warn("Metadata types not fetched yet: run `:SF mdtype pull` first.")
+  end
+
+  local tbl = U.read_file_json_to_tbl("metadata-types.json", folder)
+  if tbl == nil then
+    return
+  end
   local md_types = {}
 
-  for _, obj in pairs(tbl["metadataObjects"]) do
+  for _, obj in pairs(tbl["metadataObjects"] or {}) do
     table.insert(md_types, obj["xmlName"])
   end
 

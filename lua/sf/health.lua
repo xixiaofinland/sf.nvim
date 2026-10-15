@@ -33,19 +33,16 @@ H.check_tree_sitter = function()
     return ok and is_installed == true
   end
 
-  if not has_parser("apex") then
-    return vim.health.error("apex parser not installed in nvim-treesitter!")
+  local all_installed = true
+  for _, lang in ipairs({ "apex", "soql", "sosl", "sflog" }) do
+    if not has_parser(lang) then
+      all_installed = false
+      vim.health.error(lang .. " parser not installed in nvim-treesitter!")
+    end
   end
-  if not has_parser("soql") then
-    return vim.health.error("soql parser not installed in nvim-treesitter!")
+  if all_installed then
+    vim.health.ok("All Salesforce relevant parsers are installed in nvim-treesitter.")
   end
-  if not has_parser("sosl") then
-    return vim.health.error("sosl parser not installed in nvim-treesitter!")
-  end
-  if not has_parser("sflog") then
-    return vim.health.error("sflog parser not installed in nvim-treesitter!")
-  end
-  vim.health.ok("All Salesforce relevant parsers are installed in nvim-treesitter.")
 end
 
 -- Checked against cwd rather than the current buffer: during :checkhealth the
