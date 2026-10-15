@@ -22,12 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        neovim_version: ['v0.10.0', 'nightly']
-        # include:
-        # - os: macos-latest
-        #   neovim_version: v0.10.0
-        # - os: windows-latest
-        #   neovim_version: v0.10.0
+        # Oldest supported (see README and lua/sf/health.lua), current stable, nightly.
+        neovim_version: ['v0.11.0', 'stable', 'nightly']
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -37,5 +33,20 @@ jobs:
         with:
           neovim: true
           version: ${{ matrix.neovim_version }}
+      # The pinned revs live in the Makefile, so it keys the cache.
+      - name: Cache test dependencies
+        uses: actions/cache@v4
+        with:
+          path: deps
+          key: test-deps-${{ hashFiles('Makefile') }}
       - name: Run tests
         run: make test
+
+  test:
+    # One check with a fixed name whatever the matrix: issue-loop's TEST_CHECK.
+    name: test
+    if: always()
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.build.result }}" = success
