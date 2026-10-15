@@ -232,7 +232,7 @@ T["setup()"]["global user-keys disabled -> enabled when 0. enable_hotkeys 1. swi
   child.no_nmap("<leader>so")
   child.no_nmap("<leader>ml")
 
-  child.cmd("cd " .. root_path .. "/tests/dir/sf-project/sf_cache/")
+  child.cmd("cd " .. root_path .. "/tests/dir/sf-project/force-app/")
   child.has_nmap("<leader>ss")
   child.has_nmap("<leader>sf")
   child.has_nmap("<leader>so")
