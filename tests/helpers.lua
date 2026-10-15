@@ -8,8 +8,8 @@
 -- ── Faking the sf CLI
 --
 -- Tests never run a real `sf`. `child.sf_fake.install(rules)` replaces
--- `vim.system`, `vim.fn.jobstart`, `vim.fn.termopen` and `vim.fn.jobstop` in the child (code in
--- tests/sf_fake.lua). A rule matches when its `cmd` is a plain substring of
+-- `vim.system`, `vim.fn.jobstart`, `vim.fn.termopen` and `vim.fn.jobstop` in
+-- the child (code in tests/sf_fake.lua). A rule matches when its `cmd` is a plain substring of
 -- the command line (argv tables are joined with spaces); the first match wins
 -- and answers with its `stdout`, `stderr` and `code` (default 0), or with a
 -- recorded fixture named by `fixture`. Any command no rule matches raises an

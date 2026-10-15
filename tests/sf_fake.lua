@@ -182,7 +182,7 @@ function Fake.exit(job_id, code)
   deliver_exit(job_id, job.opts, code or job.rule.code or 0)
 end
 
--- Stopping a job ends it with 143, the exit code SIGTERM gives a shell. Like
+-- Stopping a job ends it with 143 (128 + SIGTERM). Like
 -- the real `jobstop()`, the exit arrives on a later tick.
 local function fake_jobstop(job_id)
   if not Fake.running[job_id] then

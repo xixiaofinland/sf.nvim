@@ -99,9 +99,7 @@ function T:run_after_setup(cmd, cb)
   if ok and job_id > 0 then
     run.job_id = job_id
   else
-    if self.running == run then
-      self.running = nil
-    end
+    self.running = nil
     local reason = ok and ("job id " .. job_id) or tostring(job_id)
     vim.notify(string.format("SFTerm: failed to start `%s` (%s).", cmd, reason), vim.log.levels.ERROR)
   end
