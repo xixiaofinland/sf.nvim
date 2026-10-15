@@ -21,24 +21,6 @@ local T = new_set({
   },
 })
 
-local has_cmd_pattern = function(cmd, pattern)
-  return expect.match(child.cmd_capture(cmd), pattern)
-end
-local has_nmap = function(lhs)
-  return has_cmd_pattern("nmap " .. lhs, "Sf")
-end
-
-local no_cmd_pattern = function(cmd, pattern)
-  return expect.no_match(child.cmd_capture(cmd), pattern)
-end
-local no_nmap = function(lhs)
-  return no_cmd_pattern("nmap " .. lhs, "Sf")
-end
-
-local expect_config = function(field, value)
-  eq(child.lua_get("vim.g.sf." .. field), value)
-end
-
 T["get_target_org()"] = new_set()
 
 T["get_target_org()"]["return target_org"] = function()
@@ -69,15 +51,26 @@ end
 
 T["copy_apex_name()"] = new_set()
 
--- TODO: works only locally, fail in CI
--- T['copy_apex_name()']['return apex name'] = function()
---   local apex_name = 'SfProject'
---   child.open_in_sf_dir(apex_name .. '.cls')
---
---   child.lua([[Sf.copy_apex_name()]])
---   -- eq(child.fn.getreg("*"), apex_name)
---   eq(child.lua_get('vim.fn.getreg("*")'), apex_name)
--- end
+T["copy_apex_name()"]["copies the apex name to the * register"] = function()
+  -- CI has no system clipboard, so the "*" register gets an in-memory provider.
+  child.lua([[
+    local stored = { [""] = {} }
+    local copy = function(lines, regtype) stored = { lines, regtype } end
+    local paste = function() return stored end
+    vim.g.clipboard = {
+      name = "test",
+      copy = { ["*"] = copy, ["+"] = copy },
+      paste = { ["*"] = paste, ["+"] = paste },
+    }
+  ]])
+  child.open_in_sf_dir("SfProject.cls")
+  child.capture_notify()
+
+  child.lua([[Sf.copy_apex_name()]])
+
+  eq(child.fn.getreg("*"), "SfProject")
+  eq(child.notified(), { { msg = '"SfProject" copied.', level = child.lua_get("vim.log.levels.INFO") } })
+end
 
 T["normalize_path"] = new_set()
 T["normalize_path"]["can normalize a path"] = function()
