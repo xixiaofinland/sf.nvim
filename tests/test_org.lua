@@ -15,6 +15,14 @@ local T = new_set({
   },
 })
 
+-- Only errors: a sandboxed child also warns that its log file isn't writable
+local notified_errors = function()
+  return child.lua_get([[vim.tbl_map(
+    function(n) return n.msg end,
+    vim.tbl_filter(function(n) return n.level == vim.log.levels.ERROR end, _G.notified)
+  )]])
+end
+
 local fetch_orgs = function()
   child.lua([[Sf.fetch_org_list()]])
   child.sf_fake.wait()
@@ -29,6 +37,91 @@ T["fetch_org_list()"]["runs sf org list and takes the default org as target_org"
 
   eq(child.sf_fake.cmds(), { "sf org list --json --skip-connection-status" })
   eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+end
+
+T["fetch_org_list()"]["lists each org once when refreshed twice quickly"] = function()
+  child.sf_fake.install({ { cmd = "sf org list", fixture = "org_list" } })
+
+  child.lua([[Sf.fetch_org_list(); Sf.fetch_org_list()]])
+  child.sf_fake.wait()
+  child.stub_select(nil)
+  child.lua([[Sf.set_target_org()]])
+
+  eq(child.select_calls()[1].items, { "devhub", "uat", "admin@other.example.com", "[S] my-scratch" })
+end
+
+T["fetch_org_list()"]["clears target_org when the refreshed list has no default org"] = function()
+  child.sf_fake.install({
+    { cmd = "sf org list", fixture = "org_list", times = 1 },
+    {
+      cmd = "sf org list",
+      stdout = [[{"status":0,"result":{"nonScratchOrgs":[{"alias":"uat","username":"u@x.com"}],"scratchOrgs":[]}}]],
+    },
+  })
+  fetch_orgs()
+  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+
+  fetch_orgs()
+
+  eq(child.lua_get([[require('sf.util').target_org]]), "")
+end
+
+T["fetch_org_list()"]["shows an error when sf fails"] = function()
+  child.sf_fake.install({ { cmd = "sf org list", code = 1, stderr = "Error (1): fake failure" } })
+  child.capture_notify()
+
+  fetch_orgs()
+
+  eq(notified_errors(), { "Failed to list orgs: Error (1): fake failure" })
+end
+
+T["fetch_org_list()"]["shows an error when sf prints something other than JSON"] = function()
+  child.sf_fake.install({ { cmd = "sf org list", stdout = "Warning: a new sf version is available" } })
+  child.capture_notify()
+
+  fetch_orgs()
+
+  eq(notified_errors(), { "Failed to list orgs: sf output is not JSON" })
+end
+
+T["diff_in_org()"] = new_set()
+
+-- Each case fails the retrieve: the command line is what's under test.
+local diff_in = function(file, choice)
+  child.sf_fake.install({
+    { cmd = "sf org list", fixture = "org_list" },
+    { cmd = "sf project retrieve start", code = 1 },
+  })
+  fetch_orgs()
+  child.open_in_sf_dir(file)
+  child.stub_select(choice)
+  child.capture_notify()
+
+  child.lua([[Sf.diff_in_org()]])
+  child.sf_fake.wait()
+  return child.sf_fake.cmds()[2]
+end
+
+T["diff_in_org()"]["passes a scratch org by name, without its [S] marker"] = function()
+  local cmd = diff_in("force-app/main/default/classes/Hello.cls", "[S] my-scratch")
+
+  helpers.expect.match(cmd, "^sf project retrieve start %-m 'ApexClass:Hello' ")
+  helpers.expect.ends_with(cmd, " -o 'my-scratch'")
+end
+
+T["diff_in_org()"]["takes the type from the metadata folder, not a folder name containing another"] = function()
+  -- "groupsList" contains "groups", the Group folder
+  local cmd = diff_in("force-app/main/default/lwc/groupsList/groupsList.js", "uat")
+
+  helpers.expect.match(cmd, "%-m 'LightningComponentBundle:groupsList' ")
+end
+
+T["diff_in_org()"]["shows a message when the file's metadata type is unknown"] = function()
+  local cmd = diff_in("SfProject.cls", "uat")
+
+  eq(cmd, nil)
+  eq(child.select_calls(), {})
+  eq(notified_errors(), { "Cannot diff SfProject.cls: its metadata type is unknown" })
 end
 
 T["set_target_org()"] = new_set()
