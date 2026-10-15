@@ -4,7 +4,10 @@ local Sobject = {}
 local H = {}
 
 local BATCH_SIZE = 25
-local BATCH_CONCURRENCY = 15
+-- Each batch is its own `sf` process (Node start-up plus an auth refresh), so
+-- far fewer run at once than the plain HTTP requests this replaced.
+local BATCH_CONCURRENCY = 4
+local MAX_NAMES_SHOWN = 10
 local INDENT = "    "
 local MODIFIER = "global"
 
@@ -292,7 +295,7 @@ local function get_org_info(org, cb)
       return cb(nil, "Failed to get org info. Is the org authenticated?")
     end
     local ok, parsed = pcall(vim.json.decode, obj.stdout)
-    if not ok or type(parsed) ~= "table" or not parsed.result or not parsed.result.accessToken then
+    if not ok or type(parsed) ~= "table" or type(parsed.result) ~= "table" then
       return cb(nil, "Failed to parse org info.")
     end
     cb(parsed.result)
@@ -314,70 +317,151 @@ local function list_sobjects(org, cb)
   end)
 end
 
----@param org_info table
+---@param s string|nil
+---@return string
+local function first_line(s)
+  return vim.trim(vim.split(s or "", "\n", { plain = true })[1] or "")
+end
+
+-- Why a failed `sf api request rest --json` call failed, from its parsed
+-- output: the HTTP status and Salesforce's message, or the CLI's own error.
+---@param obj vim.SystemCompleted
+---@param parsed table|nil
+---@return string
+local function describe_failure(obj, parsed)
+  local response = parsed and parsed.result
+  if type(response) == "table" and response.statusCode then
+    local body = response.body
+    local detail = type(body) == "table" and type(body[1]) == "table" and body[1].message
+    return "HTTP " .. response.statusCode .. (type(detail) == "string" and (": " .. detail) or "")
+  end
+  local message = parsed and type(parsed.message) == "string" and parsed.message or first_line(obj.stderr)
+  return "sf exited with " .. obj.code .. (message ~= "" and (": " .. message) or "")
+end
+
+-- Describes `names` in one composite/batch request. The sf CLI sends it, so
+-- it authenticates (and refreshes the session) the way every other sf command
+-- does, and the access token never appears on a command line.
+---@param org string
 ---@param api_version string
 ---@param names string[]
----@param cb fun(describes: table[]|nil, err: string|nil, failed_count: integer|nil)
-local function describe_batch(org_info, api_version, names, cb)
+---@param cb fun(describes: table[]|nil, err: string|nil, failed_names: string[]|nil)
+local function describe_batch(org, api_version, names, cb)
   local batch_requests = {}
   for _, n in ipairs(names) do
     table.insert(batch_requests, { method = "GET", url = api_version .. "/sobjects/" .. n .. "/describe" })
   end
-  local body = vim.json.encode({ batchRequests = batch_requests })
-  local endpoint = org_info.instanceUrl .. "/services/data/" .. api_version .. "/composite/batch"
+  -- A file rather than `--body -`: oclif gives up reading stdin after 10ms.
+  local body_file = vim.fn.tempname() .. ".json"
+  local ok_write = pcall(vim.fn.writefile, { vim.json.encode({ batchRequests = batch_requests }) }, body_file)
+  if not ok_write then
+    return vim.schedule(function()
+      cb(nil, "could not write the request body to " .. body_file)
+    end)
+  end
   local cmd = {
-    "curl",
-    "-s",
-    "-S",
-    "-f",
-    "-X",
+    "sf",
+    "api",
+    "request",
+    "rest",
+    "services/data/" .. api_version .. "/composite/batch",
+    "--method",
     "POST",
-    endpoint,
-    "-H",
-    "Authorization: Bearer " .. org_info.accessToken,
-    "-H",
-    "Content-Type: application/json",
-    "--data-binary",
-    "@-",
+    "--body",
+    "@" .. body_file,
+    "-o",
+    org,
+    "--json",
   }
-  run(cmd, { stdin = body }, function(obj)
-    if obj.code ~= 0 then
-      return cb(nil, "composite/batch curl failed (exit " .. obj.code .. "): " .. (obj.stderr or ""))
+  run(cmd, nil, function(obj)
+    vim.fn.delete(body_file)
+    local ok, parsed = pcall(vim.json.decode, obj.stdout or "")
+    parsed = ok and type(parsed) == "table" and parsed or nil
+    local response = parsed and parsed.result
+    if type(response) ~= "table" or response.statusCode ~= 200 then
+      return cb(nil, describe_failure(obj, parsed))
     end
-    local ok, parsed = pcall(vim.json.decode, obj.stdout)
-    if not ok or type(parsed) ~= "table" or not parsed.results then
-      return cb(nil, "Failed to parse composite/batch response.")
+    local body = response.body
+    if type(body) ~= "table" or type(body.results) ~= "table" then
+      return cb(nil, "unexpected composite/batch response")
     end
+    -- Sub-request results come back in request order.
     local describes = {}
-    local failed = 0
-    for _, res in ipairs(parsed.results) do
-      if res.statusCode == 200 and type(res.result) == "table" then
+    local failed_names = {}
+    for i, name in ipairs(names) do
+      local res = body.results[i]
+      if type(res) == "table" and res.statusCode == 200 and type(res.result) == "table" then
         table.insert(describes, res.result)
       else
-        failed = failed + 1
+        table.insert(failed_names, name)
       end
     end
-    cb(describes, nil, failed > 0 and failed or nil)
+    cb(describes, nil, failed_names)
   end)
 end
 
 ---@param sobjects_dir string
 ---@param describe table
+---@return string|nil err
 local function write_faux_class(sobjects_dir, describe)
   if not describe.name then
     return
   end
   local subdir = is_custom(describe) and "customObjects" or "standardObjects"
   local filepath = sobjects_dir .. "/" .. subdir .. "/" .. describe.name .. ".cls"
-  local definition = generate_sobject_definition(describe)
-  local text = generate_faux_text(definition)
+  -- An error thrown here would end the refresh without a word.
+  local ok, text = pcall(function()
+    return generate_faux_text(generate_sobject_definition(describe))
+  end)
+  if not ok then
+    return "failed to generate " .. describe.name .. ": " .. tostring(text)
+  end
   local f, err = io.open(filepath, "w")
   if not f then
-    U.show_warn("Failed to write " .. filepath .. ": " .. (err or "unknown"))
-    return
+    return "failed to write " .. filepath .. ": " .. (err or "unknown")
   end
   f:write(text)
   f:close()
+end
+
+-- Moves each refreshed subdir from `staging_dir` over its counterpart in
+-- `sobjects_dir`. A subdir whose move fails gets its previous version back.
+---@param staging_dir string
+---@param sobjects_dir string
+---@param subdirs string[]
+---@return boolean ok
+---@return string|nil err
+local function swap_in(staging_dir, sobjects_dir, subdirs)
+  vim.fn.mkdir(sobjects_dir, "p")
+  for _, sub in ipairs(subdirs) do
+    local target = sobjects_dir .. "/" .. sub
+    local backup = staging_dir .. "/" .. sub .. ".old"
+    local had_old = vim.uv.fs_stat(target) ~= nil
+    if had_old then
+      local ok, err = vim.uv.fs_rename(target, backup)
+      if not ok then
+        return false, err
+      end
+    end
+    local ok, err = vim.uv.fs_rename(staging_dir .. "/" .. sub, target)
+    if not ok then
+      if had_old then
+        vim.uv.fs_rename(backup, target)
+      end
+      return false, err
+    end
+  end
+  vim.fn.delete(staging_dir, "rf")
+  return true
+end
+
+---@param names string[]
+---@return string
+local function format_names(names)
+  if #names <= MAX_NAMES_SHOWN then
+    return table.concat(names, ", ")
+  end
+  return table.concat(vim.list_slice(names, 1, MAX_NAMES_SHOWN), ", ") .. ", ..."
 end
 
 local function restart_apex_ls()
@@ -403,13 +487,13 @@ local function restart_apex_ls()
   end
 end
 
+-- Set while a refresh runs: two at once would share the staging directory.
+local refreshing = false
+
 ---@param opts table|nil
 function Sobject.refresh(opts)
   opts = opts or {}
   U.is_sf_cmd_installed()
-  if vim.fn.executable("curl") ~= 1 then
-    return U.show_err("curl is required for sObject refresh.")
-  end
 
   local category = string.upper(opts.category or "ALL")
   if category ~= "ALL" and category ~= "STANDARD" and category ~= "CUSTOM" then
@@ -432,23 +516,38 @@ function Sobject.refresh(opts)
     project_root = project_root:sub(1, -2)
   end
 
+  if refreshing then
+    return U.show_warn("An sObject refresh is already running.")
+  end
+  refreshing = true
+
   local sobjects_dir = project_root .. "/.sfdx/tools/sobjects"
-  local standard_dir = sobjects_dir .. "/standardObjects"
-  local custom_dir = sobjects_dir .. "/customObjects"
+  -- New definitions are written here and moved into sobjects_dir only once
+  -- every describe batch has succeeded, so a failed refresh leaves the
+  -- previous definitions in place. A sibling of sobjects_dir, so the move is a
+  -- rename on the same filesystem and apex_ls never indexes half a refresh.
+  local staging_dir = project_root .. "/.sfdx/tools/sobjects-refresh"
+
+  ---@param notify fun(msg: string)
+  ---@param msg string
+  local finish = function(notify, msg)
+    refreshing = false
+    notify(msg)
+  end
 
   U.show("Refreshing sObject definitions...")
   get_org_info(org, function(org_info, err)
     if err or not org_info then
-      return U.show_err(err or "Org info missing.")
+      return finish(U.show_err, err or "Org info missing.")
     end
 
     local api_version = format_api_version(org_info.apiVersion)
     list_sobjects(org, function(sobject_entries, list_err)
       if list_err then
-        return U.show_err("SObject list error: " .. list_err)
+        return finish(U.show_err, "SObject list error: " .. list_err)
       end
       if not sobject_entries or #sobject_entries == 0 then
-        return U.show_warn("No sObjects found in org.")
+        return finish(U.show_warn, "No sObjects found in org.")
       end
 
       -- The sf CLI returns a list of names (strings). We don't get the
@@ -475,17 +574,22 @@ function Sobject.refresh(opts)
       end
 
       if #names == 0 then
-        return U.show_warn("No sObjects matched category " .. category .. ".")
+        return finish(U.show_warn, "No sObjects matched category " .. category .. ".")
       end
 
+      -- Only the refreshed categories are swapped in, but both exist in
+      -- staging so a describe whose custom flag disagrees with the name
+      -- heuristic still has somewhere to be written.
+      local subdirs = {}
       if category ~= "CUSTOM" then
-        vim.fn.delete(standard_dir, "rf")
-        vim.fn.mkdir(standard_dir, "p")
+        table.insert(subdirs, "standardObjects")
       end
       if category ~= "STANDARD" then
-        vim.fn.delete(custom_dir, "rf")
-        vim.fn.mkdir(custom_dir, "p")
+        table.insert(subdirs, "customObjects")
       end
+      vim.fn.delete(staging_dir, "rf")
+      vim.fn.mkdir(staging_dir .. "/standardObjects", "p")
+      vim.fn.mkdir(staging_dir .. "/customObjects", "p")
 
       local batches = {}
       for i = 1, #names, BATCH_SIZE do
@@ -499,20 +603,72 @@ function Sobject.refresh(opts)
       local completed = 0
       local in_flight = 0
       local next_batch = 1
-      local errors = 0
       local batch_errors = {}
+      local write_errors = {}
+      local failed_names = {}
 
       local on_done = function()
-        if errors > 0 then
-          U.show_warn(
+        if #batch_errors > 0 or #write_errors > 0 then
+          vim.fn.delete(staging_dir, "rf")
+          local reasons = {}
+          if #batch_errors > 0 then
+            table.insert(
+              reasons,
+              string.format(
+                "%d of %d describe batch(es) failed (%s)",
+                #batch_errors,
+                #batches,
+                table.concat(batch_errors, "; ")
+              )
+            )
+          end
+          if #write_errors > 0 then
+            table.insert(reasons, table.concat(write_errors, "; "))
+          end
+          return finish(
+            U.show_err,
+            "sObject refresh failed: " .. table.concat(reasons, "; ") .. ". Kept the existing definitions."
+          )
+        end
+
+        -- An sObject the org listed but would not describe keeps its
+        -- previous definition rather than disappearing.
+        for _, name in ipairs(failed_names) do
+          for _, sub in ipairs(subdirs) do
+            local old = sobjects_dir .. "/" .. sub .. "/" .. name .. ".cls"
+            local new = staging_dir .. "/" .. sub .. "/" .. name .. ".cls"
+            if vim.uv.fs_stat(old) and not vim.uv.fs_stat(new) then
+              vim.uv.fs_copyfile(old, new)
+            end
+          end
+        end
+
+        local swapped, swap_err = swap_in(staging_dir, sobjects_dir, subdirs)
+        if not swapped then
+          return finish(
+            U.show_err,
             string.format(
-              "sObject refresh finished with %d batch error(s): %s",
-              errors,
-              table.concat(batch_errors, "; ")
+              "sObject refresh failed to move the new definitions from %s into %s: %s",
+              staging_dir,
+              sobjects_dir,
+              swap_err or "unknown error"
+            )
+          )
+        end
+
+        if #failed_names > 0 then
+          finish(
+            U.show_warn,
+            string.format(
+              "sObject definitions refreshed (%d objects); %d sObject(s) could not be described "
+                .. "and kept their previous definitions: %s",
+              completed,
+              #failed_names,
+              format_names(failed_names)
             )
           )
         else
-          U.show(string.format("sObject definitions refreshed (%d objects).", completed))
+          finish(U.show, string.format("sObject definitions refreshed (%d objects).", completed))
         end
         if opts.restart_lsp ~= false then
           restart_apex_ls()
@@ -528,21 +684,19 @@ function Sobject.refresh(opts)
           local idx = next_batch
           next_batch = next_batch + 1
           in_flight = in_flight + 1
-          describe_batch(org_info, api_version, batches[idx], function(describes, batch_err, failed_count)
+          describe_batch(org, api_version, batches[idx], function(describes, batch_err, batch_failed_names)
             in_flight = in_flight - 1
             if batch_err then
-              errors = errors + 1
               table.insert(batch_errors, "batch " .. idx .. ": " .. batch_err)
             else
-              if failed_count then
-                errors = errors + failed_count
-                table.insert(batch_errors, failed_count .. " item(s) in batch " .. idx .. " failed")
-              end
-              if describes then
-                for _, desc in ipairs(describes) do
-                  write_faux_class(sobjects_dir, desc)
+              vim.list_extend(failed_names, batch_failed_names or {})
+              for _, desc in ipairs(describes or {}) do
+                local write_err = write_faux_class(staging_dir, desc)
+                if write_err then
+                  table.insert(write_errors, write_err)
+                else
+                  completed = completed + 1
                 end
-                completed = completed + #describes
               end
             end
             if next_batch <= #batches then

@@ -265,4 +265,161 @@ T["format_api_version"]["falls back to v60.0 on nil"] = function()
   eq(child.lua_get("H._format_api_version(nil)"), "v60.0")
 end
 
+-- ── refresh, through the sf CLI fake
+
+local DESCRIBE_CMD = "sf api request rest services/data/v62.0/composite/batch"
+
+-- Makes the child's cwd a fresh sf project holding the definitions of an
+-- earlier refresh, and counts apex_ls restarts in `_G.lsp_restarts`.
+local function setup_refresh()
+  child.capture_notify()
+  child.lua([[
+    local root = vim.fn.tempname()
+    local sobjects = root .. "/.sfdx/tools/sobjects"
+    vim.fn.mkdir(sobjects .. "/standardObjects", "p")
+    vim.fn.mkdir(sobjects .. "/customObjects", "p")
+    vim.fn.writefile({ "{}" }, root .. "/sfdx-project.json")
+    vim.fn.writefile({ "// old Account" }, sobjects .. "/standardObjects/Account.cls")
+    vim.fn.writefile({ "// old Contact" }, sobjects .. "/standardObjects/Contact.cls")
+    vim.fn.writefile({ "// old Gone__c" }, sobjects .. "/customObjects/Gone__c.cls")
+    vim.cmd.cd(root)
+    _G.tools_dir = root .. "/.sfdx/tools"
+
+    _G.lsp_restarts = 0
+    vim.lsp.get_clients = function(filter)
+      if filter and filter.name == "apex_ls" then
+        _G.lsp_restarts = _G.lsp_restarts + 1
+      end
+      return {}
+    end
+  ]])
+end
+
+-- Every file under .sfdx/tools, as relative path -> content.
+local function tools_files()
+  return child.lua_get([[(function()
+    local files = {}
+    for path, type in vim.fs.dir(_G.tools_dir, { depth = 10 }) do
+      if type == "file" then
+        files[path] = table.concat(vim.fn.readfile(_G.tools_dir .. "/" .. path), "\n")
+      end
+    end
+    return files
+  end)()]])
+end
+
+local function refresh(opts)
+  child.lua([[require('sf').refresh_sobjects(...)]], { opts or { org = "devhub" } })
+  child.sf_fake.wait()
+end
+
+---@param level string "INFO"|"WARN"|"ERROR"
+local function last_notified(level)
+  local notified = child.notified()
+  local last = notified[#notified]
+  eq(last.level, child.lua_get("vim.log.levels." .. level))
+  return last.msg
+end
+
+local OLD_FILES = {
+  ["sobjects/standardObjects/Account.cls"] = "// old Account",
+  ["sobjects/standardObjects/Contact.cls"] = "// old Contact",
+  ["sobjects/customObjects/Gone__c.cls"] = "// old Gone__c",
+}
+
+T["refresh"] = new_set({ hooks = { pre_case = setup_refresh } })
+
+T["refresh"]["keeps existing definitions when the describes fail"] = function()
+  child.sf_fake.install({
+    { cmd = "sf org display", fixture = "org_display" },
+    { cmd = "sf sobject list", fixture = "sobject_list" },
+    { cmd = DESCRIBE_CMD, fixture = "api_request_rest_401" },
+  })
+
+  refresh()
+
+  eq(tools_files(), OLD_FILES)
+  local msg = last_notified("ERROR")
+  expect.match(msg, "1 of 1 describe batch")
+  expect.match(msg, "401")
+  expect.match(msg, "Kept the existing definitions")
+  eq(child.lua_get("_G.lsp_restarts"), 0)
+end
+
+T["refresh"]["keeps existing definitions when some describe batches fail"] = function()
+  -- 30 names make two batches of at most 25; the first one is rejected.
+  local names = {}
+  for i = 1, 30 do
+    table.insert(names, string.format("Obj%02d__c", i))
+  end
+  child.sf_fake.install({
+    { cmd = "sf org display", fixture = "org_display" },
+    { cmd = "sf sobject list", stdout = vim.json.encode({ status = 0, result = names }) },
+    { cmd = DESCRIBE_CMD, fixture = "api_request_rest_401", times = 1 },
+    { cmd = DESCRIBE_CMD, fixture = "api_request_rest_composite_batch" },
+  })
+
+  refresh()
+
+  eq(#child.sf_fake.cmds(), 4)
+  eq(tools_files(), OLD_FILES)
+  local msg = last_notified("ERROR")
+  expect.match(msg, "1 of 2 describe batch")
+  expect.match(msg, "batch 1: HTTP 401: Session expired or invalid")
+  eq(child.lua_get("_G.lsp_restarts"), 0)
+end
+
+T["refresh"]["describes through sf without the access token on any command line"] = function()
+  child.sf_fake.install({
+    { cmd = "sf org display", fixture = "org_display" },
+    { cmd = "sf sobject list", fixture = "sobject_list" },
+    { cmd = DESCRIBE_CMD, fixture = "api_request_rest_composite_batch" },
+  })
+
+  refresh()
+
+  local cmds = child.sf_fake.cmds()
+  eq(#cmds, 3)
+  eq(cmds[1], "sf org display -o devhub --json")
+  eq(cmds[2], "sf sobject list -o devhub -s ALL --json")
+  expect.match(
+    cmds[3],
+    "^sf api request rest services/data/v62%.0/composite/batch %-%-method POST %-%-body @.+ %-o devhub %-%-json$"
+  )
+  for _, cmd in ipairs(cmds) do
+    expect.no_match(cmd, "FAKE_ACCESS_TOKEN")
+  end
+end
+
+T["refresh"]["swaps in new definitions, keeping the old one of an sObject that failed to describe"] = function()
+  child.sf_fake.install({
+    { cmd = "sf org display", fixture = "org_display" },
+    { cmd = "sf sobject list", fixture = "sobject_list" },
+    { cmd = DESCRIBE_CMD, fixture = "api_request_rest_composite_batch" },
+  })
+
+  refresh()
+
+  local files = tools_files()
+  local paths = vim.tbl_keys(files)
+  table.sort(paths)
+  eq(paths, {
+    "sobjects/customObjects/Invoice__c.cls",
+    "sobjects/customObjects/MyPlatform__e.cls",
+    "sobjects/standardObjects/Account.cls",
+    "sobjects/standardObjects/Contact.cls",
+  })
+  expect.match(files["sobjects/standardObjects/Account.cls"], "global class Account {")
+  expect.match(files["sobjects/customObjects/Invoice__c.cls"], "global Decimal Amount__c;")
+  expect.match(files["sobjects/customObjects/MyPlatform__e.cls"], "global class MyPlatform__e {")
+  -- The org listed Contact but its describe failed.
+  eq(files["sobjects/standardObjects/Contact.cls"], "// old Contact")
+
+  local msg = last_notified("WARN")
+  expect.match(msg, "refreshed %(3 objects%)")
+  expect.match(msg, "1 sObject%(s%) could not be described")
+  expect.match(msg, "Contact")
+  eq(child.lua_get("_G.lsp_restarts"), 1)
+end
+
 return T

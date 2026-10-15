@@ -14,7 +14,8 @@
 -- and answers with its `stdout`, `stderr` and `code` (default 0), or with a
 -- recorded fixture named by `fixture`. Any command no rule matches raises an
 -- error naming it, and `vim.fn.executable()` reports the programs the rules
--- name as installed.
+-- name as installed. A rule with `times = n` answers only its first n matches,
+-- so a later rule for the same command can answer the rest.
 --
 --   child.sf_fake.install({
 --     { cmd = "sf org list", fixture = "org_list" },
@@ -174,7 +175,7 @@ Helpers.new_child_neovim = function()
 
   child.sf_fake = {}
 
-  ---@param rules { cmd: string, fixture: string|nil, stdout: string|nil, stderr: string|nil, code: integer|nil }[]
+  ---@param rules { cmd: string, times: integer|nil, fixture: string|nil, stdout: string|nil, stderr: string|nil, code: integer|nil }[]
   ---@param opts { mode: "schedule"|"sync"|nil }|nil
   child.sf_fake.install = function(rules, opts)
     local resolved = {}

@@ -251,9 +251,12 @@ Parameters ~
 {opts} `(table|nil)` Optional table with these fields:
     - {category} `("ALL"|"STANDARD"|"CUSTOM")` Default `"ALL"`.
     - {restart_lsp} `(boolean)` Default `true`. Restart attached apex_ls
-      clients once writing completes so the new stubs are picked up.
+      clients once a refresh succeeds so the new stubs are picked up.
     - {org} `(string)` Defaults to the current `target_org`.
-    - {on_done} `(fun(sobjects_dir: string))` Called after writing finishes.
+    - {on_done} `(fun(sobjects_dir: string))` Called after a successful
+      refresh.
+New definitions replace the existing ones only when every describe batch
+succeeds; otherwise the existing ones are kept.
 
 User command: `:SF sobject refresh [ALL|STANDARD|CUSTOM]`
 

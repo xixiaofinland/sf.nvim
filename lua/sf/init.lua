@@ -189,8 +189,10 @@ Sf.create_trigger = Metadata.create_trigger
 ---     restart_lsp = boolean,                  -- defaults to true
 ---     org = string,                           -- defaults to target_org
 ---     on_done = fun(sobjects_dir) }
---- Restarts attached apex_ls clients once writing completes so the new
---- stubs are picked up without an explicit |:LspRestart|.
+--- New definitions replace the existing ones only when every describe batch
+--- succeeds, and on_done is called only then. Restarts attached apex_ls
+--- clients after a successful refresh so the new stubs are picked up without
+--- an explicit |:LspRestart|.
 Sf.refresh_sobjects = Sobject.refresh
 
 -- From Test module ==========================================================
