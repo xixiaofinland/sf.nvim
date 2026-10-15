@@ -15,13 +15,8 @@ local show_uncovered = true
 M.covered_percent = ""
 
 M.setup = function()
-  if vim.g.sf.code_sign_highlight.covered.fg == "" then
-    show_covered = false
-  end
-
-  if vim.g.sf.code_sign_highlight.uncovered.fg == "" then
-    show_uncovered = false
-  end
+  show_covered = vim.g.sf.code_sign_highlight.covered.fg ~= ""
+  show_uncovered = vim.g.sf.code_sign_highlight.uncovered.fg ~= ""
 
   H.highlight(covered_group, { fg = vim.g.sf.code_sign_highlight.covered.fg })
   H.highlight(uncovered_group, { fg = vim.g.sf.code_sign_highlight.uncovered.fg })
@@ -108,12 +103,9 @@ H.get_signs_from = function(coverage)
     end
 
     if U.is_apex_loaded_in_buf(apex_name) then
+      local buf = U.get_apex_buf_num(apex_name)
       for line, value in pairs(v["lines"]) do
-        local sign = {}
-        sign.id = 0
-        sign.buffer = U.get_buf_num(apex_name)
-        sign.lnum = line
-        sign.priority = 1000
+        local sign = { id = 0, buffer = buf, lnum = tonumber(line), priority = 1000 }
 
         if show_covered and value == 1 then
           sign.name = covered_sign
@@ -123,7 +115,10 @@ H.get_signs_from = function(coverage)
           sign.group = uncovered_group
         end
 
-        table.insert(signs, sign)
+        -- A hidden kind gets no sign at all: one without a name isn't valid
+        if sign.name then
+          table.insert(signs, sign)
+        end
       end
     end
   end
@@ -166,10 +161,11 @@ H.uncovered_jump = function(isForward)
     return
   end
 
-  local placed = vim.fn.sign_getplaced("", { group = uncovered_group })
-  local placed_signs = placed[1].signs
+  local buf = vim.api.nvim_get_current_buf()
+  local placed = vim.fn.sign_getplaced(buf, { group = uncovered_group })
+  local placed_signs = placed[1] and placed[1].signs or {}
 
-  if #placed == 0 or #placed_signs == 0 then
+  if #placed_signs == 0 then
     return
   end
 
@@ -185,15 +181,20 @@ H.uncovered_jump = function(isForward)
     local hunk_start_lnum = hunk[1].lnum
 
     if (isForward and hunk_start_lnum > current_lnum) or (not isForward and hunk_start_lnum < current_lnum) then
-      vim.fn.sign_jump(hunk[1].id, uncovered_group, "")
+      vim.fn.sign_jump(hunk[1].id, uncovered_group, buf)
       return
     end
   end
 
-  vim.fn.sign_jump(hunks[1][1].id, uncovered_group, "") -- loop back
+  vim.fn.sign_jump(hunks[1][1].id, uncovered_group, buf) -- loop back
 end
 
 H.get_hunks = function(placed_signs)
+  placed_signs = vim.deepcopy(placed_signs)
+  table.sort(placed_signs, function(a, b)
+    return a.lnum < b.lnum
+  end)
+
   local hunks = {}
   local current_hunk = { placed_signs[1] }
 

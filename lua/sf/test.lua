@@ -203,12 +203,38 @@ H.save_test_coverage_locally = function(self, cmd, exit_code)
     return
   end
 
-  local file_name = "test_result.json"
-  -- local cmd = 'sf apex get test -i ' .. id .. ' -c --json > ' .. U.get_plugin_folder_path() .. file_name
-  local cmd = B:new():cmd("apex"):act("get test"):addParams("-i", id):addParams("-c"):addParams("--json"):build()
-  cmd = cmd .. " > " .. U.get_plugin_folder_path() .. file_name
+  local path = U.get_plugin_folder_path() .. "test_result.json"
+  local get_cmd =
+    B:new():cmd("apex"):act("get"):subact("test"):addParams("-i", id):addParams("-c"):addParams("--json"):buildAsTable()
 
-  U.silent_job_call(cmd, "Code coverage saved.", "Code coverage save failed! " .. cmd, S.invalidate_cache_and_try_place)
+  vim.system(
+    get_cmd,
+    {},
+    vim.schedule_wrap(function(obj)
+      H.write_coverage(obj.stdout, path, table.concat(get_cmd, " "))
+    end)
+  )
+end
+
+-- Only a result with coverage replaces the saved one: on failure sf prints an
+-- error payload instead, and the previous coverage is still worth showing.
+-- The exit code alone can't tell, as failing tests exit non-zero with coverage.
+---@param stdout string|nil
+---@param path string
+---@param cmd string
+H.write_coverage = function(stdout, path, cmd)
+  local ok, tbl = pcall(vim.json.decode, stdout or "")
+  if not ok or type(vim.tbl_get(tbl, "result", "coverage", "coverage")) ~= "table" then
+    return U.show_err("Code coverage save failed! " .. cmd)
+  end
+
+  local write_ok = pcall(vim.fn.writefile, vim.split(stdout, "\n", { plain = true }), path)
+  if not write_ok then
+    return U.show_err("Code coverage save failed! Can't write " .. path)
+  end
+
+  U.show("Code coverage saved.")
+  S.invalidate_cache_and_try_place()
 end
 
 -- prompt below
