@@ -107,14 +107,16 @@ H.get_signs_from = function(coverage)
       for line, value in pairs(v["lines"]) do
         local sign = { id = 0, buffer = buf, lnum = tonumber(line), priority = 1000 }
 
-        -- A hidden kind gets no sign at all: one without a name isn't valid
         if show_covered and value == 1 then
           sign.name = covered_sign
           sign.group = covered_group
-          table.insert(signs, sign)
         elseif show_uncovered and value == 0 then
           sign.name = uncovered_sign
           sign.group = uncovered_group
+        end
+
+        -- A hidden kind gets no sign at all: one without a name isn't valid
+        if sign.name then
           table.insert(signs, sign)
         end
       end

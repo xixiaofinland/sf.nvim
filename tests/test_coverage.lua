@@ -25,6 +25,10 @@ local save_result = function(json)
   vim.fn.writefile({ vim.json.encode(json or coverage_json()) }, result_path())
 end
 
+local read_result = function()
+  return vim.json.decode(table.concat(vim.fn.readfile(result_path()), "\n"))
+end
+
 -- The fixture's result with SfProject's uncovered lines replaced by `uncovered`.
 ---@param uncovered integer[]
 local result_with_uncovered = function(uncovered)
@@ -135,12 +139,15 @@ T["jump"] = new_set()
 T["jump"]["without uncovered signs does nothing"] = function()
   save_result()
   setup()
+  -- SfProject.cls has an uncovered sign, the current buffer none
+  edit("SfProject.cls")
   edit("SfProjectTest.cls")
   child.api.nvim_win_set_cursor(0, { 2, 0 })
 
   child.lua("Sf.uncovered_jump_forward()")
   child.lua("Sf.uncovered_jump_backward()")
 
+  helpers.expect.ends_with(child.api.nvim_buf_get_name(0), "/SfProjectTest.cls")
   eq(child.api.nvim_win_get_cursor(0), { 2, 0 })
   eq(child.v.errmsg, "")
 end
@@ -193,7 +200,7 @@ T["saving"]["writes the result under a project path with spaces and places signs
 
   run_with_coverage({ cmd = "sf apex get test", fixture = "apex_get_test_coverage" })
 
-  eq(vim.json.decode(table.concat(vim.fn.readfile(result_path()), "\n")), coverage_json())
+  eq(read_result(), coverage_json())
   local get_test = child.sf_fake.calls()[2]
   eq(get_test.argv, { "sf", "apex", "get", "test", "-i", "7070000000FAKE1", "--json", "-c", "-o", "myorg" })
   eq(errors(), {})
@@ -209,7 +216,7 @@ T["saving"]["a failed get test keeps the previous result"] = function()
 
   run_with_coverage({ cmd = "sf apex get test", fixture = "apex_get_test_error" })
 
-  eq(vim.json.decode(table.concat(vim.fn.readfile(result_path()), "\n")), previous)
+  eq(read_result(), previous)
   eq(#errors(), 1)
   helpers.expect.match(errors()[1].msg, "Code coverage save failed")
 
