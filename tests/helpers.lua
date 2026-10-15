@@ -38,7 +38,10 @@
 --
 -- Fixtures live in tests/fixtures/sf/<name>.lua and return
 -- `{ recorded = bool, code = int, stdout = string, stderr = string|nil }`.
--- To record one:
+-- org_display has a recorder, scripts/record_fixture.lua: `make
+-- record-fixture ORG=<alias>` runs `sf org display` against that org, scrubs
+-- the output deterministically and writes the fixture. To record another one
+-- by hand:
 --   1. Run the command against a throwaway org, e.g.
 --      `sf org list --json --skip-connection-status > out.json`; note its exit code.
 --   2. Scrub it: replace access tokens, usernames, org/user/record ids, instance
