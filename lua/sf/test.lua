@@ -230,21 +230,22 @@ P.open = function()
     U.notify_then_error("Not an Apex test class.")
   end
 
-  local test_names = TS.get_test_method_names_in_curr_file()
-  if vim.tbl_isempty(test_names) then
-    U.show("no Apex test found.")
+  local tests = TS.get_test_method_names_in_curr_file()
+  if vim.tbl_isempty(tests) then
+    -- A picker still open for another class would let `cc` run that class.
+    P.close()
+    return U.show_warn("No Apex test method in this file.")
   end
 
-  local tests = {}
-  local test_num = 0
-  for _, name in ipairs(test_names) do
-    table.insert(tests, name)
-    test_num = test_num + 1
-  end
+  -- `cc` runs every selected test, so keep only those this picker lists: a
+  -- selection made in another class, or on a method since removed, is dropped.
+  P.selected_tests = vim.tbl_filter(function(class_test)
+    return vim.tbl_contains(tests, class_test:match("^" .. vim.pesc(class) .. "%.(.+)$"))
+  end, P.selected_tests)
 
   P.class = class
   P.tests = tests
-  P.test_num = test_num
+  P.test_num = #tests
 
   local buf = P.use_existing_or_create_buf()
   local win = P.use_existing_or_create_win()
@@ -318,7 +319,7 @@ P.display = function()
       table.insert(names, "[ ] " .. test)
     end
   end
-  api.nvim_buf_set_lines(P.buf, 0, 100, false, names)
+  api.nvim_buf_set_lines(P.buf, 0, -1, false, names)
 end
 
 P.use_existing_or_create_buf = function()
@@ -352,12 +353,12 @@ P.toggle = function()
     return U.show_err("file-type must be: " .. filetype)
   end
 
-  vim.bo[0].modifiable = true
-
   local r, _ = unpack(vim.api.nvim_win_get_cursor(0))
   if r == 1 then -- 1st row is title
     return
   end
+
+  vim.bo[0].modifiable = true
 
   local row_index = r - 1
 
@@ -382,14 +383,6 @@ P.toggle = function()
   U.show("Selected: " .. vim.tbl_count(P.selected_tests))
 
   vim.bo[0].modifiable = false
-end
-
----@param param_str string
----@return nil
-P.build_tests_cmd = function(param_str)
-  return t
-  --   local cmd = string.format('sf apex run test%s %s', t, param_str)
-  --   return cmd
 end
 
 P.close = function()
