@@ -425,7 +425,8 @@ local function write_faux_class(sobjects_dir, describe)
 end
 
 -- Moves each refreshed subdir from `staging_dir` over its counterpart in
--- `sobjects_dir`. A subdir whose move fails gets its previous version back.
+-- `sobjects_dir`. If any move fails, every subdir gets its previous version
+-- back, so the definitions are either all new or all old.
 ---@param staging_dir string
 ---@param sobjects_dir string
 ---@param subdirs string[]
@@ -433,23 +434,39 @@ end
 ---@return string|nil err
 local function swap_in(staging_dir, sobjects_dir, subdirs)
   vim.fn.mkdir(sobjects_dir, "p")
+  local swapped = {}
+  local function roll_back()
+    for i = #swapped, 1, -1 do
+      local s = swapped[i]
+      if s.moved_new then
+        vim.uv.fs_rename(s.target, staging_dir .. "/" .. s.sub)
+      end
+      if s.had_old then
+        vim.uv.fs_rename(s.backup, s.target)
+      end
+    end
+  end
   for _, sub in ipairs(subdirs) do
-    local target = sobjects_dir .. "/" .. sub
-    local backup = staging_dir .. "/" .. sub .. ".old"
-    local had_old = vim.uv.fs_stat(target) ~= nil
-    if had_old then
-      local ok, err = vim.uv.fs_rename(target, backup)
+    local s = {
+      sub = sub,
+      target = sobjects_dir .. "/" .. sub,
+      backup = staging_dir .. "/" .. sub .. ".old",
+    }
+    s.had_old = vim.uv.fs_stat(s.target) ~= nil
+    if s.had_old then
+      local ok, err = vim.uv.fs_rename(s.target, s.backup)
       if not ok then
+        roll_back()
         return false, err
       end
     end
-    local ok, err = vim.uv.fs_rename(staging_dir .. "/" .. sub, target)
+    table.insert(swapped, s)
+    local ok, err = vim.uv.fs_rename(staging_dir .. "/" .. sub, s.target)
     if not ok then
-      if had_old then
-        vim.uv.fs_rename(backup, target)
-      end
+      roll_back()
       return false, err
     end
+    s.moved_new = true
   end
   vim.fn.delete(staging_dir, "rf")
   return true
@@ -607,7 +624,7 @@ function Sobject.refresh(opts)
       local write_errors = {}
       local failed_names = {}
 
-      local on_done = function()
+      local on_batches_done = function()
         if #batch_errors > 0 or #write_errors > 0 then
           vim.fn.delete(staging_dir, "rf")
           local reasons = {}
@@ -691,18 +708,20 @@ function Sobject.refresh(opts)
             else
               vim.list_extend(failed_names, batch_failed_names or {})
               for _, desc in ipairs(describes or {}) do
-                local write_err = write_faux_class(staging_dir, desc)
-                if write_err then
-                  table.insert(write_errors, write_err)
-                else
-                  completed = completed + 1
+                if desc.name then
+                  local write_err = write_faux_class(staging_dir, desc)
+                  if write_err then
+                    table.insert(write_errors, write_err)
+                  else
+                    completed = completed + 1
+                  end
                 end
               end
             end
             if next_batch <= #batches then
               launch_next()
             elseif in_flight == 0 then
-              on_done()
+              on_batches_done()
             end
           end)
         end
