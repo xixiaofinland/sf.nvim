@@ -60,14 +60,17 @@ function T:run_after_setup(cmd, cb)
   self:remember_cursor()
   api.nvim_set_current_win(self.win)
 
-  local echo_msg = string.gsub(cmd, '"', '\\"')
   local cmd_with_echo = ""
+  local c27 = string.char(27)
 
   if H.is_windows_os() then
-    local c27 = string.char(27)
+    local echo_msg = string.gsub(cmd, '"', '\\"')
     cmd_with_echo = string.format("echo %s && %s", c27 .. "[0;35m" .. echo_msg .. c27 .. "[0m", cmd)
   else
-    cmd_with_echo = string.format('echo -e "\\e[0;35m %s \\e[0m";%s', echo_msg, cmd) -- echo Cyan color
+    -- The command is printf's argument, never part of its format, so the
+    -- shell and printf show it as written. Magenta, like the Windows banner.
+    local banner = c27 .. "[0;35m " .. cmd .. " " .. c27 .. "[0m"
+    cmd_with_echo = string.format("printf %s %s;%s", vim.fn.shellescape("%s\\n"), vim.fn.shellescape(banner), cmd)
   end
 
   local run = {}

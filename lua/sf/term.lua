@@ -116,7 +116,9 @@ function Term.run_anonymous_stdin(use_selection)
   end
 
   local base_cmd = B:new():cmd("apex"):act("run"):build()
-  local cmd = string.format("echo %s | %s", vim.fn.shellescape(text), base_cmd)
+  -- printf, not echo: sh's echo turns backslash sequences in the Apex into
+  -- control characters.
+  local cmd = string.format("printf %s %s | %s", vim.fn.shellescape("%s\\n"), vim.fn.shellescape(text), base_cmd)
   t:run(cmd)
 end
 
