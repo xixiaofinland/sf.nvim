@@ -8,14 +8,18 @@
 -- ── Faking the sf CLI
 --
 -- Tests never run a real `sf`. `child.sf_fake.install(rules)` replaces
--- `vim.system`, `vim.fn.jobstart` and `vim.fn.termopen` in the child (code in
--- tests/sf_fake.lua). A rule matches when its `cmd` is a plain substring of
+-- `vim.system`, `vim.fn.jobstart`, `vim.fn.termopen` and `vim.fn.jobstop` in
+-- the child (code in tests/sf_fake.lua). A rule matches when its `cmd` is a plain substring of
 -- the command line (argv tables are joined with spaces); the first match wins
 -- and answers with its `stdout`, `stderr` and `code` (default 0), or with a
 -- recorded fixture named by `fixture`. Any command no rule matches raises an
 -- error naming it, and `vim.fn.executable()` reports the programs the rules
 -- name as installed. A rule with `times = n` answers only its first n matches,
--- so a later rule for the same command can answer the rest.
+-- so a later rule for the same command can answer the rest. A rule with
+-- `hold = true` starts a job that keeps running until `vim.fn.jobstop()` (also
+-- faked; the job exits 143) or `child.lua("SfFake.exit(job_id, code)")` ends
+-- it; `SfFake.running` holds those jobs by id. A rule with `spawn_fails = true`
+-- makes `jobstart`/`termopen` return -1.
 --
 --   child.sf_fake.install({
 --     { cmd = "sf org list", fixture = "org_list" },
@@ -175,7 +179,7 @@ Helpers.new_child_neovim = function()
 
   child.sf_fake = {}
 
-  ---@param rules { cmd: string, times: integer|nil, fixture: string|nil, stdout: string|nil, stderr: string|nil, code: integer|nil }[]
+  ---@param rules { cmd: string, times: integer|nil, fixture: string|nil, stdout: string|nil, stderr: string|nil, code: integer|nil, hold: boolean|nil, spawn_fails: boolean|nil }[]
   ---@param opts { mode: "schedule"|"sync"|nil }|nil
   child.sf_fake.install = function(rules, opts)
     local resolved = {}
