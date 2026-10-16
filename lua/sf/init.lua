@@ -181,18 +181,21 @@ Sf.create_trigger = Metadata.create_trigger
 
 -- From Sobject module ======================================================
 
---- Refresh the faux Apex SObject definitions under .sfdx/tools/sobjects so
---- the Apex language server can offer completion for standard and custom
---- objects. Mirrors VSCode's "SFDX: Refresh SObject Definitions" command.
---- Accepts an optional table:
----   { category = "ALL"|"STANDARD"|"CUSTOM",  -- defaults to "ALL"
----     restart_lsp = boolean,                  -- defaults to true
----     org = string,                           -- defaults to target_org
----     on_done = fun(sobjects_dir) }
+---@signature Sf.refresh_sobjects(opts)
+---@text Refresh the faux Apex SObject definitions under .sfdx/tools/sobjects so the
+--- Apex language server can offer completion for standard and custom objects.
+--- Mirrors VSCode's "SFDX: Refresh SObject Definitions" command.
+---@param opts table|nil Optional table with these fields:
+---     - {category} `("ALL"|"STANDARD"|"CUSTOM")` Default `"ALL"`.
+---     - {restart_lsp} `(boolean)` Default `true`. Restart attached apex_ls
+---       clients once a refresh succeeds so the new stubs are picked up.
+---     - {org} `(string)` Defaults to the current `target_org`.
+---     - {on_done} `(fun(sobjects_dir: string))` Called after a successful
+---       refresh.
 --- New definitions replace the existing ones only when every describe batch
---- succeeds, and on_done is called only then. Restarts attached apex_ls
---- clients after a successful refresh so the new stubs are picked up without
---- an explicit |:LspRestart|.
+--- succeeds; otherwise the existing ones are kept.
+---
+--- User command: `:SF sobject refresh [ALL|STANDARD|CUSTOM]`
 Sf.refresh_sobjects = Sobject.refresh
 
 -- From Test module ==========================================================

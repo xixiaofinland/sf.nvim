@@ -20,6 +20,12 @@ test: deps
 test_file: deps
 	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run_file('$(FILE)')"
 
+# Regenerate doc/sf.txt and doc/tags from the `---` comments in lua/sf/init.lua
+# with the pinned mini.doc. CI runs it on every push to dev and commits the
+# result, so this is only for previewing the help locally.
+doc: deps
+	nvim --headless --noplugin -i NONE -u ./scripts/minimal_init.lua -c "lua require('sf.util').gen_doc()" -c qa
+
 # Record every fixture of the sf fake, scrubbed, from a throwaway scratch org
 # that it creates from the Dev Hub aliased $(DEVHUB) and deletes again. Each run
 # uses one of the Dev Hub's daily scratch orgs; see tests/helpers.lua.
@@ -65,4 +71,4 @@ deps/parsers/parser/%.so: deps/tree-sitter-sfapex/%/src/parser.c
 	@mkdir -p $(@D)
 	cc -shared -fPIC -O2 -I$(<D) $< $(wildcard $(<D)/scanner.c) -o $@
 
-.PHONY: test test_file record-fixtures fmt fmt-check deps parsers
+.PHONY: test test_file doc record-fixtures fmt fmt-check deps parsers
