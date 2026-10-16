@@ -161,8 +161,9 @@ end
 local tmp, original_path
 
 -- A fake `sf` on PATH. It logs each call to $tmp/sf/calls, copies a request
--- body (`--body @file`) to $tmp/sf/body and lists the files of the project a
--- deploy runs in to $tmp/sf/deployed. It answers `--version` itself and any
+-- body (`--body @file`) to $tmp/sf/body, lists the files of the project a
+-- deploy runs in to $tmp/sf/deployed and writes the signup app a scratch org
+-- create sees to $tmp/sf/signup_app. It answers `--version` itself and any
 -- other call with the first rule whose `cmd` its command line contains.
 ---@param rules { cmd: string, stdout: string|nil, stderr: string|nil, code: integer|nil }[]
 local function install_fake_sf(rules)
@@ -183,6 +184,9 @@ local function install_fake_sf(rules)
     'echo "$*" >> "$D/calls"',
     'for a in "$@"; do case "$a" in @*) cp "${a#@}" "$D/body" ;; esac; done',
     'case "$*" in "project deploy start"*) find . -type f | LC_ALL=C sort >"$D/deployed" ;; esac',
+    'case "$*" in "org create scratch"*)',
+    '  printf "%s\\n%s\\n" "$SF_SCRATCH_SIGNUP_CONNECTED_APP" "$SF_SCRATCH_SIGNUP_CALLBACK_URL" >"$D/signup_app" ;;',
+    "esac",
     'if [ "$1" = "--version" ]; then',
     '  echo "@salesforce/cli/2.108.6 linux-x64 node-v22.20.0"',
     "  exit 0",
@@ -469,6 +473,14 @@ T["record"]["creates one scratch org, deploys the project, records against it an
     "./force-app/main/default/classes/SfProjectTest.cls-meta.xml",
     "./sfdx-project.json",
   })
+end
+
+T["record"]["signs the scratch org up through the CLI's own connected app"] = function()
+  install_fake_sf(rules_for_success())
+
+  record()
+
+  eq(vim.fn.readfile(tmp .. "/sf/signup_app"), { "PlatformCLI", "http://localhost:1717/OauthRedirect" })
 end
 
 T["record"]["describes through the org's API version and fetches the coverage of the human run"] = function()

@@ -573,8 +573,16 @@ end
 
 -- ── Running sf
 
--- No update notice or colour codes in what gets recorded.
-local SF_ENV = { SF_SKIP_NEW_VERSION_CHECK = "true", FORCE_COLOR = "0", NO_COLOR = "1" }
+-- No update notice or colour codes in what gets recorded. The signup app is
+-- the CLI's own: signup can't copy a Dev Hub's External Client App into the
+-- scratch org and fails with C-1016, and PlatformCLI works for any Dev Hub.
+local SF_ENV = {
+  SF_SKIP_NEW_VERSION_CHECK = "true",
+  FORCE_COLOR = "0",
+  NO_COLOR = "1",
+  SF_SCRATCH_SIGNUP_CONNECTED_APP = "PlatformCLI",
+  SF_SCRATCH_SIGNUP_CALLBACK_URL = "http://localhost:1717/OauthRedirect",
+}
 
 ---@param argv string[]
 ---@param cwd string|nil
