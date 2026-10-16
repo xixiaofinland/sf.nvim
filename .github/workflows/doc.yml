@@ -1,0 +1,51 @@
+name: Regenerate help
+# doc/sf.txt is generated from the `---` comments in lua/sf/init.lua, so PRs
+# edit only the comments and this commits the regenerated help to dev. Pushes
+# made with GITHUB_TOKEN don't trigger workflows, so the bot commit can't loop.
+on:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: write
+
+# Queued, not cancelled: each run regenerates from what is on dev by then.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  doc:
+    name: Regenerate doc/sf.txt
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+      # Same key as the test workflow, so the pinned deps are shared.
+      - name: Cache test dependencies
+        uses: actions/cache@v4
+        with:
+          path: deps
+          key: test-deps-${{ hashFiles('Makefile') }}
+      - name: Generate help
+        run: make doc
+      - name: Commit and push
+        run: |
+          if [ -z "$(git status --porcelain doc/)" ]; then
+            echo "doc/ is up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add doc/
+          git commit -m "chore: regenerate doc/sf.txt"
+          git pull --rebase origin dev
+          git push origin HEAD:dev
