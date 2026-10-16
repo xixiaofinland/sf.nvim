@@ -412,6 +412,7 @@ T["scrub"]["normalises durations, response headers and local timestamps, keeping
     "tests": [{ "RunTime": 30, "Outcome": "Pass" }, { "RunTime": 7, "Outcome": "Pass" }],
     "headers": { "date": "Wed, 14 Oct 2026 09:31:27 GMT", "set-cookie": ["BrowserId=abc"], "content-type": "application/json" },
     "lastRetrieved": "10/14/2026, 9:31:27 PM",
+    "lastUsedLocal": "10/14/2026, 10:31:27 PM",
     "statusCode": 200
   }
 }]]
@@ -428,6 +429,7 @@ T["scrub"]["normalises durations, response headers and local timestamps, keeping
     "tests": [{ "RunTime": 0, "Outcome": "Pass" }, { "RunTime": 0, "Outcome": "Pass" }],
     "headers": { "date": "FAKE_HEADER_VALUE", "set-cookie": ["FAKE_HEADER_VALUE"], "content-type": "application/json" },
     "lastRetrieved": "1/1/2026, 0:00:00 AM",
+    "lastUsedLocal": "1/1/2026, 0:00:00 AM",
     "statusCode": 200
   }
 }]]
@@ -505,7 +507,7 @@ T["record"]["creates one scratch org, deploys the project, records against it an
     calls[2],
     "org create scratch --target-dev-hub my-devhub --alias "
       .. SCRATCH
-      .. " --definition-file config/project-scratch-def.json --duration-days 1 --wait 15 --json"
+      .. " --set-default --definition-file config/project-scratch-def.json --duration-days 1 --wait 15 --json"
   )
   eq(calls[3], "project deploy start --source-dir force-app -o " .. SCRATCH .. " --wait 15 --json")
   eq(calls[#calls], DELETE_CALL)

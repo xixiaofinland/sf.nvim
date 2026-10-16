@@ -167,7 +167,8 @@ local function normalise_timestamp(value)
   if is_iso_timestamp(value) then
     return "2026-01-01" .. value:sub(11):gsub("%d", "0")
   end
-  local rest = value:gsub("^%d+/%d+/%d+", ""):gsub("%d", "0"):gsub("[AP]M", "AM")
+  -- The hour has one digit or two, depending on when the recording ran.
+  local rest = value:gsub("^%d+/%d+/%d+", ""):gsub("^, %d+:", ", 0:"):gsub("%d", "0"):gsub("[AP]M", "AM")
   return "1/1/2026" .. rest
 end
 
@@ -719,7 +720,7 @@ M.FIXTURES = {
   },
   {
     name = "org_list",
-    note = "Every org this machine is authorised to, scrubbed; the scratch org is my-scratch, the Dev Hub devhub.",
+    note = "Every org this machine is authorised to, scrubbed; the scratch org is my-scratch, the project's default target org, and the Dev Hub devhub.",
     argv = function()
       return { "sf", "org", "list", "--json", "--skip-connection-status" }
     end,
@@ -949,6 +950,8 @@ M.record = function(opts)
       opts.devhub,
       "--alias",
       scratch,
+      -- As in a user's project, so `org list` shows a default target org.
+      "--set-default",
       "--definition-file",
       "config/project-scratch-def.json",
       "--duration-days",
