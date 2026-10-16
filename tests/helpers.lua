@@ -63,11 +63,13 @@
 -- the home directory with placeholders and normalises durations, timestamps, test run ids and
 -- response headers, so a re-recording only changes when the CLI's output
 -- does (and in each header's "RECORDED with … on …" line). Read the diff
--- before committing it. CI re-records them weekly
--- (.github/workflows/fixture-drift.yml, logic in scripts/fixture_drift.lua):
--- a change the tests pass on is merged into dev, one they fail on gets a
--- ready-for-agent issue naming the failing tests and the changed key paths. Fixtures with `recorded = false` are synthetic, shaped
+-- before committing it. Fixtures with `recorded = false` are synthetic, shaped
 -- after the sf CLI's source; their header names that source.
+--
+-- CI re-records them weekly (.github/workflows/fixture-drift.yml, logic in
+-- scripts/fixture_drift.lua): a change the tests pass on is merged into dev,
+-- one they fail on gets a ready-for-agent issue naming the failing tests and
+-- the changed key paths.
 
 local Helpers = {}
 

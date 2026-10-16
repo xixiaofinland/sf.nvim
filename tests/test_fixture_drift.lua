@@ -47,6 +47,10 @@ T["shape_changes"]["tells an empty object from an empty array, and null from a v
   eq(changes, { added = {}, removed = {}, retyped = { "warnings: array → object", "x: null → string" } })
 end
 
+T["shape_changes"]["names the top level ."] = function()
+  eq(drift.shape_changes("[]", "{}"), { added = {}, removed = {}, retyped = { ".: array → object" } })
+end
+
 -- ── run
 
 local recorder = dofile("scripts/fixture_recorder.lua")
@@ -253,18 +257,20 @@ T["run"]["does nothing when only the RECORDED line changed"] = function()
 
   eq(run().outcome, "unchanged")
 
-  eq(gh_commands(), { "pr list" })
+  -- Only reads.
+  eq(gh_commands(), { "pr list", "issue list" })
   eq(remote_branches(), { "dev" })
 end
 
-T["run"]["closes a drift PR left open once dev matches the CLI again"] = function()
-  install_fake_gh({ { cmd = "pr list", stdout = vim.json.encode({ { number = 7, url = PR_URL } }) } })
+T["run"]["closes the drift PR and issue left open once dev matches the CLI again"] = function()
+  install_fake_gh({ { cmd = "pr list", stdout = vim.json.encode({ { number = 7, url = PR_URL } }) }, OPEN_ISSUE })
   record_unchanged()
 
   eq(run().outcome, "unchanged")
 
-  eq(gh_commands(), { "pr list", "pr close" })
-  expect.match(gh_calls()[2], "^pr close 7 ")
+  eq(gh_commands(), { "pr list", "issue list", "pr close", "issue close" })
+  expect.match(gh_calls()[3], "^pr close 7 ")
+  expect.match(gh_calls()[4], "^issue close 5 ")
 end
 
 T["run"]["opens and merges a PR when the output changed and the tests pass"] = function()

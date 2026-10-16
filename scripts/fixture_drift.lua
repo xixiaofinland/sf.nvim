@@ -62,7 +62,7 @@ end
 ---@param path string
 ---@return string
 local function shown_path(path)
-  return path == "" and "(top level)" or path
+  return path == "" and "." or path
 end
 
 ---@alias ShapeChanges { added: string[], removed: string[], retyped: string[] }
@@ -109,7 +109,10 @@ end
 ---@return table|nil
 local function load_fixture(text)
   local chunk = load(text, "fixture", "t", {})
-  local ok, fixture = pcall(chunk or error)
+  if not chunk then
+    return nil
+  end
+  local ok, fixture = pcall(chunk)
   return ok and type(fixture) == "table" and fixture or nil
 end
 
@@ -146,14 +149,11 @@ local function fixture_change(name, old_text, new_text)
   if old.stdout ~= new.stdout then
     if is_json(old.stdout) and is_json(new.stdout) then
       local shape = M.shape_changes(old.stdout, new.stdout)
-      for _, entry in ipairs(shape.added) do
-        table.insert(lines, "Added: " .. entry:gsub("^(%S+)", "`%1`"))
-      end
-      for _, entry in ipairs(shape.removed) do
-        table.insert(lines, "Removed: " .. entry:gsub("^(%S+)", "`%1`"))
-      end
-      for _, entry in ipairs(shape.retyped) do
-        table.insert(lines, "Retyped: " .. entry:gsub("^([^:]+)", "`%1`"))
+      for _, kind in ipairs({ { "Added", shape.added }, { "Removed", shape.removed }, { "Retyped", shape.retyped } }) do
+        for _, entry in ipairs(kind[2]) do
+          -- Paths hold neither spaces nor colons; the type follows either.
+          table.insert(lines, kind[1] .. ": " .. entry:gsub("^([^%s:]+)", "`%1`"))
+        end
       end
       if #shape.added + #shape.removed + #shape.retyped == 0 then
         table.insert(lines, "Values in stdout changed; its shape didn't.")
@@ -324,7 +324,7 @@ local function issue_body(r)
     ),
     "",
     string.format(
-      "Bring them into your branch with `git fetch origin %s && git checkout origin/%s -- tests/fixtures/sf`, then change the plugin (not the fixtures) until `make test` passes. Once that is on `dev`, the next drift check finds nothing new and closes #%d.",
+      "Bring them into your branch with `git fetch origin %s && git checkout origin/%s -- tests/fixtures/sf`, then change the plugin (not the fixtures) until `make test` passes. Once that is on `dev`, the next drift check finds nothing new and closes #%d and this issue.",
       M.BRANCH,
       M.BRANCH,
       r.pr
@@ -411,7 +411,7 @@ end
 --- Compares the fixtures in the working tree, just recorded, with those
 --- committed at HEAD and acts on it:
 ---   - nothing but the RECORDED lines changed: nothing to do, beyond closing a
----     drift PR still open from an earlier run;
+---     drift PR and issue still open from an earlier run;
 ---   - changed, and the tests pass: commits them to M.BRANCH, opens a PR
 ---     against `base` and squash-merges it, and closes an open drift issue;
 ---   - changed, and the tests fail: opens the same PR, or updates the one left
@@ -444,6 +444,7 @@ M.run = function(opts)
 
   local changes, version = {}, nil
   for _, file in ipairs(files) do
+    -- Not `git()`: a fixture new in the working tree isn't at HEAD.
     local shown = vim
       .system({ "git", "show", "HEAD:" .. opts.fixtures .. "/" .. file.name .. ".lua" }, {
         cwd = opts.root,
@@ -463,20 +464,27 @@ M.run = function(opts)
     local list = vim.json.decode(gh({ "pr", "list", "--head", M.BRANCH, "--state", "open", "--json", "number,url" }))
     return list[1] and list[1].number
   end
+  local function open_issue()
+    local list = vim.json.decode(gh({ "issue", "list", "--state", "open", "--limit", "200", "--json", "number,body" }))
+    for _, i in ipairs(list) do
+      if (i.body or ""):find(M.MARKER, 1, true) then
+        return i.number
+      end
+    end
+  end
 
   if #changes == 0 then
     log("The fixtures match sf " .. version .. "'s output; nothing to do.")
-    local stale = open_pr()
-    if stale then
-      gh({
-        "pr",
-        "close",
-        tostring(stale),
-        "--delete-branch",
-        "--comment",
-        "`dev`'s fixtures match sf " .. version .. " again.",
-      })
-      log("Closed the drift PR #" .. stale .. ", which held nothing new any more.")
+    -- Left from a drift whose fix, fixtures included, has reached dev since.
+    local stale_pr, stale_issue = open_pr(), open_issue()
+    local done = "`" .. opts.base .. "`'s fixtures match sf " .. version .. "'s output now."
+    if stale_pr then
+      gh({ "pr", "close", tostring(stale_pr), "--delete-branch", "--comment", done })
+      log("Closed the drift PR #" .. stale_pr .. ", which held nothing new any more.")
+    end
+    if stale_issue then
+      gh({ "issue", "close", tostring(stale_issue), "--comment", done })
+      log("Closed the drift issue #" .. stale_issue .. ".")
     end
     return { outcome = "unchanged" }
   end
@@ -523,15 +531,7 @@ M.run = function(opts)
   log("PR #" .. pr .. ": " .. title)
   report.pr = pr
 
-  local issues = vim.json.decode(gh({ "issue", "list", "--state", "open", "--limit", "200", "--json", "number,body" }))
-  local issue
-  for _, i in ipairs(issues) do
-    if (i.body or ""):find(M.MARKER, 1, true) then
-      issue = i.number
-      break
-    end
-  end
-
+  local issue = open_issue()
   if report.passed then
     gh({ "pr", "merge", tostring(pr), "--squash", "--delete-branch" })
     log("Merged #" .. pr .. ".")
