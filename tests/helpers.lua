@@ -34,22 +34,33 @@
 -- run. Pass `{ mode = "sync" }` as the second argument to `install()` to run
 -- them before the faked call returns instead.
 --
--- ── Recording a fixture
+-- ── Recording the fixtures
 --
 -- Fixtures live in tests/fixtures/sf/<name>.lua and return
 -- `{ recorded = bool, code = int, stdout = string, stderr = string|nil }`.
--- org_display has a recorder, scripts/record_fixture.lua: `make
--- record-fixture ORG=<alias>` runs `sf org display` against that org, scrubs
--- the output deterministically and writes the fixture. To record another one
--- by hand:
---   1. Run the command against a throwaway org, e.g.
---      `sf org list --json --skip-connection-status > out.json`; note its exit code.
---   2. Scrub it: replace access tokens, usernames, org/user/record ids, instance
---      URLs and names with fake values like those in the existing fixtures.
---   3. Paste it into the `stdout` long string, update the header comment with
---      the command and sf CLI version (`sf --version`), and set `recorded = true`.
--- Fixtures with `recorded = false` are synthetic, shaped after the sf CLI's
--- source; their header names the source so they can be swapped for captures.
+-- The recorder (scripts/record_fixtures.lua, logic in
+-- scripts/fixture_recorder.lua) writes all of them in one run:
+--
+--   make record-fixtures DEVHUB=<alias>
+--
+-- DEVHUB is the alias of a Dev Hub the sf CLI is logged in to, `devhub` by
+-- default (`sf org login web --set-default-dev-hub --alias devhub`). The run:
+--   1. creates one scratch org from it, aliased sf-nvim-fixtures, for a day,
+--   2. deploys a class and its test class (SfProject, SfProjectTest),
+--   3. runs each fixture's command against it (and `sf org list`, which lists
+--      every org this machine is logged in to), scrubs the output and
+--      replaces the fixtures, all of them or, when a step fails, none,
+--   4. deletes the scratch org, also when a step failed.
+-- It never retries creating the org: a Developer Edition Dev Hub allows only
+-- a few scratch orgs a day. If deleting fails, it prints the command to delete
+-- the org by hand.
+--
+-- Scrubbing replaces tokens, ids, usernames, URLs and org names with numbered
+-- placeholders and normalises durations, timestamps, test run ids and
+-- response headers, so a re-recording only changes when the CLI's output
+-- does (and in each header's "RECORDED with … on …" line). Read the diff
+-- before committing it. Fixtures with `recorded = false` are synthetic, shaped
+-- after the sf CLI's source; their header names that source.
 
 local Helpers = {}
 
