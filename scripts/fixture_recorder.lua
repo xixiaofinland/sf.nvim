@@ -94,12 +94,19 @@ local placeholder = {
   person = function(n)
     return n == 1 and "Fake Admin" or "Fake User " .. n
   end,
+  client_id = function(n)
+    return "FAKE_CLIENT_ID_" .. n
+  end,
 }
+
+-- Paths sf prints, such as a JWT key file or a stack trace, start with it.
+local HOME_PLACEHOLDER = "/home/user"
 
 ---@param key string
 ---@param value string
+---@param parent table|nil The table holding the value
 ---@return string|nil kind
-local function kind_of(key, value)
+local function kind_of(key, value, parent)
   if key == "accessToken" or key == "refreshToken" then
     return "token"
   elseif key == "password" then
@@ -108,8 +115,10 @@ local function kind_of(key, value)
     return "auth_url"
   elseif key == "alias" then
     return "alias"
-  elseif key == "orgName" then
+  elseif key == "orgName" or (key == "name" and parent and parent.orgId) then
     return "org_name"
+  elseif key == "clientId" and value ~= "PlatformCLI" then
+    return "client_id"
   elseif key:match("ByName$") then
     return "person"
   elseif (key == "id" or key:match("Id$")) and is_sf_id(value) then
@@ -127,11 +136,12 @@ end
 local FIRST_KEYS = { id = 1, username = 2, instanceUrl = 3 }
 
 ---@param value any
----@param visit fun(key: string, value: string)
+---@param visit fun(key: string, value: string, parent: table|nil)
 ---@param key string|nil
-local function walk(value, visit, key)
+---@param parent table|nil
+local function walk(value, visit, key, parent)
   if type(value) == "string" then
-    visit(key or "", value)
+    visit(key or "", value, parent)
   elseif type(value) == "table" then
     local keys = vim.tbl_keys(value)
     table.sort(keys, function(a, b)
@@ -146,7 +156,7 @@ local function walk(value, visit, key)
     end)
     for _, k in ipairs(keys) do
       -- Array items inherit their parent's key.
-      walk(value[k], visit, type(k) == "string" and k or key)
+      walk(value[k], visit, type(k) == "string" and k or key, value)
     end
   end
 end
@@ -337,7 +347,9 @@ Scrubber.__index = Scrubber
 --- in `apex get test` is the same placeholder.
 ---@return Scrubber
 M.new_scrubber = function()
-  return setmetatable({ by_original = {}, counts = {}, id_counts = {} }, Scrubber)
+  local scrubber = setmetatable({ by_original = {}, counts = {}, id_counts = {} }, Scrubber)
+  scrubber:add(vim.uv.os_homedir(), HOME_PLACEHOLDER)
+  return scrubber
 end
 
 ---@param original string
@@ -383,14 +395,14 @@ function Scrubber:collect(decoded)
     end
   end)
 
-  walk(decoded, function(key, value)
+  walk(decoded, function(key, value, parent)
     if self.by_original[value] then
       return
     end
     if key == "apiVersion" or key == "instanceApiVersion" then
       return self:add(value, API_VERSION)
     end
-    local kind = kind_of(key, value)
+    local kind = kind_of(key, value, parent)
     if not kind or kind == "id" then
       return
     end
