@@ -525,6 +525,9 @@ T["record"]["creates one scratch org, deploys the project, records against it an
     "./force-app/main/default/classes/SfProject.cls-meta.xml",
     "./force-app/main/default/classes/SfProjectTest.cls",
     "./force-app/main/default/classes/SfProjectTest.cls-meta.xml",
+    "./force-app/main/default/email/SfNvimTemplates.emailFolder-meta.xml",
+    "./force-app/main/default/email/SfNvimTemplates/Welcome.email",
+    "./force-app/main/default/email/SfNvimTemplates/Welcome.email-meta.xml",
     "./sfdx-project.json",
   })
 end

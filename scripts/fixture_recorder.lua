@@ -573,6 +573,28 @@ private class SfProjectTest {
 }
 ]],
   ["force-app/main/default/classes/SfProjectTest.cls-meta.xml"] = CLASS_META,
+  -- A folder-based type: listing it needs the folder (#300)
+  ["force-app/main/default/email/SfNvimTemplates.emailFolder-meta.xml"] = [[
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessType>Public</accessType>
+    <name>SfNvimTemplates</name>
+    <publicFolderAccess>ReadWrite</publicFolderAccess>
+</EmailFolder>
+]],
+  ["force-app/main/default/email/SfNvimTemplates/Welcome.email"] = "Hello {!Contact.FirstName}\n",
+  ["force-app/main/default/email/SfNvimTemplates/Welcome.email-meta.xml"] = [[
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Welcome</name>
+    <style>none</style>
+    <subject>Welcome</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>
+]],
 }
 
 ---@param dir string
@@ -802,6 +824,51 @@ M.FIXTURES = {
     note = "The org's Apex classes, as the metadata picker lists them.",
     argv = function(ctx)
       return { "sf", "org", "list", "metadata", "-m", "ApexClass", "-o", ctx.scratch, "--json" }
+    end,
+  },
+  {
+    name = "org_list_metadata_email_folder",
+    note = "The org's email template folders, which the metadata pull lists before their templates.",
+    argv = function(ctx)
+      return { "sf", "org", "list", "metadata", "-m", "EmailFolder", "-o", ctx.scratch, "--json" }
+    end,
+  },
+  {
+    name = "org_list_metadata_email_template_folder",
+    note = "The email templates in one folder.",
+    argv = function(ctx)
+      return {
+        "sf",
+        "org",
+        "list",
+        "metadata",
+        "-m",
+        "EmailTemplate",
+        "--folder",
+        "SfNvimTemplates",
+        "-o",
+        ctx.scratch,
+        "--json",
+      }
+    end,
+  },
+  {
+    name = "org_list_metadata_email_template_unfiled",
+    note = "The email templates in no folder, which the folder list names unfiled$public.",
+    argv = function(ctx)
+      return {
+        "sf",
+        "org",
+        "list",
+        "metadata",
+        "-m",
+        "EmailTemplate",
+        "--folder",
+        "unfiled$public",
+        "-o",
+        ctx.scratch,
+        "--json",
+      }
     end,
   },
 }

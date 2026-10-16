@@ -118,6 +118,65 @@ T["list_md_to_retrieve()"]["skips a malformed cache file with a message"] = func
   expect.match(notified_msgs(), "Parse file from json to tbl failed: .*ApexClass_test%-org%.json")
 end
 
+T["pull_md_json()"] = new_set()
+
+local EMAIL_FOLDER_RULES = {
+  { cmd = "--folder SfNvimTemplates", fixture = "org_list_metadata_email_template_folder" },
+  { cmd = "--folder unfiled$public", fixture = "org_list_metadata_email_template_unfiled" },
+  { cmd = "-m EmailFolder", fixture = "org_list_metadata_email_folder" },
+}
+
+T["pull_md_json()"]["lists a folder-based type folder by folder"] = function()
+  make_project()
+  child.lua([[vim.g.sf = vim.tbl_extend("force", vim.g.sf, { types_to_retrieve = { "EmailTemplate" } })]])
+  child.sf_fake.install(EMAIL_FOLDER_RULES)
+
+  child.lua([[Sf.pull_md_json()]])
+  child.sf_fake.wait()
+
+  eq(child.sf_fake.cmds(), {
+    "sf org list metadata -m EmailFolder --json -o test-org",
+    "sf org list metadata --folder SfNvimTemplates -m EmailTemplate --json -o test-org",
+    "sf org list metadata --folder unfiled$public -m EmailTemplate --json -o test-org",
+  })
+  expect.match(notified_msgs(), "EmailTemplate retrieved")
+
+  child.lua([[Sf.list_md_to_retrieve()]])
+
+  eq(child.lua_get("_G.fzf_items"), {
+    "EmailTemplate: SfNvimTemplates/Welcome",
+    "EmailTemplate: unfiled$public/CommerceReorderPortalInvitation",
+  })
+end
+
+T["pull_md_json()"]["writes no list when a folder fails to list"] = function()
+  local root = make_project()
+  child.lua([[vim.g.sf = vim.tbl_extend("force", vim.g.sf, { types_to_retrieve = { "EmailTemplate" } })]])
+  child.sf_fake.install({
+    { cmd = "--folder SfNvimTemplates", code = 1, stdout = '{"status": 1, "message": "boom"}' },
+    EMAIL_FOLDER_RULES[2],
+    EMAIL_FOLDER_RULES[3],
+  })
+
+  child.lua([[Sf.pull_md_json()]])
+  child.sf_fake.wait()
+
+  expect.match(notified_msgs(), "EmailTemplate retrieve failed")
+  eq(child.lua_get("vim.fn.filereadable(...)", { root .. "/sf_cache/EmailTemplate_test-org.json" }), 0)
+end
+
+T["pull_md_json()"]["reports a failing folder list"] = function()
+  make_project()
+  child.lua([[vim.g.sf = vim.tbl_extend("force", vim.g.sf, { types_to_retrieve = { "EmailTemplate" } })]])
+  child.sf_fake.install({ { cmd = "-m EmailFolder", fixture = "apex_get_test_error" } })
+
+  child.lua([[Sf.pull_md_json()]])
+  child.sf_fake.wait()
+
+  eq(#child.sf_fake.cmds(), 1)
+  expect.match(notified_msgs(), "EmailTemplate retrieve failed")
+end
+
 T["try_open_file()"] = new_set({
   parametrize = { { "with space" }, { "100%done" }, { "issue#1" } },
 })
