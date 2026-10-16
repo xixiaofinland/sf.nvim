@@ -1,175 +1,118 @@
 -- `sf org list --json --skip-connection-status`
 --
--- SYNTHETIC: not captured from a real org. Shaped after `OrgListResult` in
--- salesforcecli/plugin-org src/commands/org/list.ts (`nonScratchOrgs` is the
--- union of `devHubs`, `sandboxes` and `other`). Replace with a real, scrubbed
--- capture and set `recorded = true`.
+-- Every org this machine is authorised to, scrubbed; the scratch org is
+-- my-scratch, the project's default target org, and the Dev Hub devhub.
 --
--- Orgs: "devhub" (Dev Hub, the default target org), "uat" (sandbox), an org
--- with no alias, and the scratch org "my-scratch".
+-- RECORDED with @salesforce/cli/2.153.5 on 2026-10-16 by scripts/record_fixtures.lua, which
+-- replaced tokens, ids, usernames, URLs, timestamps and durations with placeholders.
+-- Re-record with `make record-fixtures DEVHUB=<alias>` instead of editing it.
 return {
-  recorded = false,
+  recorded = true,
   code = 0,
-  stdout = [==[
+  stdout = [[
 {
   "status": 0,
   "result": {
-    "other": [
-      {
-        "accessToken": "00D000000000003AAA!FAKE_ACCESS_TOKEN_OTHER",
-        "instanceUrl": "https://fake-other.my.salesforce.com",
-        "orgId": "00D000000000003AAA",
-        "username": "admin@other.example.com",
-        "loginUrl": "https://login.salesforce.com",
-        "clientId": "PlatformCLI",
-        "isDevHub": false,
-        "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
-        "isSandbox": false,
-        "isScratch": false,
-        "tracksSource": false,
-        "isDefaultUsername": false,
-        "isDefaultDevHubUsername": false,
-        "connectedStatus": "Unknown",
-        "lastUsed": "2026-01-01T09:00:00.000Z"
-      }
-    ],
-    "sandboxes": [
-      {
-        "accessToken": "00D000000000002AAA!FAKE_ACCESS_TOKEN_UAT",
-        "instanceUrl": "https://fake-company--uat.sandbox.my.salesforce.com",
-        "orgId": "00D000000000002AAA",
-        "username": "admin@example.com.uat",
-        "loginUrl": "https://test.salesforce.com",
-        "clientId": "PlatformCLI",
-        "isDevHub": false,
-        "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
-        "isSandbox": true,
-        "isScratch": false,
-        "tracksSource": true,
-        "alias": "uat",
-        "isDefaultUsername": false,
-        "isDefaultDevHubUsername": false,
-        "connectedStatus": "Unknown",
-        "lastUsed": "2026-01-01T09:00:00.000Z"
-      }
-    ],
+    "other": [],
+    "sandboxes": [],
     "nonScratchOrgs": [
       {
-        "accessToken": "00D000000000001AAA!FAKE_ACCESS_TOKEN_DEVHUB",
-        "instanceUrl": "https://fake-company.my.salesforce.com",
-        "orgId": "00D000000000001AAA",
-        "username": "admin@example.com",
-        "loginUrl": "https://login.salesforce.com",
-        "clientId": "PlatformCLI",
-        "isDevHub": true,
-        "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
-        "isSandbox": false,
-        "isScratch": false,
-        "tracksSource": false,
-        "alias": "devhub",
-        "isDefaultUsername": true,
-        "isDefaultDevHubUsername": true,
-        "defaultMarker": "(D),(U)",
-        "connectedStatus": "Unknown",
-        "lastUsed": "2026-01-01T09:00:00.000Z"
-      },
-      {
-        "accessToken": "00D000000000002AAA!FAKE_ACCESS_TOKEN_UAT",
-        "instanceUrl": "https://fake-company--uat.sandbox.my.salesforce.com",
+        "accessToken": "00D000000000000!FAKE_ACCESS_TOKEN_1",
         "orgId": "00D000000000002AAA",
-        "username": "admin@example.com.uat",
-        "loginUrl": "https://test.salesforce.com",
-        "clientId": "PlatformCLI",
-        "isDevHub": false,
+        "loginUrl": "https://fake-company-3.my.salesforce.com",
+        "privateKey": "/home/user/.config/sf-nvim/server.key",
+        "clientId": "FAKE_CLIENT_ID_1",
+        "instanceUrl": "https://fake-company-2.my.salesforce.com",
+        "isDevHub": true,
+        "username": "user2@example.com",
         "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
-        "isSandbox": true,
-        "isScratch": false,
-        "tracksSource": true,
-        "alias": "uat",
-        "isDefaultUsername": false,
-        "isDefaultDevHubUsername": false,
-        "connectedStatus": "Unknown",
-        "lastUsed": "2026-01-01T09:00:00.000Z"
-      },
-      {
-        "accessToken": "00D000000000003AAA!FAKE_ACCESS_TOKEN_OTHER",
-        "instanceUrl": "https://fake-other.my.salesforce.com",
-        "orgId": "00D000000000003AAA",
-        "username": "admin@other.example.com",
-        "loginUrl": "https://login.salesforce.com",
-        "clientId": "PlatformCLI",
-        "isDevHub": false,
-        "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
+        "instanceApiVersionLastRetrieved": "1/1/2026, 0:00:00 AM",
+        "name": "Fake Company 2",
+        "instanceName": "SWE126",
+        "namespacePrefix": null,
         "isSandbox": false,
         "isScratch": false,
-        "tracksSource": false,
+        "trailExpirationDate": null,
+        "orgEdition": "Developer Edition",
+        "alias": "devhub",
+        "isDefaultDevHubUsername": true,
         "isDefaultUsername": false,
-        "isDefaultDevHubUsername": false,
-        "connectedStatus": "Unknown",
-        "lastUsed": "2026-01-01T09:00:00.000Z"
+        "lastUsed": "2026-01-01T00:00:00.000Z",
+        "defaultMarker": "(D)"
       }
     ],
     "devHubs": [
       {
-        "accessToken": "00D000000000001AAA!FAKE_ACCESS_TOKEN_DEVHUB",
-        "instanceUrl": "https://fake-company.my.salesforce.com",
-        "orgId": "00D000000000001AAA",
-        "username": "admin@example.com",
-        "loginUrl": "https://login.salesforce.com",
-        "clientId": "PlatformCLI",
+        "accessToken": "00D000000000000!FAKE_ACCESS_TOKEN_1",
+        "orgId": "00D000000000002AAA",
+        "loginUrl": "https://fake-company-3.my.salesforce.com",
+        "privateKey": "/home/user/.config/sf-nvim/server.key",
+        "clientId": "FAKE_CLIENT_ID_1",
+        "instanceUrl": "https://fake-company-2.my.salesforce.com",
         "isDevHub": true,
+        "username": "user2@example.com",
         "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
+        "instanceApiVersionLastRetrieved": "1/1/2026, 0:00:00 AM",
+        "name": "Fake Company 2",
+        "instanceName": "SWE126",
+        "namespacePrefix": null,
         "isSandbox": false,
         "isScratch": false,
-        "tracksSource": false,
+        "trailExpirationDate": null,
+        "orgEdition": "Developer Edition",
         "alias": "devhub",
-        "isDefaultUsername": true,
         "isDefaultDevHubUsername": true,
-        "defaultMarker": "(D),(U)",
-        "connectedStatus": "Unknown",
-        "lastUsed": "2026-01-01T09:00:00.000Z"
+        "isDefaultUsername": false,
+        "lastUsed": "2026-01-01T00:00:00.000Z",
+        "defaultMarker": "(D)"
       }
     ],
     "scratchOrgs": [
       {
-        "accessToken": "00D000000000004AAA!FAKE_ACCESS_TOKEN_SCRATCH",
-        "instanceUrl": "https://fake-scratch-1234.scratch.my.salesforce.com",
-        "orgId": "00D000000000004AAA",
-        "username": "test-fake1234@example.com",
-        "loginUrl": "https://CS1.salesforce.com",
+        "accessToken": "00D000000000000!FAKE_ACCESS_TOKEN_1",
+        "instanceUrl": "https://fake-company.my.salesforce.com",
+        "orgId": "00D000000000001AAA",
+        "username": "admin@example.com",
+        "loginUrl": "https://fake-company.my.salesforce.com",
         "clientId": "PlatformCLI",
-        "createdOrgInstance": "CS1",
-        "devHubUsername": "admin@example.com",
-        "instanceApiVersion": "62.0",
-        "instanceApiVersionLastRetrieved": "1/1/2026, 9:00:00 AM",
         "isDevHub": false,
+        "instanceApiVersion": "62.0",
+        "instanceApiVersionLastRetrieved": "1/1/2026, 0:00:00 AM",
+        "name": "Fake Company",
+        "instanceName": "SWE30S",
+        "namespacePrefix": null,
         "isSandbox": false,
         "isScratch": true,
+        "trailExpirationDate": "2026-01-01T00:00:00.000+0000",
+        "orgEdition": "Developer Edition",
+        "devHubUsername": "user2@example.com",
+        "created": "1792178713000",
+        "expirationDate": "2026-01-01",
+        "createdOrgInstance": "SWE30S",
         "tracksSource": true,
         "alias": "my-scratch",
-        "createdBy": "admin@example.com",
-        "createdDate": "2026-01-01T08:00:00.000+0000",
-        "expirationDate": "2026-01-08",
-        "edition": "Developer",
+        "isDefaultDevHubUsername": false,
+        "isDefaultUsername": true,
+        "lastUsed": "2026-01-01T00:00:00.000Z",
+        "signupUsername": "admin@example.com",
+        "createdBy": "user2@example.com",
+        "createdDate": "2026-01-01T00:00:00.000+0000",
+        "devHubOrgId": "00D000000000002AAA",
+        "devHubId": "00D000000000002AAA",
+        "attributes": {
+          "type": "ScratchOrgInfo",
+          "url": "/services/data/v62.0/sobjects/ScratchOrgInfo/2SRd2000001BNC1GAO"
+        },
         "orgName": "Fake Company",
+        "edition": "Developer",
         "status": "Active",
         "isExpired": false,
-        "signupUsername": "test-fake1234@example.com",
-        "devHubOrgId": "00D000000000001AAA",
         "namespace": null,
-        "isDefaultUsername": false,
-        "isDefaultDevHubUsername": false,
-        "lastUsed": "2026-01-01T09:00:00.000Z"
+        "defaultMarker": "(U)"
       }
     ]
   },
   "warnings": []
 }
-]==],
+]],
 }

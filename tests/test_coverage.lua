@@ -115,7 +115,10 @@ T["signs"]["with covered signs hidden, only uncovered lines get signs"] = functi
 
   edit("SfProject.cls")
 
-  eq(signs(), { { name = "sf_uncovered", lnum = 6, group = "SfUncovered" } })
+  eq(signs(), {
+    { name = "sf_uncovered", lnum = 12, group = "SfUncovered" },
+    { name = "sf_uncovered", lnum = 13, group = "SfUncovered" },
+  })
   eq(errors(), {})
   eq(child.v.errmsg, "")
 end
@@ -127,10 +130,12 @@ T["signs"]["show covered and uncovered lines"] = function()
   edit("SfProject.cls")
 
   eq(signs(), {
-    { name = "sf_covered", lnum = 1, group = "SfCovered" },
     { name = "sf_covered", lnum = 4, group = "SfCovered" },
     { name = "sf_covered", lnum = 5, group = "SfCovered" },
-    { name = "sf_uncovered", lnum = 6, group = "SfUncovered" },
+    { name = "sf_covered", lnum = 8, group = "SfCovered" },
+    { name = "sf_covered", lnum = 9, group = "SfCovered" },
+    { name = "sf_uncovered", lnum = 12, group = "SfUncovered" },
+    { name = "sf_uncovered", lnum = 13, group = "SfUncovered" },
   })
 end
 
@@ -140,7 +145,7 @@ T["signs"]["covered percent of the current file comes from the result"] = functi
 
   edit("SfProject.cls")
 
-  eq(child.lua_get("Sf.covered_percent()"), 75)
+  eq(child.lua_get("Sf.covered_percent()"), 67)
 end
 
 T["jump"] = new_set()
@@ -216,7 +221,7 @@ T["saving"]["writes the result under a project path with spaces and places signs
   eq(child.notified(), { { msg = "Code coverage saved.", level = child.lua_get("vim.log.levels.INFO") } })
 
   edit("SfProject.cls")
-  eq(#signs(), 4)
+  eq(#signs(), 6)
 end
 
 T["saving"]["a failed get test keeps the previous result"] = function()

@@ -1,15 +1,15 @@
--- `sf apex get test -i 7070000000FAKE1 -c --json`, which the plugin saves as
+-- `sf apex get test -i 707000000000001 -c --json -o my-scratch`
+--
+-- Coverage of the run above, which the plugin saves as
 -- sf_cache/test_result.json to place coverage signs.
 --
--- SYNTHETIC: not captured from a real org. Shaped after the JSON result of
--- salesforcecli/plugin-apex src/commands/apex/get/test.ts: a `TestResult` from
--- forcedotcom/salesforcedx-apex whose `coverage` holds per-class `coverage`
--- (with `lines`: line number -> 1 covered / 0 uncovered), `records` and
--- `summary`. Replace with a real, scrubbed capture and set `recorded = true`.
+-- RECORDED with @salesforce/cli/2.153.5 on 2026-10-16 by scripts/record_fixtures.lua, which
+-- replaced tokens, ids, usernames, URLs, timestamps and durations with placeholders.
+-- Re-record with `make record-fixtures DEVHUB=<alias>` instead of editing it.
 return {
-  recorded = false,
+  recorded = true,
   code = 0,
-  stdout = [==[
+  stdout = [[
 {
   "status": 0,
   "result": {
@@ -22,16 +22,16 @@ return {
       "passRate": "100%",
       "passing": 2,
       "skipped": 0,
-      "testRunId": "7070000000FAKE1",
-      "testStartTime": "2026-01-01T09:00:00.000Z",
+      "testRunId": "707000000000001",
+      "testStartTime": "2026-01-01T00:00:00.000Z",
       "testsRan": 2,
       "userId": "005000000000001AAA",
       "username": "admin@example.com",
-      "commandTime": "95 ms",
-      "testExecutionTime": "52 ms",
-      "testTotalTime": "52 ms",
-      "orgWideCoverage": "83%",
-      "testRunCoverage": "75%"
+      "commandTime": "0 ms",
+      "testExecutionTime": "0 ms",
+      "testTotalTime": "0 ms",
+      "orgWideCoverage": "66%",
+      "testRunCoverage": "67%"
     },
     "tests": [
       {
@@ -39,46 +39,32 @@ return {
         "QueueItemId": "709000000000001AAA",
         "StackTrace": null,
         "Message": null,
-        "AsyncApexJobId": "7070000000FAKE1",
+        "AsyncApexJobId": "707000000000001AAA",
         "MethodName": "constructsWithName",
         "Outcome": "Pass",
-        "ApexClass": { "Id": "01p000000000002AAA", "Name": "SfProjectTest", "NamespacePrefix": null },
-        "RunTime": 30,
-        "FullName": "SfProjectTest.constructsWithName",
-        "perClassCoverage": [
-          {
-            "apexClassOrTriggerName": "SfProject",
-            "apexClassOrTriggerId": "01p000000000001AAA",
-            "apexTestClassId": "01p000000000002AAA",
-            "apexTestMethodName": "constructsWithName",
-            "numLinesCovered": 3,
-            "numLinesUncovered": 1,
-            "percentage": "75%"
-          }
-        ]
+        "ApexClass": {
+          "Id": "01p000000000002AAA",
+          "Name": "SfProjectTest",
+          "NamespacePrefix": null
+        },
+        "RunTime": 0,
+        "FullName": "SfProjectTest.constructsWithName"
       },
       {
         "Id": "07M000000000002AAA",
         "QueueItemId": "709000000000001AAA",
         "StackTrace": null,
         "Message": null,
-        "AsyncApexJobId": "7070000000FAKE1",
+        "AsyncApexJobId": "707000000000001AAA",
         "MethodName": "constructsWithNull",
         "Outcome": "Pass",
-        "ApexClass": { "Id": "01p000000000002AAA", "Name": "SfProjectTest", "NamespacePrefix": null },
-        "RunTime": 22,
-        "FullName": "SfProjectTest.constructsWithNull",
-        "perClassCoverage": [
-          {
-            "apexClassOrTriggerName": "SfProject",
-            "apexClassOrTriggerId": "01p000000000001AAA",
-            "apexTestClassId": "01p000000000002AAA",
-            "apexTestMethodName": "constructsWithNull",
-            "numLinesCovered": 3,
-            "numLinesUncovered": 1,
-            "percentage": "75%"
-          }
-        ]
+        "ApexClass": {
+          "Id": "01p000000000002AAA",
+          "Name": "SfProjectTest",
+          "NamespacePrefix": null
+        },
+        "RunTime": 0,
+        "FullName": "SfProjectTest.constructsWithNull"
       }
     ],
     "coverage": {
@@ -86,31 +72,80 @@ return {
         {
           "id": "01p000000000001AAA",
           "name": "SfProject",
-          "totalLines": 4,
-          "lines": { "1": 1, "4": 1, "5": 1, "6": 0 },
-          "totalCovered": 3,
-          "coveredPercent": 75
+          "totalLines": 6,
+          "lines": {
+            "4": 1,
+            "5": 1,
+            "8": 1,
+            "9": 1,
+            "12": 0,
+            "13": 0
+          },
+          "totalCovered": 4,
+          "coveredPercent": 67
         }
       ],
       "records": [
         {
-          "ApexTestClass": { "Id": "01p000000000002AAA", "Name": "SfProjectTest" },
-          "Coverage": { "coveredLines": [1, 4, 5], "uncoveredLines": [6] },
+          "ApexTestClass": {
+            "Id": "07M000000000001AAA",
+            "Name": "SfProjectTest"
+          },
+          "Coverage": {
+            "coveredLines": [
+              4,
+              5,
+              8,
+              9
+            ],
+            "uncoveredLines": [
+              12,
+              13
+            ]
+          },
           "TestMethodName": "constructsWithName",
-          "NumLinesCovered": 3,
-          "ApexClassOrTrigger": { "Id": "01p000000000001AAA", "Name": "SfProject" },
-          "NumLinesUncovered": 1
+          "NumLinesCovered": 4,
+          "ApexClassOrTrigger": {
+            "Id": "01p000000000001AAA",
+            "Name": "SfProject"
+          },
+          "NumLinesUncovered": 2
+        },
+        {
+          "ApexTestClass": {
+            "Id": "07M000000000002AAA",
+            "Name": "SfProjectTest"
+          },
+          "Coverage": {
+            "coveredLines": [
+              4,
+              5,
+              8,
+              9
+            ],
+            "uncoveredLines": [
+              12,
+              13
+            ]
+          },
+          "TestMethodName": "constructsWithNull",
+          "NumLinesCovered": 4,
+          "ApexClassOrTrigger": {
+            "Id": "01p000000000001AAA",
+            "Name": "SfProject"
+          },
+          "NumLinesUncovered": 2
         }
       ],
       "summary": {
-        "totalLines": 4,
-        "coveredLines": 3,
-        "orgWideCoverage": "83%",
-        "testRunCoverage": "75%"
+        "totalLines": 6,
+        "coveredLines": 4,
+        "orgWideCoverage": "66%",
+        "testRunCoverage": "67%"
       }
     }
   },
   "warnings": []
 }
-]==],
+]],
 }

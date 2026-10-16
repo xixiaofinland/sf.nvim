@@ -19,6 +19,19 @@ local only_error = function(msg)
   return { { msg = msg, level = child.lua_get("vim.log.levels.ERROR") } }
 end
 
+-- The recorded org list (the Dev Hub "devhub" and the default scratch org
+-- "my-scratch") plus an org authorised without an alias.
+local org_list_with_unaliased_org = function()
+  local decoded = vim.json.decode(helpers.sf_fixture("org_list").stdout)
+  local org = vim.deepcopy(decoded.result.nonScratchOrgs[1])
+  org.alias = nil
+  org.username = "admin@other.example.com"
+  org.isDevHub = false
+  org.isDefaultDevHubUsername = false
+  table.insert(decoded.result.nonScratchOrgs, org)
+  return vim.json.encode(decoded)
+end
+
 local fetch_orgs = function()
   child.lua([[Sf.fetch_org_list()]])
   child.sf_fake.wait()
@@ -32,7 +45,7 @@ T["fetch_org_list()"]["runs sf org list and takes the default org as target_org"
   fetch_orgs()
 
   eq(child.sf_fake.cmds(), { "sf org list --json --skip-connection-status" })
-  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+  eq(child.lua_get([[Sf.get_target_org()]]), "my-scratch")
 end
 
 T["fetch_org_list()"]["lists each org once when refreshed twice quickly"] = function()
@@ -43,7 +56,7 @@ T["fetch_org_list()"]["lists each org once when refreshed twice quickly"] = func
   child.stub_select(nil)
   child.lua([[Sf.set_target_org()]])
 
-  eq(child.select_calls()[1].items, { "devhub", "uat", "admin@other.example.com", "[S] my-scratch" })
+  eq(child.select_calls()[1].items, { "devhub", "[S] my-scratch" })
 end
 
 T["fetch_org_list()"]["clears target_org when the refreshed list has no default org"] = function()
@@ -55,7 +68,7 @@ T["fetch_org_list()"]["clears target_org when the refreshed list has no default 
     },
   })
   fetch_orgs()
-  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+  eq(child.lua_get([[Sf.get_target_org()]]), "my-scratch")
 
   fetch_orgs()
 
@@ -71,7 +84,7 @@ T["fetch_org_list()"]["refetches when the cwd moves to a project without a defau
     },
   })
   fetch_orgs()
-  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+  eq(child.lua_get([[Sf.get_target_org()]]), "my-scratch")
 
   child.go_to_sf_dir()
   child.sf_fake.wait()
@@ -89,7 +102,7 @@ T["fetch_org_list()"]["does not refetch when the cwd stays in the same project"]
   child.sf_fake.wait()
 
   eq(#child.sf_fake.cmds(), 1)
-  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+  eq(child.lua_get([[Sf.get_target_org()]]), "my-scratch")
 end
 
 T["fetch_org_list()"]["does not fetch on a cwd change before any fetch"] = function()
@@ -163,11 +176,11 @@ T["set_target_org()"] = new_set()
 
 T["set_target_org()"]["offers the fetched orgs and sets the chosen one as target_org"] = function()
   child.sf_fake.install({
-    { cmd = "sf org list", fixture = "org_list" },
+    { cmd = "sf org list", stdout = org_list_with_unaliased_org() },
     { cmd = "sf config set target-org" },
   })
   fetch_orgs()
-  child.stub_select("[S] my-scratch")
+  child.stub_select("devhub")
 
   child.lua([[Sf.set_target_org()]])
   child.sf_fake.wait()
@@ -175,13 +188,13 @@ T["set_target_org()"]["offers the fetched orgs and sets the chosen one as target
   -- Non-scratch orgs first, scratch orgs marked; an org without an alias is
   -- listed by username.
   eq(child.select_calls(), {
-    { prompt = "Local target_org:", items = { "devhub", "uat", "admin@other.example.com", "[S] my-scratch" } },
+    { prompt = "Local target_org:", items = { "devhub", "admin@other.example.com", "[S] my-scratch" } },
   })
   eq(child.sf_fake.cmds(), {
     "sf org list --json --skip-connection-status",
-    'sf config set target-org "my-scratch"',
+    'sf config set target-org "devhub"',
   })
-  eq(child.lua_get([[Sf.get_target_org()]]), "my-scratch")
+  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
 end
 
 T["set_target_org()"]["keeps target_org when sf config set fails"] = function()
@@ -190,16 +203,16 @@ T["set_target_org()"]["keeps target_org when sf config set fails"] = function()
     { cmd = "sf config set target-org", code = 1, stderr = "Error (1): fake failure" },
   })
   fetch_orgs()
-  child.stub_select("uat")
+  child.stub_select("devhub")
   child.capture_notify()
 
   child.lua([[Sf.set_target_org()]])
   child.sf_fake.wait()
 
-  eq(child.lua_get([[Sf.get_target_org()]]), "devhub")
+  eq(child.lua_get([[Sf.get_target_org()]]), "my-scratch")
   eq(child.notified(), {
     {
-      msg = "uat - set target_org failed! Not in a sfdx project folder?",
+      msg = "devhub - set target_org failed! Not in a sfdx project folder?",
       level = child.lua_get("vim.log.levels.ERROR"),
     },
   })
