@@ -327,12 +327,20 @@ local OLD_FILES = {
   ["sobjects/customObjects/Gone__c.cls"] = "// old Gone__c",
 }
 
+-- The sObjects the recorded describe batch answers for, in its order; the
+-- last one doesn't exist. The fake gives every batch that same answer, so the
+-- org's real list of a thousand names would make thirty identical batches.
+local LISTED = {
+  cmd = "sf sobject list",
+  stdout = vim.json.encode({ status = 0, result = { "Account", "Contact", "NoSuchObject__c" } }),
+}
+
 T["refresh"] = new_set({ hooks = { pre_case = setup_refresh } })
 
 T["refresh"]["keeps existing definitions when the describes fail"] = function()
   child.sf_fake.install({
     { cmd = "sf org display", fixture = "org_display" },
-    { cmd = "sf sobject list", fixture = "sobject_list" },
+    LISTED,
     { cmd = DESCRIBE_CMD, fixture = "api_request_rest_401" },
   })
 
@@ -349,7 +357,7 @@ end
 T["refresh"]["reports an error on the way and still accepts the next refresh"] = function()
   child.sf_fake.install({
     { cmd = "sf org display", fixture = "org_display" },
-    { cmd = "sf sobject list", fixture = "sobject_list" },
+    LISTED,
     { cmd = DESCRIBE_CMD, fixture = "api_request_rest_composite_batch" },
   })
   -- The staging directory can't be created in a read-only .sfdx/tools.
@@ -364,7 +372,7 @@ T["refresh"]["reports an error on the way and still accepts the next refresh"] =
 
   refresh()
 
-  expect.match(last_notified("WARN"), "refreshed %(3 objects%)")
+  expect.match(last_notified("WARN"), "refreshed %(2 objects%)")
 end
 
 T["refresh"]["keeps existing definitions when some describe batches fail"] = function()
@@ -400,22 +408,28 @@ T["refresh"]["describes through sf without the access token on any command line"
   refresh()
 
   local cmds = child.sf_fake.cmds()
-  eq(#cmds, 3)
   eq(cmds[1], "sf org display -o devhub --json")
   eq(cmds[2], "sf sobject list -o devhub -s ALL --json")
-  expect.match(
-    cmds[3],
-    "^sf api request rest services/data/v62%.0/composite/batch %-%-method POST %-%-body @.+ %-o devhub %-%-json$"
-  )
+  -- A real org lists far more than one batch of 25 sObjects.
+  expect.equality(#cmds > 3, true)
+  for i = 3, #cmds do
+    expect.match(
+      cmds[i],
+      "^sf api request rest services/data/v62%.0/composite/batch %-%-method POST %-%-body @.+ %-o devhub %-%-json$"
+    )
+  end
   for _, cmd in ipairs(cmds) do
     expect.no_match(cmd, "FAKE_ACCESS_TOKEN")
   end
 end
 
 T["refresh"]["swaps in new definitions, keeping the old one of an sObject that failed to describe"] = function()
+  child.lua(
+    [[vim.fn.writefile({ "// old NoSuchObject__c" }, _G.tools_dir .. "/sobjects/customObjects/NoSuchObject__c.cls")]]
+  )
   child.sf_fake.install({
     { cmd = "sf org display", fixture = "org_display" },
-    { cmd = "sf sobject list", fixture = "sobject_list" },
+    LISTED,
     { cmd = DESCRIBE_CMD, fixture = "api_request_rest_composite_batch" },
   })
 
@@ -425,21 +439,19 @@ T["refresh"]["swaps in new definitions, keeping the old one of an sObject that f
   local paths = vim.tbl_keys(files)
   table.sort(paths)
   eq(paths, {
-    "sobjects/customObjects/Invoice__c.cls",
-    "sobjects/customObjects/MyPlatform__e.cls",
+    "sobjects/customObjects/NoSuchObject__c.cls",
     "sobjects/standardObjects/Account.cls",
     "sobjects/standardObjects/Contact.cls",
   })
   expect.match(files["sobjects/standardObjects/Account.cls"], "global class Account {")
-  expect.match(files["sobjects/customObjects/Invoice__c.cls"], "global Decimal Amount__c;")
-  expect.match(files["sobjects/customObjects/MyPlatform__e.cls"], "global class MyPlatform__e {")
-  -- The org listed Contact but its describe failed.
-  eq(files["sobjects/standardObjects/Contact.cls"], "// old Contact")
+  expect.match(files["sobjects/standardObjects/Contact.cls"], "global class Contact {")
+  -- The org listed NoSuchObject__c but its describe failed.
+  eq(files["sobjects/customObjects/NoSuchObject__c.cls"], "// old NoSuchObject__c")
 
   local msg = last_notified("WARN")
-  expect.match(msg, "refreshed %(3 objects%)")
+  expect.match(msg, "refreshed %(2 objects%)")
   expect.match(msg, "1 sObject%(s%) could not be described")
-  expect.match(msg, "Contact")
+  expect.match(msg, "NoSuchObject__c")
   eq(child.lua_get("_G.lsp_restarts"), 1)
 end
 

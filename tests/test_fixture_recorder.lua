@@ -81,7 +81,8 @@ local REAL_VALUES = {
   { "Fake Company", "Acme Corp" },
   { "Fake Admin", "Jane Doe" },
   { "FAKE_ACCESS_TOKEN", "AQ8AQGv3yP2kR9x" },
-  { "7070000000FAKE1", REAL_TEST_RUN_ID },
+  { "707000000000001", REAL_TEST_RUN_ID },
+  { "707000000000002", "707Kj00000XyZ34" },
   { "005000000000001AAA", "005Kj00000LmNoPQRS" },
   { "005000000000002AAA", "005Kj00000TuVwXQAY" },
   { "01p000000000001AAA", "01pKj00000AaBbCQAU" },
@@ -161,8 +162,9 @@ end
 local tmp, original_path
 
 -- A fake `sf` on PATH. It logs each call to $tmp/sf/calls, copies a request
--- body (`--body @file`) to $tmp/sf/body and lists the files of the project a
--- deploy runs in to $tmp/sf/deployed. It answers `--version` itself and any
+-- body (`--body @file`) to $tmp/sf/body, lists the files of the project a
+-- deploy runs in to $tmp/sf/deployed and writes the signup app a scratch org
+-- create sees to $tmp/sf/signup_app. It answers `--version` itself and any
 -- other call with the first rule whose `cmd` its command line contains.
 ---@param rules { cmd: string, stdout: string|nil, stderr: string|nil, code: integer|nil }[]
 local function install_fake_sf(rules)
@@ -183,6 +185,9 @@ local function install_fake_sf(rules)
     'echo "$*" >> "$D/calls"',
     'for a in "$@"; do case "$a" in @*) cp "${a#@}" "$D/body" ;; esac; done',
     'case "$*" in "project deploy start"*) find . -type f | LC_ALL=C sort >"$D/deployed" ;; esac',
+    'case "$*" in "org create scratch"*)',
+    '  printf "%s\\n%s\\n" "$SF_SCRATCH_SIGNUP_CONNECTED_APP" "$SF_SCRATCH_SIGNUP_CALLBACK_URL" >"$D/signup_app" ;;',
+    "esac",
     'if [ "$1" = "--version" ]; then',
     '  echo "@salesforce/cli/2.108.6 linux-x64 node-v22.20.0"',
     "  exit 0",
@@ -333,6 +338,56 @@ T["scrub"]["scrubs stderr with the same placeholders"] = function()
   eq(stderr, "Warning: token 00D000000000001!FAKE_ACCESS_TOKEN_1 for admin@example.com")
 end
 
+T["scrub"]["scrubs a JWT-authorised org's key path, client id and org name"] = function()
+  local home = vim.uv.os_homedir()
+  local scrubbed = recorder.scrub(string.format(
+    [[
+{
+  "status": 0,
+  "result": {
+    "devHubs": [
+      {
+        "orgId": "%s",
+        "username": "%s",
+        "privateKey": "%s/.config/acme/server.key",
+        "clientId": "3MVG9AbCdEfGhIjKlMnOpQrStUvWxYz0123456789AbCdEfGhIjKlMnOpQrStUvWxYz==",
+        "name": "acme-dev"
+      }
+    ],
+    "scratchOrgs": [{ "orgId": "%s", "clientId": "PlatformCLI" }]
+  },
+  "warnings": []
+}
+]],
+    REAL_DEVHUB_ID,
+    REAL_DEVHUB_USERNAME,
+    home,
+    REAL_ORG_ID
+  ))
+
+  expect.no_equality(scrubbed:find(home, 1, true) ~= nil, true)
+  expect.no_equality(scrubbed:find("3MVG9AbCd", 1, true) ~= nil, true)
+  expect.no_equality(scrubbed:find("acme-dev", 1, true) ~= nil, true)
+  local result = vim.json.decode(scrubbed).result
+  eq(result.devHubs[1].privateKey, "/home/user/.config/acme/server.key")
+  eq(result.devHubs[1].clientId, "FAKE_CLIENT_ID_1")
+  eq(result.devHubs[1].name, "Fake Company")
+  eq(result.scratchOrgs[1].clientId, "PlatformCLI")
+end
+
+T["scrub"]["replaces the home directory in a stack trace"] = function()
+  local home = vim.uv.os_homedir()
+  local scrubbed = recorder.scrub(vim.json.encode({
+    name = "Error",
+    stack = "Error: no results\n    at Test.catch (file://" .. home .. "/.npm-global/lib/sfCommand.js:333:47)",
+  }))
+
+  eq(
+    vim.json.decode(scrubbed).stack,
+    "Error: no results\n    at Test.catch (file:///home/user/.npm-global/lib/sfCommand.js:333:47)"
+  )
+end
+
 T["scrub"]["replaces a short alias only as a whole word"] = function()
   local scrubbed = recorder.scrub(
     [[{"status": 0, "result": {"alias": "on", "connectedStatus": "Connected"}, "warnings": ["Logged in to on."]}]]
@@ -357,6 +412,7 @@ T["scrub"]["normalises durations, response headers and local timestamps, keeping
     "tests": [{ "RunTime": 30, "Outcome": "Pass" }, { "RunTime": 7, "Outcome": "Pass" }],
     "headers": { "date": "Wed, 14 Oct 2026 09:31:27 GMT", "set-cookie": ["BrowserId=abc"], "content-type": "application/json" },
     "lastRetrieved": "10/14/2026, 9:31:27 PM",
+    "lastUsedLocal": "10/14/2026, 10:31:27 PM",
     "statusCode": 200
   }
 }]]
@@ -373,6 +429,7 @@ T["scrub"]["normalises durations, response headers and local timestamps, keeping
     "tests": [{ "RunTime": 0, "Outcome": "Pass" }, { "RunTime": 0, "Outcome": "Pass" }],
     "headers": { "date": "FAKE_HEADER_VALUE", "set-cookie": ["FAKE_HEADER_VALUE"], "content-type": "application/json" },
     "lastRetrieved": "1/1/2026, 0:00:00 AM",
+    "lastUsedLocal": "1/1/2026, 0:00:00 AM",
     "statusCode": 200
   }
 }]]
@@ -395,12 +452,13 @@ T["scrub"]["scrubs human-readable output with what JSON output showed"] = functi
   local text = scrubber:text(real("apex_run_test_human"):gsub(vim.pesc(REAL_DEVHUB_ID), REAL_ORG_ID))
 
   expect_scrubbed(text)
-  expect.match(text, "\nTest Run Id          707000000000001\n")
-  expect.match(text, "\nTest Execution Time  0 ms\n")
-  expect.match(text, "\nOrg Id               00D000000000001AAA\n")
-  expect.match(text, "\nSfProjectTest.constructsWithName  Pass              0\n")
-  expect.match(text, "\nSfProjectTest.constructsWithNull  Pass              0\n")
-  expect.match(text, "\nTests Ran            2\n")
+  -- sf pads the columns with trailing spaces.
+  expect.match(text, "\nTest Run Id          707000000000001 *\n")
+  expect.match(text, "\nTest Execution Time  0 ms *\n")
+  expect.match(text, "\nOrg Id               00D000000000001AAA *\n")
+  expect.match(text, "\nSfProjectTest.constructsWithName  Pass              0 *\n")
+  expect.match(text, "\nSfProjectTest.constructsWithNull  Pass              0 *\n")
+  expect.match(text, "\nTests Ran            2 *\n")
 end
 
 T["record"] = new_set()
@@ -449,7 +507,7 @@ T["record"]["creates one scratch org, deploys the project, records against it an
     calls[2],
     "org create scratch --target-dev-hub my-devhub --alias "
       .. SCRATCH
-      .. " --definition-file config/project-scratch-def.json --duration-days 1 --wait 15 --json"
+      .. " --set-default --definition-file config/project-scratch-def.json --duration-days 1 --wait 15 --json"
   )
   eq(calls[3], "project deploy start --source-dir force-app -o " .. SCRATCH .. " --wait 15 --json")
   eq(calls[#calls], DELETE_CALL)
@@ -471,6 +529,14 @@ T["record"]["creates one scratch org, deploys the project, records against it an
   })
 end
 
+T["record"]["signs the scratch org up through the CLI's own connected app"] = function()
+  install_fake_sf(rules_for_success())
+
+  record()
+
+  eq(vim.fn.readfile(tmp .. "/sf/signup_app"), { "PlatformCLI", "http://localhost:1717/OauthRedirect" })
+end
+
 T["record"]["describes through the org's API version and fetches the coverage of the human run"] = function()
   install_fake_sf(rules_for_success())
 
@@ -490,11 +556,16 @@ T["record"]["describes through the org's API version and fetches the coverage of
     "^%-%- `sf api request rest services/data/v62%.0/composite/batch %-%-method POST %-%-body @<file> %-o my%-scratch %-%-json`"
   )
   local headers = vim.json.decode(dofile(tmp .. "/api_request_rest_composite_batch.lua").stdout).result.headers
-  eq(headers, {
-    date = "FAKE_HEADER_VALUE",
-    ["sforce-limit-info"] = "FAKE_HEADER_VALUE",
-    ["content-type"] = "application/json;charset=UTF-8",
-  })
+  eq(headers["content-type"], "application/json;charset=UTF-8")
+  eq(headers.date, "FAKE_HEADER_VALUE")
+  eq(headers["sforce-limit-info"], "FAKE_HEADER_VALUE")
+  for name, value in pairs(headers) do
+    if name ~= "content-type" then
+      for _, v in ipairs(type(value) == "table" and value or { value }) do
+        eq(v, "FAKE_HEADER_VALUE")
+      end
+    end
+  end
 
   -- The run id the human output shows is the one the coverage belongs to.
   local human = dofile(tmp .. "/apex_run_test_human.lua").stdout
@@ -530,8 +601,9 @@ T["record"]["normalises what changes on every run"] = function()
   eq(run.summary.testExecutionTime, "0 ms")
   eq(run.summary.testStartTime, "2026-01-01T00:00:00.000Z")
   eq(run.tests[1].RunTime, 0)
-  eq(run.tests[1].Id, "07M000000000001AAA")
-  eq(run.summary.testRunId, "707000000000001")
+  -- Placeholders are numbered in the order the recording meets them.
+  expect.match(run.tests[1].Id, "^07M0000000000%d%dAAA$")
+  expect.match(run.summary.testRunId, "^7070000000000%d%d$")
 end
 
 T["record"]["writes identical files for the same org"] = function()
