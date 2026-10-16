@@ -585,6 +585,20 @@ for _, step in ipairs(STEPS) do
   end
 end
 
+T["record"]["records no 401 fixture from a request that failed otherwise"] = function()
+  local rules = rules_for_success()
+  table.insert(rules, 1, { cmd = "--header", code = 1, stdout = '{"status": 1, "message": "getaddrinfo ENOTFOUND"}' })
+  install_fake_sf(rules)
+  write_old_fixtures()
+
+  local ok, err = pcall(record)
+
+  eq(ok, false)
+  expect.match(err, "^the describe batch with a bad session got no HTTP response, not 401: getaddrinfo ENOTFOUND\n")
+  expect_old_fixtures()
+  eq(count_calls("org delete scratch"), 1)
+end
+
 T["record"]["says so when deleting the org fails after a failed step"] = function()
   local rules = rules_for_success()
   table.insert(rules, 1, { cmd = "org delete scratch", code = 1, stdout = '{"status": 1, "message": "No such org."}' })

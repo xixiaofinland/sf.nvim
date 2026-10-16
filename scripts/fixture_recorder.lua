@@ -659,10 +659,23 @@ local MISSING_TEST_RUN_ID = "707000000000000"
 ---@field fails boolean|nil The command is meant to fail
 ---@field after fun(ctx: FixtureContext, result: vim.SystemCompleted, scrubber: Scrubber)|nil
 
+-- The describe batch of M.DESCRIBE_NAMES, as the sObject refresh sends it.
 ---@param ctx FixtureContext
----@return string
-local function composite_batch_url(ctx)
-  return "services/data/v" .. ctx.api_version .. "/composite/batch"
+---@param extra string[] Flags before `-o`
+---@return string[]
+local function describe_batch_argv(ctx, extra)
+  if not ctx.body_file then
+    local requests = {}
+    for _, name in ipairs(M.DESCRIBE_NAMES) do
+      table.insert(requests, { method = "GET", url = "v" .. ctx.api_version .. "/sobjects/" .. name .. "/describe" })
+    end
+    ctx.body_file = vim.fn.tempname() .. ".json"
+    vim.fn.writefile({ vim.json.encode({ batchRequests = requests }) }, ctx.body_file)
+  end
+  local argv = { "sf", "api", "request", "rest", "services/data/v" .. ctx.api_version .. "/composite/batch" }
+  vim.list_extend(argv, { "--method", "POST", "--body", "@" .. ctx.body_file })
+  vim.list_extend(argv, extra)
+  return vim.list_extend(argv, { "-o", ctx.scratch, "--json" })
 end
 
 -- In recording order: org display gives the API version the describes use,
@@ -704,27 +717,7 @@ M.FIXTURES = {
       .. table.concat(M.DESCRIBE_NAMES, ", ")
       .. "; the last one doesn't exist, so its sub-request failed.",
     argv = function(ctx)
-      local requests = {}
-      for _, name in ipairs(M.DESCRIBE_NAMES) do
-        table.insert(requests, { method = "GET", url = "v" .. ctx.api_version .. "/sobjects/" .. name .. "/describe" })
-      end
-      ctx.body_file = vim.fn.tempname() .. ".json"
-      vim.fn.writefile({ vim.json.encode({ batchRequests = requests }) }, ctx.body_file)
-      local url = composite_batch_url(ctx)
-      return {
-        "sf",
-        "api",
-        "request",
-        "rest",
-        url,
-        "--method",
-        "POST",
-        "--body",
-        "@" .. ctx.body_file,
-        "-o",
-        ctx.scratch,
-        "--json",
-      }
+      return describe_batch_argv(ctx, {})
     end,
   },
   {
@@ -732,22 +725,19 @@ M.FIXTURES = {
     note = "The describe batch with a session Salesforce rejects: the header overrides the token sf sends.",
     fails = true,
     argv = function(ctx)
-      return {
-        "sf",
-        "api",
-        "request",
-        "rest",
-        composite_batch_url(ctx),
-        "--method",
-        "POST",
-        "--body",
-        "@" .. ctx.body_file,
-        "--header",
-        "Authorization: Bearer 00D000000000000!NOT_A_SESSION",
-        "-o",
-        ctx.scratch,
-        "--json",
-      }
+      return describe_batch_argv(ctx, { "--header", "Authorization: Bearer 00D000000000000!NOT_A_SESSION" })
+    end,
+    -- Any other failure, such as a network error, isn't this fixture.
+    after = function(_, result)
+      local ok, decoded = pcall(vim.json.decode, result.stdout or "")
+      local status = ok and type(decoded) == "table" and type(decoded.result) == "table" and decoded.result.statusCode
+      if status ~= 401 then
+        local got = status and ("HTTP " .. tostring(status)) or "no HTTP response"
+        error(
+          string.format("the describe batch with a bad session got %s, not 401: %s", got, failure_detail(result)),
+          0
+        )
+      end
     end,
   },
   {
@@ -773,7 +763,7 @@ M.FIXTURES = {
   },
   {
     name = "apex_run_test",
-    note = "The same test run reported as JSON.",
+    note = "A second run of the same tests, reported as JSON; its test run id differs from the human run's.",
     argv = function(ctx)
       return { "sf", "apex", "run", "test", "-n", "SfProjectTest", "-w", "5", "-c", "--json", "-o", ctx.scratch }
     end,
@@ -957,15 +947,14 @@ M.record = function(opts)
   end)
 
   -- Also after a failed create: one that timed out may have made the org.
-  local delete_cmd = { "sf", "org", "delete", "scratch", "-o", scratch, "--no-prompt", "--json" }
-  local deleted, delete_err = pcall(sf, delete_cmd, { cwd = project })
-  local delete_note = not deleted
-      and string.format(
-        "\nDeleting the scratch org failed too: %s\nDelete it by hand with `%s`.",
-        delete_err,
-        table.concat(delete_cmd, " ", 1, 7)
-      )
-    or ""
+  local deleted, delete_err = pcall(
+    sf,
+    { "sf", "org", "delete", "scratch", "-o", scratch, "--no-prompt", "--json" },
+    { cwd = project }
+  )
+  local delete_failure = not deleted
+    and string.format("%s\nDelete it by hand with `sf org delete scratch -o %s --no-prompt`.", delete_err, scratch)
+  local delete_note = delete_failure and ("\nDeleting the scratch org failed too: " .. delete_failure) or ""
   if ctx.body_file then
     vim.fn.delete(ctx.body_file)
   end
@@ -987,15 +976,8 @@ M.record = function(opts)
     error(write_err .. UNTOUCHED .. delete_note, 0)
   end
 
-  if not deleted then
-    error(
-      string.format(
-        "The fixtures were recorded, but deleting the scratch org failed: %s\nDelete it by hand with `%s`.",
-        delete_err,
-        table.concat(delete_cmd, " ", 1, 7)
-      ),
-      0
-    )
+  if delete_failure then
+    error("The fixtures were recorded, but deleting the scratch org failed: " .. delete_failure, 0)
   end
   return vim.tbl_map(function(f)
     return f.path
