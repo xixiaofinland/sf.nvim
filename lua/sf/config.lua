@@ -29,6 +29,7 @@ local default_cfg = {
 
   -- Define what metadata to be listed in `list_md_to_retrieve()` (<leader>ml)
   -- Salesforce has numerous metadata types. We narrow down the scope of `list_md_to_retrieve()`.
+  -- Folder-based types (EmailTemplate, Report, Dashboard, Document) are listed folder by folder.
   types_to_retrieve = {
     "ApexClass",
     "ApexTrigger",

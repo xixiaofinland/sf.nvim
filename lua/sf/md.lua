@@ -152,13 +152,96 @@ H.pull_metadata = function(type)
   U.create_plugin_folder_if_not_exist()
 
   local md_file = string.format("%s%s_%s.json", U.get_plugin_folder_path(), type, U.target_org)
-
-  -- local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
-  local cmd = B:new():cmd("org"):act("list metadata"):addParams({ ["-m"] = type, ["-f"] = md_file }):build()
   local msg = string.format("%s retrieved", type)
   local err_msg = string.format("%s retrieve failed: %s", type, md_file)
 
+  if H.folder_types[type] then
+    return H.pull_folder_metadata(type, md_file, msg, err_msg)
+  end
+
+  -- local cmd = string.format('sf org list metadata -m %s -o %s -f %s', type, U.target_org, md_file)
+  local cmd = B:new():cmd("org"):act("list metadata"):addParams({ ["-m"] = type, ["-f"] = md_file }):build()
+
   U.silent_job_call(cmd, msg, err_msg)
+end
+
+-- Components of these types live in folders: `sf org list metadata -m <type>`
+-- returns none of them, so each folder is listed with `--folder` (#300). The
+-- folder list includes `unfiled$public`, for components in no folder.
+H.folder_types = {
+  Dashboard = "DashboardFolder",
+  Document = "DocumentFolder",
+  EmailTemplate = "EmailFolder",
+  Report = "ReportFolder",
+}
+
+-- Lists folders or components as `sf org list metadata --json` returns them.
+---@param params table
+---@param cb fun(items: table[]|nil) nil when the call or its output failed
+H.list_metadata = function(params, cb)
+  local cmd = B:new():cmd("org"):act("list metadata"):addParamsNoExpand(params):addParams("--json"):buildAsTable()
+  vim.system(
+    cmd,
+    { text = true },
+    vim.schedule_wrap(function(obj)
+      local ok, decoded = pcall(vim.json.decode, obj.stdout or "")
+      if obj.code ~= 0 or not ok or type(decoded) ~= "table" then
+        return cb(nil)
+      end
+      -- An empty list can come back as no result, a single item as an object
+      local result = decoded.result
+      if type(result) ~= "table" then
+        return cb({})
+      end
+      cb(vim.islist(result) and result or { result })
+    end)
+  )
+end
+
+---@param type string
+---@param md_file string
+---@param msg string
+---@param err_msg string
+H.pull_folder_metadata = function(type, md_file, msg, err_msg)
+  H.list_metadata({ ["-m"] = H.folder_types[type] }, function(folders)
+    if folders == nil then
+      return U.show_err(err_msg)
+    end
+
+    local names = vim.tbl_map(function(folder)
+      return folder["fullName"]
+    end, folders)
+
+    local listed, pending, failed = {}, #names, false
+    local on_listed = function()
+      pending = pending - 1
+      if pending > 0 then
+        return
+      end
+      if failed then
+        return U.show_err(err_msg)
+      end
+      -- In folder order, as one list, like the file `-f` writes for other types
+      local items = {}
+      for i = 1, #names do
+        vim.list_extend(items, listed[i])
+      end
+      vim.fn.writefile({ vim.json.encode(items) }, md_file)
+      vim.notify(msg, vim.log.levels.INFO)
+    end
+
+    if pending == 0 then
+      pending = 1
+      return on_listed()
+    end
+    for i, name in ipairs(names) do
+      H.list_metadata({ ["-m"] = type, ["--folder"] = name }, function(items)
+        listed[i] = items or {}
+        failed = failed or items == nil
+        on_listed()
+      end)
+    end
+  end)
 end
 
 H.pull_md_type_json = function()
