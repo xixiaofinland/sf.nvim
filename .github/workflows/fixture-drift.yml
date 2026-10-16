@@ -1,0 +1,105 @@
+name: Check sf CLI output drift
+# Re-records the fixtures of the sf fake with the current sf CLI and acts on
+# the difference (scripts/fixture_drift.lua): no change does nothing; a change
+# the tests pass on is merged into dev as a PR; one they fail on gets a PR left
+# open and a ready-for-agent issue. Creating PRs with GITHUB_TOKEN needs
+# "Allow GitHub Actions to create and approve pull requests" in the repo's
+# Actions settings. Each run uses one of the Dev Hub's daily scratch orgs.
+on:
+  schedule:
+    # Mondays, before the maintainer's week starts.
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+# One scratch org and one drift branch at a time.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  DEVHUB: sf-nvim-devhub
+  # The alias scripts/fixture_recorder.lua gives the scratch org.
+  SCRATCH: sf-nvim-fixtures
+  SF_SKIP_NEW_VERSION_CHECK: "true"
+  SF_DISABLE_TELEMETRY: "true"
+
+jobs:
+  drift:
+    name: Re-record the fixtures
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+      - name: Setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+      # Same key as the test workflow, so the pinned deps are shared.
+      - name: Cache test dependencies
+        uses: actions/cache@v4
+        with:
+          path: deps
+          key: test-deps-${{ hashFiles('Makefile') }}
+      - name: Build test dependencies
+        run: make deps
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install sf CLI
+        run: |
+          npm install --global @salesforce/cli
+          sf --version
+      # The key only ever lives in a file only this user can read, removed on
+      # exit. sf's output holds an access token, so it goes to a file too and
+      # only the error message is printed.
+      - name: Log in to the Dev Hub
+        env:
+          SF_DEVHUB_CLIENT_ID: ${{ secrets.SF_DEVHUB_CLIENT_ID }}
+          SF_DEVHUB_USERNAME: ${{ secrets.SF_DEVHUB_USERNAME }}
+          SF_DEVHUB_JWT_KEY: ${{ secrets.SF_DEVHUB_JWT_KEY }}
+        run: |
+          umask 077
+          key="$RUNNER_TEMP/devhub.key"
+          out="$RUNNER_TEMP/login.json"
+          trap 'rm -f "$key" "$out"' EXIT
+          printf '%s\n' "$SF_DEVHUB_JWT_KEY" >"$key"
+          if ! sf org login jwt --client-id "$SF_DEVHUB_CLIENT_ID" --jwt-key-file "$key" \
+            --username "$SF_DEVHUB_USERNAME" --alias "$DEVHUB" --set-default-dev-hub --json >"$out" 2>/dev/null; then
+            echo "Dev Hub login failed: $(jq -r '.name + ": " + .message' "$out" 2>/dev/null)"
+            exit 1
+          fi
+          echo "Logged in to the Dev Hub as $DEVHUB"
+      # Prints only the paths it wrote; it deletes the scratch org itself, also
+      # when a step in between fails.
+      - name: Record the fixtures
+        run: make record-fixtures DEVHUB="$DEVHUB"
+      # The secrets are here only for the leak guard, which fails the run
+      # before any push if a fixture holds one; the script drops them from its
+      # environment before running anything.
+      - name: Act on the drift
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SF_DEVHUB_CLIENT_ID: ${{ secrets.SF_DEVHUB_CLIENT_ID }}
+          SF_DEVHUB_USERNAME: ${{ secrets.SF_DEVHUB_USERNAME }}
+          SF_DEVHUB_JWT_KEY: ${{ secrets.SF_DEVHUB_JWT_KEY }}
+        run: nvim -l scripts/check_fixture_drift.lua
+      # The recorder can't clean up after a cancelled or timed-out run, which
+      # kills it. The org is still authorised only if it wasn't deleted;
+      # `org display` prints a token, so its output is dropped.
+      - name: Delete the scratch org
+        if: always()
+        run: |
+          if ! command -v sf >/dev/null || ! sf org display -o "$SCRATCH" --json >/dev/null 2>&1; then
+            echo "No scratch org left to delete"
+            exit 0
+          fi
+          sf org delete scratch -o "$SCRATCH" --no-prompt --json >/dev/null
+          echo "Deleted the scratch org $SCRATCH"
