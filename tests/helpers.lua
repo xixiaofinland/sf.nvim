@@ -44,8 +44,12 @@
 --   make record-fixtures DEVHUB=<alias>
 --
 -- DEVHUB is the alias of a Dev Hub the sf CLI is logged in to, `devhub` by
--- default (`sf org login web --set-default-dev-hub --alias devhub`). The run:
+-- default (`sf org login web --set-default-dev-hub --alias devhub`, or
+-- `sf org login jwt` with an External Client App, which needs no browser). The
+-- run:
 --   1. creates one scratch org from it, aliased sf-nvim-fixtures, for a day,
+--      as the project's default target org, signing it up through the CLI's
+--      own PlatformCLI app (signup can't copy an External Client App),
 --   2. deploys a class and its test class (SfProject, SfProjectTest),
 --   3. runs each fixture's command against it (and `sf org list`, which lists
 --      every org this machine is logged in to), scrubs the output and
@@ -55,8 +59,8 @@
 -- a few scratch orgs a day. If deleting fails, it prints the command to delete
 -- the org by hand.
 --
--- Scrubbing replaces tokens, ids, usernames, URLs and org names with numbered
--- placeholders and normalises durations, timestamps, test run ids and
+-- Scrubbing replaces tokens, ids, usernames, URLs, org names, client ids and
+-- the home directory with placeholders and normalises durations, timestamps, test run ids and
 -- response headers, so a re-recording only changes when the CLI's output
 -- does (and in each header's "RECORDED with … on …" line). Read the diff
 -- before committing it. Fixtures with `recorded = false` are synthetic, shaped
