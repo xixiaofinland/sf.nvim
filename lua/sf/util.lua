@@ -362,9 +362,11 @@ M.gen_doc = function()
     M.notify_then_error("mini.doc not installed.")
   end
 
+  -- mini.doc names the output after the current directory, which isn't
+  -- "sf.nvim" in a worktree or a differently named clone.
   require("mini.doc").generate({
     "lua/sf/init.lua",
-  })
+  }, "doc/sf.txt")
 end
 
 M.is_windows_os = function()
