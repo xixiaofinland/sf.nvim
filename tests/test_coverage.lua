@@ -211,7 +211,8 @@ T["saving"]["writes the result under a project path with spaces and places signs
 
   eq(read_result(), coverage_json())
   local get_test = child.sf_fake.calls()[2]
-  eq(get_test.argv, { "sf", "apex", "get", "test", "-i", "7070000000FAKE1", "--json", "-c", "-o", "myorg" })
+  local run_id = helpers.sf_fixture("apex_run_test_human").stdout:match("Test Run Id%s+(%w+)")
+  eq(get_test.argv, { "sf", "apex", "get", "test", "-i", run_id, "--json", "-c", "-o", "myorg" })
   eq(child.notified(), { { msg = "Code coverage saved.", level = child.lua_get("vim.log.levels.INFO") } })
 
   edit("SfProject.cls")

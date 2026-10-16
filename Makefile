@@ -20,11 +20,13 @@ test: deps
 test_file: deps
 	nvim --headless --noplugin -u ./scripts/minimal_init.lua -c "lua MiniTest.run_file('$(FILE)')"
 
-# Record the org display fixture from the org aliased $(ORG), scrubbed.
-# Runs `sf org display` against that org: use a throwaway one.
-record-fixture:
-	@[ -n "$(ORG)" ] || { echo "usage: make record-fixture ORG=<alias>" >&2; exit 2; }
-	nvim -l scripts/record_fixture.lua '$(ORG)'
+# Record every fixture of the sf fake, scrubbed, from a throwaway scratch org
+# that it creates from the Dev Hub aliased $(DEVHUB) and deletes again. Each run
+# uses one of the Dev Hub's daily scratch orgs; see tests/helpers.lua.
+DEVHUB ?= devhub
+
+record-fixtures:
+	nvim -l scripts/record_fixtures.lua '$(DEVHUB)'
 
 # Lua formatting, per .stylua.toml; CI runs fmt-check.
 STYLUA_PATHS := lua tests scripts
@@ -63,4 +65,4 @@ deps/parsers/parser/%.so: deps/tree-sitter-sfapex/%/src/parser.c
 	@mkdir -p $(@D)
 	cc -shared -fPIC -O2 -I$(<D) $< $(wildcard $(<D)/scanner.c) -o $@
 
-.PHONY: test test_file record-fixture fmt fmt-check deps parsers
+.PHONY: test test_file record-fixtures fmt fmt-check deps parsers
